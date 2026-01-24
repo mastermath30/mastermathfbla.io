@@ -296,7 +296,7 @@ export default function SchedulePage() {
       const date = new Date(bookingYear, bookingMonth, day);
       const dayOfWeek = date.getDay();
       const isPast = date < today;
-      const hasSlots = selectedTutor?.availableSlots[dayOfWeek]?.length > 0;
+      const hasSlots = (selectedTutor?.availableSlots[dayOfWeek]?.length ?? 0) > 0;
       const isSelected = bookingDate && 
         bookingDate.getDate() === day && 
         bookingDate.getMonth() === bookingMonth && 

@@ -152,7 +152,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                             }`}
                             style={{ 
                               backgroundColor: c.color,
-                              ringColor: c.color
+                              ...(isSelected && { '--tw-ring-color': c.color } as React.CSSProperties)
                             }}
                           >
                             {isSelected && (
