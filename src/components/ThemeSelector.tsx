@@ -31,7 +31,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
     if (dark) {
       document.documentElement.classList.add('dark');
       document.body.classList.add('dark');
-      document.body.style.background = '#000000';
+      document.body.style.background = '#020617';
       document.body.style.color = '#f8fafc';
     } else {
       document.documentElement.classList.remove('dark');
