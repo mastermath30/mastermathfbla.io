@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({
         </main>
         <Navbar />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
