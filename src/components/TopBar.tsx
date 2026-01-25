@@ -22,6 +22,7 @@ export function TopBar() {
 	const [isVisible, setIsVisible] = useState(true);
 	const [hasLoaded, setHasLoaded] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [userName, setUserName] = useState("");
 	const lastScrollY = useRef(0);
 
 	useEffect(() => {
@@ -29,6 +30,16 @@ export function TopBar() {
 		const session = localStorage.getItem("mm_session");
 		const loggedInFlag = localStorage.getItem("isLoggedIn");
 		setIsLoggedIn(!!session || loggedInFlag === "true");
+		
+		// Get user's name
+		if (session) {
+			try {
+				const profile = JSON.parse(session);
+				setUserName(profile.firstName || "");
+			} catch (e) {
+				setUserName("");
+			}
+		}
 	}, [pathname]); // Re-check on route change
 
 	useEffect(() => {
@@ -89,7 +100,7 @@ export function TopBar() {
 			>
 				{/* Main Navigation */}
 				<div className="w-[90vw] max-w-xs md:max-w-5xl mx-auto">
-					<div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
+					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
 						<div className="flex items-center justify-between gap-4">
 							{/* Logo */}
 							<Link
@@ -141,7 +152,7 @@ export function TopBar() {
 									{isLoggedIn ? (
 										<>
 											<User className="w-4 h-4" />
-											<span>Account</span>
+											<span>{userName || "Account"}</span>
 										</>
 									) : (
 										<span>Sign In</span>
@@ -201,7 +212,7 @@ export function TopBar() {
 								: "opacity-0 -translate-y-8 scale-95 pointer-events-none"
 						}`}
 					>
-						<div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-4 shadow-2xl">
+						<div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-4 shadow-2xl">
 							<div className="flex flex-col space-y-1">
 								{navigation.map((item, index) => (
 									<Link

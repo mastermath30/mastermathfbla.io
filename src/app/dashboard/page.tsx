@@ -88,7 +88,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -168,25 +168,27 @@ export default function DashboardPage() {
             icon={Clock}
             label="Hours Studied"
             value="24.5"
-            iconBg="bg-violet-100"
+            iconBg="bg-violet-100 dark:bg-violet-900/30"
             iconColor="text-violet-500"
-            subtext="↑ 12% this week"
+            subtext="12% this week"
             subtextColor="text-green-600"
+            trend="up"
           />
           <StatCard
             icon={CheckCircle2}
             label="Problems Solved"
             value="148"
-            iconBg="bg-green-100"
+            iconBg="bg-green-100 dark:bg-green-900/30"
             iconColor="text-green-500"
             subtext="+32 this week"
             subtextColor="text-green-600"
+            trend="up"
           />
           <StatCard
             icon={Flame}
             label="Current Streak"
             value="7 days"
-            iconBg="bg-yellow-100"
+            iconBg="bg-yellow-100 dark:bg-yellow-900/30"
             iconColor="text-yellow-500"
             subtext="Keep it going!"
             subtextColor="text-yellow-600"
@@ -195,7 +197,7 @@ export default function DashboardPage() {
             icon={Trophy}
             label="Math Mastery"
             value="87%"
-            iconBg="bg-purple-100"
+            iconBg="bg-purple-100 dark:bg-purple-900/30"
             iconColor="text-purple-500"
             subtext="Advanced Level"
             subtextColor="text-purple-600"
@@ -354,7 +356,7 @@ export default function DashboardPage() {
                       <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">{activity.time}</p>
                       {activity.xp && (
                         <div className="flex items-center gap-3 mt-2">
-                          <span className="text-primary-themed text-xs font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">{activity.xp}</span>
+                          <span className="text-primary-themed text-xs font-medium bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">{activity.xp}</span>
                           <span className="text-slate-500 dark:text-slate-400 text-xs">{activity.badge}</span>
                         </div>
                       )}

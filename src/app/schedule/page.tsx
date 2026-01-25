@@ -35,7 +35,7 @@ const sessions = [
     icon: SquareRadical,
     title: "Calculus Study Group: Integrals",
     time: "Tomorrow, 3:00 PM - 4:30 PM",
-    tutor: "Dr. Sarah Johnson",
+    tutor: "Ayaan Oberoi",
     status: "confirmed",
     color: "violet",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop",
@@ -44,7 +44,7 @@ const sessions = [
     icon: Infinity,
     title: "Linear Algebra: Matrix Operations",
     time: "Friday, 5:00 PM - 6:30 PM",
-    tutor: "Priya Patel",
+    tutor: "Malhar Pawar",
     status: "pending",
     color: "purple",
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=60&h=60&fit=crop",
@@ -62,51 +62,37 @@ const sessions = [
 
 const tutors = [
   {
-    name: "Dr. Sarah Johnson",
+    name: "Ayaan Oberoi",
     initials: "SJ",
-    subjects: "Calculus, Statistics",
+    subjects: "Calculus, Statistics, Differential Equations",
     rating: 4.9,
     reviews: 128,
     price: 45,
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
     available: true,
-    // Available time slots by day (0 = Sunday, 6 = Saturday)
-    availableSlots: {
-      1: ["9:00 AM", "10:00 AM", "2:00 PM", "3:00 PM", "4:00 PM"], // Monday
-      2: ["10:00 AM", "11:00 AM", "3:00 PM", "4:00 PM"], // Tuesday
-      3: ["9:00 AM", "10:00 AM", "11:00 AM", "2:00 PM"], // Wednesday
-      4: ["2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"], // Thursday
-      5: ["9:00 AM", "10:00 AM", "11:00 AM"], // Friday
-    } as Record<number, string[]>,
+    specialties: ["AP Calculus BC", "College Statistics", "Research Methods"],
   },
   {
-    name: "Priya Patel",
+    name: "Emma Rodriguez",
+    initials: "ER",
+    subjects: "Precalculus, Geometry, Algebra",
+    rating: 4.9,
+    reviews: 112,
+    price: 38,
+    image: "https://images.unsplash.com/photo-1591084728795-1149f32d9866?w=200&h=200&fit=crop",
+    available: true,
+    specialties: ["Geometry Proofs", "Trigonometry", "Pre-Calc"],
+  },
+  {
+    name: "Malhar Pawar",
     initials: "PP",
-    subjects: "Linear Algebra, Geometry",
+    subjects: "Linear Algebra, Geometry, Discrete Math",
     rating: 4.8,
     reviews: 96,
     price: 35,
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop",
     available: true,
-    availableSlots: {
-      1: ["11:00 AM", "12:00 PM", "5:00 PM", "6:00 PM"], // Monday
-      2: ["9:00 AM", "10:00 AM", "5:00 PM", "6:00 PM"], // Tuesday
-      3: ["12:00 PM", "1:00 PM", "5:00 PM", "6:00 PM"], // Wednesday
-      4: ["9:00 AM", "10:00 AM", "11:00 AM"], // Thursday
-      5: ["3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"], // Friday
-      6: ["10:00 AM", "11:00 AM", "12:00 PM"], // Saturday
-    } as Record<number, string[]>,
-  },
-  {
-    name: "Michael Chen",
-    initials: "MC",
-    subjects: "Algebra, Trigonometry",
-    rating: 4.7,
-    reviews: 84,
-    price: 40,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-    available: false,
-    availableSlots: {} as Record<number, string[]>,
+    specialties: ["Linear Algebra", "Proof Writing", "Competition Math"],
   },
 ];
 
@@ -131,6 +117,53 @@ const studyGroups = [
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const currentDate = new Date();
+
+// Generate realistic time slots
+const generateTimeSlots = (): string[] => {
+  const slots = [];
+  // Morning slots: 8 AM - 12 PM
+  for (let hour = 8; hour < 12; hour++) {
+    slots.push(`${hour}:00 AM`);
+    if (hour < 11) slots.push(`${hour}:30 AM`);
+  }
+  slots.push("12:00 PM");
+  slots.push("12:30 PM");
+  
+  // Afternoon/Evening slots: 1 PM - 8 PM
+  for (let hour = 1; hour <= 8; hour++) {
+    slots.push(`${hour}:00 PM`);
+    if (hour < 8) slots.push(`${hour}:30 PM`);
+  }
+  return slots;
+};
+
+// Seeded random function for consistent results
+const seededRandom = (seed: string): number => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  const x = Math.sin(hash) * 10000;
+  return x - Math.floor(x);
+};
+
+// Get available slots with consistent seeding
+const getSeededAvailableSlots = (tutorName: string, dayOfWeek: number, allSlots: string[], availability: number = 0.7): string[] => {
+  return allSlots.filter((slot, index) => {
+    const seed = `${tutorName}-${dayOfWeek}-${slot}-${index}`;
+    return seededRandom(seed) < availability;
+  });
+};
+
+// Check if a day is fully booked (no available slots)
+const isDayFullyBooked = (tutorName: string, dayOfWeek: number): boolean => {
+  const seed = `${tutorName}-${dayOfWeek}-fullbook`;
+  return seededRandom(seed) < 0.15; // 15% chance of being fully booked
+};
+
+const ALL_TIME_SLOTS = generateTimeSlots();
 
 interface BookedSession {
   id: string;
@@ -175,11 +208,44 @@ export default function SchedulePage() {
     return selectedTutor.price * getDurationHours(selectedDuration);
   };
 
-  // Get available time slots for selected date
-  const getAvailableTimeSlots = (): string[] => {
-    if (!selectedTutor || !bookingDate) return [];
+  // Get all time slots with availability info for selected date
+  const getAllTimeSlotsWithAvailability = (): Array<{slot: string, available: boolean}> => {
+    if (!selectedTutor || !bookingDate) return ALL_TIME_SLOTS.map(slot => ({slot, available: false}));
+    
     const dayOfWeek = bookingDate.getDay();
-    return selectedTutor.availableSlots[dayOfWeek] || [];
+    
+    // Check if day is fully booked
+    if (isDayFullyBooked(selectedTutor.name, dayOfWeek)) {
+      return ALL_TIME_SLOTS.map(slot => ({slot, available: false}));
+    }
+    
+    // Get availability based on tutor and day patterns
+    const availabilityRate = getTutorAvailability(selectedTutor.name, dayOfWeek);
+    const availableSlots = getSeededAvailableSlots(selectedTutor.name, dayOfWeek, ALL_TIME_SLOTS, availabilityRate);
+    
+    return ALL_TIME_SLOTS.map(slot => ({
+      slot,
+      available: availableSlots.includes(slot)
+    }));
+  };
+
+  // Get tutor availability rate based on patterns
+  const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
+    const patterns = {
+      "Ayaan Oberoi": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4], // Sunday to Saturday
+      "Malhar Pawar": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
+      "Michael Chen": [0.4, 0.7, 0.8, 0.9, 0.7, 0.6, 0.3],
+      "Emma Rodriguez": [0.3, 0.7, 0.6, 0.8, 0.7, 0.5, 0.8],
+      "Alex Thompson": [0.5, 0.4, 0.8, 0.6, 0.9, 0.7, 0.6]
+    };
+    return patterns[tutorName as keyof typeof patterns]?.[dayOfWeek] || 0.6;
+  };
+
+  // Get available time slots for selected date (for compatibility)
+  const getAvailableTimeSlots = (): string[] => {
+    return getAllTimeSlotsWithAvailability()
+      .filter(({available}) => available)
+      .map(({slot}) => slot);
   };
 
   // Format date for display
@@ -199,6 +265,25 @@ export default function SchedulePage() {
     if (savedBookings) {
       try {
         setBookedSessions(JSON.parse(savedBookings));
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    // Check if user came from tutors page with selected tutor
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldBook = urlParams.get('book');
+    const selectedTutorData = localStorage.getItem("selectedTutor");
+    
+    if (shouldBook && selectedTutorData && isLoggedIn) {
+      try {
+        const tutorData = JSON.parse(selectedTutorData);
+        // Find matching tutor in our tutors array
+        const matchingTutor = tutors.find(t => t.name === tutorData.name);
+        if (matchingTutor) {
+          handleBookNow(matchingTutor);
+          localStorage.removeItem("selectedTutor");
+        }
       } catch {
         // Ignore parse errors
       }
@@ -296,7 +381,8 @@ export default function SchedulePage() {
       const date = new Date(bookingYear, bookingMonth, day);
       const dayOfWeek = date.getDay();
       const isPast = date < today;
-      const hasSlots = (selectedTutor?.availableSlots[dayOfWeek]?.length ?? 0) > 0;
+      const hasSlots = selectedTutor && !isDayFullyBooked(selectedTutor.name, dayOfWeek) && 
+                      getTutorAvailability(selectedTutor.name, dayOfWeek) > 0.3;
       const isSelected = bookingDate && 
         bookingDate.getDate() === day && 
         bookingDate.getMonth() === bookingMonth && 
@@ -380,7 +466,7 @@ export default function SchedulePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -440,9 +526,9 @@ export default function SchedulePage() {
       <main className="max-w-7xl mx-auto px-6 py-8 pb-32">
         {/* Calendar */}
         <Card className="mb-8 overflow-hidden">
-          <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+          <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+              <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-950 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                 <CalendarCheck className="w-6 h-6" />
               </div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -492,9 +578,9 @@ export default function SchedulePage() {
 
         {/* Upcoming Sessions */}
         <Card padding="none" className="mb-8 overflow-hidden">
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+              <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                 <Video className="w-5 h-5" />
               </div>
               <div>
@@ -561,52 +647,96 @@ export default function SchedulePage() {
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Available Tutors</h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Book a session with our expert peer tutors</p>
             </div>
-            <Link href="#" className="text-primary-themed text-sm font-medium hover:underline">
+            <Link href="/tutors" className="text-primary-themed text-sm font-medium hover:underline">
               View all tutors
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tutors.map((tutor) => (
-              <Card key={tutor.name} className="overflow-hidden" padding="none">
-                <div className="relative h-48 bg-slate-950">
+            {tutors.map((tutor, index) => (
+              <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="relative h-44 bg-slate-950 overflow-hidden">
                   <Image
                     src={tutor.image}
                     alt={tutor.name}
                     fill
-                    className="object-cover object-top"
+                    className="object-cover object-top group-hover/tutor:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
                   <div
                     className="absolute inset-0"
-                    style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 22%, transparent), transparent)" }}
+                    style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
                   />
                   {tutor.available && (
-                    <div className="absolute top-3 right-3 px-2 py-1 bg-green-500 text-white text-xs font-medium rounded-full flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "var(--theme-primary)" }} />
+                    <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                      </span>
                       Available Now
                     </div>
                   )}
+                  {/* Rating overlay */}
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-lg">
+                    <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                    <span className="text-white text-sm font-semibold">{tutor.rating}</span>
+                  </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-lg">{tutor.name}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mb-3">{tutor.subjects}</p>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex items-center gap-1 text-primary-themed">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="font-medium">{tutor.rating}</span>
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <h3 className="font-semibold text-slate-900 dark:text-white text-lg group-hover/tutor:text-[var(--theme-primary)] transition-colors">{tutor.name}</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm">{tutor.subjects}</p>
                     </div>
-                    <span className="text-slate-500 dark:text-slate-400 text-sm">{tutor.reviews} reviews</span>
-                    <span className="ml-auto text-slate-500">
-                      <span className="font-bold text-slate-900 dark:text-white text-lg">${tutor.price}</span>/hr
+                    <div className="text-right">
+                      <span className="font-bold text-lg" style={{ color: 'var(--theme-primary)' }}>${tutor.price}</span>
+                      <span className="text-slate-400 text-sm">/hr</span>
+                    </div>
+                  </div>
+                  
+                  {/* Specialties */}
+                  {(tutor as any).specialties && (
+                    <div className="mb-4">
+                      <div className="flex flex-wrap gap-1.5">
+                        {(tutor as any).specialties.slice(0, 2).map((specialty: string) => (
+                          <span 
+                            key={specialty}
+                            className="text-xs px-2.5 py-1 rounded-full transition-colors"
+                            style={{ 
+                              background: 'rgba(var(--theme-primary-rgb), 0.1)',
+                              color: 'var(--theme-primary)'
+                            }}
+                          >
+                            {specialty}
+                          </span>
+                        ))}
+                        {(tutor as any).specialties.length > 2 && (
+                          <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
+                            +{(tutor as any).specialties.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
+                    <span>{tutor.reviews} reviews</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Users className="w-3.5 h-3.5" />
+                      {Math.floor(tutor.reviews * 0.7)}+ students
                     </span>
                   </div>
                   <Button 
-                    className="w-full" 
+                    className="w-full group/btn" 
                     disabled={!tutor.available}
                     onClick={() => tutor.available && handleBookNow(tutor)}
                   >
-                    {tutor.available ? "Book Now" : "Unavailable"}
+                    {tutor.available ? (
+                      <>
+                        <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
+                        Book Now
+                      </>
+                    ) : "Unavailable"}
                   </Button>
                 </div>
               </Card>
@@ -668,7 +798,7 @@ export default function SchedulePage() {
           />
           
           {/* Modal */}
-          <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+          <div className="relative bg-white dark:bg-slate-950 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
             {/* Header with tutor image */}
             <div className="relative h-32 bg-slate-950">
               <Image
@@ -705,7 +835,7 @@ export default function SchedulePage() {
                     </div>
                     
                     {/* Mini Calendar */}
-                    <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-4">
+                    <div className="bg-slate-100 dark:bg-slate-950 rounded-xl p-4">
                       <div className="flex items-center justify-between mb-4">
                         <button
                           onClick={() => {
@@ -767,30 +897,36 @@ export default function SchedulePage() {
                     </div>
                     
                     {bookingDate ? (
-                      getAvailableTimeSlots().length > 0 ? (
+                      <div>
                         <div className="grid grid-cols-3 gap-2">
-                          {getAvailableTimeSlots().map((time) => (
+                          {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
                             <button
-                              key={time}
-                              onClick={() => setSelectedTime(time)}
+                              key={slot}
+                              onClick={() => available && setSelectedTime(slot)}
+                              disabled={!available}
                               className={`p-3 rounded-lg text-sm font-medium transition-all ${
-                                selectedTime === time
+                                selectedTime === slot
                                   ? "text-white shadow-lg"
-                                  : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                                  : available
+                                  ? "bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                                  : "bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50"
                               }`}
-                              style={selectedTime === time ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                              style={selectedTime === slot ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                             >
-                              {time}
+                              {slot}
+                              {!available && <div className="text-xs mt-1 opacity-70">Booked</div>}
                             </button>
                           ))}
                         </div>
-                      ) : (
-                        <p className="text-sm text-slate-500 dark:text-slate-400 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl text-center">
-                          No available time slots for this day
-                        </p>
-                      )
+                        {getAvailableTimeSlots().length === 0 && (
+                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div className="font-medium text-lg mb-1">🚫 Fully Booked</div>
+                            <div className="text-sm">No available slots for this day</div>
+                          </div>
+                        )}
+                      </div>
                     ) : (
-                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-center">
+                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
                         Please select a date first
                       </p>
                     )}
@@ -817,7 +953,7 @@ export default function SchedulePage() {
                             className={`p-3 rounded-lg text-center transition-all ${
                               selectedDuration === duration
                                 ? "text-white shadow-lg"
-                                : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                                : "bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                             }`}
                             style={selectedDuration === duration ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                           >
@@ -829,7 +965,7 @@ export default function SchedulePage() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-center">
+                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
                         Please select a time first
                       </p>
                     )}

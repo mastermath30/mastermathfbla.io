@@ -17,12 +17,23 @@ import { ThemeSelector } from "./ThemeSelector";
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     // Check if user is logged in
     const session = localStorage.getItem("mm_session");
     const loggedInFlag = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(!!session || loggedInFlag === "true");
+    
+    // Get user's name
+    if (session) {
+      try {
+        const profile = JSON.parse(session);
+        setUserName(profile.firstName || "");
+      } catch (e) {
+        setUserName("");
+      }
+    }
   }, []);
 
   const links = [
@@ -76,7 +87,7 @@ export function Navbar() {
       href: "/support",
     },
     {
-      title: isLoggedIn ? "Account" : "Sign In",
+      title: isLoggedIn ? (userName || "Account") : "Sign In",
       icon: isLoggedIn ? (
         <IconUser className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ) : (
@@ -87,7 +98,7 @@ export function Navbar() {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-end justify-between pb-8 px-4">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] flex items-end justify-between pb-8 px-4">
       <div className="mb-2 ml-2">
         <ThemeSelector />
       </div>

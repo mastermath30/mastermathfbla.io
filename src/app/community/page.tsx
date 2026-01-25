@@ -164,7 +164,7 @@ export default function CommunityPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -199,7 +199,7 @@ export default function CommunityPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 relative">
+      <main className="max-w-7xl mx-auto px-6 py-12 pb-32 relative">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>
@@ -309,7 +309,7 @@ export default function CommunityPage() {
               </div>
               <div className="divide-y divide-slate-200 dark:divide-slate-800">
                 <div className="p-4 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
@@ -318,7 +318,7 @@ export default function CommunityPage() {
                   </div>
                 </div>
                 <div className="p-4 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                     <MessageCircle className="w-6 h-6" />
                   </div>
                   <div>
@@ -327,7 +327,7 @@ export default function CommunityPage() {
                   </div>
                 </div>
                 <div className="p-4 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                     <BookOpen className="w-6 h-6" />
                   </div>
                   <div>
@@ -388,15 +388,15 @@ export default function CommunityPage() {
             <Card>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Quick Links</h3>
               <div className="space-y-3">
-                <Link href="/resources" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
+                <Link href="/resources" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <BookOpen className="w-5 h-5" />
                   Browse Resources
                 </Link>
-                <Link href="/schedule" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
+                <Link href="/schedule" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <Calendar className="w-5 h-5" />
                   Book a Session
                 </Link>
-                <Link href="/support" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
+                <Link href="/support" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <HelpCircle className="w-5 h-5" />
                   Get Help
                 </Link>

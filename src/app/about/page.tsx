@@ -34,9 +34,9 @@ const steps = [
 ];
 
 const team = [
-  { name: "Dr. Sarah Johnson", role: "Founder & Lead Educator", initials: "SJ", bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+  { name: "Ayaan Oberoi", role: "Founder & Lead Educator", initials: "SJ", bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
   { name: "Michael Chen", role: "Head of Technology", initials: "MC", bio: "Software Engineer & Education Technology Specialist. Built platforms for millions of users.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
-  { name: "Priya Patel", role: "Community Manager", initials: "PP", bio: "Expert in building and nurturing learning communities. Passionate about student success.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" },
+  { name: "Malhar Pawar", role: "Community Manager", initials: "PP", bio: "Expert in building and nurturing learning communities. Passionate about student success.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" },
 ];
 
 const values = [
@@ -48,7 +48,7 @@ const values = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Section */}
       <header className="relative min-h-[70vh] flex items-center overflow-hidden">
         {/* Background */}
@@ -104,18 +104,17 @@ export default function AboutPage() {
       </header>
 
       {/* Stats Section */}
-      <section className="py-16 bg-slate-100 dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
+      <section className="py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-transparent to-slate-100 dark:from-slate-900 dark:via-transparent dark:to-slate-900" />
         <div className="relative max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {stats.map((stat) => (
               <div 
                 key={stat.label} 
-                className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:-translate-y-1 transition-all duration-300 group"
+                className="text-center p-8 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:-translate-y-1 transition-all duration-300 group"
                 style={{ boxShadow: '0 0 25px rgba(var(--theme-primary-rgb), 0.1)' }}
               >
-                <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" style={{ color: "var(--theme-primary)" }}>
+                <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" style={{ color: "var(--theme-primary)" }}>
                   <stat.icon className="w-7 h-7" />
                 </div>
                 <div className="text-4xl font-bold gradient-text font-mono mb-2">{stat.value}</div>
@@ -128,9 +127,8 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-slate-100 dark:bg-slate-900 relative overflow-hidden">
+      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-transparent to-slate-100 dark:from-slate-900 dark:via-transparent dark:to-slate-900" />
         <div className="relative max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
@@ -145,11 +143,11 @@ export default function AboutPage() {
               </div>
               {/* Floating badge */}
               <div 
-                className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
+                className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
                 style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.15)' }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                     <Award className="w-6 h-6" />
                   </div>
                   <div>
@@ -182,10 +180,9 @@ export default function AboutPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-slate-100 dark:bg-slate-900 relative overflow-hidden">
+      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-transparent to-slate-100 dark:from-slate-900 dark:via-transparent dark:to-slate-900" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Rocket} className="mb-6">
@@ -212,8 +209,11 @@ export default function AboutPage() {
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-950 to-transparent" />
-                    <div className="absolute top-4 left-4 text-5xl font-bold text-white/30 font-mono">
-                      {step.number}
+                    <div
+                      className="absolute top-4 left-4 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
+                      style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+                    >
+                      {index + 1}
                     </div>
                   </div>
                   <div className="p-6">
@@ -228,9 +228,8 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-slate-100 dark:bg-slate-900 relative overflow-hidden">
+      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-transparent to-slate-100 dark:from-slate-900 dark:via-transparent dark:to-slate-900" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Users} className="mb-6">
@@ -266,10 +265,9 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-slate-100 dark:bg-slate-900 relative overflow-hidden">
+      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="subtle" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-transparent to-slate-100 dark:from-slate-900 dark:via-transparent dark:to-slate-900" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Heart} className="mb-6">
@@ -283,7 +281,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value) => (
               <Card key={value.title} className="text-center">
-                <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4" style={{ color: "var(--theme-primary)" }}>
+                <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4" style={{ color: "var(--theme-primary)" }}>
                   <value.icon className="w-7 h-7" />
                 </div>
                 <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{value.title}</h3>
@@ -295,10 +293,9 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden bg-slate-100 dark:bg-slate-900">
+      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-transparent to-slate-100 dark:from-slate-900 dark:via-transparent dark:to-slate-900" />
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
             <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
@@ -323,10 +320,10 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+      <footer className="py-12 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
-            © 2025 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
+            © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>
         </div>
       </footer>

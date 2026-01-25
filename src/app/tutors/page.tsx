@@ -1,0 +1,952 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Card } from "@/components/Card";
+import { Button } from "@/components/Button";
+import { Badge } from "@/components/Badge";
+import { SectionLabel } from "@/components/SectionLabel";
+import { FadeIn } from "@/components/motion";
+import {
+  Star,
+  Users,
+  Clock,
+  MapPin,
+  Video,
+  Search,
+  Filter,
+  BookOpen,
+  Calculator,
+  SquareRadical,
+  Infinity,
+  TrendingUp,
+  Zap,
+  Target,
+  Brain,
+  Award,
+  Globe,
+  ArrowLeft,
+  CalendarPlus,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  CheckCircle2,
+} from "lucide-react";
+
+// Generate realistic time slots
+const generateTimeSlots = (): string[] => {
+  const slots = [];
+  // Morning slots: 8 AM - 12 PM
+  for (let hour = 8; hour < 12; hour++) {
+    slots.push(`${hour}:00 AM`);
+    if (hour < 11) slots.push(`${hour}:30 AM`);
+  }
+  slots.push("12:00 PM");
+  slots.push("12:30 PM");
+  
+  // Afternoon/Evening slots: 1 PM - 8 PM
+  for (let hour = 1; hour <= 8; hour++) {
+    slots.push(`${hour}:00 PM`);
+    if (hour < 8) slots.push(`${hour}:30 PM`);
+  }
+  return slots;
+};
+
+// Seeded random function for consistent results
+const seededRandom = (seed: string): number => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  const x = Math.sin(hash) * 10000;
+  return x - Math.floor(x);
+};
+
+// Get available slots with consistent seeding
+const getSeededAvailableSlots = (tutorName: string, dayOfWeek: number, allSlots: string[], availability: number = 0.7): string[] => {
+  return allSlots.filter((slot, index) => {
+    const seed = `${tutorName}-${dayOfWeek}-${slot}-${index}`;
+    return seededRandom(seed) < availability;
+  });
+};
+
+// Check if a day is fully booked
+const isDayFullyBooked = (tutorName: string, dayOfWeek: number): boolean => {
+  const seed = `${tutorName}-${dayOfWeek}-fullbook`;
+  return seededRandom(seed) < 0.15;
+};
+
+// Get tutor availability rate based on patterns
+const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
+  const patterns: Record<string, number[]> = {
+    "Ayaan Oberoi": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4],
+    "Malhar Pawar": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
+    "Michael Chen": [0.4, 0.7, 0.8, 0.9, 0.7, 0.6, 0.3],
+    "Emma Rodriguez": [0.3, 0.7, 0.6, 0.8, 0.7, 0.5, 0.8],
+    "Alex Thompson": [0.5, 0.4, 0.8, 0.6, 0.9, 0.7, 0.6],
+    "Dr. Jessica Wu": [0.3, 0.7, 0.8, 0.6, 0.7, 0.5, 0.4],
+    "David Kim": [0.4, 0.8, 0.7, 0.8, 0.6, 0.7, 0.3],
+    "Maria Santos": [0.5, 0.6, 0.7, 0.8, 0.7, 0.8, 0.6],
+    "Robert Foster": [0.3, 0.7, 0.6, 0.7, 0.8, 0.6, 0.5],
+    "Lisa Zhang": [0.4, 0.8, 0.7, 0.6, 0.7, 0.8, 0.4],
+    "James Wilson": [0.3, 0.6, 0.7, 0.8, 0.7, 0.6, 0.5],
+    "Dr. Rachel Green": [0.4, 0.7, 0.6, 0.8, 0.7, 0.5, 0.4],
+  };
+  return patterns[tutorName]?.[dayOfWeek] || 0.6;
+};
+
+const ALL_TIME_SLOTS = generateTimeSlots();
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const currentDate = new Date();
+
+const allTutors = [
+  {
+    name: "Ayaan Oberoi",
+    initials: "SJ",
+    subjects: "Calculus, Statistics, Differential Equations",
+    rating: 4.9,
+    reviews: 128,
+    price: 45,
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+    available: true,
+    experience: "8 years",
+    education: "PhD Mathematics, MIT",
+    specialties: ["AP Calculus BC", "College Statistics", "Research Methods"],
+    languages: ["English", "Spanish"],
+    responseTime: "< 2 hours",
+    completedSessions: 340,
+  },
+  {
+    name: "Malhar Pawar", 
+    initials: "PP",
+    subjects: "Linear Algebra, Geometry, Discrete Math",
+    rating: 4.8,
+    reviews: 96,
+    price: 35,
+    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop",
+    available: true,
+    experience: "5 years",
+    education: "MS Mathematics, Stanford",
+    specialties: ["Linear Algebra", "Proof Writing", "Competition Math"],
+    languages: ["English", "Hindi"],
+    responseTime: "< 1 hour",
+    completedSessions: 280,
+  },
+  {
+    name: "Michael Chen",
+    initials: "MC", 
+    subjects: "Algebra, Trigonometry, SAT Math",
+    rating: 4.7,
+    reviews: 84,
+    price: 40,
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    available: true,
+    experience: "4 years",
+    education: "BS Mathematics, UC Berkeley", 
+    specialties: ["SAT/ACT Prep", "Algebra II", "Pre-Calculus"],
+    languages: ["English", "Mandarin"],
+    responseTime: "< 3 hours",
+    completedSessions: 195,
+  },
+  {
+    name: "Emma Rodriguez",
+    initials: "ER",
+    subjects: "Precalculus, Geometry, Algebra",
+    rating: 4.9,
+    reviews: 112,
+    price: 38,
+    image: "https://images.unsplash.com/photo-1591084728795-1149f32d9866?w=200&h=200&fit=crop",
+    available: true,
+    experience: "6 years",
+    education: "MS Applied Mathematics, UCLA",
+    specialties: ["Geometry Proofs", "Trigonometry", "Pre-Calc"],
+    languages: ["English", "Spanish", "French"],
+    responseTime: "< 1 hour", 
+    completedSessions: 267,
+  },
+  {
+    name: "Alex Thompson",
+    initials: "AT",
+    subjects: "AP Calculus, Physics, Advanced Math",
+    rating: 4.6,
+    reviews: 73,
+    price: 42,
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+    available: true,
+    experience: "3 years",
+    education: "BS Physics & Mathematics, Caltech",
+    specialties: ["AP Calculus AB/BC", "Physics Integration", "Competition Math"],
+    languages: ["English"],
+    responseTime: "< 4 hours",
+    completedSessions: 156,
+  },
+  {
+    name: "Dr. Jessica Wu",
+    initials: "JW",
+    subjects: "Statistics, Data Science, Research",
+    rating: 4.9,
+    reviews: 89,
+    price: 50,
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop",
+    available: true,
+    experience: "7 years",
+    education: "PhD Statistics, Harvard",
+    specialties: ["Statistical Modeling", "Data Analysis", "Research Design"],
+    languages: ["English", "Mandarin"],
+    responseTime: "< 2 hours",
+    completedSessions: 203,
+  },
+  {
+    name: "David Kim",
+    initials: "DK",
+    subjects: "Calculus, Physics, Engineering Math",
+    rating: 4.8,
+    reviews: 67,
+    price: 44,
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop",
+    available: true,
+    experience: "5 years",
+    education: "MS Applied Mathematics, MIT",
+    specialties: ["Engineering Calculus", "Differential Equations", "Vector Calculus"],
+    languages: ["English", "Korean"],
+    responseTime: "< 3 hours",
+    completedSessions: 189,
+  },
+  {
+    name: "Maria Santos",
+    initials: "MS",
+    subjects: "Algebra, Precalculus, SAT Prep",
+    rating: 4.7,
+    reviews: 95,
+    price: 36,
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
+    available: true,
+    experience: "4 years",
+    education: "BS Mathematics Education, UT Austin",
+    specialties: ["Algebra I/II", "Test Prep", "Study Skills"],
+    languages: ["English", "Spanish", "Portuguese"],
+    responseTime: "< 2 hours",
+    completedSessions: 234,
+  },
+  {
+    name: "Robert Foster",
+    initials: "RF",
+    subjects: "Geometry, Trigonometry, Competition Math",
+    rating: 4.8,
+    reviews: 78,
+    price: 39,
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop",
+    available: true,
+    experience: "6 years",
+    education: "MS Mathematics, Princeton",
+    specialties: ["Euclidean Geometry", "Math Olympiad", "Proof Techniques"],
+    languages: ["English", "German"],
+    responseTime: "< 1 hour",
+    completedSessions: 167,
+  },
+  {
+    name: "Lisa Zhang",
+    initials: "LZ",
+    subjects: "Linear Algebra, Abstract Algebra, Logic",
+    rating: 4.9,
+    reviews: 85,
+    price: 47,
+    image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=200&h=200&fit=crop",
+    available: true,
+    experience: "5 years",
+    education: "PhD Pure Mathematics, Yale",
+    specialties: ["Abstract Algebra", "Logic & Set Theory", "Advanced Linear Algebra"],
+    languages: ["English", "Mandarin"],
+    responseTime: "< 2 hours",
+    completedSessions: 145,
+  },
+  {
+    name: "James Wilson",
+    initials: "JW2",
+    subjects: "Calculus, AP Math, College Prep",
+    rating: 4.6,
+    reviews: 92,
+    price: 41,
+    image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=200&h=200&fit=crop",
+    available: true,
+    experience: "4 years", 
+    education: "MS Applied Mathematics, Columbia",
+    specialties: ["AP Calculus", "College Transition", "Study Strategies"],
+    languages: ["English"],
+    responseTime: "< 3 hours",
+    completedSessions: 178,
+  },
+  {
+    name: "Dr. Rachel Green",
+    initials: "RG", 
+    subjects: "Statistics, Probability, Biostatistics",
+    rating: 4.8,
+    reviews: 76,
+    price: 48,
+    image: "https://images.unsplash.com/photo-1551836022-b06f021de4be?w=200&h=200&fit=crop",
+    available: true,
+    experience: "9 years",
+    education: "PhD Biostatistics, Johns Hopkins",
+    specialties: ["Medical Statistics", "Probability Theory", "Experimental Design"],
+    languages: ["English"],
+    responseTime: "< 2 hours",
+    completedSessions: 213,
+  },
+];
+
+export default function TutorsPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("All");
+  const [sortBy, setSortBy] = useState("rating");
+  
+  // Booking modal state
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedTutor, setSelectedTutor] = useState<typeof allTutors[0] | null>(null);
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [bookingDate, setBookingDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState("1 hour");
+  const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
+  const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const session = localStorage.getItem("mm_session");
+    const isLoggedInFlag = localStorage.getItem("isLoggedIn");
+    setIsLoggedIn(!!session || isLoggedInFlag === "true");
+  }, []);
+
+  // Get unique subjects
+  const subjects = ["All", ...new Set(allTutors.flatMap(tutor => 
+    tutor.subjects.split(", ").map(s => s.trim())
+  ))];
+
+  // Filter and sort tutors
+  const filteredTutors = allTutors
+    .filter(tutor => {
+      const matchesSearch = tutor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           tutor.subjects.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSubject = selectedSubject === "All" || 
+                            tutor.subjects.toLowerCase().includes(selectedSubject.toLowerCase());
+      return matchesSearch && matchesSubject;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "rating":
+          return b.rating - a.rating;
+        case "price_low":
+          return a.price - b.price;
+        case "price_high":
+          return b.price - a.price;
+        case "experience":
+          return parseInt(b.experience) - parseInt(a.experience);
+        default:
+          return 0;
+      }
+    });
+
+  // Duration price calculation
+  const getDurationHours = (duration: string): number => {
+    switch (duration) {
+      case "1 hour": return 1;
+      case "1.5 hours": return 1.5;
+      case "2 hours": return 2;
+      default: return 1;
+    }
+  };
+
+  const calculatePrice = (): number => {
+    if (!selectedTutor) return 0;
+    return selectedTutor.price * getDurationHours(selectedDuration);
+  };
+
+  // Get all time slots with availability
+  const getAllTimeSlotsWithAvailability = (): Array<{slot: string, available: boolean}> => {
+    if (!selectedTutor || !bookingDate) return ALL_TIME_SLOTS.map(slot => ({slot, available: false}));
+    
+    const dayOfWeek = bookingDate.getDay();
+    
+    if (isDayFullyBooked(selectedTutor.name, dayOfWeek)) {
+      return ALL_TIME_SLOTS.map(slot => ({slot, available: false}));
+    }
+    
+    const availabilityRate = getTutorAvailability(selectedTutor.name, dayOfWeek);
+    const availableSlots = getSeededAvailableSlots(selectedTutor.name, dayOfWeek, ALL_TIME_SLOTS, availabilityRate);
+    
+    return ALL_TIME_SLOTS.map(slot => ({
+      slot,
+      available: availableSlots.includes(slot)
+    }));
+  };
+
+  const getAvailableTimeSlots = (): string[] => {
+    return getAllTimeSlotsWithAvailability()
+      .filter(({available}) => available)
+      .map(({slot}) => slot);
+  };
+
+  // Format date for display
+  const formatDate = (date: Date): string => {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const handleBookNow = (tutor: typeof allTutors[0]) => {
+    if (!isLoggedIn) {
+      window.location.href = "/auth?redirect=/tutors&action=book";
+      return;
+    }
+    setSelectedTutor(tutor);
+    setShowBookingModal(true);
+    setBookingConfirmed(false);
+    setBookingDate(null);
+    setSelectedTime(null);
+    setSelectedDuration("1 hour");
+    setBookingMonth(currentDate.getMonth());
+    setBookingYear(currentDate.getFullYear());
+  };
+
+  const confirmBooking = () => {
+    if (!selectedTutor || !bookingDate || !selectedTime) return;
+    
+    const newBooking = {
+      id: Date.now().toString(),
+      tutorName: selectedTutor.name,
+      tutorImage: selectedTutor.image,
+      subjects: selectedTutor.subjects,
+      date: formatDate(bookingDate),
+      time: selectedTime,
+      duration: selectedDuration,
+      price: calculatePrice(),
+      status: "confirmed",
+    };
+    
+    // Save to localStorage
+    const savedBookings = localStorage.getItem("mm_booked_sessions");
+    const bookedSessions = savedBookings ? JSON.parse(savedBookings) : [];
+    bookedSessions.push(newBooking);
+    localStorage.setItem("mm_booked_sessions", JSON.stringify(bookedSessions));
+    
+    setBookingConfirmed(true);
+    setTimeout(() => {
+      setShowBookingModal(false);
+      setBookingConfirmed(false);
+      setBookingDate(null);
+      setSelectedTime(null);
+      setSelectedDuration("1 hour");
+    }, 2000);
+  };
+
+  // Render booking calendar
+  const renderBookingCalendar = () => {
+    const daysInMonth = getDaysInMonth(bookingMonth, bookingYear);
+    const firstDay = getFirstDayOfMonth(bookingMonth, bookingYear);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const calendarDays = [];
+    for (let i = 0; i < firstDay; i++) {
+      calendarDays.push(<div key={`empty-${i}`} className="h-10" />);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(bookingYear, bookingMonth, day);
+      const dayOfWeek = date.getDay();
+      const isPast = date < today;
+      const hasSlots = selectedTutor && !isDayFullyBooked(selectedTutor.name, dayOfWeek) && 
+                      getTutorAvailability(selectedTutor.name, dayOfWeek) > 0.3;
+      const isSelected = bookingDate && 
+        bookingDate.getDate() === day && 
+        bookingDate.getMonth() === bookingMonth && 
+        bookingDate.getFullYear() === bookingYear;
+      const isAvailable = !isPast && hasSlots;
+
+      calendarDays.push(
+        <button
+          key={day}
+          onClick={() => {
+            if (isAvailable) {
+              setBookingDate(date);
+              setSelectedTime(null);
+            }
+          }}
+          disabled={!isAvailable}
+          className={`h-10 w-full rounded-lg text-sm transition-all ${
+            isSelected
+              ? "text-white font-semibold shadow-lg"
+              : isPast
+              ? "text-slate-400 dark:text-slate-600 cursor-not-allowed"
+              : hasSlots
+              ? "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+              : "text-slate-400 dark:text-slate-600 cursor-not-allowed"
+          }`}
+          style={isSelected ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+        >
+          {day}
+          {hasSlots && !isPast && !isSelected && (
+            <div className="w-1 h-1 rounded-full mx-auto mt-0.5" style={{ backgroundColor: "var(--theme-primary)" }} />
+          )}
+        </button>
+      );
+    }
+
+    return calendarDays;
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24 pb-32">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-6 mb-8">
+        <FadeIn>
+          <div className="flex items-center gap-4 mb-6">
+            <Link 
+              href="/schedule"
+              className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Schedule
+            </Link>
+          </div>
+          
+          <div className="text-center mb-8">
+            <SectionLabel>Our Tutors</SectionLabel>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+              Expert Math Tutors
+              <span className="gradient-text block">Ready to Help</span>
+            </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Connect with experienced peer tutors and professionals who are passionate about helping you succeed in mathematics.
+            </p>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search tutors or subjects..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+              />
+            </div>
+            
+            <select
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+            >
+              {subjects.map(subject => (
+                <option key={subject} value={subject}>{subject}</option>
+              ))}
+            </select>
+            
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+            >
+              <option value="rating">Highest Rated</option>
+              <option value="price_low">Price: Low to High</option>
+              <option value="price_high">Price: High to Low</option>
+              <option value="experience">Most Experience</option>
+            </select>
+          </div>
+        </FadeIn>
+      </div>
+
+      {/* Tutors Grid */}
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredTutors.map((tutor, index) => (
+            <FadeIn key={tutor.name} delay={index * 0.05}>
+              <Card className="p-6 hover:shadow-2xl transition-all duration-300 group/tutor h-full flex flex-col">
+                <div className="text-center mb-4">
+                  <div className="relative w-24 h-24 mx-auto mb-4 group-hover/tutor:scale-105 transition-transform duration-300">
+                    <img
+                      src={tutor.image}
+                      alt={tutor.name}
+                      className="w-full h-full object-cover rounded-2xl shadow-lg"
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-3 border-white dark:border-slate-800 flex items-center justify-center shadow-md">
+                      <span className="text-white text-xs">✓</span>
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-1 group-hover/tutor:text-[var(--theme-primary)] transition-colors">
+                    {tutor.name}
+                  </h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                    {tutor.education}
+                  </p>
+                  
+                  <div className="flex items-center justify-center gap-1.5 mb-3">
+                    <div className="flex items-center gap-0.5 px-2 py-1 rounded-full" style={{ background: 'rgba(var(--theme-primary-rgb), 0.1)' }}>
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        {tutor.rating}
+                      </span>
+                    </div>
+                    <span className="text-slate-500 dark:text-slate-400 text-sm">
+                      ({tutor.reviews} reviews)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mb-4 flex-1">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+                      Subjects
+                    </p>
+                    <p className="text-sm text-slate-700 dark:text-slate-200">
+                      {tutor.subjects}
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+                      Specialties
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {tutor.specialties.slice(0, 2).map(specialty => (
+                        <span 
+                          key={specialty}
+                          className="text-xs px-2.5 py-1 rounded-full transition-colors"
+                          style={{ 
+                            background: 'rgba(var(--theme-primary-rgb), 0.1)',
+                            color: 'var(--theme-primary)'
+                          }}
+                        >
+                          {specialty}
+                        </span>
+                      ))}
+                      {tutor.specialties.length > 2 && (
+                        <Badge variant="info" className="text-xs">
+                          +{tutor.specialties.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-4 h-4" style={{ color: 'var(--theme-primary)' }} />
+                      <span className="text-slate-600 dark:text-slate-300">
+                        {tutor.responseTime}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Users className="w-4 h-4" style={{ color: 'var(--theme-primary)' }} />
+                      <span className="text-slate-600 dark:text-slate-300">
+                        {tutor.completedSessions}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-2xl font-bold" style={{ color: 'var(--theme-primary)' }}>
+                          ${tutor.price}
+                        </span>
+                        <span className="text-slate-500 dark:text-slate-400">/hr</span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
+                          {tutor.experience}
+                        </p>
+                        <div className="flex gap-1 mt-1 justify-end">
+                          {tutor.languages.slice(0, 2).map(lang => (
+                            <span 
+                              key={lang}
+                              className="text-xs px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300"
+                            >
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-auto">
+                  <Button 
+                    onClick={() => handleBookNow(tutor)}
+                    className="w-full group/btn"
+                    style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+                  >
+                    <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
+                    Book Now
+                  </Button>
+                </div>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+
+        {filteredTutors.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+              No tutors found
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400">
+              Try adjusting your search criteria or browse all available tutors.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedTutor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowBookingModal(false)}
+          />
+          <div className="relative bg-white dark:bg-slate-950 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {bookingConfirmed ? (
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>
+                  <CheckCircle2 className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Booking Confirmed!</h2>
+                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                  Your session with {selectedTutor.name} has been booked for {bookingDate && formatDate(bookingDate)} at {selectedTime}.
+                </p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Check your schedule for details.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src={selectedTutor.image} 
+                        alt={selectedTutor.name}
+                        className="w-14 h-14 rounded-full object-cover"
+                      />
+                      <div>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedTutor.name}</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">{selectedTutor.subjects}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setShowBookingModal(false)}
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <X className="w-5 h-5 text-slate-500" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  {/* Step 1: Select Date */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div 
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                        style={{ background: "var(--theme-primary)" }}
+                      >1</div>
+                      <h4 className="font-semibold text-slate-900 dark:text-white">Select a Date</h4>
+                    </div>
+                    
+                    <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <button 
+                          onClick={() => {
+                            if (bookingMonth === 0) {
+                              setBookingMonth(11);
+                              setBookingYear(bookingYear - 1);
+                            } else {
+                              setBookingMonth(bookingMonth - 1);
+                            }
+                          }}
+                          className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"
+                        >
+                          <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                        </button>
+                        <h4 className="font-semibold text-slate-900 dark:text-white">
+                          {new Date(bookingYear, bookingMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                        </h4>
+                        <button 
+                          onClick={() => {
+                            if (bookingMonth === 11) {
+                              setBookingMonth(0);
+                              setBookingYear(bookingYear + 1);
+                            } else {
+                              setBookingMonth(bookingMonth + 1);
+                            }
+                          }}
+                          className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"
+                        >
+                          <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-7 gap-1 mb-2">
+                        {days.map(day => (
+                          <div key={day} className="text-center text-xs font-medium text-slate-500 py-2">{day}</div>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-7 gap-1">
+                        {renderBookingCalendar()}
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
+                        <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: "var(--theme-primary)" }} />
+                        Dots indicate available days
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 2: Select Time */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div 
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${!bookingDate ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400" : "text-white"}`}
+                        style={bookingDate ? { background: "var(--theme-primary)" } : {}}
+                      >2</div>
+                      <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                        Select a Time {bookingDate && `- ${formatDate(bookingDate)}`}
+                      </h4>
+                    </div>
+                    
+                    {bookingDate ? (
+                      <div>
+                        <div className="grid grid-cols-3 gap-2">
+                          {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
+                            <button
+                              key={slot}
+                              onClick={() => available && setSelectedTime(slot)}
+                              disabled={!available}
+                              className={`p-3 rounded-lg text-sm font-medium transition-all ${
+                                selectedTime === slot
+                                  ? "text-white shadow-lg"
+                                  : available
+                                  ? "bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                                  : "bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50"
+                              }`}
+                              style={selectedTime === slot ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                            >
+                              {slot}
+                              {!available && <div className="text-xs mt-1 opacity-70">Booked</div>}
+                            </button>
+                          ))}
+                        </div>
+                        {getAvailableTimeSlots().length === 0 && (
+                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div className="font-medium text-lg mb-1">🚫 Fully Booked</div>
+                            <div className="text-sm">No available slots for this day</div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                        Please select a date first
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Step 3: Duration */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div 
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${selectedTime ? "text-white" : "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400"}`}
+                        style={selectedTime ? { background: "var(--theme-primary)" } : {}}
+                      >3</div>
+                      <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                        Select Duration
+                      </h4>
+                    </div>
+                    
+                    {selectedTime ? (
+                      <div className="flex gap-2">
+                        {["1 hour", "1.5 hours", "2 hours"].map((duration) => (
+                          <button
+                            key={duration}
+                            onClick={() => setSelectedDuration(duration)}
+                            className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all ${
+                              selectedDuration === duration
+                                ? "text-white shadow-lg"
+                                : "bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                            }`}
+                            style={selectedDuration === duration ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                          >
+                            {duration}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                        Please select a time first
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Summary */}
+                  {selectedTime && (
+                    <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-4 mb-6">
+                      <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Booking Summary</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">Tutor</span>
+                          <span className="text-slate-900 dark:text-white font-medium">{selectedTutor.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">Date</span>
+                          <span className="text-slate-900 dark:text-white font-medium">{bookingDate && formatDate(bookingDate)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">Time</span>
+                          <span className="text-slate-900 dark:text-white font-medium">{selectedTime}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">Duration</span>
+                          <span className="text-slate-900 dark:text-white font-medium">{selectedDuration}</span>
+                        </div>
+                        <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
+                          <div className="flex justify-between">
+                            <span className="text-slate-900 dark:text-white font-semibold">Total</span>
+                            <span className="text-lg font-bold gradient-text">${calculatePrice()}</span>
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            ${selectedTutor.price}/hr × {getDurationHours(selectedDuration)} hours
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Confirm Button */}
+                  <Button 
+                    className="w-full" 
+                    onClick={confirmBooking}
+                    disabled={!bookingDate || !selectedTime}
+                    style={bookingDate && selectedTime ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                  >
+                    <CalendarPlus className="w-4 h-4" />
+                    {bookingDate && selectedTime ? `Confirm Booking - $${calculatePrice()}` : "Select date and time to book"}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -2,27 +2,30 @@ import clsx from "clsx";
 import { HTMLAttributes, forwardRef } from "react";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "outline" | "glass" | "gradient";
+  variant?: "default" | "outline" | "glass" | "gradient" | "elevated";
   hover?: boolean;
   padding?: "none" | "sm" | "md" | "lg";
   glow?: boolean;
+  interactive?: boolean;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ variant = "default", hover = true, padding = "md", glow = true, className, children, ...props }, ref) => {
+  ({ variant = "default", hover = true, padding = "md", glow = true, interactive = false, className, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={clsx(
-          "rounded-2xl transition-all duration-300",
+          "rounded-2xl transition-all duration-300 ease-out group/card",
           {
             "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 shadow-sm": variant === "default",
             "bg-transparent border border-slate-300 dark:border-slate-700": variant === "outline",
-            "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 shadow-lg": variant === "glass",
+            "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 shadow-lg": variant === "glass",
             "bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-700/50": variant === "gradient",
+            "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50": variant === "elevated",
           },
-          hover && "hover:-translate-y-1",
-          glow && "shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.2)] dark:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.25)] hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.35)] dark:hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.45)]",
+          hover && "hover:-translate-y-1 hover:shadow-lg",
+          glow && "shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.08)] dark:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.12)] hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.15)] dark:hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.2)]",
+          interactive && "cursor-pointer active:scale-[0.98] hover:border-[var(--theme-primary)]/30",
           {
             "p-0": padding === "none",
             "p-4": padding === "sm",
@@ -48,13 +51,13 @@ export const CardHeader = ({ className, children, ...props }: HTMLAttributes<HTM
 );
 
 export const CardTitle = ({ className, children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={clsx("text-xl font-bold text-slate-900 dark:text-white", className)} {...props}>
+  <h3 className={clsx("text-xl font-bold text-slate-900 dark:text-white tracking-tight", className)} {...props}>
     {children}
   </h3>
 );
 
 export const CardDescription = ({ className, children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={clsx("text-slate-600 dark:text-slate-400 text-sm mt-1", className)} {...props}>
+  <p className={clsx("text-slate-600 dark:text-slate-400 text-sm mt-1 leading-relaxed", className)} {...props}>
     {children}
   </p>
 );

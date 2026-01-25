@@ -14,20 +14,20 @@ interface Testimonial {
 const leftColumnTestimonials: Testimonial[] = [
   {
     name: "Sarah Chen",
-    role: "CTO at TechFlow",
-    text: "This platform completely transformed how we build products. We shipped our MVP in 2 weeks instead of 2 months.",
+    role: "AP Calculus Student",
+    text: "MathMaster helped me go from a C to an A in AP Calc! The tutors explain concepts in ways that actually make sense.",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
   },
   {
     name: "Marcus Johnson",
-    role: "VP Engineering at Scale",
-    text: "The best investment we've made for our engineering team. The ROI was immediate and substantial.",
+    role: "High School Junior",
+    text: "I was struggling with algebra for years. After just 2 months with MathMaster, I'm now helping my classmates!",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
   },
   {
     name: "Emily Rodriguez",
     role: "High School Senior",
-    text: "Finally, a tool that actually delivers on its promises. Our development speed increased dramatically.",
+    text: "The SAT math prep resources are incredible. I improved my score by 150 points and got into my dream school!",
     image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
   },
   {
@@ -47,20 +47,20 @@ const leftColumnTestimonials: Testimonial[] = [
 const middleColumnTestimonials: Testimonial[] = [
   {
     name: "James Wilson",
-    role: "CEO at Quantum",
-    text: "Seamless integration enhanced our business operations and efficiency. Highly recommend.",
+    role: "College Freshman",
+    text: "The transition from high school to college math was seamless thanks to MathMaster's preparation courses.",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
   },
   {
     name: "David Park",
-    role: "IT Manager",
-    text: "Implementing this was smooth and quick. The customizable interface made team onboarding effortless.",
+    role: "Engineering Student",
+    text: "Linear algebra and differential equations finally clicked! The visual explanations are game-changing.",
     image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop",
   },
   {
     name: "Aisha Patel",
-    role: "Customer Success Lead",
-    text: "The support team is exceptional, guiding us through setup and providing ongoing assistance.",
+    role: "Math Competition Winner",
+    text: "I won 2nd place in the state math competition after practicing with MathMaster's advanced problems.",
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&h=100&fit=crop",
   },
   {
@@ -86,20 +86,20 @@ const middleColumnTestimonials: Testimonial[] = [
 const rightColumnTestimonials: Testimonial[] = [
   {
     name: "Rachel Kim",
-    role: "Marketing Director",
-    text: "Our productivity increased dramatically with the user-friendly design and powerful features.",
+    role: "Geometry Student",
+    text: "Proofs used to terrify me. Now I actually enjoy solving them! The step-by-step approach is perfect.",
     image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop",
   },
   {
     name: "Lisa Thompson",
-    role: "Project Manager",
-    text: "Its robust features and quick support have transformed our workflow significantly.",
+    role: "Parent",
+    text: "My daughter's confidence in math has skyrocketed. Worth every penny for the peace of mind.",
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop",
   },
   {
     name: "Michael Brown",
-    role: "Business Analyst",
-    text: "The smooth implementation exceeded expectations. It streamlined our entire business process.",
+    role: "ACT Prep Student",
+    text: "Raised my ACT math score from 24 to 33! The practice tests mirror the real thing perfectly.",
     image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop",
   },
   {
@@ -118,7 +118,7 @@ const rightColumnTestimonials: Testimonial[] = [
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <div className="testimonial-card rounded-2xl p-5 mb-4 transition-all duration-300 hover:-translate-y-1 border bg-white border-slate-200 shadow-lg dark:bg-slate-900/80 dark:border-slate-700/50 dark:shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)] dark:hover:shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.35)]">
+    <div className="testimonial-card rounded-2xl p-5 mb-4 transition-all duration-300 hover:-translate-y-1 border bg-white border-slate-200 shadow-lg dark:bg-slate-950/80 dark:border-slate-700/50 dark:shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)] dark:hover:shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.35)]">
       <p className="text-sm leading-relaxed mb-4 font-medium text-slate-700 dark:text-slate-200">
         &quot;{testimonial.text}&quot;
       </p>

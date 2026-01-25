@@ -190,7 +190,7 @@ function AuthPageContent() {
 
   if (profile) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
         {/* Hero Header */}
         <header className="relative overflow-hidden">
           <GlowingOrbs variant="section" />
@@ -222,21 +222,21 @@ function AuthPageContent() {
           <Card className="mb-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Link href="/dashboard" className="p-4 rounded-xl bg-violet-50 hover:bg-violet-100 text-center transition-all group">
-                <BarChart3 className="w-8 h-8 text-violet-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium text-slate-700">Dashboard</span>
+              <Link href="/dashboard" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
+                <BarChart3 className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Dashboard</span>
               </Link>
-              <Link href="/schedule" className="p-4 rounded-xl bg-purple-50 hover:bg-purple-100 text-center transition-all group">
-                <Calendar className="w-8 h-8 text-purple-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium text-slate-700">Schedule</span>
+              <Link href="/schedule" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
+                <Calendar className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Schedule</span>
               </Link>
-              <Link href="/resources" className="p-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-center transition-all group">
-                <BookOpen className="w-8 h-8 text-blue-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium text-slate-700">Resources</span>
+              <Link href="/resources" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
+                <BookOpen className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Resources</span>
               </Link>
-              <Link href="/community" className="p-4 rounded-xl bg-green-50 hover:bg-green-100 text-center transition-all group">
-                <MessageCircle className="w-8 h-8 text-green-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium text-slate-700">Community</span>
+              <Link href="/community" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
+                <MessageCircle className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Community</span>
               </Link>
             </div>
           </Card>
@@ -251,14 +251,14 @@ function AuthPageContent() {
           <Card>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Account Settings</h2>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
                   <Settings className="w-5 h-5 text-slate-400" />
                   <span className="text-slate-700 dark:text-slate-300">Profile Settings</span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(true)}>Edit</Button>
               </div>
-              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
                   <Lock className="w-5 h-5 text-slate-400" />
                   <span className="text-slate-700 dark:text-slate-300">Change Password</span>
@@ -277,7 +277,7 @@ function AuthPageContent() {
           {/* Edit Profile Modal */}
           {isEditingProfile && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+              <div className="bg-white dark:bg-slate-950 rounded-2xl max-w-md w-full p-6 shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Edit Profile</h3>
                   <button onClick={() => { setIsEditingProfile(false); setError(""); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
@@ -338,7 +338,7 @@ function AuthPageContent() {
           {/* Change Password Modal */}
           {isChangingPassword && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+              <div className="bg-white dark:bg-slate-950 rounded-2xl max-w-md w-full p-6 shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Change Password</h3>
                   <button onClick={() => { setIsChangingPassword(false); setError(""); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
@@ -398,7 +398,7 @@ function AuthPageContent() {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-950">
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image

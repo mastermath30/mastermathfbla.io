@@ -23,6 +23,7 @@ import {
   Sparkles,
   Video,
   FileDown,
+  ArrowRight,
 } from "lucide-react";
 
 const categories = [
@@ -155,7 +156,7 @@ const downloads = [
 
 export default function ResourcesPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -201,19 +202,20 @@ export default function ResourcesPage() {
                     src={cat.image}
                     alt={cat.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), transparent)' }} />
                   <div
-                    className="absolute bottom-4 left-4 w-12 h-12 rounded-xl bg-slate-900/80 border border-slate-700 flex items-center justify-center"
-                    style={{ color: "var(--theme-primary)" }}
+                    className="absolute bottom-4 left-4 w-12 h-12 rounded-xl backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg"
+                    style={{ background: 'rgba(var(--theme-primary-rgb), 0.8)', color: 'white' }}
                   >
                     <cat.icon className="w-6 h-6" />
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{cat.title}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">{cat.description}</p>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[var(--theme-primary)] transition-colors">{cat.title}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{cat.description}</p>
                 </div>
               </Card>
             </Link>
@@ -224,15 +226,18 @@ export default function ResourcesPage() {
         <section id="lessons" className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
-                <Book className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
+                <Book className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Lessons & Study Guides</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Lessons & Study Guides</h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Free, high-quality resources to help you learn</p>
               </div>
             </div>
-            <Link href="#" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
+            <Link href="#" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
+              View all
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -244,24 +249,31 @@ export default function ResourcesPage() {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <Card className="h-full hover:border-slate-600 group">
+                <Card className="h-full hover:border-[var(--theme-primary)]/30 group" interactive>
                   <div className="flex items-start gap-4">
                     <Image
                       src={lesson.image}
                       alt={lesson.title}
                       width={80}
                       height={80}
-                      className="w-20 h-20 rounded-xl object-cover shrink-0"
+                      className="w-20 h-20 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-3">
-                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-primary-themed transition-colors">{lesson.title}</h4>
-                        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
+                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{lesson.title}</h4>
+                        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-[var(--theme-primary)] transition-colors" />
                       </div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{lesson.description}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 leading-relaxed">{lesson.description}</p>
                       <div className="flex gap-2 mt-3">
                         {lesson.tags.map((tag) => (
-                          <span key={tag} className="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+                          <span 
+                            key={tag} 
+                            className="text-xs px-2.5 py-1 rounded-full font-medium transition-colors"
+                            style={{ 
+                              background: 'rgba(var(--theme-primary-rgb), 0.1)',
+                              color: 'var(--theme-primary)'
+                            }}
+                          >
                             {tag}
                           </span>
                         ))}
@@ -277,7 +289,7 @@ export default function ResourcesPage() {
         {/* Practice Section */}
         <section id="practice" className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
               <CheckSquare className="w-5 h-5" />
             </div>
             <div>
@@ -322,7 +334,7 @@ export default function ResourcesPage() {
         <section id="quizzes" className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
@@ -336,11 +348,11 @@ export default function ResourcesPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {quizzes.map((quiz) => (
               <Card key={quiz.title} className="relative overflow-hidden">
-                <div className="absolute top-0 right-0 px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200 text-xs font-medium rounded-bl-xl border-l border-b border-slate-200 dark:border-slate-700">
+                <div className="absolute top-0 right-0 px-3 py-1 bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-200 text-xs font-medium rounded-bl-xl border-l border-b border-slate-200 dark:border-slate-700">
                   {quiz.difficulty}
                 </div>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                     <quiz.icon className="w-6 h-6" />
                   </div>
                   <div>
@@ -362,7 +374,7 @@ export default function ResourcesPage() {
         <section id="videos" className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                 <Video className="w-5 h-5" />
               </div>
               <div>
@@ -414,7 +426,7 @@ export default function ResourcesPage() {
 
         {/* Downloads Section */}
         <Card id="downloads" className="overflow-hidden" padding="none">
-          <div className="p-6 bg-gradient-to-r from-slate-200 dark:from-slate-800 to-slate-300 dark:to-slate-900">
+          <div className="p-6 bg-gradient-to-r from-slate-200 dark:from-slate-800 to-slate-300 dark:to-slate-950">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-slate-400/20 dark:bg-white/10 flex items-center justify-center text-slate-700 dark:text-white">
                 <FileDown className="w-5 h-5" />

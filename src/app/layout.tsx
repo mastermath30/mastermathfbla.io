@@ -50,7 +50,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className={`${inter.variable} antialiased min-h-screen`}>
+      <body className={`${inter.variable} antialiased min-h-screen bg-slate-50 dark:bg-slate-950`}>
         <TopBar />
         <main className="pb-24 md:pb-0">
           {children}

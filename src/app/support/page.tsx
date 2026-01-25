@@ -125,7 +125,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -171,12 +171,12 @@ export default function SupportPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="max-w-7xl mx-auto px-6 py-12 pb-32">
         {/* Contact Methods */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 -mt-8 mb-12">
           {contactMethods.map((method) => (
             <Card key={method.title} className="text-center">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4" style={{ color: "var(--theme-primary)" }}>
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4" style={{ color: "var(--theme-primary)" }}>
                 <method.icon className="w-7 h-7" />
               </div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{method.title}</h3>
@@ -250,7 +250,7 @@ export default function SupportPage() {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/40 transition-shadow"
+                className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/40 transition-shadow"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
@@ -362,7 +362,7 @@ export default function SupportPage() {
       <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
-            © 2025 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
+            © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>
         </div>
       </footer>

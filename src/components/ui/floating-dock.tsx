@@ -65,7 +65,7 @@ const FloatingDockMobile = ({
             >
               <Link
                 href={item.href}
-                className="h-10 w-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700"
+                className="h-10 w-10 rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700"
               >
                 <div className="h-4 w-4">{item.icon}</div>
               </Link>
@@ -74,7 +74,7 @@ const FloatingDockMobile = ({
         </motion.div>
         <button
           onClick={() => setOpen(!open)}
-          className="h-10 w-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700"
+          className="h-10 w-10 rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@ const FloatingDockDesktop = ({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "mx-auto hidden md:flex h-16 gap-4 items-end rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-4 pb-3 border border-slate-200 dark:border-slate-700 shadow-xl",
+        "mx-auto hidden md:flex h-16 gap-4 items-end rounded-2xl bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm px-4 pb-3 border border-slate-200 dark:border-slate-700 shadow-xl",
         className
       )}
     >
