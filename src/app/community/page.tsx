@@ -184,14 +184,14 @@ export default function CommunityPage() {
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <MessageCircle className="w-4 h-4" />
               Discussion Forum
             </div>
-            <h1 className="text-5xl font-bold text-white mb-4">Community</h1>
-            <p className="text-slate-200 text-xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">Community</h1>
+            <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               Connect with fellow math enthusiasts, ask questions, and help others learn.
             </p>
           </div>
@@ -199,7 +199,7 @@ export default function CommunityPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 pb-32 relative">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32 relative">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>

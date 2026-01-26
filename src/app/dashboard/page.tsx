@@ -146,20 +146,20 @@ export default function DashboardPage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 {t("Learning Dashboard")}
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
                 {t("Welcome back,")} {userName}!
               </h1>
-              <p className="text-slate-200 text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
+              <p className="text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
               
               {/* Quick stats */}
-              <div className="flex gap-6 mt-6">
+              <div className="flex flex-wrap gap-4 md:gap-6 mt-6">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                     <Flame className="w-5 h-5" />
@@ -198,7 +198,7 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-8">
           <StatCard

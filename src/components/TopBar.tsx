@@ -236,6 +236,19 @@ export function TopBar() {
 									</Link>
 								))}
 								<div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
+								
+								{/* Theme Selector in mobile menu */}
+								<div className={`px-3 py-2 ${isOpen ? "animate-mobile-menu-item" : ""}`}
+									style={{
+										animationDelay: isOpen
+											? `${navigation.length * 80 + 100}ms`
+											: "0ms",
+									}}
+								>
+									<ThemeSelector />
+								</div>
+								
+								<div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
 								<Link
 									href="/auth"
 									className={`relative text-white font-medium px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group transform ${
@@ -244,7 +257,7 @@ export function TopBar() {
 									style={{
 										background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
 										animationDelay: isOpen
-											? `${navigation.length * 80 + 150}ms`
+											? `${(navigation.length + 1) * 80 + 150}ms`
 											: "0ms",
 									}}
 									onClick={() => setIsOpen(false)}
@@ -252,7 +265,7 @@ export function TopBar() {
 									{isLoggedIn ? (
 										<>
 											<User className="w-4 h-4" />
-											<span>{t("Account")}</span>
+											<span>{userName || t("Account")}</span>
 										</>
 									) : (
 										<span>{t("Sign In")}</span>

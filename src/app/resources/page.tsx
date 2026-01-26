@@ -182,14 +182,14 @@ export default function ResourcesPage() {
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <Sparkles className="w-4 h-4" />
               Learning Hub
             </div>
-            <h1 className="text-5xl font-bold text-white mb-4">Resources</h1>
-            <p className="text-slate-200 text-xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">Resources</h1>
+            <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               Access lessons, videos, quizzes, and downloadable materials to supercharge your learning.
             </p>
           </div>
@@ -197,7 +197,7 @@ export default function ResourcesPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Quick Access Categories */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 -mt-8">
           {categories.map((cat) => (

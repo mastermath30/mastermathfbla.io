@@ -145,13 +145,13 @@ export default function SupportPage() {
           />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-6 py-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4 md:mb-6">
             <Headphones className="w-4 h-4" />
             We&apos;re here to help
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">Support Center</h1>
-          <p className="text-xl text-slate-200 max-w-2xl mx-auto mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Support Center</h1>
+          <p className="text-base sm:text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-6 md:mb-8 px-4">
             Find answers to common questions or get in touch with our friendly team
           </p>
 
@@ -171,7 +171,7 @@ export default function SupportPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Contact Methods */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 -mt-8 mb-12">
           {contactMethods.map((method) => (

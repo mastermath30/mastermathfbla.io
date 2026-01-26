@@ -216,7 +216,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 px-safe">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
           <Image
@@ -229,28 +229,28 @@ export default function Home() {
         </div>
         
         {/* Animated gradient orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-pulse opacity-20 dark:opacity-10" style={{ background: 'var(--theme-primary)' }} />
-        <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-pulse delay-1000 opacity-15 dark:opacity-10" style={{ background: 'var(--theme-primary-light)' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl opacity-10 dark:opacity-5" style={{ background: 'var(--theme-primary)' }} />
+        <div className="absolute top-20 left-10 w-48 h-48 md:w-72 md:h-72 rounded-full blur-3xl animate-pulse opacity-20 dark:opacity-10" style={{ background: 'var(--theme-primary)' }} />
+        <div className="absolute bottom-20 right-10 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl animate-pulse delay-1000 opacity-15 dark:opacity-10" style={{ background: 'var(--theme-primary-light)' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-[600px] md:h-[600px] rounded-full blur-3xl opacity-10 dark:opacity-5" style={{ background: 'var(--theme-primary)' }} />
 
-        {/* Floating math symbols */}
-        <div className="absolute top-20 left-[15%] text-7xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3s', color: 'var(--theme-primary)' }}>∫</div>
-        <div className="absolute top-32 right-[20%] text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary-light)' }}>π</div>
-        <div className="absolute bottom-40 left-[10%] text-5xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary)' }}>∑</div>
-        <div className="absolute bottom-32 right-[15%] text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary-light)' }}>√</div>
-        <div className="absolute top-1/2 left-[5%] text-5xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '5s', animationDelay: '2s', color: 'var(--theme-primary)' }}>∞</div>
-        <div className="absolute top-[40%] right-[8%] text-4xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '3.8s', animationDelay: '0.8s', color: 'var(--theme-primary-light)' }}>θ</div>
+        {/* Floating math symbols - hidden on small screens */}
+        <div className="hidden md:block absolute top-20 left-[15%] text-5xl md:text-7xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3s', color: 'var(--theme-primary)' }}>∫</div>
+        <div className="hidden md:block absolute top-32 right-[20%] text-4xl md:text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary-light)' }}>π</div>
+        <div className="hidden md:block absolute bottom-40 left-[10%] text-3xl md:text-5xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary)' }}>∑</div>
+        <div className="hidden md:block absolute bottom-32 right-[15%] text-4xl md:text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary-light)' }}>√</div>
+        <div className="hidden lg:block absolute top-1/2 left-[5%] text-3xl md:text-5xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '5s', animationDelay: '2s', color: 'var(--theme-primary)' }}>∞</div>
+        <div className="hidden lg:block absolute top-[40%] right-[8%] text-3xl md:text-4xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '3.8s', animationDelay: '0.8s', color: 'var(--theme-primary-light)' }}>θ</div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left content */}
             <div className="text-center lg:text-left">
-              <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight break-words">
                 Master Mathematics
                 <br />
-                <span className="gradient-text relative">
+                <span className="gradient-text relative inline-block">
                   With Expert Tutors
-                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
+                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
                     <path d="M2 10C50 4 150 4 298 10" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
                     <defs>
                       <linearGradient id="gradient" x1="0" y1="0" x2="300" y2="0">
@@ -262,11 +262,11 @@ export default function Home() {
                 </span>
               </h1>
 
-              <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-xl leading-relaxed">
                 Connect with top-rated peer tutors and master mathematics through personalized, interactive learning sessions.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
                 <Link href="/auth">
                   <Button size="lg" className="shadow-xl group" style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.25)' }}>
                     <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
@@ -282,10 +282,10 @@ export default function Home() {
               </div>
 
               {/* Stats inline */}
-              <div className="flex flex-wrap gap-8 justify-center lg:justify-start">
+              <div className="flex flex-wrap gap-4 md:gap-8 justify-center lg:justify-start">
                 {stats.map((stat, index) => (
                   <div key={stat.label} className="text-center group cursor-default" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <div className="text-3xl font-bold gradient-text font-mono group-hover:scale-110 transition-transform duration-300">
+                    <div className="text-2xl md:text-3xl font-bold gradient-text font-mono group-hover:scale-110 transition-transform duration-300">
                       <AnimatedNumberClient value={stat.value} duration={900} label={stat.label} />
                     </div>
                     <div className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mt-1">{stat.label}</div>
@@ -370,14 +370,14 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
         
         {/* Recent Sessions */}
         {isLoggedIn && (
           <Card className="mb-8">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Your Recent Sessions")}</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{t("Your Recent Sessions")}</h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Manage your upcoming and past sessions")}</p>
               </div>
               <Link href="/schedule" className="text-primary-themed text-sm font-medium hover:underline">
@@ -418,21 +418,21 @@ export default function Home() {
 
         {/* Top Rated Tutors */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Top Rated Tutors</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Top Rated Tutors</h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Our highest-rated math tutors ready to help you succeed</p>
             </div>
-            <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
+            <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group whitespace-nowrap" style={{ color: 'var(--theme-primary)' }}>
               View all tutors
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {topTutors.map((tutor, index) => (
               <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="relative h-36 overflow-hidden">
+                <div className="relative h-32 sm:h-36 overflow-hidden">
                   <Image
                     src={tutor.image}
                     alt={tutor.name}
@@ -527,10 +527,10 @@ export default function Home() {
       </div>
 
       {/* Trusted By Section */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-slate-500 text-sm mb-10 uppercase tracking-widest">Trusted by students from top institutions</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-16">
+      <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">Trusted by students from top institutions</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16">
             <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
               <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
                 <Image src="/logos/mit.png" alt="MIT" fill className="object-contain" />
@@ -572,18 +572,18 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section id="features" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
-        <div className="relative max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12 md:mb-16">
             <SectionLabel icon={Zap} className="mb-4">
               Why Choose MathMaster?
             </SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4 tracking-tight px-4">
               Learn Smarter, <span className="gradient-text">Not Harder</span>
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
               Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.
             </p>
           </div>

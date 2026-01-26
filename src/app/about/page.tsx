@@ -64,14 +64,14 @@ export default function AboutPage() {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute top-20 right-20 w-64 h-64 rounded-full blur-3xl opacity-30" style={{ background: 'var(--theme-primary)' }} />
-        <div className="absolute bottom-20 left-20 w-48 h-48 rounded-full blur-3xl opacity-25" style={{ background: 'var(--theme-primary-light)' }} />
+        <div className="absolute top-20 right-10 md:right-20 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl opacity-30" style={{ background: 'var(--theme-primary)' }} />
+        <div className="absolute bottom-20 left-10 md:left-20 w-32 h-32 md:w-48 md:h-48 rounded-full blur-3xl opacity-25" style={{ background: 'var(--theme-primary-light)' }} />
         
-        {/* Floating math symbols */}
-        <div className="absolute top-24 left-[10%] text-7xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3s', color: 'var(--theme-primary-light)' }}>∫</div>
-        <div className="absolute top-36 right-[15%] text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary)' }}>π</div>
-        <div className="absolute bottom-32 left-[8%] text-5xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary-light)' }}>∑</div>
-        <div className="absolute bottom-24 right-[12%] text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary)' }}>√</div>
+        {/* Floating math symbols - hidden on mobile */}
+        <div className="hidden md:block absolute top-24 left-[10%] text-4xl md:text-7xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3s', color: 'var(--theme-primary-light)' }}>∫</div>
+        <div className="hidden md:block absolute top-36 right-[15%] text-3xl md:text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary)' }}>π</div>
+        <div className="hidden lg:block absolute bottom-32 left-[8%] text-3xl md:text-5xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary-light)' }}>∑</div>
+        <div className="hidden lg:block absolute bottom-24 right-[12%] text-3xl md:text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary)' }}>√</div>
 
         <div className="relative max-w-7xl mx-auto px-6 py-20">
           <div className="max-w-2xl">
@@ -127,9 +127,9 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <div className="relative aspect-square max-w-lg">

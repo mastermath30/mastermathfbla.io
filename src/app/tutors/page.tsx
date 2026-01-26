@@ -507,25 +507,26 @@ export default function TutorsPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24 pb-32">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-6 mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6 md:mb-8">
         <FadeIn>
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-4 md:mb-6">
             <Link 
               href="/schedule"
               className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Schedule
+              <span className="hidden sm:inline">Back to Schedule</span>
+              <span className="sm:hidden">Back</span>
             </Link>
           </div>
           
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 md:mb-8">
             <SectionLabel>Our Tutors</SectionLabel>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               Expert Math Tutors
               <span className="gradient-text block">Ready to Help</span>
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-4">
               Connect with experienced peer tutors and professionals who are passionate about helping you succeed in mathematics.
             </p>
           </div>

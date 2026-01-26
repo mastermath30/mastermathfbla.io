@@ -707,21 +707,21 @@ export default function SchedulePage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15%200L30%2015L15%2030L0%2015z%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%2F%3E%3C%2Fsvg%3E')]" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <div className="flex flex-col md:flex-row md:items-center md:items-start md:justify-between gap-6">
             <div className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <CalendarCheck className="w-4 h-4" />
                 Tutoring Sessions
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">Schedule</h1>
-              <p className="text-slate-200 text-lg mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">Schedule</h1>
+              <p className="text-slate-200 text-base md:text-lg mb-4">
                 Manage your study sessions and tutoring appointments.
               </p>
-              <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/10 backdrop-blur rounded-xl">
-                <Clock className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
+              <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white/10 backdrop-blur rounded-xl text-sm md:text-base">
+                <Clock className="w-4 h-4 md:w-5 md:h-5" style={{ color: "var(--theme-primary)" }} />
                 <span className="text-slate-200">Next session in:</span>
-                <span className="font-mono text-2xl font-bold text-white">{countdown}</span>
+                <span className="font-mono text-xl md:text-2xl font-bold text-white">{countdown}</span>
               </div>
             </div>
             
