@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
@@ -101,6 +102,7 @@ const quizzes = [
     description: "Test your understanding of equations, expressions, and inequalities.",
     color: "violet",
     difficulty: "Beginner",
+    href: "/resources/quiz/algebra-basics",
   },
   {
     icon: Shapes,
@@ -109,6 +111,7 @@ const quizzes = [
     description: "Practice writing and understanding geometric proofs.",
     color: "green",
     difficulty: "Intermediate",
+    href: "/resources/quiz/geometry-proofs",
   },
   {
     icon: Calculator,
@@ -117,6 +120,7 @@ const quizzes = [
     description: "Master the fundamentals of differentiation and derivative rules.",
     color: "blue",
     difficulty: "Advanced",
+    href: "/resources/quiz/calculus-derivatives",
   },
 ];
 
@@ -155,6 +159,8 @@ const downloads = [
 ];
 
 export default function ResourcesPage() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
@@ -361,7 +367,7 @@ export default function ResourcesPage() {
                   </div>
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{quiz.description}</p>
-                <Button className="w-full">
+                <Button className="w-full" onClick={() => router.push(quiz.href)} type="button">
                   <Play className="w-4 h-4" />
                   Start Quiz
                 </Button>
