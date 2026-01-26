@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   GraduationCap,
   Globe,
+  Accessibility,
   X,
 } from "lucide-react";
 
@@ -56,6 +57,7 @@ function AuthPageContent() {
   const [successMessage, setSuccessMessage] = useState("");
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const [bookingAction, setBookingAction] = useState(false);
+  const [isColorblindMode, setIsColorblindMode] = useState(false);
 
   useEffect(() => {
     // Check for redirect params
@@ -81,6 +83,16 @@ function AuthPageContent() {
       }
     } catch {
       // Ignore
+    }
+
+    const storedColorblind = localStorage.getItem("mm_colorblind_mode") === "true";
+    setIsColorblindMode(storedColorblind);
+    if (storedColorblind) {
+      document.documentElement.classList.add("colorblind-mode");
+      document.body.classList.add("colorblind-mode");
+    } else {
+      document.documentElement.classList.remove("colorblind-mode");
+      document.body.classList.remove("colorblind-mode");
     }
   }, [searchParams, router]);
 
@@ -192,6 +204,21 @@ function AuthPageContent() {
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
+  const handleColorblindToggle = () => {
+    setIsColorblindMode((prev) => {
+      const next = !prev;
+      localStorage.setItem("mm_colorblind_mode", String(next));
+      if (next) {
+        document.documentElement.classList.add("colorblind-mode");
+        document.body.classList.add("colorblind-mode");
+      } else {
+        document.documentElement.classList.remove("colorblind-mode");
+        document.body.classList.remove("colorblind-mode");
+      }
+      return next;
+    });
+  };
+
   if (profile) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
@@ -288,6 +315,23 @@ function AuthPageContent() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
+                <div className="flex items-center gap-3">
+                  <Accessibility className="w-5 h-5 text-slate-400" />
+                  <div>
+                    <div className="text-slate-700 dark:text-slate-300 font-medium">{t("Colorblind Mode")}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Use a high-contrast, colorblind-safe palette")}</div>
+                  </div>
+                </div>
+                <Button
+                  variant={isColorblindMode ? "primary" : "outline"}
+                  size="sm"
+                  onClick={handleColorblindToggle}
+                  type="button"
+                >
+                  {isColorblindMode ? t("On") : t("Off")}
+                </Button>
               </div>
             </div>
             <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">

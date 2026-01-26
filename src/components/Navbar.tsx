@@ -26,12 +26,18 @@ export function Navbar() {
     const session = localStorage.getItem("mm_session");
     const loggedInFlag = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(!!session || loggedInFlag === "true");
-    
-    // Get user's name
-    if (session) {
+
+    if (session || loggedInFlag === "true") {
       try {
-        const profile = JSON.parse(session);
-        setUserName(profile.firstName || "");
+        const sessionData = session ? JSON.parse(session) : null;
+        const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
+        if (profile && (!sessionData || sessionData?.email === profile.email)) {
+          const lastInitial = profile.lastName ? `${profile.lastName.charAt(0).toUpperCase()}.` : "";
+          const firstName = profile.firstName || "";
+          setUserName(`${firstName}${lastInitial ? ` ${lastInitial}` : ""}`.trim());
+        } else {
+          setUserName("");
+        }
       } catch (e) {
         setUserName("");
       }

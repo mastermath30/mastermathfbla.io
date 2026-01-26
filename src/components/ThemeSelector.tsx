@@ -41,15 +41,27 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
     }
   };
 
+  const applyColorblindMode = (enabled: boolean) => {
+    if (enabled) {
+      document.documentElement.classList.add("colorblind-mode");
+      document.body.classList.add("colorblind-mode");
+    } else {
+      document.documentElement.classList.remove("colorblind-mode");
+      document.body.classList.remove("colorblind-mode");
+    }
+  };
+
   useEffect(() => {
     const savedColor = localStorage.getItem("mm_color_theme") || "violet";
     const savedMode = localStorage.getItem("mm_dark_mode");
+    const colorblindEnabled = localStorage.getItem("mm_colorblind_mode") === "true";
     const dark = savedMode === null ? true : savedMode === "true";
     
     setColorTheme(savedColor);
     setIsDark(dark);
     applyColorTheme(savedColor);
     applyDarkMode(dark);
+    applyColorblindMode(colorblindEnabled);
   }, []);
 
   useEffect(() => {

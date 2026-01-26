@@ -78,6 +78,29 @@
   --theme-primary-rgb: 234, 88, 12;
 }
 
+/* Colorblind-friendly palette override */
+.colorblind-mode {
+  --theme-primary: #1f77b4;
+  --theme-primary-light: #6baed6;
+  --theme-primary-dark: #0b4f79;
+  --theme-primary-rgb: 31, 119, 180;
+  --primary: #1f77b4;
+  --ring: #1f77b4;
+  --accent: #e6f2fb;
+  --accent-foreground: #0b4f79;
+  --success: #2ca02c;
+  --warning: #ff7f0e;
+  --info: #17becf;
+}
+
+.dark.colorblind-mode,
+.dark .colorblind-mode {
+  --accent: #0f2c3d;
+  --accent-foreground: #d6ecf8;
+  --secondary: #0b1f2c;
+  --secondary-foreground: #e6f2fb;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -192,7 +192,7 @@ export default function QuizPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       <main className="max-w-4xl mx-auto px-6 py-12 pb-24">
         <div className="flex flex-col gap-4 mb-8">
-          <SectionLabel text={`${quiz.topic} Quiz`} />
+          <SectionLabel>{`${quiz.topic} Quiz`}</SectionLabel>
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{quiz.title}</h1>
             <p className="text-slate-500 dark:text-slate-400">{quiz.description}</p>
