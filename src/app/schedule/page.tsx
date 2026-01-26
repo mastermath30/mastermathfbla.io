@@ -673,7 +673,7 @@ export default function SchedulePage() {
               <div className="text-sm font-semibold text-slate-900 dark:text-white">{item.title}</div>
               <div className="text-xs text-slate-500 dark:text-slate-400">{item.time}</div>
             </div>
-            <Badge variant="secondary">{item.type ?? "session"}</Badge>
+            <Badge variant="default">{item.type ?? "session"}</Badge>
           </div>
         ))}
       </div>
