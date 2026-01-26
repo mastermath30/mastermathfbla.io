@@ -14,8 +14,10 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { ThemeSelector } from "./ThemeSelector";
+import { useTranslations } from "./LanguageProvider";
 
 export function Navbar() {
+  const { t } = useTranslations();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
 
@@ -38,56 +40,56 @@ export function Navbar() {
 
   const links = [
     {
-      title: "Home",
+      title: t("Home"),
       icon: (
         <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/",
     },
     {
-      title: "About",
+      title: t("About"),
       icon: (
         <IconInfoCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/about",
     },
     {
-      title: "Schedule",
+      title: t("Schedule"),
       icon: (
         <IconCalendar className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/schedule",
     },
     {
-      title: "Dashboard",
+      title: t("Dashboard"),
       icon: (
         <IconChartBar className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/dashboard",
     },
     {
-      title: "Resources",
+      title: t("Resources"),
       icon: (
         <IconBook className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/resources",
     },
     {
-      title: "Community",
+      title: t("Community"),
       icon: (
         <IconUsers className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/community",
     },
     {
-      title: "Support",
+      title: t("Support"),
       icon: (
         <IconLifebuoy className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/support",
     },
     {
-      title: isLoggedIn ? (userName || "Account") : "Sign In",
+      title: isLoggedIn ? (userName || t("Account")) : t("Sign In"),
       icon: isLoggedIn ? (
         <IconUser className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ) : (

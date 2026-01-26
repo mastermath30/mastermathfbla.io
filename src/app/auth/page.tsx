@@ -9,6 +9,8 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { MathLogo } from "@/components/MathLogo";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { useLanguage } from "@/components/LanguageProvider";
+import { languages } from "@/lib/i18n";
 import {
   User,
   Lock,
@@ -24,6 +26,7 @@ import {
   MessageCircle,
   CheckCircle2,
   GraduationCap,
+  Globe,
   X,
 } from "lucide-react";
 
@@ -44,6 +47,7 @@ export default function AuthPage() {
 function AuthPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { language, setLanguage, t } = useLanguage();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [error, setError] = useState("");
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -88,7 +92,7 @@ function AuthPageContent() {
     const password = (form.elements.namedItem("password") as HTMLInputElement).value;
 
     if (!email || !password) {
-      setError("Please fill in all fields.");
+      setError(t("Please fill in all fields."));
       return;
     }
 
@@ -98,12 +102,12 @@ function AuthPageContent() {
       const confirm = (form.elements.namedItem("confirm") as HTMLInputElement).value;
 
       if (!firstName || !lastName) {
-        setError("Please fill in all fields.");
+        setError(t("Please fill in all fields."));
         return;
       }
 
       if (password !== confirm) {
-        setError("Passwords do not match.");
+        setError(t("Passwords do not match."));
         return;
       }
 
@@ -121,7 +125,7 @@ function AuthPageContent() {
         setProfile(storedProfile);
         router.push(redirectUrl || "/dashboard");
       } else {
-        setError("Account not found. Please sign up first.");
+        setError(t("Account not found. Please sign up first."));
       }
     }
   };
@@ -143,7 +147,7 @@ function AuthPageContent() {
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
 
     if (!firstName || !lastName || !email) {
-      setError("Please fill in all fields.");
+      setError(t("Please fill in all fields."));
       return;
     }
 
@@ -152,7 +156,7 @@ function AuthPageContent() {
     localStorage.setItem("mm_session", JSON.stringify({ email }));
     setProfile(updatedProfile);
     setIsEditingProfile(false);
-    setSuccessMessage("Profile updated successfully!");
+    setSuccessMessage(t("Profile updated successfully!"));
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
@@ -167,24 +171,24 @@ function AuthPageContent() {
     const confirmPassword = (form.elements.namedItem("confirmPassword") as HTMLInputElement).value;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setError("Please fill in all fields.");
+      setError(t("Please fill in all fields."));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("New passwords do not match.");
+      setError(t("New passwords do not match."));
       return;
     }
 
     if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters.");
+      setError(t("Password must be at least 6 characters."));
       return;
     }
 
     // In a real app, you'd verify the current password
     // For now, we'll just simulate success
     setIsChangingPassword(false);
-    setSuccessMessage("Password changed successfully!");
+    setSuccessMessage(t("Password changed successfully!"));
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
@@ -210,7 +214,7 @@ function AuthPageContent() {
                 {profile.firstName.charAt(0).toUpperCase()}
               </div>
               <div className="text-white">
-                <p className="text-sm font-medium mb-1" style={{ color: 'var(--theme-primary-light)' }}>Welcome back</p>
+                <p className="text-sm font-medium mb-1" style={{ color: 'var(--theme-primary-light)' }}>{t("Welcome back")}</p>
                 <h1 className="text-4xl font-bold">{profile.firstName} {profile.lastName}</h1>
                 <p className="text-slate-400 mt-1">{profile.email}</p>
               </div>
@@ -220,23 +224,23 @@ function AuthPageContent() {
 
         <main className="max-w-4xl mx-auto px-6 py-8 pb-32">
           <Card className="mb-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Actions")}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Link href="/dashboard" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
                 <BarChart3 className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Dashboard</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Dashboard")}</span>
               </Link>
               <Link href="/schedule" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
                 <Calendar className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Schedule</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Schedule")}</span>
               </Link>
               <Link href="/resources" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
                 <BookOpen className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Resources</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Resources")}</span>
               </Link>
               <Link href="/community" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Community</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Community")}</span>
               </Link>
             </div>
           </Card>
@@ -249,27 +253,47 @@ function AuthPageContent() {
           )}
 
           <Card>
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Account Settings</h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Account Settings")}</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
                   <Settings className="w-5 h-5 text-slate-400" />
-                  <span className="text-slate-700 dark:text-slate-300">Profile Settings</span>
+                  <span className="text-slate-700 dark:text-slate-300">{t("Profile Settings")}</span>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(true)}>Edit</Button>
+                <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(true)}>{t("Edit")}</Button>
               </div>
               <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
                   <Lock className="w-5 h-5 text-slate-400" />
-                  <span className="text-slate-700 dark:text-slate-300">Change Password</span>
+                  <span className="text-slate-700 dark:text-slate-300">{t("Change Password")}</span>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setIsChangingPassword(true)}>Update</Button>
+                <Button variant="ghost" size="sm" onClick={() => setIsChangingPassword(true)}>{t("Update")}</Button>
+              </div>
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
+                <div className="flex items-center gap-3">
+                  <Globe className="w-5 h-5 text-slate-400" />
+                  <div>
+                    <div className="text-slate-700 dark:text-slate-300 font-medium">{t("Language")}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Choose your language")}</div>
+                  </div>
+                </div>
+                <select
+                  value={language}
+                  onChange={(event) => setLanguage(event.target.value as typeof language)}
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-700 dark:text-slate-200"
+                >
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
               <Button variant="outline" onClick={handleSignOut} className="text-red-600 border-red-200 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950">
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                {t("Sign Out")}
               </Button>
             </div>
           </Card>
@@ -279,7 +303,7 @@ function AuthPageContent() {
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <div className="bg-white dark:bg-slate-950 rounded-2xl max-w-md w-full p-6 shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Edit Profile</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Edit Profile")}</h3>
                   <button onClick={() => { setIsEditingProfile(false); setError(""); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                     <X className="w-6 h-6" />
                   </button>
@@ -293,41 +317,41 @@ function AuthPageContent() {
 
                 <form onSubmit={handleUpdateProfile} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">First Name</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("First Name")}</label>
                     <Input
                       type="text"
                       name="firstName"
                       defaultValue={profile.firstName}
-                      placeholder="Enter first name"
+                      placeholder={t("Enter first name")}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Last Name</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Last Name")}</label>
                     <Input
                       type="text"
                       name="lastName"
                       defaultValue={profile.lastName}
-                      placeholder="Enter last name"
+                      placeholder={t("Enter last name")}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Email")}</label>
                     <Input
                       type="email"
                       name="email"
                       defaultValue={profile.email}
-                      placeholder="Enter email"
+                      placeholder={t("Enter email")}
                       required
                     />
                   </div>
                   <div className="flex gap-3 pt-4">
                     <Button type="button" variant="outline" onClick={() => { setIsEditingProfile(false); setError(""); }} className="flex-1">
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button type="submit" className="flex-1">
-                      Save Changes
+                      {t("Save Changes")}
                     </Button>
                   </div>
                 </form>
@@ -340,7 +364,7 @@ function AuthPageContent() {
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <div className="bg-white dark:bg-slate-950 rounded-2xl max-w-md w-full p-6 shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Change Password</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Change Password")}</h3>
                   <button onClick={() => { setIsChangingPassword(false); setError(""); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                     <X className="w-6 h-6" />
                   </button>
@@ -354,38 +378,38 @@ function AuthPageContent() {
 
                 <form onSubmit={handleChangePassword} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Current Password</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Current Password")}</label>
                     <Input
                       type="password"
                       name="currentPassword"
-                      placeholder="Enter current password"
+                      placeholder={t("Enter current password")}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">New Password</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("New Password")}</label>
                     <Input
                       type="password"
                       name="newPassword"
-                      placeholder="Enter new password"
+                      placeholder={t("Enter new password")}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Confirm New Password</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Confirm New Password")}</label>
                     <Input
                       type="password"
                       name="confirmPassword"
-                      placeholder="Confirm new password"
+                      placeholder={t("Confirm new password")}
                       required
                     />
                   </div>
                   <div className="flex gap-3 pt-4">
                     <Button type="button" variant="outline" onClick={() => { setIsChangingPassword(false); setError(""); }} className="flex-1">
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button type="submit" className="flex-1">
-                      Update Password
+                      {t("Update Password")}
                     </Button>
                   </div>
                 </form>
@@ -416,7 +440,7 @@ function AuthPageContent() {
             <GraduationCap className="w-8 h-8" />
           </div>
           <h2 className="text-4xl font-bold mb-4">
-            {bookingAction ? "Sign in to Book a Session" : "Start Your Math Journey"}
+            {bookingAction ? t("Sign In to Book a Session") : t("Start Your Math Journey")}
           </h2>
           <p className="text-white/80 text-lg mb-8 max-w-md">
             {bookingAction 
@@ -462,7 +486,7 @@ function AuthPageContent() {
             >
               <div className="flex items-center gap-2">
                 <CalendarCheck className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
-                <span>Sign in to complete your booking</span>
+                <span>{t("Sign in to complete your booking")}</span>
               </div>
             </div>
           )}
@@ -473,12 +497,12 @@ function AuthPageContent() {
               <span className="text-xl font-bold text-white">MathMaster</span>
             </Link>
             <h1 className="text-3xl font-bold text-white">
-              {mode === "signin" ? "Welcome back" : "Create your account"}
+              {mode === "signin" ? t("Welcome back") : t("Create your account")}
             </h1>
             <p className="text-slate-400 mt-2">
               {mode === "signin" 
-                ? (bookingAction ? "Sign in to book your tutoring session" : "Sign in to continue learning")
-                : "Start your math journey today"}
+                ? (bookingAction ? t("Sign in to book your tutoring session") : t("Sign in to continue learning"))
+                : t("Start your math journey today")}
             </p>
           </div>
 
@@ -493,7 +517,7 @@ function AuthPageContent() {
               }`}
             >
               <LogIn className="w-4 h-4 inline mr-2" />
-              Sign In
+              {t("Sign In")}
             </button>
             <button
               onClick={() => { setMode("signup"); setError(""); }}
@@ -504,7 +528,7 @@ function AuthPageContent() {
               }`}
             >
               <UserPlus className="w-4 h-4 inline mr-2" />
-              Sign Up
+              {t("Sign Up")}
             </button>
           </div>
 
@@ -517,19 +541,19 @@ function AuthPageContent() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === "signup" && (
               <div className="grid grid-cols-2 gap-4">
-                <Input name="firstName" label="First Name" placeholder="John" required />
-                <Input name="lastName" label="Last Name" placeholder="Doe" required />
+                <Input name="firstName" label={t("First Name")} placeholder={t("John")} required />
+                <Input name="lastName" label={t("Last Name")} placeholder={t("Doe")} required />
               </div>
             )}
-            <Input name="email" label="Email" type="email" placeholder="you@example.com" required />
-            <Input name="password" label="Password" type="password" placeholder="••••••••" required />
+            <Input name="email" label={t("Email")} type="email" placeholder={t("you@example.com")} required />
+            <Input name="password" label={t("Password")} type="password" placeholder="••••••••" required />
             {mode === "signup" && (
-              <Input name="confirm" label="Confirm Password" type="password" placeholder="••••••••" required />
+              <Input name="confirm" label={t("Confirm Password")} type="password" placeholder="••••••••" required />
             )}
 
             {mode === "signin" && (
               <div className="flex justify-end">
-                <a href="#" className="text-sm text-violet-500 hover:underline">Forgot password?</a>
+                <a href="#" className="text-sm text-violet-500 hover:underline">{t("Forgot password?")}</a>
               </div>
             )}
 
@@ -537,12 +561,12 @@ function AuthPageContent() {
               {mode === "signin" ? (
                 <>
                   <LogIn className="w-4 h-4" />
-                  Sign In
+                  {t("Sign In")}
                 </>
               ) : (
                 <>
                   <UserPlus className="w-4 h-4" />
-                  Create Account
+                  {t("Create Account")}
                 </>
               )}
             </Button>
@@ -550,19 +574,19 @@ function AuthPageContent() {
 
           <div className="mt-8 text-center">
             <p className="text-slate-500 text-sm">
-              {mode === "signin" ? "Don't have an account?" : "Already have an account?"}{" "}
+              {mode === "signin" ? t("Don't have an account?") : t("Already have an account?")}{" "}
               <button
                 onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); }}
                 className="text-violet-500 font-medium hover:underline"
               >
-                {mode === "signin" ? "Sign up" : "Sign in"}
+                {mode === "signin" ? t("Sign up") : t("Sign in")}
               </button>
             </p>
           </div>
 
           <div className="mt-8 pt-8 border-t border-slate-800 text-center">
             <p className="text-slate-400 text-xs">
-              By continuing, you agree to our Terms of Service and Privacy Policy.
+              {t("By continuing, you agree to our Terms of Service and Privacy Policy.")}
             </p>
           </div>
         </FadeIn>

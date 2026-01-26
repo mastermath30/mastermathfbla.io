@@ -3,8 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Analytics } from '@vercel/analytics/next';
+import { LanguageProvider } from "@/components/LanguageProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,13 +52,13 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className={`${inter.variable} antialiased min-h-screen bg-slate-50 dark:bg-slate-950`}>
-        <TopBar />
-        <main className="pb-24 md:pb-0">
-          {children}
-        </main>
-        <Navbar />
-        <SpeedInsights />
-        <Analytics />
+        <LanguageProvider>
+          <TopBar />
+          <main className="pb-24 md:pb-0">
+            {children}
+          </main>
+          <Navbar />
+        </LanguageProvider>
       </body>
     </html>
   );

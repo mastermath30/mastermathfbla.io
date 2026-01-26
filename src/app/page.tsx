@@ -10,6 +10,7 @@ import { Avatar } from "@/components/Avatar";
 import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
 import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   GraduationCap,
   Rocket,
@@ -166,6 +167,7 @@ const steps = [
 ];
 
 export default function Home() {
+  const { t } = useTranslations();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [countdown, setCountdown] = useState("--:--:-");
 
@@ -268,13 +270,13 @@ export default function Home() {
                 <Link href="/auth">
                   <Button size="lg" className="shadow-xl group" style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.25)' }}>
                     <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                    Start Learning Now
+                    {t("Start Learning Now")}
                   </Button>
                 </Link>
                 <Link href="/tutors">
                   <Button variant="outline" size="lg" className="bg-white/60 dark:bg-slate-950/60 backdrop-blur border-slate-300 dark:border-slate-700">
                     <Users className="w-5 h-5" />
-                    Browse All Tutors
+                    {t("Browse All Tutors")}
                   </Button>
                 </Link>
               </div>
@@ -311,42 +313,56 @@ export default function Home() {
                 </div>
 
                 {/* Floating cards */}
-                <div className="absolute -top-4 -left-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-default">
+                <Link
+                  href="/tutors"
+                  aria-label={t("Top Rated")}
+                  className="absolute -top-4 -left-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(var(--theme-primary-rgb), 0.1)' }}>
                       <Star className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">4.9 ⭐</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Top Rated</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{t("Top Rated")}</p>
                     </div>
                   </div>
-                </div>
+                </Link>
 
-                <div className="absolute -bottom-4 -right-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-default" style={{ animationDelay: '1s' }}>
+                <Link
+                  href="/schedule"
+                  aria-label={t("Next Session")}
+                  className="absolute -bottom-4 -right-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  style={{ animationDelay: '1s' }}
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(var(--theme-primary-rgb), 0.1)' }}>
                       <Clock className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white font-mono">{countdown}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Next Session</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{t("Next Session")}</p>
                     </div>
                   </div>
-                </div>
+                </Link>
 
                 {/* Additional floating element */}
-                <div className="absolute top-1/2 -right-8 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-3 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-default" style={{ animationDelay: '0.5s' }}>
+                <Link
+                  href="/dashboard"
+                  aria-label={t("This week")}
+                  className="absolute top-1/2 -right-8 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-3 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  style={{ animationDelay: '0.5s' }}
+                >
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-green-500/10">
                       <TrendingUp className="w-4 h-4 text-green-600" />
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-green-600">+24%</p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400">This week</p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">{t("This week")}</p>
                     </div>
                   </div>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -361,11 +377,11 @@ export default function Home() {
           <Card className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Your Recent Sessions</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage your upcoming and past sessions</p>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Your Recent Sessions")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Manage your upcoming and past sessions")}</p>
               </div>
               <Link href="/schedule" className="text-primary-themed text-sm font-medium hover:underline">
-                View all sessions
+                {t("View all sessions")}
               </Link>
             </div>
 
@@ -389,7 +405,7 @@ export default function Home() {
                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                             : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                         }`}>
-                          {session.status === 'confirmed' ? 'Confirmed' : 'Pending'}
+                          {session.status === 'confirmed' ? t("Confirmed") : t("Pending")}
                         </div>
                       </div>
                     </div>

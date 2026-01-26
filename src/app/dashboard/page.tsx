@@ -10,6 +10,7 @@ import { StatCard } from "@/components/StatCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   Clock,
   CheckCircle2,
@@ -30,6 +31,7 @@ import {
   Zap,
   Target,
   BookOpen,
+  X,
 } from "lucide-react";
 import {
   LineChart,
@@ -65,15 +67,20 @@ const activities = [
   { icon: CalendarCheck, title: "Session Booked: Calculus Review", time: "Yesterday", details: "Monday, 2:00 PM - 3:30 PM with Michael Chen", color: "green" },
 ];
 
-const goals = [
+const initialGoals = [
   { title: "Complete Calculus Module", status: "in_progress", progress: 75, label: "75%" },
   { title: "Solve 50 Practice Problems", status: "needs_work", progress: 30, label: "15/50" },
   { title: "Attend 3 Study Sessions", status: "completed", progress: 100, label: "3/3" },
 ];
 
 export default function DashboardPage() {
+  const { t } = useTranslations();
   const [userName, setUserName] = useState("Student");
   const [mounted, setMounted] = useState(false);
+  const [goals, setGoals] = useState(initialGoals);
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [goalTitle, setGoalTitle] = useState("");
+  const [goalTarget, setGoalTarget] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -85,7 +92,37 @@ export default function DashboardPage() {
     } catch {
       // Ignore
     }
+    try {
+      const storedGoals = JSON.parse(localStorage.getItem("mm_goals") || "null");
+      if (Array.isArray(storedGoals) && storedGoals.length) {
+        setGoals(storedGoals);
+      }
+    } catch {
+      // Ignore
+    }
   }, []);
+
+  const handleAddGoal = () => {
+    const title = goalTitle.trim();
+    const target = Number(goalTarget);
+    if (!title || !target || Number.isNaN(target) || target <= 0) {
+      return;
+    }
+    const newGoal = {
+      title,
+      status: "in_progress",
+      progress: 0,
+      label: `0/${target}`,
+      target,
+      completed: 0,
+    };
+    const updatedGoals = [newGoal, ...goals];
+    setGoals(updatedGoals);
+    localStorage.setItem("mm_goals", JSON.stringify(updatedGoals));
+    setGoalTitle("");
+    setGoalTarget("");
+    setShowGoalModal(false);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
@@ -114,12 +151,12 @@ export default function DashboardPage() {
             <div className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
-                Learning Dashboard
+                {t("Learning Dashboard")}
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-2">
-                Welcome back, {userName}!
+                {t("Welcome back,")} {userName}!
               </h1>
-              <p className="text-slate-200 text-lg">Track your progress and stay on top of your learning journey.</p>
+              <p className="text-slate-200 text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
               
               {/* Quick stats */}
               <div className="flex gap-6 mt-6">
@@ -129,7 +166,7 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">7</p>
-                    <p className="text-xs text-slate-200">Day Streak</p>
+                    <p className="text-xs text-slate-200">{t("Day Streak")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -138,23 +175,23 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">87%</p>
-                    <p className="text-xs text-slate-200">Mastery</p>
+                    <p className="text-xs text-slate-200">{t("Mastery")}</p>
                   </div>
                 </div>
               </div>
             </div>
             
             <div className="flex gap-3">
-              <Link href="/dashboard">
-                <Button>
-                  <Plus className="w-4 h-4" />
-                  New Goal
+              <Button onClick={() => setShowGoalModal(true)}>
+                <Plus className="w-4 h-4" />
+                {t("New Goal")}
+              </Button>
+              <Link href="/dashboard#learning-progress">
+                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                  <BarChart3 className="w-4 h-4" />
+                  {t("Analytics")}
                 </Button>
               </Link>
-              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
-                <BarChart3 className="w-4 h-4" />
-                Analytics
-              </Button>
             </div>
           </div>
         </div>
@@ -207,18 +244,18 @@ export default function DashboardPage() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Progress Chart */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2" id="learning-progress">
             <Card className="overflow-hidden">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Learning Progress</CardTitle>
-                    <CardDescription>Your weekly performance</CardDescription>
+                    <CardTitle>{t("Learning Progress")}</CardTitle>
+                    <CardDescription>{t("Your weekly performance")}</CardDescription>
                   </div>
                   <select className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                    <option>This Month</option>
-                    <option>Last Month</option>
-                    <option>Last 3 Months</option>
+                    <option>{t("This Month")}</option>
+                    <option>{t("Last Month")}</option>
+                    <option>{t("Last 3 Months")}</option>
                   </select>
                 </div>
               </CardHeader>
@@ -285,15 +322,15 @@ export default function DashboardPage() {
           </div>
 
           {/* Challenges */}
-          <Card padding="none" className="overflow-hidden">
+          <Card padding="none" className="overflow-hidden" id="challenges">
             <div className="p-6 border-b border-slate-700 bg-slate-900">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                   <Target className="w-5 h-5" />
                 </div>
                 <div>
-                  <CardTitle>Math Challenges</CardTitle>
-                  <CardDescription>Upcoming assignments</CardDescription>
+                  <CardTitle>{t("Math Challenges")}</CardTitle>
+                  <CardDescription>{t("Upcoming assignments")}</CardDescription>
                 </div>
               </div>
             </div>
@@ -321,8 +358,8 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-4 bg-slate-950 border-t border-slate-800">
-              <Link href="#" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
-                View all challenges
+              <Link href="/dashboard#challenges" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+                {t("View all challenges")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -332,15 +369,15 @@ export default function DashboardPage() {
         {/* Secondary Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Recent Activity */}
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden" id="recent-activity">
             <CardHeader className="bg-slate-900 -mx-6 -mt-6 px-6 pt-6 pb-4 mb-4 border-b border-slate-700">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                   <Zap className="w-5 h-5" />
                 </div>
                 <div>
-                  <CardTitle>Recent Activity</CardTitle>
-                  <CardDescription>Your latest learning actions</CardDescription>
+                  <CardTitle>{t("Recent Activity")}</CardTitle>
+                  <CardDescription>{t("Your latest learning actions")}</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -370,28 +407,28 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-              <Link href="#" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
-                View all activity
+              <Link href="/dashboard#recent-activity" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
+                {t("View all activity")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </CardContent>
           </Card>
 
           {/* Study Goals */}
-          <Card padding="none" className="overflow-hidden">
+          <Card padding="none" className="overflow-hidden" id="study-goals">
             <div className="p-6 border-b border-slate-700 flex items-center justify-between bg-slate-900">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <div>
-                  <CardTitle>Study Goals</CardTitle>
-                  <CardDescription>Track your learning objectives</CardDescription>
+                  <CardTitle>{t("Study Goals")}</CardTitle>
+                  <CardDescription>{t("Track your learning objectives")}</CardDescription>
                 </div>
               </div>
-              <Button size="sm">
+              <Button size="sm" onClick={() => setShowGoalModal(true)}>
                 <Plus className="w-4 h-4" />
-                Add Goal
+                {t("Add Goal")}
               </Button>
             </div>
             <div className="divide-y divide-slate-800">
@@ -408,8 +445,8 @@ export default function DashboardPage() {
                       {goal.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
                       {goal.status === "needs_work" && <AlertCircle className="w-3 h-3" />}
                       {goal.status === "in_progress" && <Loader2 className="w-3 h-3 animate-spin" />}
-                      {goal.status === "completed" ? "Completed" :
-                       goal.status === "needs_work" ? "Needs Work" : "In Progress"}
+                      {goal.status === "completed" ? t("Completed") :
+                       goal.status === "needs_work" ? t("Needs Work") : t("In Progress")}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-3">
@@ -431,7 +468,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Motivational Banner */}
-        <div className="mt-8 relative overflow-hidden rounded-2xl">
+          <div className="mt-8 relative overflow-hidden rounded-2xl">
           <div className="absolute inset-0">
             <Image
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=300&fit=crop"
@@ -443,16 +480,69 @@ export default function DashboardPage() {
           </div>
           <div className="relative p-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-white text-center md:text-left">
-              <h3 className="text-2xl font-bold mb-2">Keep up the great work!</h3>
-              <p className="text-slate-200">You&apos;re on track to complete your weekly goals. Just 3 more problems to go!</p>
+              <h3 className="text-2xl font-bold mb-2">{t("Keep up the great work!")}</h3>
+              <p className="text-slate-200">{t("You're on track to complete your weekly goals. Just 3 more problems to go!")}</p>
             </div>
-            <Button className="shrink-0">
-              Continue Learning
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+              <Link href="/resources">
+                <Button className="shrink-0">
+                  {t("Continue Learning")}
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
           </div>
         </div>
       </main>
+
+      {showGoalModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            onClick={() => setShowGoalModal(false)}
+          />
+          <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-950 p-6 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Add Goal")}</h3>
+              <button
+                onClick={() => setShowGoalModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                type="button"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Goal Title")}</label>
+                <input
+                  value={goalTitle}
+                  onChange={(event) => setGoalTitle(event.target.value)}
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-700 dark:text-slate-200"
+                  placeholder={t("Enter a goal title")}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Target Problems")}</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={goalTarget}
+                  onChange={(event) => setGoalTarget(event.target.value)}
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-700 dark:text-slate-200"
+                  placeholder="50"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1" type="button" onClick={() => setShowGoalModal(false)}>
+                  {t("Cancel")}
+                </Button>
+                <Button className="flex-1" type="button" onClick={handleAddGoal}>
+                  {t("Create Goal")}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,18 +6,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeSelector } from "./ThemeSelector";
 import { MathLogo } from "./MathLogo";
-
-const navigation = [
-	{ name: "About", href: "/about" },
-	{ name: "Schedule", href: "/schedule" },
-	{ name: "Dashboard", href: "/dashboard" },
-	{ name: "Resources", href: "/resources" },
-	{ name: "Community", href: "/community" },
-	{ name: "Support", href: "/support" },
-];
+import { useTranslations } from "./LanguageProvider";
 
 export function TopBar() {
 	const pathname = usePathname();
+	const { t } = useTranslations();
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(true);
 	const [hasLoaded, setHasLoaded] = useState(false);
@@ -83,6 +76,15 @@ export function TopBar() {
 
 		return () => clearTimeout(timer);
 	}, []);
+
+	const navigation = [
+		{ name: t("About"), href: "/about" },
+		{ name: t("Schedule"), href: "/schedule" },
+		{ name: t("Dashboard"), href: "/dashboard" },
+		{ name: t("Resources"), href: "/resources" },
+		{ name: t("Community"), href: "/community" },
+		{ name: t("Support"), href: "/support" },
+	];
 
 	return (
 		<>
@@ -152,10 +154,10 @@ export function TopBar() {
 									{isLoggedIn ? (
 										<>
 											<User className="w-4 h-4" />
-											<span>{userName || "Account"}</span>
+											<span>{userName || t("Account")}</span>
 										</>
 									) : (
-										<span>Sign In</span>
+										<span>{t("Sign In")}</span>
 									)}
 								</Link>
 							</div>
@@ -250,10 +252,10 @@ export function TopBar() {
 									{isLoggedIn ? (
 										<>
 											<User className="w-4 h-4" />
-											<span>Account</span>
+											<span>{t("Account")}</span>
 										</>
 									) : (
-										<span>Sign In</span>
+										<span>{t("Sign In")}</span>
 									)}
 								</Link>
 							</div>

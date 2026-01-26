@@ -10,6 +10,7 @@ import { Badge } from "@/components/Badge";
 import { Avatar } from "@/components/Avatar";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   CalendarCheck,
   Plus,
@@ -118,6 +119,83 @@ const studyGroups = [
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const currentDate = new Date();
 
+type ScheduleItem = {
+  time: string;
+  title: string;
+  type?: "session" | "study" | "deadline";
+};
+
+const scheduleTemplates: Array<{ day: number; items: ScheduleItem[] }> = [
+  {
+    day: 2,
+    items: [
+      { time: "3:00 PM", title: "Calculus Study Group", type: "study" },
+      { time: "7:00 PM", title: "Homework Check-in", type: "session" },
+    ],
+  },
+  {
+    day: 5,
+    items: [{ time: "5:00 PM", title: "Linear Algebra Workshop", type: "study" }],
+  },
+  {
+    day: 8,
+    items: [
+      { time: "2:00 PM", title: "Algebra Review Session", type: "session" },
+      { time: "6:30 PM", title: "Quiz Prep Block", type: "deadline" },
+    ],
+  },
+  {
+    day: 12,
+    items: [{ time: "4:00 PM", title: "SAT Math Prep", type: "study" }],
+  },
+  {
+    day: 18,
+    items: [{ time: "1:00 PM", title: "Office Hours", type: "session" }],
+  },
+  {
+    day: 22,
+    items: [{ time: "6:00 PM", title: "Practice Test Review", type: "deadline" }],
+  },
+  {
+    day: 27,
+    items: [{ time: "3:30 PM", title: "Statistics Project Checkpoint", type: "deadline" }],
+  },
+];
+
+const isSameDay = (a: Date, b: Date) =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+const getStartOfWeek = (date: Date) => {
+  const start = new Date(date);
+  start.setDate(start.getDate() - start.getDay());
+  start.setHours(0, 0, 0, 0);
+  return start;
+};
+
+const getWeekDates = (date: Date) => {
+  const start = getStartOfWeek(date);
+  return Array.from({ length: 7 }, (_, index) => {
+    return new Date(start.getFullYear(), start.getMonth(), start.getDate() + index);
+  });
+};
+
+const getScheduleItemsForMonth = (year: number, month: number) => {
+  return scheduleTemplates.flatMap(({ day, items }) =>
+    items.map((item) => ({
+      ...item,
+      date: new Date(year, month, day),
+    }))
+  );
+};
+
+const getScheduleItemsForDate = (date: Date) => {
+  return getScheduleItemsForMonth(date.getFullYear(), date.getMonth()).filter((item) =>
+    isSameDay(item.date, date)
+  );
+};
+
 // Generate realistic time slots
 const generateTimeSlots = (): string[] => {
   const slots = [];
@@ -179,9 +257,12 @@ interface BookedSession {
 
 export default function SchedulePage() {
   const router = useRouter();
+  const { t } = useTranslations();
   const [countdown, setCountdown] = useState("--:--:--");
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
+  const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedTutor, setSelectedTutor] = useState<typeof tutors[0] | null>(null);
@@ -429,35 +510,174 @@ export default function SchedulePage() {
     return new Date(year, month, 1).getDay();
   };
 
+  const navigateCalendar = (direction: "prev" | "next") => {
+    if (viewMode === "month") {
+      const delta = direction === "prev" ? -1 : 1;
+      const nextDate = new Date(currentYear, currentMonth + delta, 1);
+      setCurrentMonth(nextDate.getMonth());
+      setCurrentYear(nextDate.getFullYear());
+      setSelectedDate(nextDate);
+      return;
+    }
+
+    const dayDelta = viewMode === "week" ? 7 : 1;
+    const nextDate = new Date(selectedDate);
+    nextDate.setDate(nextDate.getDate() + (direction === "prev" ? -dayDelta : dayDelta));
+    setSelectedDate(nextDate);
+  };
+
+  const handleViewModeChange = (mode: "day" | "week" | "month") => {
+    setViewMode(mode);
+    if (mode === "month") {
+      setCurrentMonth(selectedDate.getMonth());
+      setCurrentYear(selectedDate.getFullYear());
+    }
+  };
+
+  const getHeaderTitle = () => {
+    if (viewMode === "month") {
+      return `${monthNames[currentMonth]} ${currentYear}`;
+    }
+    if (viewMode === "week") {
+      const start = getStartOfWeek(selectedDate);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      const startLabel = start.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const endLabel = end.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      return `${t("Week")} ${t("of")} ${startLabel} - ${endLabel}`;
+    }
+    return selectedDate.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
   const renderCalendar = () => {
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-    const today = currentDate.getDate();
-    const isCurrentMonth = currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear();
+    const today = new Date();
+    const isCurrentMonth = currentMonth === today.getMonth() && currentYear === today.getFullYear();
 
     const calendarDays = [];
     for (let i = 0; i < firstDay; i++) {
-      calendarDays.push(<div key={`empty-${i}`} className="h-12" />);
+      calendarDays.push(
+        <div
+          key={`empty-${i}`}
+          className="h-24 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
+        />
+      );
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const isToday = isCurrentMonth && day === today;
-      const hasEvent = [today + 1, today + 4, today + 6].includes(day);
+      const date = new Date(currentYear, currentMonth, day);
+      const isToday = isCurrentMonth && day === today.getDate();
+      const isSelected = isSameDay(date, selectedDate);
+      const items = getScheduleItemsForDate(date);
+      const maxItems = 2;
 
       calendarDays.push(
-        <div
+        <button
           key={day}
-          className={`h-12 flex flex-col items-center justify-center rounded-lg text-sm transition-all cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 ${
-            isToday ? "bg-gradient-to-br from-violet-500 to-purple-500 text-white font-semibold shadow-lg" : "text-slate-700 dark:text-slate-300 hover:text-primary-themed"
+          type="button"
+          onClick={() => setSelectedDate(date)}
+          className={`h-24 rounded-xl border p-2 text-left text-sm transition-all ${
+            isSelected
+              ? "border-[var(--theme-primary)] shadow-lg"
+              : "border-slate-200 dark:border-slate-800"
+          } ${
+            isToday
+              ? "bg-gradient-to-br from-violet-500/20 to-purple-500/10 text-slate-900 dark:text-white"
+              : "bg-white/70 dark:bg-slate-950/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
           }`}
         >
-          {day}
-          {hasEvent && !isToday && <div className="w-1.5 h-1.5 rounded-full bg-violet-500 mt-0.5" />}
-        </div>
+          <div className="flex items-center justify-between">
+            <span className={`font-semibold ${isToday ? "text-[var(--theme-primary)]" : ""}`}>{day}</span>
+            {items.length > 0 && (
+              <span className="text-xs text-slate-400">{items.length} {t("items")}</span>
+            )}
+          </div>
+          <div className="mt-2 space-y-1">
+            {items.slice(0, maxItems).map((item) => (
+              <div key={`${item.time}-${item.title}`} className="text-xs truncate text-slate-600 dark:text-slate-300">
+                <span className="font-medium">{item.time}</span> {item.title}
+              </div>
+            ))}
+            {items.length > maxItems && (
+              <div className="text-xs text-slate-400">+{items.length - maxItems} {t("more")}</div>
+            )}
+          </div>
+        </button>
       );
     }
 
     return calendarDays;
+  };
+
+  const renderWeekView = () => {
+    const weekDates = getWeekDates(selectedDate);
+    return weekDates.map((date) => {
+      const items = getScheduleItemsForDate(date);
+      const isToday = isSameDay(date, new Date());
+      return (
+        <button
+          key={date.toISOString()}
+          type="button"
+          onClick={() => setSelectedDate(date)}
+          className={`h-32 rounded-xl border p-3 text-left transition-all ${
+            isSameDay(date, selectedDate)
+              ? "border-[var(--theme-primary)] shadow-lg"
+              : "border-slate-200 dark:border-slate-800"
+          } ${
+            isToday
+              ? "bg-gradient-to-br from-violet-500/20 to-purple-500/10"
+              : "bg-white/70 dark:bg-slate-950/50 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+          }`}
+        >
+          <div className="flex items-center justify-between text-sm font-semibold text-slate-900 dark:text-white">
+            <span>{days[date.getDay()]}</span>
+            <span className="text-slate-400">{date.getDate()}</span>
+          </div>
+          <div className="mt-2 space-y-1">
+            {items.length === 0 && <div className="text-xs text-slate-400">{t("No tasks")}</div>}
+            {items.slice(0, 3).map((item) => (
+              <div key={`${item.time}-${item.title}`} className="text-xs text-slate-600 dark:text-slate-300 truncate">
+                <span className="font-medium">{item.time}</span> {item.title}
+              </div>
+            ))}
+            {items.length > 3 && <div className="text-xs text-slate-400">+{items.length - 3} {t("more")}</div>}
+          </div>
+        </button>
+      );
+    });
+  };
+
+  const renderDayView = () => {
+    const items = getScheduleItemsForDate(selectedDate);
+    if (items.length === 0) {
+      return (
+        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-950/50 p-8 text-center text-slate-500 dark:text-slate-400">
+          {t("No scheduled items for this day.")}
+        </div>
+      );
+    }
+    return (
+      <div className="space-y-3">
+        {items.map((item) => (
+          <div
+            key={`${item.time}-${item.title}`}
+            className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-950/50 p-4"
+          >
+            <div>
+              <div className="text-sm font-semibold text-slate-900 dark:text-white">{item.title}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">{item.time}</div>
+            </div>
+            <Badge variant="secondary">{item.type ?? "session"}</Badge>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const monthNames = [
@@ -532,32 +752,34 @@ export default function SchedulePage() {
                 <CalendarCheck className="w-6 h-6" />
               </div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {monthNames[currentMonth]} {currentYear}
+                {getHeaderTitle()}
               </h2>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 p-1">
+                {(["day", "week", "month"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => handleViewModeChange(mode)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wide transition-all ${
+                      viewMode === mode
+                        ? "bg-[var(--theme-primary)] text-white shadow-sm"
+                        : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    {mode === "day" ? t("Day") : mode === "week" ? t("Week") : t("Month")}
+                  </button>
+                ))}
+              </div>
               <button
-                onClick={() => {
-                  if (currentMonth === 0) {
-                    setCurrentMonth(11);
-                    setCurrentYear(currentYear - 1);
-                  } else {
-                    setCurrentMonth(currentMonth - 1);
-                  }
-                }}
+                onClick={() => navigateCalendar("prev")}
                 className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
               >
                 <ChevronLeft className="w-5 h-5 text-slate-300" />
               </button>
               <button
-                onClick={() => {
-                  if (currentMonth === 11) {
-                    setCurrentMonth(0);
-                    setCurrentYear(currentYear + 1);
-                  } else {
-                    setCurrentMonth(currentMonth + 1);
-                  }
-                }}
+                onClick={() => navigateCalendar("next")}
                 className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
               >
                 <ChevronRight className="w-5 h-5 text-slate-300" />
@@ -565,14 +787,34 @@ export default function SchedulePage() {
             </div>
           </div>
           <div className="p-6">
-            <div className="grid grid-cols-7 gap-2 mb-2">
-              {days.map((day) => (
-                <div key={day} className="h-10 flex items-center justify-center text-sm font-medium text-slate-400">
-                  {day}
+            {viewMode === "month" && (
+              <>
+                <div className="grid grid-cols-7 gap-2 mb-3">
+                  {days.map((day) => (
+                    <div key={day} className="h-10 flex items-center justify-center text-sm font-medium text-slate-400">
+                      {day}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-2">{renderCalendar()}</div>
+                <div className="grid grid-cols-7 gap-3">{renderCalendar()}</div>
+              </>
+            )}
+            {viewMode === "week" && (
+              <div className="grid grid-cols-7 gap-3">{renderWeekView()}</div>
+            )}
+            {viewMode === "day" && (
+              <div className="space-y-4">
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  {selectedDate.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </div>
+                {renderDayView()}
+              </div>
+            )}
           </div>
         </Card>
 
