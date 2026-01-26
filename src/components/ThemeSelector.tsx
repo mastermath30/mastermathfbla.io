@@ -100,9 +100,9 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
     <div ref={containerRef} className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-full bg-slate-800/90 dark:bg-slate-950/90 light:bg-white/90 backdrop-blur-sm border border-slate-700 dark:border-slate-700 hover:bg-slate-700 dark:hover:bg-slate-700 transition-all shadow-sm"
+        className="flex items-center justify-center gap-2 w-10 h-10 md:px-3 md:py-2 md:w-auto md:h-auto rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:scale-105"
       >
-        <Palette className="w-4 h-4 text-slate-300 dark:text-slate-300" />
+        <Palette className="w-5 h-5 md:w-4 md:h-4 text-slate-600 dark:text-slate-300" />
       </button>
 
       <AnimatePresence>
@@ -110,10 +110,10 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
           <>
             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50"
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="absolute left-0 md:right-0 md:left-auto bottom-full mb-2 md:mt-2 md:bottom-auto md:top-full w-64 bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50"
             >
               <div className="p-3">
                 {/* Dark/Light Mode Toggle */}
