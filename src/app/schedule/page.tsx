@@ -712,15 +712,15 @@ export default function SchedulePage() {
             <div className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <CalendarCheck className="w-4 h-4" />
-                Tutoring Sessions
+                {t("Tutoring Sessions")}
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">Schedule</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">{t("Schedule")}</h1>
               <p className="text-slate-200 text-base md:text-lg mb-4">
-                Manage your study sessions and tutoring appointments.
+                {t("Manage your study sessions and tutoring appointments.")}
               </p>
               <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white/10 backdrop-blur rounded-xl text-sm md:text-base">
                 <Clock className="w-4 h-4 md:w-5 md:h-5" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-slate-200">Next session in:</span>
+                <span className="text-slate-200">{t("Next session in:")}</span>
                 <span className="font-mono text-xl md:text-2xl font-bold text-white">{countdown}</span>
               </div>
             </div>
@@ -729,12 +729,12 @@ export default function SchedulePage() {
               <Link href="/schedule">
                 <Button>
                   <Plus className="w-4 h-4" />
-                  Book Session
+                  {t("Book Session")}
                 </Button>
               </Link>
               <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
                 <Filter className="w-4 h-4" />
-                Filters
+                {t("Filters")}
               </Button>
             </div>
           </div>
@@ -826,8 +826,8 @@ export default function SchedulePage() {
                 <Video className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Upcoming Sessions</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Your next scheduled tutoring sessions</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Upcoming Sessions")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Your next scheduled tutoring sessions")}</p>
               </div>
             </div>
           </div>
@@ -869,7 +869,7 @@ export default function SchedulePage() {
                 <div className="flex-1">
                   <h4 className="font-semibold text-slate-900 dark:text-white">{session.title}</h4>
                   <p className="text-slate-500 text-sm">{session.time}</p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">With: {session.tutor}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("With:")} {session.tutor}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant={session.status === "confirmed" ? "success" : "warning"}>
@@ -884,14 +884,14 @@ export default function SchedulePage() {
 
         {/* Available Tutors */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Available Tutors</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Book a session with our expert peer tutors</p>
-            </div>
-            <Link href="/tutors" className="text-primary-themed text-sm font-medium hover:underline">
-              View all tutors
-            </Link>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Available Tutors")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Book a session with our expert peer tutors")}</p>
+              </div>
+              <Link href="/tutors" className="text-primary-themed text-sm font-medium hover:underline">
+                {t("View all tutors")}
+              </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -915,7 +915,7 @@ export default function SchedulePage() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                       </span>
-                      Available Now
+                      {t("Available Now")}
                     </div>
                   )}
                   {/* Rating overlay */}
@@ -961,11 +961,11 @@ export default function SchedulePage() {
                     </div>
                   )}
                   <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
-                    <span>{tutor.reviews} reviews</span>
+                    <span>{tutor.reviews} {t("reviews")}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
                       <Users className="w-3.5 h-3.5" />
-                      {Math.floor(tutor.reviews * 0.7)}+ students
+                      {Math.floor(tutor.reviews * 0.7)}+ {t("students")}
                     </span>
                   </div>
                   <Button 
@@ -976,9 +976,9 @@ export default function SchedulePage() {
                     {tutor.available ? (
                       <>
                         <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
-                        Book Now
+                        {t("Book Now")}
                       </>
-                    ) : "Unavailable"}
+                    ) : t("Unavailable")}
                   </Button>
                 </div>
               </Card>
@@ -1121,7 +1121,7 @@ export default function SchedulePage() {
                       </div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
                         <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: "var(--theme-primary)" }} />
-                        Dots indicate available days
+                        {t("Dots indicate available days")}
                       </p>
                     </div>
                   </div>
@@ -1156,14 +1156,14 @@ export default function SchedulePage() {
                               style={selectedTime === slot ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                             >
                               {slot}
-                              {!available && <div className="text-xs mt-1 opacity-70">Booked</div>}
+                              {!available && <div className="text-xs mt-1 opacity-70">{t("Booked")}</div>}
                             </button>
                           ))}
                         </div>
                         {getAvailableTimeSlots().length === 0 && (
                           <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
                             <div className="font-medium text-lg mb-1">🚫 Fully Booked</div>
-                            <div className="text-sm">No available slots for this day</div>
+                            <div className="text-sm">{t("No available slots for this day")}</div>
                           </div>
                         )}
                       </div>
@@ -1230,7 +1230,7 @@ export default function SchedulePage() {
                     disabled={!bookingDate || !selectedTime}
                   >
                     <CalendarPlus className="w-4 h-4" />
-                    Confirm Booking
+                    {t("Confirm Booking")}
                   </Button>
                 </>
               ) : (
@@ -1241,9 +1241,9 @@ export default function SchedulePage() {
                   >
                     <CheckCircle2 className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Booking Confirmed!</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t("Booking Confirmed!")}</h3>
                   <p className="text-slate-500 dark:text-slate-400 mb-2">
-                    Your session with {selectedTutor.name} has been scheduled.
+                    {t("Your session with")} {selectedTutor.name} {t("has been scheduled.")}
                   </p>
                   <p className="text-sm" style={{ color: "var(--theme-primary)" }}>
                     {bookingDate && formatDate(bookingDate)} at {selectedTime}

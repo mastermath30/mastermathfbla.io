@@ -36,11 +36,11 @@ import {
   Calculator,
 } from "lucide-react";
 
-const stats = [
-  { value: 12000, label: "Students Helped" },
-  { value: 320, label: "Peer Tutors" },
-  { value: 98, label: "Success Rate" },
-  { value: 24, label: "Support" },
+const getStats = (t: (key: string) => string) => [
+  { value: 12000, label: t("Students Helped") },
+  { value: 320, label: t("Peer Tutors") },
+  { value: 98, label: t("Success Rate") },
+  { value: 24, label: t("Support") },
 ];
 
 const sessions = [
@@ -110,58 +110,58 @@ const topTutors = [
   },
 ];
 
-const features = [
+const getFeatures = (t: (key: string) => string) => [
   {
     icon: Brain,
-    title: "Interactive Learning",
-    description: "Engage with step-by-step lessons and practice problems that adapt to your learning pace.",
+    title: t("Interactive Learning"),
+    description: t("Engage with step-by-step lessons and practice problems that adapt to your learning pace."),
     link: "/resources",
-    linkText: "Explore Resources",
+    linkText: t("Explore Resources"),
     image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=400&h=300&fit=crop",
   },
   {
     icon: TrendingUp,
-    title: "Track Progress",
-    description: "Monitor your learning journey with detailed analytics and personalized goal tracking.",
+    title: t("Track Progress"),
+    description: t("Monitor your learning journey with detailed analytics and personalized goal tracking."),
     link: "/dashboard",
-    linkText: "View Dashboard",
+    linkText: t("View Dashboard"),
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
   },
   {
     icon: Users,
-    title: "Peer Tutoring",
-    description: "Connect with experienced peer tutors for live sessions and personalized help.",
+    title: t("Peer Tutoring"),
+    description: t("Connect with experienced peer tutors for live sessions and personalized help."),
     link: "/schedule",
-    linkText: "Book a Session",
+    linkText: t("Book a Session"),
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop",
   },
   {
     icon: MessageCircle,
-    title: "Community Forum",
-    description: "Ask questions, share solutions, and learn together with our supportive community.",
+    title: t("Community Forum"),
+    description: t("Ask questions, share solutions, and learn together with our supportive community."),
     link: "/community",
-    linkText: "Join Discussion",
+    linkText: t("Join Discussion"),
     image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop",
   },
 ];
 
-const steps = [
+const getSteps = (t: (key: string) => string) => [
   {
     icon: UserPlus,
-    title: "Create Your Profile",
-    description: "Sign up for free and tell us about your learning goals. Our system will personalize your experience based on your current level and objectives.",
+    title: t("Create Your Profile"),
+    description: t("Sign up for free and tell us about your learning goals. Our system will personalize your experience based on your current level and objectives."),
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop",
   },
   {
     icon: BookOpen,
-    title: "Learn & Practice",
-    description: "Access interactive lessons, video tutorials, and practice problems. Book sessions with peer tutors when you need extra help.",
+    title: t("Learn & Practice"),
+    description: t("Access interactive lessons, video tutorials, and practice problems. Book sessions with peer tutors when you need extra help."),
     image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&h=200&fit=crop",
   },
   {
     icon: Trophy,
-    title: "Track & Succeed",
-    description: "Monitor your progress on the dashboard, earn achievements, and watch your math skills grow over time.",
+    title: t("Track & Succeed"),
+    description: t("Monitor your progress on the dashboard, earn achievements, and watch your math skills grow over time."),
     image: "https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=300&h=200&fit=crop",
   },
 ];
@@ -170,6 +170,9 @@ export default function Home() {
   const { t } = useTranslations();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [countdown, setCountdown] = useState("--:--:-");
+  const stats = getStats(t);
+  const features = getFeatures(t);
+  const steps = getSteps(t);
 
   useEffect(() => {
     // Check if user is logged in
@@ -246,10 +249,10 @@ export default function Home() {
             {/* Left content */}
             <div className="text-center lg:text-left">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight break-words">
-                Master Mathematics
+                {t("Master Mathematics")}
                 <br />
                 <span className="gradient-text relative inline-block">
-                  With Expert Tutors
+                  {t("With Expert Tutors")}
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
                     <path d="M2 10C50 4 150 4 298 10" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
                     <defs>
@@ -263,7 +266,7 @@ export default function Home() {
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-xl leading-relaxed">
-                Connect with top-rated peer tutors and master mathematics through personalized, interactive learning sessions.
+                {t("Connect with top-rated peer tutors and master mathematics through personalized, interactive learning sessions.")}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
@@ -372,7 +375,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
         
-        {/* Recent Sessions */}
+        {/* Recent Sessions - only for logged in users */}
         {isLoggedIn && (
           <Card className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
@@ -416,120 +419,410 @@ export default function Home() {
           </Card>
         )}
 
-        {/* Top Rated Tutors */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Top Rated Tutors</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Our highest-rated math tutors ready to help you succeed</p>
-            </div>
-            <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group whitespace-nowrap" style={{ color: 'var(--theme-primary)' }}>
-              View all tutors
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {topTutors.map((tutor, index) => (
-              <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="relative h-32 sm:h-36 overflow-hidden">
-                  <Image
-                    src={tutor.image}
-                    alt={tutor.name}
-                    fill
-                    className="object-cover group-hover/tutor:scale-105 transition-transform duration-500"
-                  />
-                  <div 
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 30%, transparent), transparent)" }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  {tutor.available && (
-                    <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                      </span>
-                      Available Now
-                    </div>
-                  )}
-                  {/* Rating overlay */}
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2 py-1 bg-black/40 backdrop-blur-sm rounded-lg">
-                    <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                    <span className="text-white text-sm font-semibold">{tutor.rating}</span>
-                  </div>
+        {/* For logged in users: Show tutors first */}
+        {isLoggedIn && (
+          <>
+            {/* Top Rated Tutors - for logged in users */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t("Top Rated Tutors")}</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Our highest-rated math tutors ready to help you succeed")}</p>
                 </div>
-                <div className="p-5">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h3 className="font-semibold text-slate-900 dark:text-white text-lg group-hover/tutor:text-[var(--theme-primary)] transition-colors">{tutor.name}</h3>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">{tutor.subjects}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-bold text-lg" style={{ color: 'var(--theme-primary)' }}>${tutor.price}</span>
-                      <span className="text-slate-400 text-sm">/hr</span>
-                    </div>
-                  </div>
-                  
-                  {/* Specialties */}
-                  {tutor.specialties && (
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-1.5">
-                        {tutor.specialties.slice(0, 2).map(specialty => (
-                          <span 
-                            key={specialty}
-                            className="text-xs px-2.5 py-1 rounded-full transition-colors"
-                            style={{ 
-                              background: 'rgba(var(--theme-primary-rgb), 0.1)',
-                              color: 'var(--theme-primary)'
-                            }}
-                          >
-                            {specialty}
+                <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group whitespace-nowrap" style={{ color: 'var(--theme-primary)' }}>
+                  {t("View all tutors")}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {topTutors.map((tutor, index) => (
+                  <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="relative h-32 sm:h-36 overflow-hidden">
+                      <Image
+                        src={tutor.image}
+                        alt={tutor.name}
+                        fill
+                        className="object-cover group-hover/tutor:scale-105 transition-transform duration-500"
+                      />
+                      <div 
+                        className="absolute inset-0"
+                        style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 30%, transparent), transparent)" }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      {tutor.available && (
+                        <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                           </span>
-                        ))}
-                        {tutor.specialties.length > 2 && (
-                          <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
-                            +{tutor.specialties.length - 2}
-                          </span>
-                        )}
+                          {t("Available Now")}
+                        </div>
+                      )}
+                      <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2 py-1 bg-black/40 backdrop-blur-sm rounded-lg">
+                        <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                        <span className="text-white text-sm font-semibold">{tutor.rating}</span>
                       </div>
                     </div>
-                  )}
-                  
-                  <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
-                    <span>{tutor.reviews} reviews</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3.5 h-3.5" />
-                      {Math.floor(tutor.reviews * 0.7)}+ students
-                    </span>
-                  </div>
-                  
-                  <Button 
-                    className="w-full group/btn" 
-                    disabled={!tutor.available}
-                    onClick={() => tutor.available && handleBookNow(tutor)}
-                  >
-                    {tutor.available ? (
-                      <>
-                        <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
-                        Book Now
-                      </>
-                    ) : (
-                      "Unavailable"
-                    )}
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-semibold text-slate-900 dark:text-white text-lg group-hover/tutor:text-[var(--theme-primary)] transition-colors">{tutor.name}</h3>
+                          <p className="text-slate-500 dark:text-slate-400 text-sm">{tutor.subjects}</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="font-bold text-lg" style={{ color: 'var(--theme-primary)' }}>${tutor.price}</span>
+                          <span className="text-slate-400 text-sm">/hr</span>
+                        </div>
+                      </div>
+                      
+                      {tutor.specialties && (
+                        <div className="mb-4">
+                          <div className="flex flex-wrap gap-1.5">
+                            {tutor.specialties.slice(0, 2).map(specialty => (
+                              <span 
+                                key={specialty}
+                                className="text-xs px-2.5 py-1 rounded-full transition-colors"
+                                style={{ 
+                                  background: 'rgba(var(--theme-primary-rgb), 0.1)',
+                                  color: 'var(--theme-primary)'
+                                }}
+                              >
+                                {specialty}
+                              </span>
+                            ))}
+                            {tutor.specialties.length > 2 && (
+                              <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
+                                +{tutor.specialties.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
+                        <span>{tutor.reviews} {t("reviews")}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          {Math.floor(tutor.reviews * 0.7)}+ {t("students")}
+                        </span>
+                      </div>
+                      
+                      <Button 
+                        className="w-full group/btn" 
+                        disabled={!tutor.available}
+                        onClick={() => tutor.available && handleBookNow(tutor)}
+                      >
+                        {tutor.available ? (
+                          <>
+                            <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
+                            {t("Book Now")}
+                          </>
+                        ) : (
+                          t("Unavailable")
+                        )}
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Trusted By Section */}
-      <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">Trusted by students from top institutions</p>
+      {/* For new users: Show marketing sections before tutors */}
+      {!isLoggedIn && (
+        <>
+          {/* Trusted By Section */}
+          <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6">
+              <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">{t("Trusted by students from top institutions")}</p>
+              <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16">
+                <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
+                  <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
+                    <Image src="/logos/mit.png" alt="MIT" fill className="object-contain" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">MIT</span>
+                </div>
+                <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
+                  <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
+                    <Image src="/logos/stanford.png" alt="Stanford" fill className="object-contain" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Stanford</span>
+                </div>
+                <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
+                  <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
+                    <Image src="/logos/harvard.png" alt="Harvard" fill className="object-contain" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Harvard</span>
+                </div>
+                <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
+                  <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
+                    <Image src="/logos/berkeley.png" alt="Berkeley" fill className="object-contain" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Berkeley</span>
+                </div>
+                <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
+                  <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
+                    <Image src="/logos/caltech.png" alt="Caltech" fill className="object-contain" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Caltech</span>
+                </div>
+                <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
+                  <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
+                    <Image src="/logos/princeton-new.png" alt="Princeton" fill className="object-contain" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Princeton</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Features Section */}
+          <section id="features" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+            <GlowingOrbs variant="section" />
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+              <div className="text-center mb-12 md:mb-16">
+                <SectionLabel icon={Zap} className="mb-4">
+                  {t("Why Choose MathMaster?")}
+                </SectionLabel>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4 tracking-tight px-4">
+                  {t("Learn Smarter,")} <span className="gradient-text">{t("Not Harder")}</span>
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
+                  {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {features.map((feature, index) => (
+                  <Card key={feature.title} className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="flex flex-col md:flex-row h-full">
+                      <div className="md:w-2/5 relative h-48 md:h-auto min-h-[200px] overflow-hidden">
+                        <Image
+                          src={feature.image}
+                          alt={feature.title}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/40" />
+                        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), transparent)' }} />
+                      </div>
+                      <div className="md:w-3/5 p-6 flex flex-col">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
+                          <feature.icon className="w-6 h-6 text-white" />
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors">{feature.title}</h3>
+                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 flex-1">
+                          {feature.description}
+                        </p>
+                        <Link
+                          href={feature.link}
+                          className="inline-flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all group/link"
+                          style={{ color: 'var(--theme-primary)' }}
+                        >
+                          {feature.linkText}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* How It Works */}
+          <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+            <GlowingOrbs variant="subtle" />
+            <div className="relative max-w-6xl mx-auto px-6">
+              <div className="text-center mb-16">
+                <SectionLabel icon={Rocket} className="mb-4">
+                  {t("Your Learning Journey")}
+                </SectionLabel>
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+                  {t("How MathMaster Works")}
+                </h2>
+                <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto">
+                  {t("Three simple steps to transform your math skills")}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                {steps.map((step, index) => (
+                  <div key={step.title} className="relative h-full">
+                    {index < steps.length - 1 && (
+                      <div className="hidden md:block absolute top-24 left-[60%] w-full h-0.5" style={{ background: 'linear-gradient(to right, var(--theme-primary-light), transparent)' }} />
+                    )}
+                    <Card variant="gradient" padding="none" className="relative overflow-visible h-full flex flex-col">
+                      <div
+                        className="absolute top-4 left-4 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10"
+                        style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+                      >
+                        {index + 1}
+                      </div>
+                      <div className="relative h-44 mb-4 overflow-hidden rounded-t-2xl">
+                        <Image
+                          src={step.image}
+                          alt={step.title}
+                          fill
+                          className="object-cover object-center"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-950 to-transparent" />
+                      </div>
+                      <div className="flex-1 flex flex-col px-6 pb-6">
+                        <div
+                          className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950/60 flex items-center justify-center mb-4 shadow-sm border border-slate-200 dark:border-slate-700"
+                          style={{ color: "var(--theme-primary)" }}
+                        >
+                          <step.icon className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{step.title}</h3>
+                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">{step.description}</p>
+                      </div>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Testimonials */}
+          <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+            <GlowingOrbs variant="section" />
+            <div className="relative max-w-7xl mx-auto px-6">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+                  {t("What Students Say")}
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+                  {t("See what our students have to say about us.")}
+                </p>
+              </div>
+              <TestimonialsScroll />
+            </div>
+          </section>
+
+          {/* Now show Top Rated Tutors for new users */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t("Top Rated Tutors")}</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Our highest-rated math tutors ready to help you succeed")}</p>
+                </div>
+                <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group whitespace-nowrap" style={{ color: 'var(--theme-primary)' }}>
+                  {t("View all tutors")}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {topTutors.map((tutor, index) => (
+                  <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="relative h-32 sm:h-36 overflow-hidden">
+                      <Image
+                        src={tutor.image}
+                        alt={tutor.name}
+                        fill
+                        className="object-cover group-hover/tutor:scale-105 transition-transform duration-500"
+                      />
+                      <div 
+                        className="absolute inset-0"
+                        style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 30%, transparent), transparent)" }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      {tutor.available && (
+                        <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                          </span>
+                          {t("Available Now")}
+                        </div>
+                      )}
+                      <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2 py-1 bg-black/40 backdrop-blur-sm rounded-lg">
+                        <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                        <span className="text-white text-sm font-semibold">{tutor.rating}</span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-semibold text-slate-900 dark:text-white text-lg group-hover/tutor:text-[var(--theme-primary)] transition-colors">{tutor.name}</h3>
+                          <p className="text-slate-500 dark:text-slate-400 text-sm">{tutor.subjects}</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="font-bold text-lg" style={{ color: 'var(--theme-primary)' }}>${tutor.price}</span>
+                          <span className="text-slate-400 text-sm">/hr</span>
+                        </div>
+                      </div>
+                      
+                      {tutor.specialties && (
+                        <div className="mb-4">
+                          <div className="flex flex-wrap gap-1.5">
+                            {tutor.specialties.slice(0, 2).map(specialty => (
+                              <span 
+                                key={specialty}
+                                className="text-xs px-2.5 py-1 rounded-full transition-colors"
+                                style={{ 
+                                  background: 'rgba(var(--theme-primary-rgb), 0.1)',
+                                  color: 'var(--theme-primary)'
+                                }}
+                              >
+                                {specialty}
+                              </span>
+                            ))}
+                            {tutor.specialties.length > 2 && (
+                              <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
+                                +{tutor.specialties.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
+                        <span>{tutor.reviews} {t("reviews")}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          {Math.floor(tutor.reviews * 0.7)}+ {t("students")}
+                        </span>
+                      </div>
+                      
+                      <Button 
+                        className="w-full group/btn" 
+                        disabled={!tutor.available}
+                        onClick={() => tutor.available && handleBookNow(tutor)}
+                      >
+                        {tutor.available ? (
+                          <>
+                            <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
+                            {t("Book Now")}
+                          </>
+                        ) : (
+                          t("Unavailable")
+                        )}
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* For logged-in users: Show Trusted By + marketing sections after tutors */}
+      {isLoggedIn && (
+        <>
+          {/* Trusted By Section */}
+          <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6">
+              <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">{t("Trusted by students from top institutions")}</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16">
             <div className="group flex flex-col items-center gap-3 opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105">
               <div className="w-14 h-14 relative transition-all duration-300 rounded-lg p-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.08)] hover:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.15)]">
@@ -578,13 +871,13 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 md:mb-16">
             <SectionLabel icon={Zap} className="mb-4">
-              Why Choose MathMaster?
+              {t("Why Choose MathMaster?")}
             </SectionLabel>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4 tracking-tight px-4">
-              Learn Smarter, <span className="gradient-text">Not Harder</span>
+              {t("Learn Smarter,")} <span className="gradient-text">{t("Not Harder")}</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
-              Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.
+              {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
             </p>
           </div>
 
@@ -634,13 +927,13 @@ export default function Home() {
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Rocket} className="mb-4">
-              Your Learning Journey
+              {t("Your Learning Journey")}
             </SectionLabel>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
-              How MathMaster Works
+              {t("How MathMaster Works")}
             </h2>
             <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto">
-              Three simple steps to transform your math skills
+              {t("Three simple steps to transform your math skills")}
             </p>
           </div>
 
@@ -695,18 +988,20 @@ export default function Home() {
           <div className="text-center mb-12">
       
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
-              What Students Say
+              {t("What Students Say")}
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
-              See what our students have to say about us.
+              {t("See what our students have to say about us.")}
             </p>
           </div>
 
           <TestimonialsScroll />
         </div>
       </section>
+        </>
+      )}
 
-      {/* CTA Section */}
+      {/* CTA Section - shown for everyone */}
       <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
@@ -714,22 +1009,22 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
             <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              Ready to Master Math?
+              {t("Ready to Master Math?")}
             </h2>
           </FadeIn>
           <FadeIn delay={0.1}>
             <p className="text-lg mb-8 max-w-xl mx-auto text-slate-600 dark:text-slate-300">
-              Join thousands of students who are already improving their math skills with MathMaster.
+              {t("Join thousands of students who are already improving their math skills with MathMaster.")}
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
             <Link href="/auth">
               <Button size="lg" className="shadow-xl" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))", color: "white" }}>
                 <Rocket className="w-5 h-5" />
-                Get Started Free
+                {t("Get Started Free")}
               </Button>
             </Link>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">No credit card required • Free forever</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">{t("No credit card required • Free forever")}</p>
           </FadeIn>
         </div>
       </section>
@@ -743,15 +1038,15 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold font-serif text-xl" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>
                   π
                 </div>
-                <span className="text-xl font-bold">MathMaster</span>
+                <span className="text-xl font-bold">{t("MathMaster")}</span>
               </div>
               <p className="text-slate-500 dark:text-slate-400 text-sm">
-                Empowering students to master mathematics through peer learning and collaboration.
+                {t("Empowering students to master mathematics through peer learning and collaboration.")}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">Platform</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Platform")}</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link href="/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Dashboard</Link></li>
                 <li><Link href="/schedule" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Schedule</Link></li>
@@ -761,17 +1056,17 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">Company</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Company")}</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">About Us</Link></li>
-                <li><Link href="/support" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Support</Link></li>
-                <li><Link href="#" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Terms of Service</Link></li>
+                <li><Link href="/about" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("About Us")}</Link></li>
+                <li><Link href="/support" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Support")}</Link></li>
+                <li><Link href="#" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Privacy Policy")}</Link></li>
+                <li><Link href="#" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Terms of Service")}</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">Connect</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Connect")}</h4>
               <div className="flex gap-3">
                 <a href="#" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -788,7 +1083,7 @@ export default function Home() {
 
           <div className="border-t border-slate-200 dark:border-slate-800 pt-8">
             <p className="text-center text-slate-500 text-sm">
-              © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
+              {t("© 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.")}
             </p>
           </div>
         </div>
