@@ -273,6 +273,7 @@ export default function SchedulePage() {
   const [selectedDuration, setSelectedDuration] = useState("1 hour");
   const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
   const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
+  const [joinedGroups, setJoinedGroups] = useState<string[]>([]);
 
   // Calculate price based on duration
   const getDurationHours = (duration: string): number => {
@@ -351,24 +352,17 @@ export default function SchedulePage() {
       }
     }
 
-    // Check if user came from tutors page with selected tutor
-    const urlParams = new URLSearchParams(window.location.search);
-    const shouldBook = urlParams.get('book');
-    const selectedTutorData = localStorage.getItem("selectedTutor");
-    
-    if (shouldBook && selectedTutorData && isLoggedIn) {
+    // Load joined study groups from localStorage
+    const savedGroups = localStorage.getItem("mm_joined_groups");
+    if (savedGroups) {
       try {
-        const tutorData = JSON.parse(selectedTutorData);
-        // Find matching tutor in our tutors array
-        const matchingTutor = tutors.find(t => t.name === tutorData.name);
-        if (matchingTutor) {
-          handleBookNow(matchingTutor);
-          localStorage.removeItem("selectedTutor");
-        }
+        setJoinedGroups(JSON.parse(savedGroups));
       } catch {
         // Ignore parse errors
       }
     }
+
+    // Removed auto-open modal code since Book Now now redirects to tutors page
   }, []);
 
   useEffect(() => {
@@ -396,20 +390,29 @@ export default function SchedulePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleBookNow = (tutor: typeof tutors[0]) => {
+  const handleBookNow = () => {
+    // Redirect to tutors page to view all tutors
+    router.push("/tutors");
+  };
+
+  const handleJoinGroup = (groupTitle: string) => {
     if (!isLoggedIn) {
-      // Redirect to auth page with return URL
-      window.location.href = "/auth?redirect=/schedule&action=book";
+      // Redirect to auth page if not logged in
+      router.push("/auth?redirect=/schedule");
       return;
     }
-    setSelectedTutor(tutor);
-    setShowBookingModal(true);
-    setBookingConfirmed(false);
-    setBookingDate(null);
-    setSelectedTime(null);
-    setSelectedDuration("1 hour");
-    setBookingMonth(currentDate.getMonth());
-    setBookingYear(currentDate.getFullYear());
+
+    if (joinedGroups.includes(groupTitle)) {
+      // Leave group
+      const updatedGroups = joinedGroups.filter(g => g !== groupTitle);
+      setJoinedGroups(updatedGroups);
+      localStorage.setItem("mm_joined_groups", JSON.stringify(updatedGroups));
+    } else {
+      // Join group
+      const updatedGroups = [...joinedGroups, groupTitle];
+      setJoinedGroups(updatedGroups);
+      localStorage.setItem("mm_joined_groups", JSON.stringify(updatedGroups));
+    }
   };
 
   const confirmBooking = () => {
@@ -726,7 +729,7 @@ export default function SchedulePage() {
             </div>
             
             <div className="flex gap-3">
-              <Link href="/schedule">
+              <Link href="/tutors">
                 <Button>
                   <Plus className="w-4 h-4" />
                   {t("Book Session")}
@@ -968,10 +971,10 @@ export default function SchedulePage() {
                       {Math.floor(tutor.reviews * 0.7)}+ {t("students")}
                     </span>
                   </div>
-                  <Button 
-                    className="w-full group/btn" 
+                  <Button
+                    className="w-full group/btn"
                     disabled={!tutor.available}
-                    onClick={() => tutor.available && handleBookNow(tutor)}
+                    onClick={() => tutor.available && handleBookNow()}
                   >
                     {tutor.available ? (
                       <>
@@ -986,6 +989,52 @@ export default function SchedulePage() {
           </div>
         </div>
 
+        {/* My Study Groups - only show if user has joined groups */}
+        {isLoggedIn && joinedGroups.length > 0 && (
+          <Card className="mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">My Study Groups</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Groups you've joined</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {studyGroups
+                .filter(group => joinedGroups.includes(group.title))
+                .map((group) => (
+                  <div key={group.title} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950/50">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 rounded-lg bg-green-500/15">
+                        <Users className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-slate-900 dark:text-white text-sm mb-1">{group.title}</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {group.schedule}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-slate-600 dark:text-slate-300">
+                            {group.members + 1}/{group.maxMembers} members
+                          </span>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleJoinGroup(group.title)}
+                            className="text-xs"
+                          >
+                            Leave
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </Card>
+        )}
+
         {/* Study Groups */}
         <div>
           <div className="flex items-center justify-between mb-6">
@@ -996,36 +1045,61 @@ export default function SchedulePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {studyGroups.map((group) => (
-              <Card key={group.title} className="overflow-hidden" padding="none">
-                <div className="relative h-40">
-                  <Image
-                    src={group.image}
-                    alt={group.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="font-bold text-white text-lg">{group.title}</h3>
-                    <p className="text-slate-300 text-sm flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      {group.schedule}
-                    </p>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">{group.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-slate-400" />
-                      <span className="text-sm text-slate-500">{group.members}/{group.maxMembers} members</span>
+            {studyGroups.map((group) => {
+              const isJoined = joinedGroups.includes(group.title);
+              const currentMembers = isJoined ? group.members + 1 : group.members;
+              const isFull = currentMembers >= group.maxMembers && !isJoined;
+              
+              return (
+                <Card key={group.title} className="overflow-hidden" padding="none">
+                  <div className="relative h-40">
+                    <Image
+                      src={group.image}
+                      alt={group.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                    {isJoined && (
+                      <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Joined
+                      </div>
+                    )}
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="font-bold text-white text-lg">{group.title}</h3>
+                      <p className="text-slate-300 text-sm flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        {group.schedule}
+                      </p>
                     </div>
-                    <Button variant="secondary" size="sm">Join Group</Button>
                   </div>
-                </div>
-              </Card>
-            ))}
+                  <div className="p-5">
+                    <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">{group.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-slate-400" />
+                        <span className="text-sm text-slate-500 dark:text-slate-400">
+                          {currentMembers}/{group.maxMembers} members
+                        </span>
+                      </div>
+                      <Button 
+                        variant={isJoined ? "outline" : "secondary"} 
+                        size="sm"
+                        onClick={() => handleJoinGroup(group.title)}
+                        disabled={isFull}
+                        style={isJoined ? { 
+                          borderColor: 'var(--theme-primary)', 
+                          color: 'var(--theme-primary)' 
+                        } : {}}
+                      >
+                        {isFull ? "Full" : isJoined ? "Leave Group" : "Join Group"}
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </main>
