@@ -81,9 +81,24 @@ export default function DashboardPage() {
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [goalTitle, setGoalTitle] = useState("");
   const [goalTarget, setGoalTarget] = useState("");
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Check if dark mode is enabled
+    const checkDarkMode = () => {
+      const isDarkMode = document.documentElement.classList.contains('dark');
+      setIsDark(isDarkMode);
+    };
+    checkDarkMode();
+    
+    // Watch for dark mode changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    
     try {
       const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
       if (profile?.firstName) {
@@ -100,6 +115,8 @@ export default function DashboardPage() {
     } catch {
       // Ignore
     }
+    
+    return () => observer.disconnect();
   }, []);
 
   const handleAddGoal = () => {
@@ -138,7 +155,7 @@ export default function DashboardPage() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-slate-950/80" />
+          <div className="absolute inset-0 bg-white/70 dark:bg-slate-950/80" />
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
@@ -148,34 +165,34 @@ export default function DashboardPage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="text-white">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
+            <div className="text-slate-900 dark:text-white">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900/20 dark:bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 {t("Learning Dashboard")}
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
                 {t("Welcome back,")} {userName}!
               </h1>
-              <p className="text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
+              <p className="text-slate-700 dark:text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
               
               {/* Quick stats */}
               <div className="flex flex-wrap gap-4 md:gap-6 mt-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center">
                     <Flame className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">7</p>
-                    <p className="text-xs text-slate-200">{t("Day Streak")}</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-200">{t("Day Streak")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center">
                     <Trophy className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">87%</p>
-                    <p className="text-xs text-slate-200">{t("Mastery")}</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-200">{t("Mastery")}</p>
                   </div>
                 </div>
               </div>
@@ -252,7 +269,7 @@ export default function DashboardPage() {
                     <CardTitle>{t("Learning Progress")}</CardTitle>
                     <CardDescription>{t("Your weekly performance")}</CardDescription>
                   </div>
-                  <select className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500">
+                  <select className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500">
                     <option>{t("This Month")}</option>
                     <option>{t("Last Month")}</option>
                     <option>{t("Last 3 Months")}</option>
@@ -274,19 +291,30 @@ export default function DashboardPage() {
                             <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                        <XAxis dataKey="week" tick={{ fontSize: 12, fill: "#64748b" }} />
-                        <YAxis yAxisId="left" tick={{ fontSize: 12, fill: "#64748b" }} />
-                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: "#64748b" }} tickFormatter={(v) => `${v}%`} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#334155" : "#e2e8f0"} />
+                        <XAxis dataKey="week" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} />
+                        <YAxis yAxisId="left" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} />
+                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} tickFormatter={(v) => `${v}%`} />
                         <Tooltip
                           contentStyle={{
-                            backgroundColor: "white",
-                            border: "1px solid #e2e8f0",
+                            backgroundColor: isDark ? "#0f172a" : "white",
+                            border: isDark ? "1px solid #334155" : "1px solid #e2e8f0",
                             borderRadius: "12px",
                             boxShadow: "0 10px 40px -10px rgb(0 0 0 / 0.1)",
                           }}
+                          labelStyle={{
+                            color: isDark ? "#f8fafc" : "#0f172a",
+                          }}
+                          itemStyle={{
+                            color: isDark ? "#f8fafc" : "#0f172a",
+                          }}
                         />
-                        <Legend />
+                        <Legend 
+                          wrapperStyle={{ 
+                            color: isDark ? "#94a3b8" : "#64748b",
+                            paddingTop: "20px"
+                          }} 
+                        />
                         <Area
                           yAxisId="left"
                           type="monotone"
@@ -323,9 +351,9 @@ export default function DashboardPage() {
 
           {/* Challenges */}
           <Card padding="none" className="overflow-hidden" id="challenges">
-            <div className="p-6 border-b border-slate-700 bg-slate-900">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                   <Target className="w-5 h-5" />
                 </div>
                 <div>
@@ -334,16 +362,16 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-            <div className="divide-y divide-slate-800">
+            <div className="divide-y divide-slate-200 dark:divide-slate-800">
               {challenges.map((challenge) => (
-                <div key={challenge.title} className="p-4 hover:bg-slate-900/50 transition-colors">
+                <div key={challenge.title} className="p-4 transition-colors">
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 rounded-lg bg-${challenge.color}-100 flex items-center justify-center text-${challenge.color}-500 flex-shrink-0`}>
                       <challenge.icon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-sm text-slate-900 dark:text-white">{challenge.title}</h4>
-                      <p className={`text-xs mt-0.5 ${challenge.isQuiz ? 'text-yellow-600' : 'text-slate-500'}`}>
+                      <p className={`text-xs mt-0.5 ${challenge.isQuiz ? 'text-yellow-600 dark:text-yellow-500' : 'text-slate-500 dark:text-slate-400'}`}>
                         {challenge.due} • {challenge.count}
                       </p>
                       {!challenge.isQuiz && (
@@ -357,7 +385,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            <div className="p-4 bg-slate-950 border-t border-slate-800">
+            <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
               <Link href="/dashboard#challenges" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
                 {t("View all challenges")}
                 <ArrowRight className="w-4 h-4" />
@@ -370,9 +398,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Recent Activity */}
           <Card className="overflow-hidden" id="recent-activity">
-            <CardHeader className="bg-slate-900 -mx-6 -mt-6 px-6 pt-6 pb-4 mb-4 border-b border-slate-700">
+            <CardHeader className="bg-slate-100 dark:bg-slate-900 -mx-6 -mt-6 px-6 pt-6 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                   <Zap className="w-5 h-5" />
                 </div>
                 <div>
@@ -384,7 +412,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {activities.map((activity, index) => (
-                  <div key={index} className="flex gap-4 pb-4 border-b border-slate-800 last:border-0 last:pb-0">
+                  <div key={index} className="flex gap-4 pb-4 border-b border-slate-200 dark:border-slate-800 last:border-0 last:pb-0">
                     <div className={`w-10 h-10 rounded-xl bg-${activity.color}-100 flex items-center justify-center text-${activity.color}-500 flex-shrink-0`}>
                       <activity.icon className="w-5 h-5" />
                     </div>
@@ -416,9 +444,9 @@ export default function DashboardPage() {
 
           {/* Study Goals */}
           <Card padding="none" className="overflow-hidden" id="study-goals">
-            <div className="p-6 border-b border-slate-700 flex items-center justify-between bg-slate-900">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-100 dark:bg-slate-900">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <div>
@@ -431,7 +459,7 @@ export default function DashboardPage() {
                 {t("Add Goal")}
               </Button>
             </div>
-            <div className="divide-y divide-slate-800">
+            <div className="divide-y divide-slate-200 dark:divide-slate-800">
               {goals.map((goal) => (
                 <div key={goal.title} className="p-4">
                   <div className="flex items-center justify-between mb-2">
@@ -476,12 +504,12 @@ export default function DashboardPage() {
               fill
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/70" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/85 to-white/75 dark:from-slate-900/90 dark:to-slate-900/70" />
           </div>
           <div className="relative p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-white text-center md:text-left">
+            <div className="text-slate-900 dark:text-white text-center md:text-left">
               <h3 className="text-2xl font-bold mb-2">{t("Keep up the great work!")}</h3>
-              <p className="text-slate-200">{t("You're on track to complete your weekly goals. Just 3 more problems to go!")}</p>
+              <p className="text-slate-700 dark:text-slate-200">{t("You're on track to complete your weekly goals. Just 3 more problems to go!")}</p>
             </div>
               <Link href="/resources">
                 <Button className="shrink-0">
@@ -496,7 +524,7 @@ export default function DashboardPage() {
       {showGoalModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-950/50 dark:bg-slate-950/80 backdrop-blur-sm"
             onClick={() => setShowGoalModal(false)}
           />
           <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-950 p-6 shadow-2xl">

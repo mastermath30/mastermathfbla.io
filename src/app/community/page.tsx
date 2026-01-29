@@ -207,10 +207,10 @@ export default function CommunityPage() {
           {/* Forum Section */}
           <div className="lg:col-span-2">
             <Card padding="none" className="overflow-hidden">
-              <div className="p-6 border-b border-slate-700 bg-slate-900">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                    <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                       <Sparkles className="w-5 h-5" />
                     </div>
                     <div>
@@ -254,8 +254,8 @@ export default function CommunityPage() {
 
               {/* Posts */}
               <div>
-                <div className="px-6 py-4 border-b border-slate-700 bg-slate-950">
-                  <h3 className="font-semibold text-sm text-slate-400 flex items-center gap-2">
+                <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950">
+                  <h3 className="font-semibold text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
                     <TrendingUp className="w-4 h-4" />
                     Latest Posts
                   </h3>
@@ -263,8 +263,8 @@ export default function CommunityPage() {
                 <div className="divide-y divide-slate-800">
                   {sortedPosts.length === 0 ? (
                     <div className="p-8 text-center">
-                      <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mx-auto mb-4">
-                        <MessageCircle className="w-8 h-8 text-slate-400" />
+                      <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-900 flex items-center justify-center mx-auto mb-4">
+                        <MessageCircle className="w-8 h-8 text-slate-500 dark:text-slate-400" />
                       </div>
                       <p className="text-slate-400">No posts yet. Be the first to ask a question!</p>
                     </div>
@@ -272,7 +272,7 @@ export default function CommunityPage() {
                     sortedPosts.map((post) => (
                       <div key={post.id} className="p-5 hover:bg-slate-900/50 transition-colors">
                         <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
+                          <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
                             <HelpCircle className="w-5 h-5" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -301,7 +301,7 @@ export default function CommunityPage() {
           <div className="space-y-6">
             {/* Stats */}
             <Card padding="none" className="overflow-hidden">
-              <div className="p-4 border-b border-slate-700 bg-slate-900">
+              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                   Community Stats
@@ -340,7 +340,7 @@ export default function CommunityPage() {
 
             {/* Top Contributors */}
             <Card padding="none" className="overflow-hidden">
-              <div className="p-4 border-b border-slate-700 bg-slate-900">
+              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                   <Trophy className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                   Top Contributors

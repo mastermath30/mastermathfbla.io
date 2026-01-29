@@ -443,7 +443,7 @@ export default function Home() {
                         src={tutor.image}
                         alt={tutor.name}
                         fill
-                        className="object-cover group-hover/tutor:scale-105 transition-transform duration-500"
+                        className="object-cover object-center group-hover/tutor:scale-105 transition-transform duration-500"
                       />
                       <div 
                         className="absolute inset-0"
@@ -727,7 +727,7 @@ export default function Home() {
                         src={tutor.image}
                         alt={tutor.name}
                         fill
-                        className="object-cover group-hover/tutor:scale-105 transition-transform duration-500"
+                        className="object-cover object-center group-hover/tutor:scale-105 transition-transform duration-500"
                       />
                       <div 
                         className="absolute inset-0"

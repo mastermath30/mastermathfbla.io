@@ -905,7 +905,7 @@ export default function SchedulePage() {
                     src={tutor.image}
                     alt={tutor.name}
                     fill
-                    className="object-cover object-top group-hover/tutor:scale-105 transition-transform duration-500"
+                    className="object-cover object-center group-hover/tutor:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
                   <div
