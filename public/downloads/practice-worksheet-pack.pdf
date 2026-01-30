@@ -1,0 +1,136 @@
+%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+>>
+>>
+>>
+endobj
+4 0 obj
+<<
+/Length 4000
+>>
+stream
+BT
+/F2 24 Tf
+50 740 Td
+(PRACTICE WORKSHEET PACK) Tj
+/F1 12 Tf
+0 -30 Td
+(MathMaster - 50+ Problems with Solutions) Tj
+0 -40 Td
+/F2 16 Tf
+(ALGEBRA PROBLEMS) Tj
+/F1 11 Tf
+0 -20 Td
+(1. Solve for x: 3x + 7 = 22    Answer: x = 5) Tj
+0 -15 Td
+(2. Factor: x^2 - 9    Answer: \(x+3\)\(x-3\)) Tj
+0 -15 Td
+(3. Simplify: 2\(3x - 4\) + 5x    Answer: 11x - 8) Tj
+0 -15 Td
+(4. Solve: x^2 - 5x + 6 = 0    Answer: x = 2, 3) Tj
+0 -15 Td
+(5. Find slope: \(2,3\) and \(6,11\)    Answer: m = 2) Tj
+0 -30 Td
+/F2 16 Tf
+(GEOMETRY PROBLEMS) Tj
+/F1 11 Tf
+0 -20 Td
+(6. Find area of triangle: b=10, h=8    Answer: 40 sq units) Tj
+0 -15 Td
+(7. Find circumference: r=7    Answer: 14pi or ~43.98) Tj
+0 -15 Td
+(8. Find missing angle: 45, 60, x    Answer: 75 degrees) Tj
+0 -15 Td
+(9. Pythagorean: a=6, b=8, c=?    Answer: c = 10) Tj
+0 -15 Td
+(10. Area of circle: r=5    Answer: 25pi or ~78.54) Tj
+0 -30 Td
+/F2 16 Tf
+(TRIGONOMETRY PROBLEMS) Tj
+/F1 11 Tf
+0 -20 Td
+(11. Find sin\(30\)    Answer: 1/2 or 0.5) Tj
+0 -15 Td
+(12. Find cos\(60\)    Answer: 1/2 or 0.5) Tj
+0 -15 Td
+(13. If sin\(x\) = 3/5, find cos\(x\)    Answer: 4/5) Tj
+0 -15 Td
+(14. Evaluate tan\(45\)    Answer: 1) Tj
+0 -15 Td
+(15. Find sec\(0\)    Answer: 1) Tj
+0 -30 Td
+/F2 16 Tf
+(CALCULUS PROBLEMS) Tj
+/F1 11 Tf
+0 -20 Td
+(16. d/dx[x^4]    Answer: 4x^3) Tj
+0 -15 Td
+(17. d/dx[3x^2 + 2x]    Answer: 6x + 2) Tj
+0 -15 Td
+(18. int 2x dx    Answer: x^2 + C) Tj
+0 -15 Td
+(19. d/dx[sin\(x\) + cos\(x\)]    Answer: cos\(x\) - sin\(x\)) Tj
+0 -15 Td
+(20. int x^2 dx    Answer: x^3/3 + C) Tj
+0 -30 Td
+/F2 14 Tf
+(... 30+ more problems available in the full version!) Tj
+/F1 10 Tf
+0 -20 Td
+(Visit MathMaster for interactive practice and detailed solutions.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+>>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000266 00000 n 
+0000004320 00000 n 
+0000004397 00000 n 
+trailer
+<<
+/Size 7
+/Root 1 0 R
+>>
+startxref
+4479
+%%EOF

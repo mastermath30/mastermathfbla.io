@@ -170,6 +170,7 @@ export default function Home() {
   const { t } = useTranslations();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [countdown, setCountdown] = useState("--:--:-");
+  const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
   const features = getFeatures(t);
   const steps = getSteps(t);
@@ -479,22 +480,31 @@ export default function Home() {
                       {tutor.specialties && (
                         <div className="mb-4">
                           <div className="flex flex-wrap gap-1.5">
-                            {tutor.specialties.slice(0, 2).map(specialty => (
+                            {(expandedSpecialties[tutor.name + '-top'] ? tutor.specialties : tutor.specialties.slice(0, 2)).map(specialty => (
                               <span 
                                 key={specialty}
-                                className="text-xs px-2.5 py-1 rounded-full transition-colors"
-                                style={{ 
-                                  background: 'rgba(var(--theme-primary-rgb), 0.1)',
-                                  color: 'var(--theme-primary)'
-                                }}
+                                className="text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
                               >
                                 {specialty}
                               </span>
                             ))}
                             {tutor.specialties.length > 2 && (
-                              <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
-                                +{tutor.specialties.length - 2}
-                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedSpecialties(prev => ({
+                                    ...prev,
+                                    [tutor.name + '-top']: !prev[tutor.name + '-top']
+                                  }));
+                                }}
+                                className="text-xs px-2.5 py-1 rounded-full transition-colors cursor-pointer hover:opacity-80 font-medium"
+                                style={{ 
+                                  background: 'var(--theme-primary)',
+                                  color: 'white'
+                                }}
+                              >
+                                {expandedSpecialties[tutor.name + '-top'] ? 'Show less' : `+${tutor.specialties.length - 2}`}
+                              </button>
                             )}
                           </div>
                         </div>
@@ -762,22 +772,31 @@ export default function Home() {
                       {tutor.specialties && (
                         <div className="mb-4">
                           <div className="flex flex-wrap gap-1.5">
-                            {tutor.specialties.slice(0, 2).map(specialty => (
+                            {(expandedSpecialties[tutor.name + '-bottom'] ? tutor.specialties : tutor.specialties.slice(0, 2)).map(specialty => (
                               <span 
                                 key={specialty}
-                                className="text-xs px-2.5 py-1 rounded-full transition-colors"
-                                style={{ 
-                                  background: 'rgba(var(--theme-primary-rgb), 0.1)',
-                                  color: 'var(--theme-primary)'
-                                }}
+                                className="text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
                               >
                                 {specialty}
                               </span>
                             ))}
                             {tutor.specialties.length > 2 && (
-                              <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
-                                +{tutor.specialties.length - 2}
-                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedSpecialties(prev => ({
+                                    ...prev,
+                                    [tutor.name + '-bottom']: !prev[tutor.name + '-bottom']
+                                  }));
+                                }}
+                                className="text-xs px-2.5 py-1 rounded-full transition-colors cursor-pointer hover:opacity-80 font-medium"
+                                style={{ 
+                                  background: 'var(--theme-primary)',
+                                  color: 'white'
+                                }}
+                              >
+                                {expandedSpecialties[tutor.name + '-bottom'] ? 'Show less' : `+${tutor.specialties.length - 2}`}
+                              </button>
                             )}
                           </div>
                         </div>

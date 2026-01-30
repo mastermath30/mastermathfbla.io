@@ -1,0 +1,142 @@
+%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+>>
+>>
+>>
+endobj
+4 0 obj
+<<
+/Length 3500
+>>
+stream
+BT
+/F2 24 Tf
+50 740 Td
+(CALCULUS REFERENCE GUIDE) Tj
+/F1 12 Tf
+0 -30 Td
+(MathMaster - Derivatives and Integrals) Tj
+0 -40 Td
+/F2 16 Tf
+(DERIVATIVE RULES) Tj
+/F1 11 Tf
+0 -20 Td
+(Constant Rule: d/dx[c] = 0) Tj
+0 -15 Td
+(Power Rule: d/dx[x^n] = nx^\(n-1\)) Tj
+0 -15 Td
+(Constant Multiple: d/dx[cf\(x\)] = c*f'\(x\)) Tj
+0 -15 Td
+(Sum Rule: d/dx[f\(x\) + g\(x\)] = f'\(x\) + g'\(x\)) Tj
+0 -15 Td
+(Product Rule: d/dx[f*g] = f'g + fg') Tj
+0 -15 Td
+(Quotient Rule: d/dx[f/g] = \(f'g - fg'\)/g^2) Tj
+0 -15 Td
+(Chain Rule: d/dx[f\(g\(x\)\)] = f'\(g\(x\)\)*g'\(x\)) Tj
+0 -30 Td
+/F2 16 Tf
+(COMMON DERIVATIVES) Tj
+/F1 11 Tf
+0 -20 Td
+(d/dx[sin\(x\)] = cos\(x\)) Tj
+0 -15 Td
+(d/dx[cos\(x\)] = -sin\(x\)) Tj
+0 -15 Td
+(d/dx[tan\(x\)] = sec^2\(x\)) Tj
+0 -15 Td
+(d/dx[e^x] = e^x) Tj
+0 -15 Td
+(d/dx[ln\(x\)] = 1/x) Tj
+0 -15 Td
+(d/dx[a^x] = a^x * ln\(a\)) Tj
+0 -30 Td
+/F2 16 Tf
+(INTEGRATION RULES) Tj
+/F1 11 Tf
+0 -20 Td
+(Power Rule: int x^n dx = x^\(n+1\)/\(n+1\) + C, n != -1) Tj
+0 -15 Td
+(int 1/x dx = ln|x| + C) Tj
+0 -15 Td
+(int e^x dx = e^x + C) Tj
+0 -15 Td
+(int sin\(x\) dx = -cos\(x\) + C) Tj
+0 -15 Td
+(int cos\(x\) dx = sin\(x\) + C) Tj
+0 -15 Td
+(int sec^2\(x\) dx = tan\(x\) + C) Tj
+0 -30 Td
+/F2 16 Tf
+(INTEGRATION TECHNIQUES) Tj
+/F1 11 Tf
+0 -20 Td
+(U-Substitution: Let u = g\(x\), du = g'\(x\)dx) Tj
+0 -15 Td
+(Integration by Parts: int u dv = uv - int v du) Tj
+0 -15 Td
+(Partial Fractions: Decompose rational functions) Tj
+0 -30 Td
+/F2 16 Tf
+(FUNDAMENTAL THEOREM OF CALCULUS) Tj
+/F1 11 Tf
+0 -20 Td
+(Part 1: d/dx[int_a^x f\(t\)dt] = f\(x\)) Tj
+0 -15 Td
+(Part 2: int_a^b f\(x\)dx = F\(b\) - F\(a\)) Tj
+ET
+endstream
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+>>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000266 00000 n 
+0000003820 00000 n 
+0000003897 00000 n 
+trailer
+<<
+/Size 7
+/Root 1 0 R
+>>
+startxref
+3979
+%%EOF

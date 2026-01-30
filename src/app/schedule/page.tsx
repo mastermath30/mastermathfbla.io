@@ -310,6 +310,7 @@ export default function SchedulePage() {
   const [filterSubject, setFilterSubject] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [showDayDetail, setShowDayDetail] = useState(false);
+  const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
 
   // Filter sessions based on selected filters
   const filteredSessions = sessions.filter(session => {
@@ -789,19 +790,18 @@ export default function SchedulePage() {
                 </Button>
               </Link>
               <Button 
-                variant="outline" 
                 onClick={() => setShowFilters(!showFilters)}
                 style={{ 
-                  borderColor: 'var(--theme-primary)', 
-                  color: 'var(--theme-primary)',
-                  background: 'transparent'
+                  backgroundColor: 'var(--theme-primary)', 
+                  color: 'white',
+                  borderColor: 'var(--theme-primary)'
                 }}
-                className="hover:bg-[var(--theme-primary)]/10"
+                className="hover:opacity-90"
               >
                 <Filter className="w-4 h-4" />
                 {t("Filters")}
                 {(filterSubject || filterStatus) && (
-                  <span className="ml-1 w-2 h-2 rounded-full" style={{ background: 'var(--theme-primary)' }}></span>
+                  <span className="ml-1 w-2 h-2 rounded-full bg-white"></span>
                 )}
               </Button>
               
@@ -1157,22 +1157,31 @@ export default function SchedulePage() {
                   {(tutor as any).specialties && (
                     <div className="mb-4">
                       <div className="flex flex-wrap gap-1.5">
-                        {(tutor as any).specialties.slice(0, 2).map((specialty: string) => (
+                        {(expandedSpecialties[tutor.name] ? (tutor as any).specialties : (tutor as any).specialties.slice(0, 2)).map((specialty: string) => (
                           <span 
                             key={specialty}
-                            className="text-xs px-2.5 py-1 rounded-full transition-colors"
-                            style={{ 
-                              background: 'rgba(var(--theme-primary-rgb), 0.1)',
-                              color: 'var(--theme-primary)'
-                            }}
+                            className="text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
                           >
                             {specialty}
                           </span>
                         ))}
                         {(tutor as any).specialties.length > 2 && (
-                          <span className="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-300">
-                            +{(tutor as any).specialties.length - 2}
-                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpandedSpecialties(prev => ({
+                                ...prev,
+                                [tutor.name]: !prev[tutor.name]
+                              }));
+                            }}
+                            className="text-xs px-2.5 py-1 rounded-full transition-colors cursor-pointer hover:opacity-80 font-medium"
+                            style={{ 
+                              background: 'var(--theme-primary)',
+                              color: 'white'
+                            }}
+                          >
+                            {expandedSpecialties[tutor.name] ? 'Show less' : `+${(tutor as any).specialties.length - 2}`}
+                          </button>
                         )}
                       </div>
                     </div>

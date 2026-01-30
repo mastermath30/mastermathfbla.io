@@ -153,7 +153,7 @@ export default function AboutPage() {
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
               About <span className="gradient-text">MathMaster</span>
             </h1>
-            <p className="text-xl text-slate-300 leading-relaxed mb-8">
+            <p className="text-xl text-white leading-relaxed mb-8">
               We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you&apos;re stuck.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -164,7 +164,7 @@ export default function AboutPage() {
                 </Button>
               </Link>
               <Link href="/community">
-                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 dark:border-white/30 dark:text-white dark:hover:bg-white/10">
+                <Button size="lg" style={{ backgroundColor: 'var(--theme-primary)', color: 'white', borderColor: 'var(--theme-primary)' }}>
                   <MessageCircle className="w-5 h-5" />
                   Visit the Forum
                 </Button>

@@ -173,7 +173,7 @@ export default function DashboardPage() {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
                 {t("Welcome back,")} {userName}!
               </h1>
-              <p className="text-slate-700 dark:text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
+              <p className="text-slate-900 dark:text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
               
               {/* Quick stats */}
               <div className="flex flex-wrap gap-4 md:gap-6 mt-6">
@@ -205,13 +205,12 @@ export default function DashboardPage() {
               </Button>
               <Link href="/dashboard#learning-progress">
                 <Button 
-                  variant="outline" 
                   style={{ 
-                    borderColor: 'var(--theme-primary)', 
-                    color: 'var(--theme-primary)',
-                    background: 'transparent'
+                    backgroundColor: 'var(--theme-primary)', 
+                    color: 'white',
+                    borderColor: 'var(--theme-primary)'
                   }}
-                  className="hover:bg-[var(--theme-primary)]/10"
+                  className="hover:opacity-90"
                 >
                   <BarChart3 className="w-4 h-4" />
                   {t("Analytics")}

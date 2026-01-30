@@ -222,7 +222,7 @@ const allTutors = [
     rating: 4.0,
     reviews: 95,
     price: 32,
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?w=200&h=200&fit=crop",
     available: true,
     experience: "4 years",
     education: "BS Mathematics Education, UT Austin",
@@ -286,7 +286,7 @@ const allTutors = [
     rating: 4.8,
     reviews: 76,
     price: 48,
-    image: "https://images.unsplash.com/photo-1551836022-b06f021de4be?w=200&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
     available: true,
     experience: "9 years",
     education: "PhD Biostatistics, Johns Hopkins",
@@ -301,6 +301,9 @@ export default function TutorsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [sortBy, setSortBy] = useState("rating");
+  
+  // Expanded specialties state
+  const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   
   // Booking modal state
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -625,22 +628,31 @@ export default function TutorsPage() {
                       Specialties
                     </p>
                     <div className="flex flex-wrap gap-1.5">
-                      {tutor.specialties.slice(0, 2).map(specialty => (
+                      {(expandedSpecialties[tutor.name] ? tutor.specialties : tutor.specialties.slice(0, 2)).map(specialty => (
                         <span 
                           key={specialty}
-                          className="text-xs px-2.5 py-1 rounded-full transition-colors"
-                          style={{ 
-                            background: 'rgba(var(--theme-primary-rgb), 0.1)',
-                            color: 'var(--theme-primary)'
-                          }}
+                          className="text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
                         >
                           {specialty}
                         </span>
                       ))}
                       {tutor.specialties.length > 2 && (
-                        <Badge variant="info" className="text-xs">
-                          +{tutor.specialties.length - 2}
-                        </Badge>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedSpecialties(prev => ({
+                              ...prev,
+                              [tutor.name]: !prev[tutor.name]
+                            }));
+                          }}
+                          className="text-xs px-2.5 py-1 rounded-full transition-colors cursor-pointer hover:opacity-80 font-medium"
+                          style={{ 
+                            background: 'var(--theme-primary)',
+                            color: 'white'
+                          }}
+                        >
+                          {expandedSpecialties[tutor.name] ? 'Show less' : `+${tutor.specialties.length - 2}`}
+                        </button>
                       )}
                     </div>
                   </div>

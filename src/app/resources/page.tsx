@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,19 @@ import {
   Video,
   FileDown,
   ArrowRight,
+  X,
+  Zap,
+  Target,
+  Trophy,
+  Pi,
+  Percent,
+  Binary,
+  TrendingUp,
+  Activity,
+  CircleDot,
+  Sigma,
+  Divide,
+  BarChart2,
 } from "lucide-react";
 
 const categories = [
@@ -122,6 +136,87 @@ const quizzes = [
     difficulty: "Advanced",
     href: "/resources/quiz/calculus-derivatives",
   },
+  {
+    icon: Pi,
+    title: "Trigonometry Fundamentals",
+    time: "15 questions • 25 min",
+    description: "Practice with sine, cosine, tangent, and trigonometric identities.",
+    color: "orange",
+    difficulty: "Intermediate",
+    href: "/resources/quiz/trigonometry-fundamentals",
+  },
+  {
+    icon: Percent,
+    title: "Fractions & Percentages",
+    time: "12 questions • 15 min",
+    description: "Master operations with fractions, decimals, and percentages.",
+    color: "teal",
+    difficulty: "Beginner",
+    href: "/resources/quiz/fractions-percentages",
+  },
+  {
+    icon: TrendingUp,
+    title: "Linear Functions",
+    time: "15 questions • 20 min",
+    description: "Explore slope, intercepts, and graphing linear equations.",
+    color: "pink",
+    difficulty: "Beginner",
+    href: "/resources/quiz/linear-functions",
+  },
+  {
+    icon: Activity,
+    title: "Quadratic Equations",
+    time: "15 questions • 25 min",
+    description: "Solve and graph quadratic functions using various methods.",
+    color: "purple",
+    difficulty: "Intermediate",
+    href: "/resources/quiz/quadratic-equations",
+  },
+  {
+    icon: CircleDot,
+    title: "Circles & Area",
+    time: "10 questions • 15 min",
+    description: "Calculate area, circumference, and properties of circles.",
+    color: "cyan",
+    difficulty: "Beginner",
+    href: "/resources/quiz/circles-area",
+  },
+  {
+    icon: Sigma,
+    title: "Sequences & Series",
+    time: "15 questions • 25 min",
+    description: "Work with arithmetic and geometric sequences and their sums.",
+    color: "indigo",
+    difficulty: "Advanced",
+    href: "/resources/quiz/sequences-series",
+  },
+  {
+    icon: BarChart2,
+    title: "Statistics Basics",
+    time: "15 questions • 20 min",
+    description: "Calculate mean, median, mode, and standard deviation.",
+    color: "emerald",
+    difficulty: "Intermediate",
+    href: "/resources/quiz/statistics-basics",
+  },
+  {
+    icon: Divide,
+    title: "Polynomial Operations",
+    time: "12 questions • 20 min",
+    description: "Add, subtract, multiply, and factor polynomial expressions.",
+    color: "rose",
+    difficulty: "Intermediate",
+    href: "/resources/quiz/polynomial-operations",
+  },
+  {
+    icon: Binary,
+    title: "Number Systems",
+    time: "10 questions • 15 min",
+    description: "Explore integers, rationals, irrationals, and real numbers.",
+    color: "amber",
+    difficulty: "Beginner",
+    href: "/resources/quiz/number-systems",
+  },
 ];
 
 const videos = [
@@ -152,14 +247,62 @@ const videos = [
 ];
 
 const downloads = [
-  { title: "Algebra Formula Sheet", description: "All essential formulas in one place", icon: "📐" },
-  { title: "Trig Identities Cheat Sheet", description: "Quick reference for all trig identities", icon: "📊" },
-  { title: "Calculus Reference Guide", description: "Derivatives and integrals reference", icon: "∫" },
-  { title: "Practice Worksheet Pack", description: "50+ problems with solutions", icon: "📝" },
+  { title: "Algebra Formula Sheet", description: "All essential formulas in one place", icon: "📐", file: "/downloads/algebra-formula-sheet.pdf" },
+  { title: "Trig Identities Cheat Sheet", description: "Quick reference for all trig identities", icon: "📊", file: "/downloads/trig-identities-cheat-sheet.pdf" },
+  { title: "Calculus Reference Guide", description: "Derivatives and integrals reference", icon: "∫", file: "/downloads/calculus-reference-guide.pdf" },
+  { title: "Practice Worksheet Pack", description: "50+ problems with solutions", icon: "📝", file: "/downloads/practice-worksheet-pack.pdf" },
 ];
 
 export default function ResourcesPage() {
   const router = useRouter();
+  const [showDifficultyModal, setShowDifficultyModal] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState<typeof quizzes[0] | null>(null);
+  const [showAllQuizzes, setShowAllQuizzes] = useState(false);
+
+  const displayedQuizzes = showAllQuizzes ? quizzes : quizzes.slice(0, 3);
+
+  const difficulties = [
+    { 
+      level: "easy", 
+      label: "Easy", 
+      icon: Zap, 
+      description: "Great for beginners or quick review",
+      color: "text-green-500",
+      bg: "bg-green-500/10",
+      border: "border-green-500/30"
+    },
+    { 
+      level: "medium", 
+      label: "Medium", 
+      icon: Target, 
+      description: "Balanced challenge for most learners",
+      color: "text-yellow-500",
+      bg: "bg-yellow-500/10",
+      border: "border-yellow-500/30"
+    },
+    { 
+      level: "hard", 
+      label: "Hard", 
+      icon: Trophy, 
+      description: "Advanced problems for mastery",
+      color: "text-red-500",
+      bg: "bg-red-500/10",
+      border: "border-red-500/30"
+    },
+  ];
+
+  const handleStartQuiz = (quiz: typeof quizzes[0]) => {
+    setSelectedQuiz(quiz);
+    setShowDifficultyModal(true);
+  };
+
+  const handleSelectDifficulty = (difficulty: string) => {
+    if (selectedQuiz) {
+      router.push(`${selectedQuiz.href}?difficulty=${difficulty}`);
+    }
+    setShowDifficultyModal(false);
+    setSelectedQuiz(null);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
@@ -253,10 +396,10 @@ export default function ResourcesPage() {
                 href={lesson.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="block h-full"
               >
-                <Card className="h-full hover:border-[var(--theme-primary)]/30 group" interactive>
-                  <div className="flex items-start gap-4">
+                <Card className="h-full hover:border-[var(--theme-primary)]/30 group flex flex-col" interactive>
+                  <div className="flex gap-4 flex-1">
                     <Image
                       src={lesson.image}
                       alt={lesson.title}
@@ -264,27 +407,23 @@ export default function ResourcesPage() {
                       height={80}
                       className="w-20 h-20 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
                     />
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 flex flex-col h-full">
                       <div className="flex items-center justify-between gap-3">
                         <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{lesson.title}</h4>
                         <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-[var(--theme-primary)] transition-colors" />
                       </div>
                       <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 leading-relaxed">{lesson.description}</p>
-                      <div className="flex gap-2 mt-3">
-                        {lesson.tags.map((tag) => (
-                          <span 
-                            key={tag} 
-                            className="text-xs px-2.5 py-1 rounded-full font-medium transition-colors"
-                            style={{ 
-                              background: 'rgba(var(--theme-primary-rgb), 0.1)',
-                              color: 'var(--theme-primary)'
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
                     </div>
+                  </div>
+                  <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    {lesson.tags.map((tag) => (
+                      <span 
+                        key={tag} 
+                        className="text-xs px-2.5 py-1 rounded-full font-medium transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </Card>
               </a>
@@ -311,23 +450,23 @@ export default function ResourcesPage() {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="block h-full"
               >
-                <Card className="h-full hover:border-green-200 group">
-                  <div className="flex items-start gap-4">
+                <Card className="h-full hover:border-[var(--theme-primary)]/30 group flex flex-col">
+                  <div className="flex items-start gap-4 flex-1">
                     <Image
                       src={item.image}
                       alt={item.title}
                       width={80}
                       height={80}
-                      className="w-20 h-20 rounded-xl object-cover shrink-0"
+                      className="w-20 h-20 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0 flex flex-col">
                       <div className="flex items-center justify-between gap-3">
-                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-primary-themed transition-colors">{item.title}</h4>
-                        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
+                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{item.title}</h4>
+                        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-[var(--theme-primary)] transition-colors" />
                       </div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{item.description}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 flex-1">{item.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -348,11 +487,16 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Test your knowledge and improve your skills</p>
               </div>
             </div>
-            <Link href="#quizzes" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
+            <button 
+              onClick={() => setShowAllQuizzes(!showAllQuizzes)} 
+              className="text-primary-themed text-sm font-medium hover:underline"
+            >
+              {showAllQuizzes ? 'Show less' : `View all (${quizzes.length})`}
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {quizzes.map((quiz) => (
+          <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${showAllQuizzes ? 'lg:grid-cols-4' : ''}`}>
+            {displayedQuizzes.map((quiz) => (
               <Card key={quiz.title} className="relative overflow-hidden h-full flex flex-col">
                 <div className="absolute top-0 right-0 px-3 py-1 bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-200 text-xs font-medium rounded-bl-xl border-l border-b border-slate-200 dark:border-slate-700">
                   {quiz.difficulty}
@@ -367,7 +511,7 @@ export default function ResourcesPage() {
                   </div>
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 flex-1">{quiz.description}</p>
-                <Button className="w-full mt-auto" onClick={() => router.push(quiz.href)} type="button">
+                <Button className="w-full mt-auto" onClick={() => handleStartQuiz(quiz)} type="button">
                   <Play className="w-4 h-4" />
                   Start Quiz
                 </Button>
@@ -450,16 +594,59 @@ export default function ResourcesPage() {
                   <div className="text-3xl mb-3">{item.icon}</div>
                   <h4 className="font-medium text-slate-900 dark:text-white text-sm mb-1">{item.title}</h4>
                   <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">{item.description}</p>
-                  <Button variant="outline" size="sm" className="w-full group-hover:border-slate-500 group-hover:text-primary-themed">
-                    <Download className="w-4 h-4" />
-                    Download
-                  </Button>
+                  <a href={item.file} download className="block">
+                    <Button variant="outline" size="sm" className="w-full group-hover:border-slate-500 group-hover:text-primary-themed">
+                      <Download className="w-4 h-4" />
+                      Download
+                    </Button>
+                  </a>
                 </div>
               ))}
             </div>
           </div>
         </Card>
       </main>
-    </div>
+      {/* Difficulty Selection Modal */}
+      {showDifficultyModal && selectedQuiz && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setShowDifficultyModal(false)}>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
+                <selectedQuiz.icon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedQuiz.title}</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Choose your difficulty level</p>
+            </div>
+
+            <div className="space-y-3">
+              {difficulties.map((diff) => (
+                <button
+                  key={diff.level}
+                  onClick={() => handleSelectDifficulty(diff.level)}
+                  className={`w-full p-4 rounded-xl border-2 ${diff.border} ${diff.bg} hover:scale-[1.02] transition-all text-left group`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg ${diff.bg} flex items-center justify-center`}>
+                      <diff.icon className={`w-5 h-5 ${diff.color}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className={`font-semibold ${diff.color}`}>{diff.label}</h4>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs">{diff.description}</p>
+                    </div>
+                    <Play className={`w-5 h-5 ${diff.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setShowDifficultyModal(false)}
+              className="w-full mt-4 py-3 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}    </div>
   );
 }
