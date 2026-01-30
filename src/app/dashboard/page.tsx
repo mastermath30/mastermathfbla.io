@@ -522,18 +522,19 @@ export default function DashboardPage() {
       </main>
 
       {showGoalModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div
             className="absolute inset-0 bg-slate-950/50 dark:bg-slate-950/80 backdrop-blur-sm"
             onClick={() => setShowGoalModal(false)}
           />
-          <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-950 p-6 shadow-2xl">
+          <div className="relative w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl bg-white dark:bg-slate-950 p-6 shadow-2xl max-h-[90vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Add Goal")}</h3>
               <button
                 onClick={() => setShowGoalModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 touch-manipulation"
                 type="button"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
               >
                 <X className="w-6 h-6" />
               </button>
@@ -544,8 +545,9 @@ export default function DashboardPage() {
                 <input
                   value={goalTitle}
                   onChange={(event) => setGoalTitle(event.target.value)}
-                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-700 dark:text-slate-200"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-3 text-base text-slate-700 dark:text-slate-200"
                   placeholder={t("Enter a goal title")}
+                  style={{ fontSize: '16px' }}
                 />
               </div>
               <div>
@@ -555,15 +557,16 @@ export default function DashboardPage() {
                   min="1"
                   value={goalTarget}
                   onChange={(event) => setGoalTarget(event.target.value)}
-                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-700 dark:text-slate-200"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-3 text-base text-slate-700 dark:text-slate-200"
                   placeholder="50"
+                  style={{ fontSize: '16px' }}
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" className="flex-1" type="button" onClick={() => setShowGoalModal(false)}>
+                <Button variant="outline" className="flex-1 min-h-[48px]" type="button" onClick={() => setShowGoalModal(false)}>
                   {t("Cancel")}
                 </Button>
-                <Button className="flex-1" type="button" onClick={handleAddGoal}>
+                <Button className="flex-1 min-h-[48px]" type="button" onClick={handleAddGoal}>
                   {t("Create Goal")}
                 </Button>
               </div>

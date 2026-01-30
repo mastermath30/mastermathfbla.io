@@ -254,11 +254,12 @@ export default function SupportPage() {
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left"
+                  className="w-full min-h-[56px] px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left touch-manipulation"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
-                  <span className="font-semibold text-slate-900 dark:text-white">{faq.question}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white pr-4">{faq.question}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform ${
+                    className={`w-5 h-5 text-slate-400 transition-transform flex-shrink-0 ${
                       openFaq === index ? "rotate-180" : ""
                     }`}
                   />

@@ -585,7 +585,7 @@ export default function SchedulePage() {
           key={day}
           type="button"
           onClick={() => setSelectedDate(date)}
-          className={`h-24 rounded-xl border p-2 text-left text-sm transition-all ${
+          className={`h-16 sm:h-24 min-h-[44px] rounded-lg sm:rounded-xl border p-1 sm:p-2 text-left text-xs sm:text-sm transition-all touch-manipulation ${
             isSelected
               ? "border-[var(--theme-primary)] shadow-lg"
               : "border-slate-200 dark:border-slate-800"
@@ -594,14 +594,15 @@ export default function SchedulePage() {
               ? "bg-gradient-to-br from-violet-500/20 to-purple-500/10 text-slate-900 dark:text-white"
               : "bg-white/70 dark:bg-slate-950/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
           }`}
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           <div className="flex items-center justify-between">
             <span className={`font-semibold ${isToday ? "text-[var(--theme-primary)]" : ""}`}>{day}</span>
             {items.length > 0 && (
-              <span className="text-xs text-slate-400">{items.length} {t("items")}</span>
+              <span className="text-[10px] sm:text-xs text-slate-400 hidden sm:inline">{items.length} {t("items")}</span>
             )}
           </div>
-          <div className="mt-2 space-y-1">
+          <div className="mt-1 sm:mt-2 space-y-0.5 sm:space-y-1 hidden sm:block">
             {items.slice(0, maxItems).map((item) => (
               <div key={`${item.time}-${item.title}`} className="text-xs truncate text-slate-600 dark:text-slate-300">
                 <span className="font-medium">{item.time}</span> {item.title}
@@ -611,6 +612,14 @@ export default function SchedulePage() {
               <div className="text-xs text-slate-400">+{items.length - maxItems} {t("more")}</div>
             )}
           </div>
+          {/* Mobile indicator dots */}
+          {items.length > 0 && (
+            <div className="flex gap-0.5 mt-1 sm:hidden">
+              {items.slice(0, 3).map((_, i) => (
+                <span key={i} className="w-1 h-1 rounded-full" style={{ backgroundColor: 'var(--theme-primary)' }} />
+              ))}
+            </div>
+          )}
         </button>
       );
     }
@@ -759,13 +768,13 @@ export default function SchedulePage() {
               </h2>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 p-1">
+              <div className="hidden sm:flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 p-1">
                 {(["day", "week", "month"] as const).map((mode) => (
                   <button
                     key={mode}
                     type="button"
                     onClick={() => handleViewModeChange(mode)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wide transition-all ${
+                    className={`px-3 py-1.5 min-h-[36px] rounded-md text-xs font-semibold uppercase tracking-wide transition-all touch-manipulation ${
                       viewMode === mode
                         ? "bg-[var(--theme-primary)] text-white shadow-sm"
                         : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
@@ -777,33 +786,35 @@ export default function SchedulePage() {
               </div>
               <button
                 onClick={() => navigateCalendar("prev")}
-                className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+                type="button"
+                className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors touch-manipulation flex items-center justify-center"
               >
                 <ChevronLeft className="w-5 h-5 text-slate-300" />
               </button>
               <button
                 onClick={() => navigateCalendar("next")}
-                className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+                type="button"
+                className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors touch-manipulation flex items-center justify-center"
               >
                 <ChevronRight className="w-5 h-5 text-slate-300" />
               </button>
             </div>
           </div>
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {viewMode === "month" && (
               <>
-                <div className="grid grid-cols-7 gap-2 mb-3">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-3">
                   {days.map((day) => (
-                    <div key={day} className="h-10 flex items-center justify-center text-sm font-medium text-slate-400">
+                    <div key={day} className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-slate-400">
                       {day}
                     </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-7 gap-3">{renderCalendar()}</div>
+                <div className="grid grid-cols-7 gap-1 sm:gap-3">{renderCalendar()}</div>
               </>
             )}
             {viewMode === "week" && (
-              <div className="grid grid-cols-7 gap-3">{renderWeekView()}</div>
+              <div className="grid grid-cols-7 gap-1 sm:gap-3">{renderWeekView()}</div>
             )}
             {viewMode === "day" && (
               <div className="space-y-4">
@@ -1106,15 +1117,15 @@ export default function SchedulePage() {
 
       {/* Booking Modal */}
       {showBookingModal && selectedTutor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
             onClick={() => setShowBookingModal(false)}
           />
           
-          {/* Modal */}
-          <div className="relative bg-white dark:bg-slate-950 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+          {/* Modal - slides up on mobile, centered on desktop */}
+          <div className="relative bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden">
             {/* Header with tutor image */}
             <div className="relative h-32 bg-slate-950">
               <Image
@@ -1140,7 +1151,7 @@ export default function SchedulePage() {
             </div>
 
             {/* Content */}
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
+            <div className="p-4 sm:p-6 max-h-[calc(90vh-8rem)] sm:max-h-[70vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
               {!bookingConfirmed ? (
                 <>
                   {/* Step 1: Select Date */}
@@ -1220,7 +1231,8 @@ export default function SchedulePage() {
                               key={slot}
                               onClick={() => available && setSelectedTime(slot)}
                               disabled={!available}
-                              className={`p-3 rounded-lg text-sm font-medium transition-all ${
+                              type="button"
+                              className={`p-3 min-h-[44px] rounded-lg text-sm font-medium transition-all touch-manipulation select-none ${
                                 selectedTime === slot
                                   ? "text-white shadow-lg"
                                   : available

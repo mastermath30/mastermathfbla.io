@@ -65,16 +65,21 @@ const FloatingDockMobile = ({
             >
               <Link
                 href={item.href}
-                className="h-10 w-10 rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700"
+                onClick={() => setOpen(false)}
+                className="h-12 w-12 min-h-[48px] min-w-[48px] rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700 cursor-pointer select-none touch-manipulation active:scale-95 transition-transform"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
               >
-                <div className="h-4 w-4">{item.icon}</div>
+                <div className="h-5 w-5">{item.icon}</div>
               </Link>
             </motion.div>
           ))}
         </motion.div>
         <button
           onClick={() => setOpen(!open)}
-          className="h-10 w-10 rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700"
+          className="h-12 w-12 min-h-[48px] min-w-[48px] rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700 cursor-pointer select-none touch-manipulation active:scale-95 transition-transform"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+          type="button"
+          aria-label={open ? "Close menu" : "Open menu"}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -177,13 +182,13 @@ function IconContainer({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Link href={href}>
+    <Link href={href} className="cursor-pointer touch-manipulation" style={{ WebkitTapHighlightColor: 'transparent' }}>
       <motion.div
         ref={ref}
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="aspect-square rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center relative"
+        className="aspect-square rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center relative select-none active:scale-95 transition-transform"
       >
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}

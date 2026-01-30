@@ -15,7 +15,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={clsx(
-          "relative inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none overflow-hidden group",
+          // Base styles with touch-friendly improvements
+          "relative inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-300 ease-out",
+          // Focus states
+          "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950",
+          // Disabled states
+          "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          // Touch-friendly: ensure buttons are clickable on iOS/mobile
+          "cursor-pointer select-none touch-manipulation",
+          // Accessibility and overflow
+          "overflow-hidden group",
           {
             "bg-gradient-to-r text-white hover:shadow-xl hover:shadow-[rgba(var(--theme-primary-rgb),0.35)] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] active:translate-y-0 focus:ring-[var(--theme-primary)]":
               variant === "primary",
@@ -37,6 +46,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           className
         )}
         style={{
+          // Disable iOS tap highlight for better touch feedback
+          WebkitTapHighlightColor: 'transparent',
           ...(variant === "primary" || variant === "glow" ? {
             background: `linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))`,
           } : {}),

@@ -475,6 +475,7 @@ export default function TutorsPage() {
       calendarDays.push(
         <button
           key={day}
+          type="button"
           onClick={() => {
             if (isAvailable) {
               setBookingDate(date);
@@ -482,7 +483,7 @@ export default function TutorsPage() {
             }
           }}
           disabled={!isAvailable}
-          className={`h-10 w-full rounded-lg text-sm transition-all ${
+          className={`h-10 min-h-[44px] w-full rounded-lg text-sm transition-all touch-manipulation select-none ${
             isSelected
               ? "text-white font-semibold shadow-lg"
               : isPast
@@ -491,7 +492,10 @@ export default function TutorsPage() {
               ? "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
               : "text-slate-400 dark:text-slate-600 cursor-not-allowed"
           }`}
-          style={isSelected ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+          style={{ 
+            WebkitTapHighlightColor: 'transparent',
+            ...(isSelected ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {})
+          }}
         >
           {day}
           {hasSlots && !isPast && !isSelected && (
@@ -713,12 +717,12 @@ export default function TutorsPage() {
 
       {/* Booking Modal */}
       {showBookingModal && selectedTutor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div 
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowBookingModal(false)}
           />
-          <div className="relative bg-white dark:bg-slate-950 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
             {bookingConfirmed ? (
               <div className="p-8 text-center">
                 <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>

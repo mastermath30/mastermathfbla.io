@@ -344,11 +344,11 @@ function AuthPageContent() {
 
           {/* Edit Profile Modal */}
           {isEditingProfile && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white dark:bg-slate-950 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div className="bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Edit Profile")}</h3>
-                  <button onClick={() => { setIsEditingProfile(false); setError(""); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                  <button onClick={() => { setIsEditingProfile(false); setError(""); }} type="button" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -405,11 +405,11 @@ function AuthPageContent() {
 
           {/* Change Password Modal */}
           {isChangingPassword && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white dark:bg-slate-950 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div className="bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Change Password")}</h3>
-                  <button onClick={() => { setIsChangingPassword(false); setError(""); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                  <button onClick={() => { setIsChangingPassword(false); setError(""); }} type="button" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
