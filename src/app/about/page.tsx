@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/Button";
@@ -19,6 +20,7 @@ import {
   Award,
   GraduationCap,
   Globe,
+  X,
 } from "lucide-react";
 
 const stats = [
@@ -34,9 +36,30 @@ const steps = [
 ];
 
 const team = [
-  { name: "Sarah Johnson", role: "Founder & Lead Educator", initials: "SJ", bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
-  { name: "Michael Chen", role: "Head of Technology", initials: "MC", bio: "Software Engineer & Education Technology Specialist. Built platforms for millions of users.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
-  { name: "Priya Patel", role: "Community Manager", initials: "PP", bio: "Expert in building and nurturing learning communities. Passionate about student success.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" },
+  { 
+    name: "Sarah Johnson", 
+    role: "Founder & Lead Educator", 
+    initials: "SJ", 
+    bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", 
+    fullBio: "Dr. Sarah Johnson earned her PhD in Applied Mathematics from MIT and has dedicated her career to making math accessible to everyone. With over 10 years of teaching experience at Stanford and Berkeley, she noticed that many students struggled not because they lacked ability, but because they lacked the right resources and support. This inspired her to create MathMaster. Sarah believes that every student can excel in mathematics with the right guidance and community support. When she's not teaching, she enjoys hiking, playing chess, and mentoring young educators.",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" 
+  },
+  { 
+    name: "Michael Chen", 
+    role: "Head of Technology", 
+    initials: "MC", 
+    bio: "Software Engineer & Education Technology Specialist. Built platforms for millions of users.", 
+    fullBio: "Michael Chen brings 15 years of experience in software engineering and education technology to MathMaster. Previously, he led engineering teams at Google and Coursera, where he built learning platforms used by millions of students worldwide. Michael is passionate about creating intuitive, accessible technology that removes barriers to education. He holds a Master's degree in Computer Science from Carnegie Mellon and is a strong advocate for open-source education tools. In his free time, Michael contributes to coding education nonprofits and enjoys building robots with his two kids.",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" 
+  },
+  { 
+    name: "Priya Patel", 
+    role: "Community Manager", 
+    initials: "PP", 
+    bio: "Expert in building and nurturing learning communities. Passionate about student success.", 
+    fullBio: "Priya Patel has spent her career fostering supportive learning environments where students thrive. With a background in Educational Psychology from Columbia University, she understands the importance of community in the learning process. Before joining MathMaster, Priya managed student success programs at Khan Academy and built volunteer tutor networks serving underrepresented students. She believes that peer support and mentorship are just as important as great content. Priya is fluent in four languages and loves connecting with students from diverse backgrounds around the world.",
+    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" 
+  },
 ];
 
 const values = [
@@ -47,8 +70,56 @@ const values = [
 ];
 
 export default function AboutPage() {
+  const [selectedMember, setSelectedMember] = useState<typeof team[0] | null>(null);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+      {/* Team Member Modal */}
+      {selectedMember && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          onClick={() => setSelectedMember(null)}
+        >
+          <div 
+            className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header with image */}
+            <div className="relative h-48 sm:h-64 bg-slate-200 dark:bg-slate-800">
+              <Image
+                src={selectedMember.image}
+                alt={selectedMember.name}
+                fill
+                className="object-cover object-[center_20%]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <button 
+                onClick={() => setSelectedMember(null)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+              <div className="absolute bottom-4 left-6 right-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1">{selectedMember.name}</h3>
+                <p className="text-sm sm:text-base font-medium" style={{ color: 'var(--theme-primary-light)' }}>{selectedMember.role}</p>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6 sm:p-8">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
+                {selectedMember.fullBio}
+              </p>
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <Button className="w-full sm:w-auto" onClick={() => setSelectedMember(null)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <header className="relative min-h-[70vh] flex items-center overflow-hidden">
         {/* Background */}
@@ -241,21 +312,33 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((member) => (
-              <Card key={member.name} className="text-center overflow-hidden group" padding="none">
-                <div className="relative h-72 bg-slate-200 dark:bg-slate-950">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{member.name}</h3>
-                  <p className="text-sm font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>{member.role}</p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">{member.bio}</p>
-                </div>
-              </Card>
+              <button
+                key={member.name}
+                type="button"
+                onClick={() => setSelectedMember(member)}
+                className="text-left"
+              >
+                <Card className="text-center overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1" padding="none">
+                  <div className="relative h-72 bg-slate-200 dark:bg-slate-950">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-sm font-medium bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm">
+                        Click to learn more
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{member.name}</h3>
+                    <p className="text-sm font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>{member.role}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{member.bio}</p>
+                  </div>
+                </Card>
+              </button>
             ))}
           </div>
         </div>

@@ -788,11 +788,20 @@ export default function SchedulePage() {
                   {t("Book Session")}
                 </Button>
               </Link>
-              <Button variant="outline" className={`border-white/30 text-white hover:bg-white/10 ${(filterSubject || filterStatus) ? 'ring-2 ring-[var(--theme-primary)]' : ''}`} onClick={() => setShowFilters(!showFilters)}>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowFilters(!showFilters)}
+                style={{ 
+                  borderColor: 'var(--theme-primary)', 
+                  color: 'var(--theme-primary)',
+                  background: 'transparent'
+                }}
+                className="hover:bg-[var(--theme-primary)]/10"
+              >
                 <Filter className="w-4 h-4" />
                 {t("Filters")}
                 {(filterSubject || filterStatus) && (
-                  <span className="ml-1 w-2 h-2 rounded-full bg-[var(--theme-primary)]"></span>
+                  <span className="ml-1 w-2 h-2 rounded-full" style={{ background: 'var(--theme-primary)' }}></span>
                 )}
               </Button>
               
