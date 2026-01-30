@@ -29,12 +29,16 @@ export function Navbar() {
 
     if (session || loggedInFlag === "true") {
       try {
-        const sessionData = session ? JSON.parse(session) : null;
         const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
-        if (profile && (!sessionData || sessionData?.email === profile.email)) {
-          const lastInitial = profile.lastName ? `${profile.lastName.charAt(0).toUpperCase()}.` : "";
-          const firstName = profile.firstName || "";
-          setUserName(`${firstName}${lastInitial ? ` ${lastInitial}` : ""}`.trim());
+        if (profile) {
+          // Use username if available, otherwise use first name
+          if (profile.username) {
+            setUserName(profile.username);
+          } else if (profile.firstName) {
+            setUserName(profile.firstName);
+          } else {
+            setUserName("");
+          }
         } else {
           setUserName("");
         }
@@ -48,58 +52,58 @@ export function Navbar() {
     {
       title: t("Home"),
       icon: (
-        <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconHome className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/",
     },
     {
       title: t("About"),
       icon: (
-        <IconInfoCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconInfoCircle className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/about",
     },
     {
       title: t("Schedule"),
       icon: (
-        <IconCalendar className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconCalendar className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/schedule",
     },
     {
       title: t("Dashboard"),
       icon: (
-        <IconChartBar className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconChartBar className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/dashboard",
     },
     {
       title: t("Resources"),
       icon: (
-        <IconBook className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconBook className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/resources",
     },
     {
       title: t("Community"),
       icon: (
-        <IconUsers className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconUsers className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/community",
     },
     {
       title: t("Support"),
       icon: (
-        <IconLifebuoy className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconLifebuoy className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/support",
     },
     {
       title: isLoggedIn ? (userName || t("Account")) : t("Sign In"),
       icon: isLoggedIn ? (
-        <IconUser className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconUser className="h-full w-full text-slate-600 dark:text-slate-300" />
       ) : (
-        <IconLogin className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <IconLogin className="h-full w-full text-slate-600 dark:text-slate-300" />
       ),
       href: "/auth",
     },

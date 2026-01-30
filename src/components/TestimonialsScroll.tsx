@@ -128,7 +128,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           alt={testimonial.name}
           width={40}
           height={40}
-          className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700"
+          className="w-10 h-10 rounded-full object-cover object-[center_20%] ring-2 ring-slate-200 dark:ring-slate-700"
         />
         <div>
           <h4 className="font-semibold text-sm text-slate-900 dark:text-white">{testimonial.name}</h4>

@@ -101,6 +101,61 @@
   --secondary-foreground: #e6f2fb;
 }
 
+/* Light mode colorblind accessibility */
+.colorblind-mode:not(.dark) {
+  --foreground: #1a1a1a;
+  --card-foreground: #1a1a1a;
+  --secondary-foreground: #1a1a1a;
+  --muted-foreground: #4a4a4a;
+}
+
+/* Enhanced color contrast for colorblind users */
+.colorblind-mode .text-green-500,
+.colorblind-mode .text-green-600 {
+  color: #2ca02c !important;
+}
+
+.colorblind-mode .text-red-500,
+.colorblind-mode .text-red-600 {
+  color: #d62728 !important;
+}
+
+.colorblind-mode .text-yellow-500,
+.colorblind-mode .text-yellow-600 {
+  color: #ff7f0e !important;
+}
+
+.colorblind-mode .bg-green-500,
+.colorblind-mode .bg-green-600 {
+  background-color: #2ca02c !important;
+}
+
+.colorblind-mode .bg-red-500,
+.colorblind-mode .bg-red-600 {
+  background-color: #d62728 !important;
+}
+
+.colorblind-mode .bg-yellow-500,
+.colorblind-mode .bg-yellow-600 {
+  background-color: #ff7f0e !important;
+}
+
+/* Status indicators with patterns for colorblind users */
+.colorblind-mode [data-status="success"]::before,
+.colorblind-mode .status-success::before {
+  content: "✓ ";
+}
+
+.colorblind-mode [data-status="error"]::before,
+.colorblind-mode .status-error::before {
+  content: "✕ ";
+}
+
+.colorblind-mode [data-status="warning"]::before,
+.colorblind-mode .status-warning::before {
+  content: "! ";
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -437,9 +492,7 @@ html {
 /* Focus ring styles */
 .focus-ring:focus {
   outline: none;
-  ring: 2px;
-  ring-offset: 2px;
-  ring-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--theme-primary);
 }
 
 /* Mobile menu animation */
@@ -463,6 +516,42 @@ html {
 .dark body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* ========================================
+   ACCESSIBILITY - Text Contrast Fixes
+   Ensures readable text in all color modes
+   ======================================== */
+
+/* Note: We keep .text-white as white since hero headers have dark overlays */
+
+:not(.dark) .text-slate-400 {
+  color: #475569 !important;
+}
+
+:not(.dark) .text-slate-300 {
+  color: #475569 !important;
+}
+
+/* Light mode card backgrounds and text */
+:not(.dark) .bg-slate-950 {
+  background-color: #f8fafc !important;
+}
+
+:not(.dark) .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+:not(.dark) .bg-slate-800 {
+  background-color: #f1f5f9 !important;
+}
+
+:not(.dark) .border-slate-700 {
+  border-color: #e2e8f0 !important;
+}
+
+:not(.dark) .border-slate-800 {
+  border-color: #e2e8f0 !important;
 }
 
 /* Primary themed elements */
@@ -631,12 +720,34 @@ html {
   color: #f8fafc !important;
 }
 
+.dark .text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
 .dark .text-slate-600 {
   color: #94a3b8 !important;
 }
 
 .dark .text-slate-500 {
   color: #94a3b8 !important;
+}
+
+/* Ensure text inside dark backgrounds in light mode is white */
+:not(.dark) [style*="background"][style*="var(--theme-primary)"] {
+  color: white !important;
+}
+
+/* Light mode input and select text colors */
+:not(.dark) select {
+  color: #0f172a !important;
+}
+
+:not(.dark) input {
+  color: #0f172a !important;
 }
 
 .dark .bg-slate-50 {
@@ -789,5 +900,172 @@ body {
 .ripple:active::after {
   width: 200px;
   height: 200px;
+}
+
+/* ========================================
+   COMPREHENSIVE ACCESSIBILITY OVERRIDES
+   Ensures all text is readable in all modes
+   ======================================== */
+
+/* Light mode: Ensure proper text contrast on light backgrounds */
+:root:not(.dark) {
+  /* Override any white text that would be invisible */
+  --text-on-light: #0f172a;
+  --text-muted-on-light: #475569;
+}
+
+/* Light mode placeholder text - ensure visible */
+:not(.dark) ::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+/* Light mode - Fix navigation text colors */
+:not(.dark) .text-neutral-500,
+:not(.dark) .text-neutral-300 {
+  color: #475569 !important;
+}
+
+/* Light mode - Fix card text */
+:not(.dark) [class*="CardTitle"],
+:not(.dark) .card-title {
+  color: #0f172a !important;
+}
+
+:not(.dark) [class*="CardDescription"],
+:not(.dark) .card-description {
+  color: #475569 !important;
+}
+
+/* Light mode - Ensure links are visible */
+:not(.dark) a:not([class*="bg-"]):not([style*="background"]) {
+  color: var(--theme-primary);
+}
+
+/* Light mode - Form elements */
+:not(.dark) label {
+  color: #374151 !important;
+}
+
+/* Light mode - Badges and tags */
+:not(.dark) .badge,
+:not(.dark) [class*="Badge"] {
+  color: #1f2937 !important;
+}
+
+/* Dark mode - Ensure proper text contrast on dark backgrounds */
+.dark {
+  --text-on-dark: #f8fafc;
+  --text-muted-on-dark: #94a3b8;
+}
+
+/* Dark mode placeholder text */
+.dark ::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+/* Modal/Dialog accessibility */
+:not(.dark) [role="dialog"],
+:not(.dark) [class*="modal"],
+:not(.dark) [class*="Modal"] {
+  color: #0f172a;
+}
+
+.dark [role="dialog"],
+.dark [class*="modal"],
+.dark [class*="Modal"] {
+  color: #f8fafc;
+}
+
+/* Select dropdown option text */
+:not(.dark) option {
+  color: #0f172a !important;
+  background-color: white !important;
+}
+
+.dark option {
+  color: #f8fafc !important;
+  background-color: #1e293b !important;
+}
+
+/* Focus indicators - high contrast for accessibility */
+:focus-visible {
+  outline: 2px solid var(--theme-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--theme-primary);
+  color: white;
+  padding: 8px 16px;
+  z-index: 1000;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: #000000;
+    --foreground: #000000;
+    --muted-foreground: #000000;
+  }
+  
+  .dark {
+    --border: #ffffff;
+    --foreground: #ffffff;
+    --muted-foreground: #ffffff;
+  }
+  
+  button, a, [role="button"] {
+    border: 2px solid currentColor !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Ensure minimum touch target size for accessibility */
+@media (pointer: coarse) {
+  button, a, [role="button"], input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Print styles for accessibility */
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* Hero text shadows for better readability on image backgrounds */
+.hero-text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure hero header text is always readable */
+header h1 {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header p {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 

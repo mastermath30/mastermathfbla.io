@@ -253,15 +253,39 @@ export default function QuizPage() {
                       type="button"
                       onClick={() => setSelectedIndex(index)}
                       className={[
-                        "w-full text-left px-4 py-3 rounded-xl border transition-all",
-                        "bg-white dark:bg-slate-950",
-                        isSelected ? "border-[var(--theme-primary)] shadow-sm" : "border-slate-200 dark:border-slate-800",
-                        answered && isCorrect ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400" : "",
-                        answered && isIncorrect ? "bg-rose-50 dark:bg-rose-950/40 border-rose-400" : "",
-                      ].join(" ")}
+                        "w-full text-left px-4 py-3 rounded-xl border-2 transition-all",
+                        // Default state
+                        !isSelected && !answered ? "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500" : "",
+                        // Selected but not yet answered
+                        isSelected && !answered ? "bg-[var(--theme-primary)]/15 dark:bg-[var(--theme-primary)]/25 border-[var(--theme-primary)] shadow-md ring-2 ring-[var(--theme-primary)]/30" : "",
+                        // Correct answer revealed
+                        answered && isCorrect ? "bg-emerald-100 dark:bg-emerald-900/50 border-emerald-500" : "",
+                        // Wrong answer selected
+                        answered && isIncorrect ? "bg-rose-100 dark:bg-rose-900/50 border-rose-500" : "",
+                        // Other options after answering (neither selected nor correct)
+                        answered && !isCorrect && !isIncorrect ? "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 opacity-60" : "",
+                      ].filter(Boolean).join(" ")}
                       disabled={answered}
                     >
-                      <span className="text-slate-700 dark:text-slate-200">{option}</span>
+                      <div className="flex items-center gap-3">
+                        <span className={[
+                          "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border-2 transition-all",
+                          !isSelected && !answered ? "border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-500" : "",
+                          isSelected && !answered ? "border-[var(--theme-primary)] bg-[var(--theme-primary)] text-white" : "",
+                          answered && isCorrect ? "border-emerald-500 bg-emerald-500 text-white" : "",
+                          answered && isIncorrect ? "border-rose-500 bg-rose-500 text-white" : "",
+                          answered && !isCorrect && !isIncorrect ? "border-slate-300 dark:border-slate-600 text-slate-400" : "",
+                        ].filter(Boolean).join(" ")}>
+                          {String.fromCharCode(65 + index)}
+                        </span>
+                        <span className={[
+                          "font-medium",
+                          !answered ? "text-slate-700 dark:text-slate-200" : "",
+                          answered && isCorrect ? "text-emerald-700 dark:text-emerald-300" : "",
+                          answered && isIncorrect ? "text-rose-700 dark:text-rose-300" : "",
+                          answered && !isCorrect && !isIncorrect ? "text-slate-500 dark:text-slate-400" : "",
+                        ].filter(Boolean).join(" ")}>{option}</span>
+                      </div>
                     </button>
                   );
                 })}

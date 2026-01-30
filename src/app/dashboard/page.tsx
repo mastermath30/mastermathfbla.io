@@ -204,7 +204,7 @@ export default function DashboardPage() {
                 {t("New Goal")}
               </Button>
               <Link href="/dashboard#learning-progress">
-                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                <Button variant="outline" className="border-slate-300 dark:border-white/30 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10">
                   <BarChart3 className="w-4 h-4" />
                   {t("Analytics")}
                 </Button>
@@ -386,10 +386,10 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-              <Link href="/dashboard#challenges" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+              <button onClick={() => document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
                 {t("View all challenges")}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </Card>
         </div>
@@ -435,10 +435,10 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-              <Link href="/dashboard#recent-activity" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
+              <button onClick={() => document.getElementById('recent-activity')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
                 {t("View all activity")}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </CardContent>
           </Card>
 

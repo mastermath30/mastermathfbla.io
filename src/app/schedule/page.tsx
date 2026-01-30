@@ -36,7 +36,7 @@ const sessions = [
     icon: SquareRadical,
     title: "Calculus Study Group: Integrals",
     time: "Tomorrow, 3:00 PM - 4:30 PM",
-    tutor: "Ayaan Oberoi",
+    tutor: "Sarah Johnson",
     status: "confirmed",
     color: "violet",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop",
@@ -45,7 +45,7 @@ const sessions = [
     icon: Infinity,
     title: "Linear Algebra: Matrix Operations",
     time: "Friday, 5:00 PM - 6:30 PM",
-    tutor: "Malhar Pawar",
+    tutor: "Priya Patel",
     status: "pending",
     color: "purple",
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=60&h=60&fit=crop",
@@ -63,7 +63,7 @@ const sessions = [
 
 const tutors = [
   {
-    name: "Ayaan Oberoi",
+    name: "Sarah Johnson",
     initials: "SJ",
     subjects: "Calculus, Statistics, Differential Equations",
     rating: 4.9,
@@ -85,7 +85,7 @@ const tutors = [
     specialties: ["Geometry Proofs", "Trigonometry", "Pre-Calc"],
   },
   {
-    name: "Malhar Pawar",
+    name: "Priya Patel",
     initials: "PP",
     subjects: "Linear Algebra, Geometry, Discrete Math",
     rating: 4.8,
@@ -101,6 +101,8 @@ const studyGroups = [
   {
     title: "AP Calculus BC Study Group",
     schedule: "Saturdays at 10:00 AM",
+    dayOfWeek: 6, // Saturday
+    time: "10:00 AM",
     description: "Weekly review sessions covering AP Calculus BC topics. Great for exam prep!",
     members: 8,
     maxMembers: 12,
@@ -109,6 +111,8 @@ const studyGroups = [
   {
     title: "SAT Math Prep",
     schedule: "Wednesdays at 4:00 PM",
+    dayOfWeek: 3, // Wednesday
+    time: "4:00 PM",
     description: "Practice SAT math problems together and share test-taking strategies.",
     members: 14,
     maxMembers: 20,
@@ -190,10 +194,38 @@ const getScheduleItemsForMonth = (year: number, month: number) => {
   );
 };
 
-const getScheduleItemsForDate = (date: Date) => {
-  return getScheduleItemsForMonth(date.getFullYear(), date.getMonth()).filter((item) =>
+const getScheduleItemsForDate = (date: Date, joinedGroupsList: string[] = []) => {
+  const staticItems = getScheduleItemsForMonth(date.getFullYear(), date.getMonth()).filter((item) =>
     isSameDay(item.date, date)
   );
+  
+  // Add joined study group sessions based on day of week
+  const dayOfWeek = date.getDay();
+  const studyGroupItems = studyGroups
+    .filter(group => joinedGroupsList.includes(group.title) && group.dayOfWeek === dayOfWeek)
+    .map(group => ({
+      time: group.time,
+      title: group.title,
+      type: "study" as const,
+      date: date,
+    }));
+  
+  return [...staticItems, ...studyGroupItems].sort((a, b) => {
+    // Sort by time
+    const timeA = a.time.replace(/(\d+):(\d+)\s*(AM|PM)/i, (_, h, m, p) => {
+      let hour = parseInt(h);
+      if (p.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (p.toUpperCase() === 'AM' && hour === 12) hour = 0;
+      return `${hour.toString().padStart(2, '0')}:${m}`;
+    });
+    const timeB = b.time.replace(/(\d+):(\d+)\s*(AM|PM)/i, (_, h, m, p) => {
+      let hour = parseInt(h);
+      if (p.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (p.toUpperCase() === 'AM' && hour === 12) hour = 0;
+      return `${hour.toString().padStart(2, '0')}:${m}`;
+    });
+    return timeA.localeCompare(timeB);
+  });
 };
 
 // Generate realistic time slots
@@ -274,6 +306,18 @@ export default function SchedulePage() {
   const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
   const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
   const [joinedGroups, setJoinedGroups] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterSubject, setFilterSubject] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [showDayDetail, setShowDayDetail] = useState(false);
+
+  // Filter sessions based on selected filters
+  const filteredSessions = sessions.filter(session => {
+    const matchesSubject = !filterSubject || 
+      session.title.toLowerCase().includes(filterSubject.toLowerCase());
+    const matchesStatus = !filterStatus || session.status === filterStatus;
+    return matchesSubject && matchesStatus;
+  });
 
   // Calculate price based on duration
   const getDurationHours = (duration: string): number => {
@@ -314,8 +358,8 @@ export default function SchedulePage() {
   // Get tutor availability rate based on patterns
   const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
     const patterns = {
-      "Ayaan Oberoi": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4], // Sunday to Saturday
-      "Malhar Pawar": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
+      "Sarah Johnson": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4], // Sunday to Saturday
+      "Priya Patel": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
       "Michael Chen": [0.4, 0.7, 0.8, 0.9, 0.7, 0.6, 0.3],
       "Emma Rodriguez": [0.3, 0.7, 0.6, 0.8, 0.7, 0.5, 0.8],
       "Alex Thompson": [0.5, 0.4, 0.8, 0.6, 0.9, 0.7, 0.6]
@@ -577,14 +621,14 @@ export default function SchedulePage() {
       const date = new Date(currentYear, currentMonth, day);
       const isToday = isCurrentMonth && day === today.getDate();
       const isSelected = isSameDay(date, selectedDate);
-      const items = getScheduleItemsForDate(date);
+      const items = getScheduleItemsForDate(date, joinedGroups);
       const maxItems = 2;
 
       calendarDays.push(
         <button
           key={day}
           type="button"
-          onClick={() => setSelectedDate(date)}
+          onClick={() => { setSelectedDate(date); setShowDayDetail(true); }}
           className={`h-16 sm:h-24 min-h-[44px] rounded-lg sm:rounded-xl border p-1 sm:p-2 text-left text-xs sm:text-sm transition-all touch-manipulation ${
             isSelected
               ? "border-[var(--theme-primary)] shadow-lg"
@@ -630,13 +674,13 @@ export default function SchedulePage() {
   const renderWeekView = () => {
     const weekDates = getWeekDates(selectedDate);
     return weekDates.map((date) => {
-      const items = getScheduleItemsForDate(date);
+      const items = getScheduleItemsForDate(date, joinedGroups);
       const isToday = isSameDay(date, new Date());
       return (
         <button
           key={date.toISOString()}
           type="button"
-          onClick={() => setSelectedDate(date)}
+          onClick={() => { setSelectedDate(date); setShowDayDetail(true); }}
           className={`h-32 rounded-xl border p-3 text-left transition-all ${
             isSameDay(date, selectedDate)
               ? "border-[var(--theme-primary)] shadow-lg"
@@ -666,7 +710,7 @@ export default function SchedulePage() {
   };
 
   const renderDayView = () => {
-    const items = getScheduleItemsForDate(selectedDate);
+    const items = getScheduleItemsForDate(selectedDate, joinedGroups);
     if (items.length === 0) {
       return (
         <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-950/50 p-8 text-center text-slate-500 dark:text-slate-400">
@@ -711,10 +755,10 @@ export default function SchedulePage() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-slate-950/80" />
+          <div className="absolute inset-0 bg-slate-950/90" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
+            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15%200L30%2015L15%2030L0%2015z%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%2F%3E%3C%2Fsvg%3E')]" />
         </div>
@@ -737,17 +781,167 @@ export default function SchedulePage() {
               </div>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-3 relative">
               <Link href="/tutors">
                 <Button>
                   <Plus className="w-4 h-4" />
                   {t("Book Session")}
                 </Button>
               </Link>
-              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+              <Button variant="outline" className={`border-white/30 text-white hover:bg-white/10 ${(filterSubject || filterStatus) ? 'ring-2 ring-[var(--theme-primary)]' : ''}`} onClick={() => setShowFilters(!showFilters)}>
                 <Filter className="w-4 h-4" />
                 {t("Filters")}
+                {(filterSubject || filterStatus) && (
+                  <span className="ml-1 w-2 h-2 rounded-full bg-[var(--theme-primary)]"></span>
+                )}
               </Button>
+              
+              {/* Filter Modal */}
+              {showFilters && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setShowFilters(false)}>
+                  <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6" onClick={(e) => e.stopPropagation()}>
+                    <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t("Filter Sessions")}</h4>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2 block">{t("Subject")}</label>
+                        <select 
+                          value={filterSubject}
+                          onChange={(e) => setFilterSubject(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                        >
+                          <option value="">{t("All Subjects")}</option>
+                          <option value="calculus">{t("Calculus")}</option>
+                          <option value="algebra">{t("Algebra")}</option>
+                          <option value="geometry">{t("Geometry")}</option>
+                          <option value="statistics">{t("Statistics")}</option>
+                          <option value="linear">{t("Linear Algebra")}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2 block">{t("Status")}</label>
+                        <select 
+                          value={filterStatus}
+                          onChange={(e) => setFilterStatus(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                        >
+                          <option value="">{t("All Status")}</option>
+                          <option value="confirmed">{t("Confirmed")}</option>
+                          <option value="pending">{t("Pending")}</option>
+                        </select>
+                      </div>
+                      <div className="flex gap-3 pt-2">
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => { setFilterSubject(""); setFilterStatus(""); setShowFilters(false); }}>
+                          {t("Clear Filters")}
+                        </Button>
+                        <Button size="sm" className="flex-1" onClick={() => setShowFilters(false)}>
+                          {t("Apply Filters")}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Day Detail Modal */}
+              {showDayDetail && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setShowDayDetail(false)}>
+                  <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-xl font-bold text-slate-900 dark:text-white">
+                        {selectedDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                      </h4>
+                      <button 
+                        onClick={() => setShowDayDetail(false)}
+                        className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      >
+                        <X className="w-5 h-5 text-slate-500" />
+                      </button>
+                    </div>
+                    
+                    {/* Sessions for this day */}
+                    <div className="space-y-3 max-h-80 overflow-y-auto">
+                      {(() => {
+                        const scheduleItems = getScheduleItemsForDate(selectedDate, joinedGroups);
+                        const bookedForDay = bookedSessions.filter(session => {
+                          const sessionDate = new Date(session.date);
+                          return isSameDay(sessionDate, selectedDate);
+                        });
+                        
+                        if (scheduleItems.length === 0 && bookedForDay.length === 0) {
+                          return (
+                            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                              <CalendarCheck className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                              <p>{t("No classes scheduled for this day")}</p>
+                            </div>
+                          );
+                        }
+                        
+                        return (
+                          <>
+                            {/* Static schedule items */}
+                            {scheduleItems.map((item, index) => (
+                              <div 
+                                key={`schedule-${index}`}
+                                className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700"
+                              >
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-semibold text-[var(--theme-primary)]">{item.time}</span>
+                                  <span className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">{t("Class")}</span>
+                                </div>
+                                <h5 className="font-medium text-slate-900 dark:text-white">{item.title}</h5>
+                                {item.type && (
+                                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 capitalize">{item.type}</p>
+                                )}
+                              </div>
+                            ))}
+                            
+                            {/* Booked tutoring sessions */}
+                            {bookedForDay.map((session) => (
+                              <div 
+                                key={session.id}
+                                className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700"
+                              >
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-semibold text-[var(--theme-primary)]">{session.time}</span>
+                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                    session.status === 'confirmed' 
+                                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                      : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                  }`}>
+                                    {session.status === 'confirmed' ? t("Confirmed") : t("Pending")}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <Image
+                                    src={session.tutorImage}
+                                    alt={session.tutorName}
+                                    width={40}
+                                    height={40}
+                                    className="rounded-full object-cover"
+                                  />
+                                  <div>
+                                    <h5 className="font-medium text-slate-900 dark:text-white">{t("Tutoring Session")}</h5>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">{session.tutorName} • {session.subjects}</p>
+                                  </div>
+                                </div>
+                                <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                                  {session.duration} • ${session.price}
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        );
+                      })()}
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                      <Button className="w-full" onClick={() => setShowDayDetail(false)}>
+                        {t("Close")}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -854,7 +1048,7 @@ export default function SchedulePage() {
                   alt={booking.tutorName}
                   width={48}
                   height={48}
-                  className="w-12 h-12 rounded-xl object-cover"
+                  className="w-12 h-12 rounded-xl object-cover object-[center_20%]"
                 />
                 <div className="flex-1">
                   <h4 className="font-semibold text-slate-900 dark:text-white">{booking.subjects} Session</h4>
@@ -871,14 +1065,14 @@ export default function SchedulePage() {
             ))}
             
             {/* Sample sessions for demo */}
-            {sessions.map((session) => (
+            {filteredSessions.map((session) => (
               <div key={session.title} className="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                 <Image
                   src={session.image}
                   alt={session.tutor}
                   width={48}
                   height={48}
-                  className="w-12 h-12 rounded-xl object-cover"
+                  className="w-12 h-12 rounded-xl object-cover object-[center_20%]"
                 />
                 <div className="flex-1">
                   <h4 className="font-semibold text-slate-900 dark:text-white">{session.title}</h4>
@@ -911,12 +1105,12 @@ export default function SchedulePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tutors.map((tutor, index) => (
               <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="relative h-44 bg-slate-950 overflow-hidden">
+                <div className="relative h-56 bg-slate-950 overflow-hidden">
                   <Image
                     src={tutor.image}
                     alt={tutor.name}
                     fill
-                    className="object-cover object-center group-hover/tutor:scale-105 transition-transform duration-500"
+                    className="object-cover object-[center_20%] group-hover/tutor:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
                   <div
@@ -1070,7 +1264,7 @@ export default function SchedulePage() {
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
                     {isJoined && (
                       <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
                         <CheckCircle2 className="w-3 h-3" />
@@ -1078,8 +1272,8 @@ export default function SchedulePage() {
                       </div>
                     )}
                     <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="font-bold text-white text-lg">{group.title}</h3>
-                      <p className="text-slate-300 text-sm flex items-center gap-2">
+                      <h3 className="font-bold text-white text-lg drop-shadow-lg">{group.title}</h3>
+                      <p className="text-white text-sm flex items-center gap-2 drop-shadow-md font-medium">
                         <Clock className="w-4 h-4" />
                         {group.schedule}
                       </p>

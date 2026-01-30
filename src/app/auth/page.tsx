@@ -35,6 +35,7 @@ interface Profile {
   email: string;
   firstName: string;
   lastName: string;
+  username?: string;
 }
 
 export default function AuthPage() {
@@ -111,6 +112,7 @@ function AuthPageContent() {
     if (mode === "signup") {
       const firstName = (form.elements.namedItem("firstName") as HTMLInputElement).value.trim();
       const lastName = (form.elements.namedItem("lastName") as HTMLInputElement).value.trim();
+      const username = (form.elements.namedItem("username") as HTMLInputElement)?.value.trim() || "";
       const confirm = (form.elements.namedItem("confirm") as HTMLInputElement).value;
 
       if (!firstName || !lastName) {
@@ -123,7 +125,9 @@ function AuthPageContent() {
         return;
       }
 
-      const newProfile: Profile = { email, firstName, lastName };
+      // Use username if provided, otherwise default to FirstName LastName
+      const displayUsername = username || `${firstName} ${lastName}`;
+      const newProfile: Profile = { email, firstName, lastName, username: displayUsername };
       localStorage.setItem("mm_profile", JSON.stringify(newProfile));
       localStorage.setItem("mm_session", JSON.stringify({ email }));
       localStorage.setItem("isLoggedIn", "true");
@@ -157,13 +161,16 @@ function AuthPageContent() {
     const firstName = (form.elements.namedItem("firstName") as HTMLInputElement).value.trim();
     const lastName = (form.elements.namedItem("lastName") as HTMLInputElement).value.trim();
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
+    const username = (form.elements.namedItem("username") as HTMLInputElement)?.value.trim() || "";
 
     if (!firstName || !lastName || !email) {
       setError(t("Please fill in all fields."));
       return;
     }
 
-    const updatedProfile: Profile = { email, firstName, lastName };
+    // Use username if provided, otherwise default to FirstName LastName
+    const displayUsername = username || `${firstName} ${lastName}`;
+    const updatedProfile: Profile = { email, firstName, lastName, username: displayUsername };
     localStorage.setItem("mm_profile", JSON.stringify(updatedProfile));
     localStorage.setItem("mm_session", JSON.stringify({ email }));
     setProfile(updatedProfile);
@@ -238,11 +245,11 @@ function AuthPageContent() {
           <div className="relative max-w-6xl mx-auto px-6 py-16">
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
-                {profile.firstName.charAt(0).toUpperCase()}
+                {(profile.username || profile.firstName).charAt(0).toUpperCase()}
               </div>
               <div className="text-white">
                 <p className="text-sm font-medium mb-1" style={{ color: 'var(--theme-primary-light)' }}>{t("Welcome back")}</p>
-                <h1 className="text-4xl font-bold">{profile.firstName} {profile.lastName}</h1>
+                <h1 className="text-4xl font-bold">{profile.username || `${profile.firstName} ${profile.lastName}`}</h1>
                 <p className="text-slate-400 mt-1">{profile.email}</p>
               </div>
             </div>
@@ -381,6 +388,18 @@ function AuthPageContent() {
                     />
                   </div>
                   <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Username")}</label>
+                    <Input
+                      type="text"
+                      name="username"
+                      defaultValue={profile.username !== `${profile.firstName} ${profile.lastName}` ? profile.username : ""}
+                      placeholder={t("Optional - for privacy")}
+                    />
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {t("Leave blank to use your full name as display name")}
+                    </p>
+                  </div>
+                  <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Email")}</label>
                     <Input
                       type="email"
@@ -514,21 +533,16 @@ function AuthPageContent() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-slate-950 relative overflow-hidden">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="hero" />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-transparent to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 dark:from-slate-950 via-transparent to-slate-50 dark:to-slate-950" />
         <FadeIn className="relative w-full max-w-md">
           {/* Booking redirect notice */}
           {bookingAction && (
             <div 
-              className="mb-6 p-4 rounded-xl border text-sm"
-              style={{ 
-                backgroundColor: "color-mix(in srgb, var(--theme-primary) 10%, transparent)",
-                borderColor: "color-mix(in srgb, var(--theme-primary) 30%, transparent)",
-                color: "var(--theme-primary-light)"
-              }}
+              className="mb-6 p-4 rounded-xl border text-sm bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300">
                 <CalendarCheck className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                 <span>{t("Sign in to complete your booking")}</span>
               </div>
@@ -538,12 +552,12 @@ function AuthPageContent() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center gap-2 mb-6">
               <MathLogo className="w-10 h-10" />
-              <span className="text-xl font-bold text-white">MathMaster</span>
+              <span className="text-xl font-bold text-slate-900 dark:text-white">MathMaster</span>
             </Link>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
               {mode === "signin" ? t("Welcome back") : t("Create your account")}
             </h1>
-            <p className="text-slate-400 mt-2">
+            <p className="text-slate-600 dark:text-slate-400 mt-2">
               {mode === "signin" 
                 ? (bookingAction ? t("Sign in to book your tutoring session") : t("Sign in to continue learning"))
                 : t("Start your math journey today")}
@@ -551,13 +565,13 @@ function AuthPageContent() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8 p-1 bg-slate-900 rounded-xl">
+          <div className="flex gap-2 mb-8 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
             <button
               onClick={() => { setMode("signin"); setError(""); }}
               className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
                 mode === "signin"
-                  ? "bg-slate-800 text-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-300"
+                  ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
               <LogIn className="w-4 h-4 inline mr-2" />
@@ -567,8 +581,8 @@ function AuthPageContent() {
               onClick={() => { setMode("signup"); setError(""); }}
               className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
                 mode === "signup"
-                  ? "bg-slate-800 text-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-300"
+                  ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
               <UserPlus className="w-4 h-4 inline mr-2" />
@@ -577,17 +591,29 @@ function AuthPageContent() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-950 border border-red-900 rounded-xl text-red-300 text-sm">
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-xl text-red-700 dark:text-red-300 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === "signup" && (
-              <div className="grid grid-cols-2 gap-4">
-                <Input name="firstName" label={t("First Name")} placeholder={t("John")} required />
-                <Input name="lastName" label={t("Last Name")} placeholder={t("Doe")} required />
-              </div>
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input name="firstName" label={t("First Name")} placeholder={t("Malhar")} required />
+                  <Input name="lastName" label={t("Last Name")} placeholder={t("Pawar")} required />
+                </div>
+                <div>
+                  <Input 
+                    name="username" 
+                    label={t("Username")} 
+                    placeholder={t("Optional - for privacy")} 
+                  />
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    {t("Leave blank to use your full name as display name")}
+                  </p>
+                </div>
+              </>
             )}
             <Input name="email" label={t("Email")} type="email" placeholder={t("you@example.com")} required />
             <Input name="password" label={t("Password")} type="password" placeholder="••••••••" required />
@@ -597,7 +623,7 @@ function AuthPageContent() {
 
             {mode === "signin" && (
               <div className="flex justify-end">
-                <a href="#" className="text-sm text-violet-500 hover:underline">{t("Forgot password?")}</a>
+                <button type="button" onClick={() => alert(t("Password reset functionality coming soon! Please contact support@mathmaster.com for assistance."))} className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>{t("Forgot password?")}</button>
               </div>
             )}
 
@@ -617,19 +643,19 @@ function AuthPageContent() {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-600 dark:text-slate-500 text-sm">
               {mode === "signin" ? t("Don't have an account?") : t("Already have an account?")}{" "}
               <button
                 onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); }}
-                className="text-violet-500 font-medium hover:underline"
+                className="font-medium hover:underline" style={{ color: "var(--theme-primary)" }}
               >
                 {mode === "signin" ? t("Sign up") : t("Sign in")}
               </button>
             </p>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-slate-800 text-center">
-            <p className="text-slate-400 text-xs">
+          <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
+            <p className="text-slate-500 dark:text-slate-400 text-xs">
               {t("By continuing, you agree to our Terms of Service and Privacy Policy.")}
             </p>
           </div>

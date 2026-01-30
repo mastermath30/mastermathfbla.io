@@ -118,14 +118,14 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
               <div className="p-3">
                 {/* Dark/Light Mode Toggle */}
                 <div className="mb-3">
-                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 px-2 py-1.5">Appearance</div>
-                  <div className="flex gap-2 p-1 bg-slate-100 dark:bg-slate-950 rounded-xl">
+                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">Appearance</div>
+                  <div className="flex gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
                     <button
                       onClick={() => { if (!isDark) handleModeToggle(); }}
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                         isDark
                           ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
-                          : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
                       }`}
                     >
                       <Moon className="w-4 h-4" />
@@ -136,7 +136,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                         !isDark
                           ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
-                          : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
                       }`}
                     >
                       <Sun className="w-4 h-4" />
@@ -147,7 +147,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
 
                 {/* Color Theme */}
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
-                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 px-2 py-1.5">Accent Color</div>
+                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">Accent Color</div>
                   <div className="grid grid-cols-5 gap-2 px-1">
                     {COLOR_THEMES.map((c) => {
                       const isSelected = colorTheme === c.value;
@@ -173,7 +173,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                               </div>
                             )}
                           </div>
-                          <span className="text-[10px] mt-1 text-slate-500 dark:text-slate-400">{c.name}</span>
+                          <span className="text-[10px] mt-1 text-slate-600 dark:text-slate-400">{c.name}</span>
                         </button>
                       );
                     })}

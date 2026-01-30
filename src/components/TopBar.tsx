@@ -24,11 +24,19 @@ export function TopBar() {
 		const loggedInFlag = localStorage.getItem("isLoggedIn");
 		setIsLoggedIn(!!session || loggedInFlag === "true");
 		
-		// Get user's name
-		if (session) {
+		// Get user's name from profile
+		const profileData = localStorage.getItem("mm_profile");
+		if (profileData) {
 			try {
-				const profile = JSON.parse(session);
-				setUserName(profile.firstName || "");
+				const profile = JSON.parse(profileData);
+				// Use username if available, otherwise use first name
+				if (profile.username) {
+					setUserName(profile.username);
+				} else if (profile.firstName) {
+					setUserName(profile.firstName);
+				} else {
+					setUserName("");
+				}
 			} catch (e) {
 				setUserName("");
 			}
@@ -124,8 +132,8 @@ export function TopBar() {
 										href={item.href}
 										className={`text-sm font-medium transition-all duration-200 cursor-pointer ${
 											pathname === item.href
-												? "text-violet-600 dark:text-violet-400"
-												: "text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105"
+												? "text-[var(--theme-primary)]"
+												: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)] hover:scale-105"
 										}`}
 									>
 										{item.name}
@@ -222,8 +230,8 @@ export function TopBar() {
 										href={item.href}
 										className={`rounded-lg px-3 py-3 text-left transition-all duration-300 font-medium cursor-pointer transform hover:scale-[1.02] hover:translate-x-1 ${
 											pathname === item.href
-												? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20"
-												: "text-slate-600 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50/50 dark:hover:bg-violet-900/10"
+												? "text-[var(--theme-primary)] bg-[color-mix(in_srgb,var(--theme-primary)_10%,transparent)]"
+												: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)] hover:bg-[color-mix(in_srgb,var(--theme-primary)_5%,transparent)]"
 										} ${isOpen ? "animate-mobile-menu-item" : ""}`}
 										style={{
 											animationDelay: isOpen

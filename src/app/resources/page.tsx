@@ -175,10 +175,10 @@ export default function ResourcesPage() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-slate-950/80" />
+          <div className="absolute inset-0 bg-slate-950/90" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
+            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
         </div>
 
@@ -240,7 +240,7 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Free, high-quality resources to help you learn</p>
               </div>
             </div>
-            <Link href="#" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
+            <Link href="#lessons" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
               View all
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -348,12 +348,12 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Test your knowledge and improve your skills</p>
               </div>
             </div>
-            <Link href="#" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
+            <Link href="#quizzes" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {quizzes.map((quiz) => (
-              <Card key={quiz.title} className="relative overflow-hidden">
+              <Card key={quiz.title} className="relative overflow-hidden h-full flex flex-col">
                 <div className="absolute top-0 right-0 px-3 py-1 bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-200 text-xs font-medium rounded-bl-xl border-l border-b border-slate-200 dark:border-slate-700">
                   {quiz.difficulty}
                 </div>
@@ -366,8 +366,8 @@ export default function ResourcesPage() {
                     <p className="text-slate-500 dark:text-slate-400 text-xs">{quiz.time}</p>
                   </div>
                 </div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{quiz.description}</p>
-                <Button className="w-full" onClick={() => router.push(quiz.href)} type="button">
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 flex-1">{quiz.description}</p>
+                <Button className="w-full mt-auto" onClick={() => router.push(quiz.href)} type="button">
                   <Play className="w-4 h-4" />
                   Start Quiz
                 </Button>
@@ -388,7 +388,7 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Visual explanations to help concepts click</p>
               </div>
             </div>
-            <Link href="#" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
+            <Link href="#videos" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -398,10 +398,10 @@ export default function ResourcesPage() {
                 href={video.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="block h-full"
               >
-                <Card padding="none" className="overflow-hidden group">
-                  <div className="relative aspect-video">
+                <Card padding="none" className="overflow-hidden group h-full flex flex-col">
+                  <div className="relative aspect-video flex-shrink-0">
                     <Image
                       src={video.thumbnail}
                       alt={video.title}
@@ -420,9 +420,9 @@ export default function ResourcesPage() {
                       {video.channel}
                     </div>
                   </div>
-                  <div className="p-4">
+                  <div className="p-4 flex-1 flex flex-col">
                     <h4 className="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-primary-themed transition-colors">{video.title}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{video.description}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">{video.description}</p>
                   </div>
                 </Card>
               </a>

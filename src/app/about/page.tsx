@@ -34,9 +34,9 @@ const steps = [
 ];
 
 const team = [
-  { name: "Ayaan Oberoi", role: "Founder & Lead Educator", initials: "SJ", bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+  { name: "Sarah Johnson", role: "Founder & Lead Educator", initials: "SJ", bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
   { name: "Michael Chen", role: "Head of Technology", initials: "MC", bio: "Software Engineer & Education Technology Specialist. Built platforms for millions of users.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
-  { name: "Malhar Pawar", role: "Community Manager", initials: "PP", bio: "Expert in building and nurturing learning communities. Passionate about student success.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" },
+  { name: "Priya Patel", role: "Community Manager", initials: "PP", bio: "Expert in building and nurturing learning communities. Passionate about student success.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" },
 ];
 
 const values = [
@@ -93,7 +93,7 @@ export default function AboutPage() {
                 </Button>
               </Link>
               <Link href="/community">
-                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
+                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 dark:border-white/30 dark:text-white dark:hover:bg-white/10">
                   <MessageCircle className="w-5 h-5" />
                   Visit the Forum
                 </Button>
@@ -208,7 +208,6 @@ export default function AboutPage() {
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-950 to-transparent" />
                     <div
                       className="absolute top-4 left-4 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
                       style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
@@ -243,15 +242,13 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((member) => (
               <Card key={member.name} className="text-center overflow-hidden group" padding="none">
-                <div className="relative h-64 bg-slate-200 dark:bg-slate-950">
+                <div className="relative h-72 bg-slate-200 dark:bg-slate-950">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-950 via-transparent to-transparent opacity-60" />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(var(--theme-primary-rgb), 0.1) 100%)' }} />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{member.name}</h3>

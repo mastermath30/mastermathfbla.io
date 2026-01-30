@@ -120,9 +120,13 @@ export default function CommunityPage() {
       const session = JSON.parse(localStorage.getItem("mm_session") || "null");
       if (profile && session && session.email === profile.email) {
         setIsSignedIn(true);
-        const first = profile.firstName?.charAt(0).toUpperCase() + profile.firstName?.slice(1) || "";
-        const lastInitial = profile.lastName ? profile.lastName.charAt(0).toUpperCase() + "." : "";
-        setUserName([first, lastInitial].filter(Boolean).join(" ") || "User");
+        // Use username if available, otherwise use full name
+        if (profile.username) {
+          setUserName(profile.username);
+        } else {
+          const fullName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
+          setUserName(fullName || "User");
+        }
       }
     } catch {
       // Ignore
@@ -177,10 +181,10 @@ export default function CommunityPage() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-slate-950/80" />
+          <div className="absolute inset-0 bg-slate-950/90" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
+            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
         </div>
 
@@ -218,7 +222,7 @@ export default function CommunityPage() {
                       <CardDescription>Ask questions, share explanations, help others learn</CardDescription>
                     </div>
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' })}>
                     <Plus className="w-4 h-4" />
                     New Post
                   </Button>
@@ -358,7 +362,7 @@ export default function CommunityPage() {
                         alt={contributor.name}
                         width={44}
                         height={44}
-                        className="w-11 h-11 rounded-xl object-cover"
+                        className="w-11 h-11 rounded-xl object-cover object-[center_20%]"
                       />
                       <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold ${
                         index === 0 ? 'bg-amber-500' : index === 1 ? 'bg-slate-400' : 'bg-violet-400'

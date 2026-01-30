@@ -108,9 +108,9 @@ const faqs = [
 ];
 
 const contactMethods = [
-  { icon: Mail, title: "Email Us", description: "support@mathmaster.com", action: "Send Email" },
-  { icon: MessageCircle, title: "Live Chat", description: "Available 24/7", action: "Start Chat" },
-  { icon: Phone, title: "Call Us", description: "+1 (555) 123-4567", action: "Call Now" },
+  { icon: Mail, title: "Email Us", description: "support@mathmaster.com", action: "Send Email", href: "mailto:support@mathmaster.com" },
+  { icon: MessageCircle, title: "Live Chat", description: "Available 24/7", action: "Start Chat", href: "#contact" },
+  { icon: Phone, title: "Call Us", description: "+1 (555) 123-4567", action: "Call Now", href: "tel:+15551234567" },
 ];
 
 export default function SupportPage() {
@@ -138,10 +138,10 @@ export default function SupportPage() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-slate-950/80" />
+          <div className="absolute inset-0 bg-slate-950/90" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
+            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
         </div>
 
@@ -158,11 +158,11 @@ export default function SupportPage() {
           {/* Search */}
           <div className="max-w-xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
               <input
                 type="text"
                 placeholder="Search help articles..."
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-2xl text-white placeholder:text-slate-400 shadow-xl focus:outline-none focus:ring-4"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-2xl text-white placeholder:text-slate-300 shadow-xl focus:outline-none focus:ring-4"
                 style={{ boxShadow: '0 0 0 4px rgba(var(--theme-primary-rgb), 0.2)' }}
               />
             </div>
@@ -181,9 +181,11 @@ export default function SupportPage() {
               </div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{method.title}</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{method.description}</p>
-              <Button variant="outline" size="sm" className="mx-auto">
-                {method.action}
-              </Button>
+              <a href={method.href}>
+                <Button variant="outline" size="sm" className="mx-auto">
+                  {method.action}
+                </Button>
+              </a>
             </Card>
           ))}
         </div>
@@ -199,7 +201,7 @@ export default function SupportPage() {
                   alt={cat.title}
                   width={56}
                   height={56}
-                  className="w-14 h-14 rounded-xl object-cover"
+                  className="w-14 h-14 rounded-xl object-cover object-center"
                 />
                 <div>
                   <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-primary-themed transition-colors">{cat.title}</h3>
@@ -278,7 +280,7 @@ export default function SupportPage() {
         <div className="max-w-4xl mx-auto">
           <FadeIn>
             <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(var(--theme-primary-rgb), 0.1)', color: 'var(--theme-primary)' }}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700">
                 <MessageCircle className="w-4 h-4" />
                 Still need help?
               </div>
@@ -322,7 +324,7 @@ export default function SupportPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address *</label>
-                        <Input type="email" placeholder="malharspawar@gmail.com" required />
+                        <Input type="email" placeholder="support@mathmaster.com" required />
                       </div>
                     </div>
                     

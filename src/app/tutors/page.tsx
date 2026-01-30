@@ -82,8 +82,8 @@ const isDayFullyBooked = (tutorName: string, dayOfWeek: number): boolean => {
 // Get tutor availability rate based on patterns
 const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
   const patterns: Record<string, number[]> = {
-    "Ayaan Oberoi": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4],
-    "Malhar Pawar": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
+    "Sarah Johnson": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4],
+    "Priya Patel": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
     "Michael Chen": [0.4, 0.7, 0.8, 0.9, 0.7, 0.6, 0.3],
     "Emma Rodriguez": [0.3, 0.7, 0.6, 0.8, 0.7, 0.5, 0.8],
     "Alex Thompson": [0.5, 0.4, 0.8, 0.6, 0.9, 0.7, 0.6],
@@ -104,7 +104,7 @@ const currentDate = new Date();
 
 const allTutors = [
   {
-    name: "Ayaan Oberoi",
+    name: "Sarah Johnson",
     initials: "SJ",
     subjects: "Calculus, Statistics, Differential Equations",
     rating: 4.9,
@@ -120,7 +120,7 @@ const allTutors = [
     completedSessions: 340,
   },
   {
-    name: "Malhar Pawar", 
+    name: "Priya Patel", 
     initials: "PP",
     subjects: "Linear Algebra, Geometry, Discrete Math",
     rating: 4.8,
@@ -579,11 +579,11 @@ export default function TutorsPage() {
             <FadeIn key={tutor.name} delay={index * 0.05}>
               <Card className="p-6 hover:shadow-2xl transition-all duration-300 group/tutor h-full flex flex-col">
                 <div className="text-center mb-4">
-                  <div className="relative w-24 h-24 mx-auto mb-4 group-hover/tutor:scale-105 transition-transform duration-300">
+                  <div className="relative w-36 h-44 mx-auto mb-4 group-hover/tutor:scale-105 transition-transform duration-300">
                     <img
                       src={tutor.image}
                       alt={tutor.name}
-                      className="w-full h-full object-cover rounded-2xl shadow-lg"
+                      className="w-full h-full object-cover object-[center_20%] rounded-2xl shadow-lg"
                     />
                     <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-3 border-white dark:border-slate-800 flex items-center justify-center shadow-md">
                       <span className="text-white text-xs">✓</span>
@@ -744,7 +744,7 @@ export default function TutorsPage() {
                       <img 
                         src={selectedTutor.image} 
                         alt={selectedTutor.name}
-                        className="w-14 h-14 rounded-full object-cover"
+                        className="w-14 h-14 rounded-full object-cover object-[center_20%]"
                       />
                       <div>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedTutor.name}</h2>
