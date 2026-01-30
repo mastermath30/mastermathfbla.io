@@ -204,7 +204,15 @@ export default function DashboardPage() {
                 {t("New Goal")}
               </Button>
               <Link href="/dashboard#learning-progress">
-                <Button variant="outline" className="border-slate-300 dark:border-white/30 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10">
+                <Button 
+                  variant="outline" 
+                  style={{ 
+                    borderColor: 'var(--theme-primary)', 
+                    color: 'var(--theme-primary)',
+                    background: 'transparent'
+                  }}
+                  className="hover:bg-[var(--theme-primary)]/10"
+                >
                   <BarChart3 className="w-4 h-4" />
                   {t("Analytics")}
                 </Button>
