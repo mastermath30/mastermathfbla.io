@@ -8,6 +8,7 @@ import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   Star,
   Users,
@@ -298,6 +299,7 @@ const allTutors = [
 ];
 
 export default function TutorsPage() {
+  const { t } = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [sortBy, setSortBy] = useState("rating");
@@ -522,19 +524,19 @@ export default function TutorsPage() {
               className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back to Schedule</span>
-              <span className="sm:hidden">Back</span>
+              <span className="hidden sm:inline">{t("Back to Schedule")}</span>
+              <span className="sm:hidden">{t("Back")}</span>
             </Link>
           </div>
           
           <div className="text-center mb-6 md:mb-8">
-            <SectionLabel>Our Tutors</SectionLabel>
+            <SectionLabel>{t("Our Tutors")}</SectionLabel>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              Expert Math Tutors
-              <span className="gradient-text block">Ready to Help</span>
+              {t("Expert Math Tutors")}
+              <span className="gradient-text block">{t("Ready to Help")}</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-4">
-              Connect with experienced peer tutors and professionals who are passionate about helping you succeed in mathematics.
+              {t("Connect with experienced peer tutors and professionals who are passionate about helping you succeed in mathematics.")}
             </p>
           </div>
 
@@ -544,7 +546,7 @@ export default function TutorsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search tutors or subjects..."
+                placeholder={t("Search tutors or subjects...")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
@@ -557,7 +559,7 @@ export default function TutorsPage() {
               className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
             >
               {subjects.map(subject => (
-                <option key={subject} value={subject}>{subject}</option>
+                <option key={subject} value={subject}>{subject === "All" ? t("All") : subject}</option>
               ))}
             </select>
             
@@ -566,10 +568,10 @@ export default function TutorsPage() {
               onChange={(e) => setSortBy(e.target.value)}
               className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
             >
-              <option value="rating">Highest Rated</option>
-              <option value="price_low">Price: Low to High</option>
-              <option value="price_high">Price: High to Low</option>
-              <option value="experience">Most Experience</option>
+              <option value="rating">{t("Highest Rated")}</option>
+              <option value="price_low">{t("Price: Low to High")}</option>
+              <option value="price_high">{t("Price: High to Low")}</option>
+              <option value="experience">{t("Most Experience")}</option>
             </select>
           </div>
         </FadeIn>
@@ -616,7 +618,7 @@ export default function TutorsPage() {
                 <div className="space-y-4 mb-4 flex-1">
                   <div>
                     <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
-                      Subjects
+                      {t("Subjects")}
                     </p>
                     <p className="text-sm text-slate-700 dark:text-slate-200">
                       {tutor.subjects}
@@ -625,7 +627,7 @@ export default function TutorsPage() {
                   
                   <div>
                     <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
-                      Specialties
+                      {t("Specialties")}
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {(expandedSpecialties[tutor.name] ? tutor.specialties : tutor.specialties.slice(0, 2)).map(specialty => (
@@ -651,7 +653,7 @@ export default function TutorsPage() {
                             color: 'white'
                           }}
                         >
-                          {expandedSpecialties[tutor.name] ? 'Show less' : `+${tutor.specialties.length - 2}`}
+                          {expandedSpecialties[tutor.name] ? t("Show less") : `+${tutor.specialties.length - 2}`}
                         </button>
                       )}
                     </div>
@@ -706,7 +708,7 @@ export default function TutorsPage() {
                     style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
                   >
                     <CalendarPlus className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
-                    Book Now
+                    {t("Book Now")}
                   </Button>
                 </div>
               </Card>
@@ -718,10 +720,10 @@ export default function TutorsPage() {
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-              No tutors found
+              {t("No tutors found")}
             </h3>
             <p className="text-slate-600 dark:text-slate-400">
-              Try adjusting your search criteria or browse all available tutors.
+              {t("Try adjusting your search criteria or browse all available tutors.")}
             </p>
           </div>
         )}
@@ -740,12 +742,12 @@ export default function TutorsPage() {
                 <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>
                   <CheckCircle2 className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Booking Confirmed!</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Booking Confirmed!")}</h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-4">
-                  Your session with {selectedTutor.name} has been booked for {bookingDate && formatDate(bookingDate)} at {selectedTime}.
+                  {t("Your session with")} {selectedTutor.name} {t("has been booked for")} {bookingDate && formatDate(bookingDate)} {t("at")} {selectedTime}.
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Check your schedule for details.
+                  {t("Check your schedule for details.")}
                 </p>
               </div>
             ) : (
@@ -780,7 +782,7 @@ export default function TutorsPage() {
                         className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
                         style={{ background: "var(--theme-primary)" }}
                       >1</div>
-                      <h4 className="font-semibold text-slate-900 dark:text-white">Select a Date</h4>
+                      <h4 className="font-semibold text-slate-900 dark:text-white">{t("Select a Date")}</h4>
                     </div>
                     
                     <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-4">
@@ -825,7 +827,7 @@ export default function TutorsPage() {
                       </div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
                         <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: "var(--theme-primary)" }} />
-                        Dots indicate available days
+                        {t("Dots indicate available days")}
                       </p>
                     </div>
                   </div>
@@ -838,7 +840,7 @@ export default function TutorsPage() {
                         style={bookingDate ? { background: "var(--theme-primary)" } : {}}
                       >2</div>
                       <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
-                        Select a Time {bookingDate && `- ${formatDate(bookingDate)}`}
+                        {t("Select a Time")} {bookingDate && `- ${formatDate(bookingDate)}`}
                       </h4>
                     </div>
                     
@@ -860,20 +862,20 @@ export default function TutorsPage() {
                               style={selectedTime === slot ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                             >
                               {slot}
-                              {!available && <div className="text-xs mt-1 opacity-70">Booked</div>}
+                              {!available && <div className="text-xs mt-1 opacity-70">{t("Booked")}</div>}
                             </button>
                           ))}
                         </div>
                         {getAvailableTimeSlots().length === 0 && (
                           <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div className="font-medium text-lg mb-1">🚫 Fully Booked</div>
-                            <div className="text-sm">No available slots for this day</div>
+                            <div className="font-medium text-lg mb-1">{t("🚫 Fully Booked")}</div>
+                            <div className="text-sm">{t("No available slots for this day")}</div>
                           </div>
                         )}
                       </div>
                     ) : (
                       <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
-                        Please select a date first
+                        {t("Please select a date first")}
                       </p>
                     )}
                   </div>
@@ -886,7 +888,7 @@ export default function TutorsPage() {
                         style={selectedTime ? { background: "var(--theme-primary)" } : {}}
                       >3</div>
                       <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
-                        Select Duration
+                        {t("Select Duration")}
                       </h4>
                     </div>
                     
@@ -909,7 +911,7 @@ export default function TutorsPage() {
                       </div>
                     ) : (
                       <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
-                        Please select a time first
+                        {t("Please select a time first")}
                       </p>
                     )}
                   </div>
@@ -917,31 +919,31 @@ export default function TutorsPage() {
                   {/* Summary */}
                   {selectedTime && (
                     <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-4 mb-6">
-                      <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Booking Summary</h4>
+                      <h4 className="font-semibold text-slate-900 dark:text-white mb-3">{t("Booking Summary")}</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">Tutor</span>
+                          <span className="text-slate-500 dark:text-slate-400">{t("Tutor")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{selectedTutor.name}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">Date</span>
+                          <span className="text-slate-500 dark:text-slate-400">{t("Date")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{bookingDate && formatDate(bookingDate)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">Time</span>
+                          <span className="text-slate-500 dark:text-slate-400">{t("Time")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{selectedTime}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">Duration</span>
-                          <span className="text-slate-900 dark:text-white font-medium">{selectedDuration}</span>
+                          <span className="text-slate-500 dark:text-slate-400">{t("Duration")}</span>
+                          <span className="text-slate-900 dark:text-white font-medium">{t(selectedDuration)}</span>
                         </div>
                         <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
                           <div className="flex justify-between">
-                            <span className="text-slate-900 dark:text-white font-semibold">Total</span>
+                            <span className="text-slate-900 dark:text-white font-semibold">{t("Total")}</span>
                             <span className="text-lg font-bold gradient-text">${calculatePrice()}</span>
                           </div>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            ${selectedTutor.price}/hr × {getDurationHours(selectedDuration)} hours
+                            ${selectedTutor.price}/hr × {getDurationHours(selectedDuration)} {t("hours")}
                           </p>
                         </div>
                       </div>
@@ -956,7 +958,7 @@ export default function TutorsPage() {
                     style={bookingDate && selectedTime ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                   >
                     <CalendarPlus className="w-4 h-4" />
-                    {bookingDate && selectedTime ? `Confirm Booking - $${calculatePrice()}` : "Select date and time to book"}
+                    {bookingDate && selectedTime ? `${t("Confirm Booking")} - $${calculatePrice()}` : t("Select date and time to book")}
                   </Button>
                 </div>
               </>

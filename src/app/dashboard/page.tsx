@@ -227,40 +227,40 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-8">
           <StatCard
             icon={Clock}
-            label="Hours Studied"
+            label={t("Hours Studied")}
             value="24.5"
             iconBg="bg-violet-100 dark:bg-violet-900/30"
             iconColor="text-violet-500"
-            subtext="12% this week"
+            subtext={t("12% this week")}
             subtextColor="text-green-600"
             trend="up"
           />
           <StatCard
             icon={CheckCircle2}
-            label="Problems Solved"
+            label={t("Problems Solved")}
             value="148"
             iconBg="bg-green-100 dark:bg-green-900/30"
             iconColor="text-green-500"
-            subtext="+32 this week"
+            subtext={t("+32 this week")}
             subtextColor="text-green-600"
             trend="up"
           />
           <StatCard
             icon={Flame}
-            label="Current Streak"
+            label={t("Current Streak")}
             value="7 days"
             iconBg="bg-yellow-100 dark:bg-yellow-900/30"
             iconColor="text-yellow-500"
-            subtext="Keep it going!"
+            subtext={t("Keep it going!")}
             subtextColor="text-yellow-600"
           />
           <StatCard
             icon={Trophy}
-            label="Math Mastery"
+            label={t("Math Mastery")}
             value="87%"
             iconBg="bg-purple-100 dark:bg-purple-900/30"
             iconColor="text-purple-500"
-            subtext="Advanced Level"
+            subtext={t("Advanced Level")}
             subtextColor="text-purple-600"
           />
         </div>
@@ -326,7 +326,7 @@ export default function DashboardPage() {
                           yAxisId="left"
                           type="monotone"
                           dataKey="problems"
-                          name="Problems Solved"
+                          name={t("Problems Solved")}
                           stroke="#7c3aed"
                           strokeWidth={3}
                           fill="url(#colorProblems)"
@@ -337,7 +337,7 @@ export default function DashboardPage() {
                           yAxisId="right"
                           type="monotone"
                           dataKey="accuracy"
-                          name="Accuracy %"
+                          name={t("Accuracy %")}
                           stroke="#22c55e"
                           strokeWidth={3}
                           fill="url(#colorAccuracy)"
@@ -384,7 +384,7 @@ export default function DashboardPage() {
                       {!challenge.isQuiz && (
                         <div className="mt-2">
                           <ProgressBar value={challenge.progress} color={challenge.color} size="sm" />
-                          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">{challenge.completed}/{challenge.total} completed</p>
+                          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">{challenge.completed}/{challenge.total} {t("completed")}</p>
                         </div>
                       )}
                     </div>

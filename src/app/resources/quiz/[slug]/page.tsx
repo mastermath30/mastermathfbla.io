@@ -6,6 +6,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
+import { useTranslations } from "@/components/LanguageProvider";
 
 type QuizQuestion = {
   prompt: string;
@@ -572,6 +573,7 @@ const quizzesBySlug: Record<string, QuizData> = {
 };
 
 function QuizPageContent() {
+  const { t } = useTranslations();
   const router = useRouter();
   const params = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
@@ -591,9 +593,9 @@ function QuizPageContent() {
   const [showResults, setShowResults] = useState(false);
 
   const difficultyLabels: Record<string, { label: string; color: string }> = {
-    easy: { label: "Easy", color: "text-green-500" },
-    medium: { label: "Medium", color: "text-yellow-500" },
-    hard: { label: "Hard", color: "text-red-500" },
+    easy: { label: t("Easy"), color: "text-green-500" },
+    medium: { label: t("Medium"), color: "text-yellow-500" },
+    hard: { label: t("Hard"), color: "text-red-500" },
   };
 
   if (!quiz || questions.length === 0) {
@@ -601,12 +603,12 @@ function QuizPageContent() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
         <main className="max-w-3xl mx-auto px-6 py-12">
           <Card className="p-8 text-center">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Quiz not found</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz not found")}</h1>
             <p className="text-slate-500 dark:text-slate-400 mb-6">
-              The quiz you are looking for does not exist yet.
+              {t("The quiz you are looking for does not exist yet.")}
             </p>
             <Button onClick={() => router.push("/resources#quizzes")} type="button">
-              Back to Resources
+              {t("Back to Resources")}
             </Button>
           </Card>
         </main>
@@ -655,10 +657,10 @@ function QuizPageContent() {
             <p className="text-slate-500 dark:text-slate-400">{quiz.description}</p>
             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <span className={`px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-medium ${difficultyLabels[difficulty]?.color || ''}`}>
-                {difficultyLabels[difficulty]?.label || 'Medium'} Mode
+                {difficultyLabels[difficulty]?.label || t('Medium')} {t("Mode")}
               </span>
               <span>{quiz.time}</span>
-              <span>{totalQuestions} questions</span>
+              <span>{totalQuestions} {t("questions")}</span>
             </div>
           </div>
         </div>
@@ -666,16 +668,16 @@ function QuizPageContent() {
         <Card className="p-6 md:p-8">
           {showResults ? (
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Quiz complete</h2>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz complete")}</h2>
               <p className="text-slate-500 dark:text-slate-400 mb-6">
-                You scored {score} out of {totalQuestions}.
+                {t("You scored")} {score} {t("out of")} {totalQuestions}.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={handleRestart} type="button">
-                  Restart Quiz
+                  {t("Restart Quiz")}
                 </Button>
                 <Button variant="outline" onClick={() => router.push("/resources#quizzes")} type="button">
-                  Back to Resources
+                  {t("Back to Resources")}
                 </Button>
               </div>
             </div>
@@ -683,9 +685,9 @@ function QuizPageContent() {
             <div>
               <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mb-4">
                 <span>
-                  Question {currentIndex + 1} of {totalQuestions}
+                  {t("Question")} {currentIndex + 1} {t("of")} {totalQuestions}
                 </span>
-                <span>{progress}% complete</span>
+                <span>{progress}% {t("complete")}</span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-900 mb-6">
                 <div
@@ -750,7 +752,7 @@ function QuizPageContent() {
 
               <div className="flex flex-col sm:flex-row gap-3 mt-6">
                 <Button onClick={handleSubmit} type="button" disabled={selectedIndex === null || answered}>
-                  Check Answer
+                  {t("Check Answer")}
                 </Button>
                 <Button
                   variant="outline"
@@ -758,13 +760,13 @@ function QuizPageContent() {
                   type="button"
                   disabled={!answered}
                 >
-                  {isLastQuestion ? "Finish Quiz" : "Next Question"}
+                  {isLastQuestion ? t("Finish Quiz") : t("Next Question")}
                 </Button>
                 <Link
                   href="/resources#quizzes"
                   className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
                 >
-                  Exit Quiz
+                  {t("Exit Quiz")}
                 </Link>
               </div>
             </div>

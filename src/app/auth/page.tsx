@@ -507,26 +507,26 @@ function AuthPageContent() {
           </h2>
           <p className="text-white/80 text-lg mb-8 max-w-md">
             {bookingAction 
-              ? "Create an account or sign in to book tutoring sessions with our expert peer tutors."
-              : "Join thousands of students improving their math skills through peer learning and collaboration."
+              ? t("Create an account or sign in to book tutoring sessions with our expert peer tutors.")
+              : t("Join thousands of students improving their math skills through peer learning and collaboration.")
             }
           </p>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-white/70" />
-              <span className="text-white/80">Access to 500+ learning resources</span>
+              <span className="text-white/80">{t("Access to 500+ learning resources")}</span>
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-white/70" />
-              <span className="text-white/80">Connect with peer tutors 24/7</span>
+              <span className="text-white/80">{t("Connect with peer tutors 24/7")}</span>
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-white/70" />
-              <span className="text-white/80">Track your progress with analytics</span>
+              <span className="text-white/80">{t("Track your progress with analytics")}</span>
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-white/70" />
-              <span className="text-white/80">Join a supportive community</span>
+              <span className="text-white/80">{t("Join a supportive community")}</span>
             </div>
           </div>
         </div>
@@ -616,14 +616,14 @@ function AuthPageContent() {
               </>
             )}
             <Input name="email" label={t("Email")} type="email" placeholder={t("you@example.com")} required />
-            <Input name="password" label={t("Password")} type="password" placeholder="••••••••" required />
+            <Input name="password" label={t("Password")} type="password" placeholder={t("••••••••")} required />
             {mode === "signup" && (
-              <Input name="confirm" label={t("Confirm Password")} type="password" placeholder="••••••••" required />
+              <Input name="confirm" label={t("Confirm Password")} type="password" placeholder={t("••••••••")} required />
             )}
 
             {mode === "signin" && (
               <div className="flex justify-end">
-                <button type="button" onClick={() => alert(t("Password reset functionality coming soon! Please contact support@mathmaster.com for assistance."))} className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>{t("Forgot password?")}</button>
+                <button type="button" onClick={() => alert(t("Password reset functionality coming soon!"))} className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>{t("Forgot password?")}</button>
               </div>
             )}
 

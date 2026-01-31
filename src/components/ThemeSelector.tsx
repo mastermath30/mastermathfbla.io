@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Palette, Check, Sun, Moon } from "lucide-react";
+import { Palette, Check, Sun, Moon, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage, LanguageCode } from "./LanguageProvider";
+import { languages } from "@/lib/i18n";
 
 const COLOR_THEMES = [
   { name: "Violet", value: "violet", color: "#7c3aed" },
@@ -17,6 +19,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
   const [colorTheme, setColorTheme] = useState("violet");
   const [isDark, setIsDark] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { language, setLanguage } = useLanguage();
 
   const applyColorTheme = (colorName: string) => {
     // Remove all color theme classes
@@ -174,6 +177,32 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                             )}
                           </div>
                           <span className="text-[10px] mt-1 text-slate-600 dark:text-slate-400">{c.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Language Selector */}
+                <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
+                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5 flex items-center gap-1">
+                    <Globe className="w-3 h-3" />
+                    Language
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                    {languages.map((lang) => {
+                      const isSelected = language === lang.code;
+                      return (
+                        <button
+                          key={lang.code}
+                          onClick={() => setLanguage(lang.code as LanguageCode)}
+                          className={`py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+                            isSelected
+                              ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                              : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
+                          }`}
+                        >
+                          {lang.label}
                         </button>
                       );
                     })}

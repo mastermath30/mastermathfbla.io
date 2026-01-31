@@ -7,6 +7,7 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   Heart,
   Target,
@@ -23,54 +24,59 @@ import {
   X,
 } from "lucide-react";
 
-const stats = [
-  { value: "10K+", label: "Active Learners", sublabel: "Improving weekly", icon: Users },
-  { value: "500+", label: "Lessons & Resources", sublabel: "Guided explanations", icon: GraduationCap },
-  { value: "24/7", label: "Community Help", sublabel: "Ask anytime", icon: Globe },
+const getStats = (t: (key: string) => string) => [
+  { value: "10K+", label: t("Active Learners"), sublabel: t("Improving weekly"), icon: Users },
+  { value: "500+", label: t("Lessons & Resources"), sublabel: t("Guided explanations"), icon: GraduationCap },
+  { value: "24/7", label: t("Community Help"), sublabel: t("Ask anytime"), icon: Globe },
 ];
 
-const steps = [
-  { number: "01", title: "Join the Community", description: "Create your free account and set up your student profile. Tell us about your learning goals.", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop" },
-  { number: "02", title: "Connect & Learn", description: "Access resources, join study groups, attend live sessions, and ask questions in the forum.", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=250&fit=crop" },
-  { number: "03", title: "Track & Succeed", description: "Monitor your progress on the dashboard, earn achievements, and watch your skills grow.", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop" },
+const getSteps = (t: (key: string) => string) => [
+  { number: "01", title: t("Join the Community"), description: t("Create your free account and set up your student profile. Tell us about your learning goals."), image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop" },
+  { number: "02", title: t("Connect & Learn"), description: t("Access resources, join study groups, attend live sessions, and ask questions in the forum."), image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=250&fit=crop" },
+  { number: "03", title: t("Track & Succeed"), description: t("Monitor your progress on the dashboard, earn achievements, and watch your skills grow."), image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop" },
 ];
 
-const team = [
+const getTeam = (t: (key: string) => string) => [
   { 
     name: "Sarah Johnson", 
-    role: "Founder & Lead Educator", 
+    role: t("Founder & Lead Educator"), 
     initials: "SJ", 
-    bio: "PhD in Mathematics with 10+ years of teaching experience at top universities.", 
+    bio: t("PhD in Mathematics with 10+ years of teaching experience at top universities."), 
     fullBio: "Dr. Sarah Johnson earned her PhD in Applied Mathematics from MIT and has dedicated her career to making math accessible to everyone. With over 10 years of teaching experience at Stanford and Berkeley, she noticed that many students struggled not because they lacked ability, but because they lacked the right resources and support. This inspired her to create MathMaster. Sarah believes that every student can excel in mathematics with the right guidance and community support. When she's not teaching, she enjoys hiking, playing chess, and mentoring young educators.",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" 
   },
   { 
     name: "Michael Chen", 
-    role: "Head of Technology", 
+    role: t("Head of Technology"), 
     initials: "MC", 
-    bio: "Software Engineer & Education Technology Specialist. Built platforms for millions of users.", 
+    bio: t("Software Engineer & Education Technology Specialist. Built platforms for millions of users."), 
     fullBio: "Michael Chen brings 15 years of experience in software engineering and education technology to MathMaster. Previously, he led engineering teams at Google and Coursera, where he built learning platforms used by millions of students worldwide. Michael is passionate about creating intuitive, accessible technology that removes barriers to education. He holds a Master's degree in Computer Science from Carnegie Mellon and is a strong advocate for open-source education tools. In his free time, Michael contributes to coding education nonprofits and enjoys building robots with his two kids.",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" 
   },
   { 
     name: "Priya Patel", 
-    role: "Community Manager", 
+    role: t("Community Manager"), 
     initials: "PP", 
-    bio: "Expert in building and nurturing learning communities. Passionate about student success.", 
+    bio: t("Expert in building and nurturing learning communities. Passionate about student success."), 
     fullBio: "Priya Patel has spent her career fostering supportive learning environments where students thrive. With a background in Educational Psychology from Columbia University, she understands the importance of community in the learning process. Before joining MathMaster, Priya managed student success programs at Khan Academy and built volunteer tutor networks serving underrepresented students. She believes that peer support and mentorship are just as important as great content. Priya is fluent in four languages and loves connecting with students from diverse backgrounds around the world.",
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" 
   },
 ];
 
-const values = [
-  { icon: Accessibility, title: "Accessibility", description: "Quality education should be available to everyone, regardless of background or location.", color: "violet" },
-  { icon: HandHelping, title: "Community", description: "Learning is better together. We foster collaboration and peer support.", color: "green" },
-  { icon: Lightbulb, title: "Clarity", description: "Complex concepts deserve clear explanations. No jargon, just understanding.", color: "blue" },
-  { icon: TrendingUp, title: "Growth", description: "Every student can improve. We celebrate progress, not perfection.", color: "purple" },
+const getValues = (t: (key: string) => string) => [
+  { icon: Accessibility, title: t("Accessibility"), description: t("Quality education should be available to everyone, regardless of background or location."), color: "violet" },
+  { icon: HandHelping, title: t("Community"), description: t("Learning is better together. We foster collaboration and peer support."), color: "green" },
+  { icon: Lightbulb, title: t("Clarity"), description: t("Complex concepts deserve clear explanations. No jargon, just understanding."), color: "blue" },
+  { icon: TrendingUp, title: t("Growth"), description: t("Every student can improve. We celebrate progress, not perfection."), color: "purple" },
 ];
 
 export default function AboutPage() {
-  const [selectedMember, setSelectedMember] = useState<typeof team[0] | null>(null);
+  const { t } = useTranslations();
+  const [selectedMember, setSelectedMember] = useState<ReturnType<typeof getTeam>[0] | null>(null);
+  const stats = getStats(t);
+  const steps = getSteps(t);
+  const team = getTeam(t);
+  const values = getValues(t);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
@@ -112,7 +118,7 @@ export default function AboutPage() {
               </p>
               <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
                 <Button className="w-full sm:w-auto" onClick={() => setSelectedMember(null)}>
-                  Close
+                  {t("Close")}
                 </Button>
               </div>
             </div>
@@ -148,25 +154,25 @@ export default function AboutPage() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur border rounded-full text-sm font-medium mb-6" style={{ background: 'rgba(var(--theme-primary-rgb), 0.2)', borderColor: 'rgba(var(--theme-primary-rgb), 0.3)', color: 'var(--theme-primary-light)' }}>
               <Heart className="w-4 h-4" />
-              Our Story
+              {t("Our Story")}
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              About <span className="gradient-text">MathMaster</span>
+              {t("About")} <span className="gradient-text">MathMaster</span>
             </h1>
             <p className="text-xl text-white leading-relaxed mb-8">
-              We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you&apos;re stuck.
+              {t("We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you're stuck.")}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/auth">
                 <Button size="lg">
                   <Rocket className="w-5 h-5" />
-                  Get Started
+                  {t("Get Started")}
                 </Button>
               </Link>
               <Link href="/community">
                 <Button size="lg" style={{ backgroundColor: 'var(--theme-primary)', color: 'white', borderColor: 'var(--theme-primary)' }}>
                   <MessageCircle className="w-5 h-5" />
-                  Visit the Forum
+                  {t("Visit the Forum")}
                 </Button>
               </Link>
             </div>
@@ -226,24 +232,24 @@ export default function AboutPage() {
                     <p className="text-sm text-slate-500 dark:text-slate-400">Students improving grades</p>
                   </div>
                 </div>
+                <div className="absolute bottom-4 left-6">
+                  <p className="font-bold text-slate-900 dark:text-white">{t("Success Rate")}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t("Students improving grades")}</p>
+                </div>
               </div>
             </div>
             <div>
               <SectionLabel icon={Target} className="mb-6">
-                Our Mission
+                {t("Our Mission")}
               </SectionLabel>
               <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-6">
-                Making Math Accessible to Everyone
+                {t("Making Math Accessible to Everyone")}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                MathMaster was founded on the belief that everyone deserves access to quality math education. 
-                We&apos;re building a community where students can learn from each other, share knowledge, and grow 
-                together in their mathematical journey.
+                {t("MathMaster was founded on the belief that everyone deserves access to quality math education. We're building a community where students can learn from each other, share knowledge, and grow together in their mathematical journey.")}
               </p>
               <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-                Whether you&apos;re struggling with basic algebra or diving into calculus, we&apos;re here to help you succeed.
-                Our platform combines the power of peer learning with expert resources to create an environment where
-                every student can thrive.
+                {t("Whether you're struggling with basic algebra or diving into calculus, we're here to help you succeed. Our platform combines the power of peer learning with expert resources to create an environment where every student can thrive.")}
               </p>
             </div>
           </div>
@@ -257,10 +263,10 @@ export default function AboutPage() {
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Rocket} className="mb-6">
-              Getting Started
+              {t("Getting Started")}
             </SectionLabel>
             <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
-              How It Works
+              {t("How It Works")}
             </h2>
           </div>
 
@@ -303,10 +309,10 @@ export default function AboutPage() {
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Users} className="mb-6">
-              Meet the Team
+              {t("Meet the Team")}
             </SectionLabel>
             <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
-              The People Behind MathMaster
+              {t("Meet the Team")}
             </h2>
           </div>
 
@@ -328,7 +334,7 @@ export default function AboutPage() {
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-sm font-medium bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm">
-                        Click to learn more
+                        {t("Click to learn more")}
                       </span>
                     </div>
                   </div>
@@ -351,10 +357,10 @@ export default function AboutPage() {
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Heart} className="mb-6">
-              What We Believe
+              {t("What We Believe")}
             </SectionLabel>
             <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
-              Our Core Values
+              {t("Our Core Values")}
             </h2>
           </div>
 
@@ -379,22 +385,22 @@ export default function AboutPage() {
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
             <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              Ready to Start Learning?
+              {t("Ready to Start Learning?")}
             </h2>
           </FadeIn>
           <FadeIn delay={0.1}>
             <p className="text-lg mb-8 max-w-xl mx-auto text-slate-600 dark:text-slate-300">
-              Become part of a growing community of learners and educators who are passionate about mathematics.
+              {t("Become part of a growing community of learners and educators who are passionate about mathematics.")}
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
             <Link href="/auth">
               <Button size="lg" className="shadow-xl" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))", color: "white" }}>
                 <Rocket className="w-5 h-5" />
-                Get Started Today
+                {t("Get Started Today")}
               </Button>
             </Link>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">No credit card required • Free forever</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">{t("No credit card required • Free forever")}</p>
           </FadeIn>
         </div>
       </section>

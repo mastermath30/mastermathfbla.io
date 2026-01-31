@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   BookOpen,
   Book,
@@ -41,27 +42,27 @@ import {
   BarChart2,
 } from "lucide-react";
 
-const categories = [
+const getCategories = (t: (key: string) => string) => [
   {
     icon: Book,
-    title: "Lessons & Guides",
-    description: "Step-by-step tutorials and study guides for every topic.",
+    title: t("Lessons & Guides"),
+    description: t("Step-by-step tutorials and study guides for every topic."),
     color: "violet",
     href: "#lessons",
     image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=200&fit=crop",
   },
   {
     icon: CheckSquare,
-    title: "Practice Problems",
-    description: "Hundreds of problems with detailed solutions.",
+    title: t("Practice Problems"),
+    description: t("Hundreds of problems with detailed solutions."),
     color: "green",
     href: "#practice",
     image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop",
   },
   {
     icon: PlayCircle,
-    title: "Video Lessons",
-    description: "Watch expert explanations and walkthroughs.",
+    title: t("Video Lessons"),
+    description: t("Watch expert explanations and walkthroughs."),
     color: "purple",
     href: "#videos",
     image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop",
@@ -255,36 +256,38 @@ const downloads = [
 
 export default function ResourcesPage() {
   const router = useRouter();
+  const { t } = useTranslations();
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<typeof quizzes[0] | null>(null);
   const [showAllQuizzes, setShowAllQuizzes] = useState(false);
+  const categories = getCategories(t);
 
   const displayedQuizzes = showAllQuizzes ? quizzes : quizzes.slice(0, 3);
 
   const difficulties = [
     { 
       level: "easy", 
-      label: "Easy", 
+      label: t("Easy"), 
       icon: Zap, 
-      description: "Great for beginners or quick review",
+      description: t("Great for beginners or quick review"),
       color: "text-green-500",
       bg: "bg-green-500/10",
       border: "border-green-500/30"
     },
     { 
       level: "medium", 
-      label: "Medium", 
+      label: t("Medium"), 
       icon: Target, 
-      description: "Balanced challenge for most learners",
+      description: t("Balanced challenge for most learners"),
       color: "text-yellow-500",
       bg: "bg-yellow-500/10",
       border: "border-yellow-500/30"
     },
     { 
       level: "hard", 
-      label: "Hard", 
+      label: t("Hard"), 
       icon: Trophy, 
-      description: "Advanced problems for mastery",
+      description: t("Advanced problems for mastery"),
       color: "text-red-500",
       bg: "bg-red-500/10",
       border: "border-red-500/30"
@@ -329,11 +332,11 @@ export default function ResourcesPage() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <Sparkles className="w-4 h-4" />
-              Learning Hub
+              {t("Learning Hub")}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">Resources</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">{t("Resources")}</h1>
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
-              Access lessons, videos, quizzes, and downloadable materials to supercharge your learning.
+              {t("Access lessons, videos, quizzes, and downloadable materials to supercharge your learning.")}
             </p>
           </div>
         </div>
@@ -379,12 +382,12 @@ export default function ResourcesPage() {
                 <Book className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Lessons & Study Guides</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Free, high-quality resources to help you learn</p>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t("Lessons & Study Guides")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Free, high-quality resources to help you learn")}</p>
               </div>
             </div>
             <Link href="#lessons" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
-              View all
+              {t("View all")}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -438,8 +441,8 @@ export default function ResourcesPage() {
               <CheckSquare className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Practice Problems</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Test your knowledge and improve your skills</p>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Practice Problems")}</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Test your knowledge and improve your skills")}</p>
             </div>
           </div>
 
@@ -483,15 +486,15 @@ export default function ResourcesPage() {
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Interactive Quizzes</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Test your knowledge and improve your skills</p>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Interactive Quizzes")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Test your knowledge and improve your skills")}</p>
               </div>
             </div>
             <button 
               onClick={() => setShowAllQuizzes(!showAllQuizzes)} 
               className="text-primary-themed text-sm font-medium hover:underline"
             >
-              {showAllQuizzes ? 'Show less' : `View all (${quizzes.length})`}
+              {showAllQuizzes ? t("Show less") : `${t("View all")} (${quizzes.length})`}
             </button>
           </div>
 
@@ -513,7 +516,7 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 flex-1">{quiz.description}</p>
                 <Button className="w-full mt-auto" onClick={() => handleStartQuiz(quiz)} type="button">
                   <Play className="w-4 h-4" />
-                  Start Quiz
+                  {t("Start Quiz")}
                 </Button>
               </Card>
             ))}
@@ -528,11 +531,11 @@ export default function ResourcesPage() {
                 <Video className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Video Lessons</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Visual explanations to help concepts click</p>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Video Lessons")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Visual explanations to help concepts click")}</p>
               </div>
             </div>
-            <Link href="#videos" className="text-primary-themed text-sm font-medium hover:underline">View all</Link>
+            <Link href="#videos" className="text-primary-themed text-sm font-medium hover:underline">{t("View all")}</Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -582,8 +585,8 @@ export default function ResourcesPage() {
                 <FileDown className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Downloads</h2>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">Cheat sheets, worksheets, and reference guides</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Downloads")}</h2>
+                <p className="text-slate-600 dark:text-slate-300 text-sm">{t("Cheat sheets, worksheets, and reference guides")}</p>
               </div>
             </div>
           </div>
@@ -592,12 +595,12 @@ export default function ResourcesPage() {
               {downloads.map((item) => (
                 <div key={item.title} className="p-4 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all cursor-pointer group">
                   <div className="text-3xl mb-3">{item.icon}</div>
-                  <h4 className="font-medium text-slate-900 dark:text-white text-sm mb-1">{item.title}</h4>
-                  <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">{item.description}</p>
+                  <h4 className="font-medium text-slate-900 dark:text-white text-sm mb-1">{t(item.title)}</h4>
+                  <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">{t(item.description)}</p>
                   <a href={item.file} download className="block">
                     <Button variant="outline" size="sm" className="w-full group-hover:border-slate-500 group-hover:text-primary-themed">
                       <Download className="w-4 h-4" />
-                      Download
+                      {t("Download")}
                     </Button>
                   </a>
                 </div>
@@ -615,7 +618,7 @@ export default function ResourcesPage() {
                 <selectedQuiz.icon className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedQuiz.title}</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Choose your difficulty level</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Choose your difficulty level")}</p>
             </div>
 
             <div className="space-y-3">
@@ -643,7 +646,7 @@ export default function ResourcesPage() {
               onClick={() => setShowDifficultyModal(false)}
               className="w-full mt-4 py-3 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-colors"
             >
-              Cancel
+              {t("Cancel")}
             </button>
           </div>
         </div>

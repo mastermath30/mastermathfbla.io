@@ -9,6 +9,7 @@ import { Input, Textarea, Select } from "@/components/Input";
 import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { useTranslations } from "@/components/LanguageProvider";
 import {
   MessageCircle,
   Plus,
@@ -92,6 +93,7 @@ export default function CommunityPage() {
   const [error, setError] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userName, setUserName] = useState("Guest");
+  const { t } = useTranslations();
 
   useEffect(() => {
     // Load posts from localStorage
@@ -192,11 +194,11 @@ export default function CommunityPage() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <MessageCircle className="w-4 h-4" />
-              Discussion Forum
+              {t("Discussion Forum")}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">Community</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">{t("Community")}</h1>
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
-              Connect with fellow math enthusiasts, ask questions, and help others learn.
+              {t("Connect with fellow math enthusiasts, ask questions, and help others learn.")}
             </p>
           </div>
         </div>
@@ -218,13 +220,13 @@ export default function CommunityPage() {
                       <Sparkles className="w-5 h-5" />
                     </div>
                     <div>
-                      <CardTitle>Math Help Forum</CardTitle>
-                      <CardDescription>Ask questions, share explanations, help others learn</CardDescription>
+                      <CardTitle>{t("Math Help Forum")}</CardTitle>
+                      <CardDescription>{t("Ask questions, share explanations, help others learn")}</CardDescription>
                     </div>
                   </div>
                   <Button size="sm" onClick={() => document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' })}>
                     <Plus className="w-4 h-4" />
-                    New Post
+                    {t("New Post")}
                   </Button>
                 </div>
 
@@ -232,24 +234,24 @@ export default function CommunityPage() {
                 <div id="ask" className="p-5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 shadow-sm">
                   <h3 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
-                    Ask a Question
+                    {t("Ask a Question")}
                   </h3>
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="md:col-span-2">
-                        <Input name="title" placeholder="e.g., How do I factor this quadratic?" />
+                        <Input name="title" placeholder={t("e.g., How do I factor this quadratic?")} />
                       </div>
                       <Select name="tag" options={tagOptions} />
                     </div>
                     <Textarea
                       name="body"
                       rows={4}
-                      placeholder="Include the problem, what you've tried, and where you're stuck."
+                      placeholder={t("Include the problem, what you've tried, and where you're stuck.")}
                     />
                     <div className="flex items-center justify-between">
                       {error && <p className="text-red-500 text-sm">{error}</p>}
                       <Button type="submit" className="ml-auto">
-                        Post Question
+                        {t("Post Question")}
                       </Button>
                     </div>
                   </form>
@@ -261,7 +263,7 @@ export default function CommunityPage() {
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950">
                   <h3 className="font-semibold text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
                     <TrendingUp className="w-4 h-4" />
-                    Latest Posts
+                    {t("Latest Posts")}
                   </h3>
                 </div>
                 <div className="divide-y divide-slate-800">
@@ -270,7 +272,7 @@ export default function CommunityPage() {
                       <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-900 flex items-center justify-center mx-auto mb-4">
                         <MessageCircle className="w-8 h-8 text-slate-500 dark:text-slate-400" />
                       </div>
-                      <p className="text-slate-400">No posts yet. Be the first to ask a question!</p>
+                      <p className="text-slate-400">{t("No posts yet. Be the first to ask a question!")}</p>
                     </div>
                   ) : (
                     sortedPosts.map((post) => (
@@ -288,7 +290,7 @@ export default function CommunityPage() {
                             </div>
                             <div className="flex items-center gap-2 mt-1.5">
                               <Badge variant={tagColors[post.tag] || "default"}>{post.tag}</Badge>
-                              <span className="text-slate-400 text-xs">by {post.author}</span>
+                              <span className="text-slate-400 text-xs">{t("by")} {post.author}</span>
                             </div>
                             <p className="text-slate-500 text-sm mt-2 line-clamp-2">{post.body}</p>
                           </div>
@@ -308,7 +310,7 @@ export default function CommunityPage() {
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
-                  Community Stats
+                  {t("Community Stats")}
                 </h2>
               </div>
               <div className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -317,7 +319,7 @@ export default function CommunityPage() {
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Total Members</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Total Members")}</p>
                     <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono">1,245</p>
                   </div>
                 </div>
@@ -326,7 +328,7 @@ export default function CommunityPage() {
                     <MessageCircle className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Active Discussions</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Active Discussions")}</p>
                     <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono">{328 + posts.length}</p>
                   </div>
                 </div>
@@ -335,7 +337,7 @@ export default function CommunityPage() {
                     <BookOpen className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Problems Solved</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Problems Solved")}</p>
                     <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono">5,723</p>
                   </div>
                 </div>
@@ -347,7 +349,7 @@ export default function CommunityPage() {
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                   <Trophy className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
-                  Top Contributors
+                  {t("Top Contributors")}
                 </h2>
               </div>
               <div className="p-4 space-y-2">
@@ -390,19 +392,19 @@ export default function CommunityPage() {
 
             {/* Quick Links */}
             <Card>
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Quick Links</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Links")}</h3>
               <div className="space-y-3">
                 <Link href="/resources" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <BookOpen className="w-5 h-5" />
-                  Browse Resources
+                  {t("Browse Resources")}
                 </Link>
                 <Link href="/schedule" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <Calendar className="w-5 h-5" />
-                  Book a Session
+                  {t("Book a Session")}
                 </Link>
                 <Link href="/support" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <HelpCircle className="w-5 h-5" />
-                  Get Help
+                  {t("Get Help")}
                 </Link>
               </div>
             </Card>

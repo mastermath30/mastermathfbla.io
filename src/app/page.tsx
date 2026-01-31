@@ -500,11 +500,11 @@ export default function Home() {
                                 className="text-xs px-2.5 py-1 rounded-full transition-colors cursor-pointer hover:opacity-80 font-medium"
                                 style={{ 
                                   background: 'var(--theme-primary)',
-                                  color: 'white'
-                                }}
-                              >
-                                {expandedSpecialties[tutor.name + '-top'] ? 'Show less' : `+${tutor.specialties.length - 2}`}
-                              </button>
+                                color: 'white'
+                              }}
+                            >
+                              {expandedSpecialties[tutor.name + '-top'] ? t("Show less") : `+${tutor.specialties.length - 2}`}
+                            </button>
                             )}
                           </div>
                         </div>
@@ -792,11 +792,11 @@ export default function Home() {
                                 className="text-xs px-2.5 py-1 rounded-full transition-colors cursor-pointer hover:opacity-80 font-medium"
                                 style={{ 
                                   background: 'var(--theme-primary)',
-                                  color: 'white'
-                                }}
-                              >
-                                {expandedSpecialties[tutor.name + '-bottom'] ? 'Show less' : `+${tutor.specialties.length - 2}`}
-                              </button>
+                                color: 'white'
+                              }}
+                            >
+                              {expandedSpecialties[tutor.name + '-bottom'] ? t("Show less") : `+${tutor.specialties.length - 2}`}
+                            </button>
                             )}
                           </div>
                         </div>

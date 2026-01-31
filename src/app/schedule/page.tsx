@@ -880,7 +880,7 @@ export default function SchedulePage() {
                           return (
                             <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                               <CalendarCheck className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                              <p>{t("No classes scheduled for this day")}</p>
+                              <p>{t("No scheduled items for this day.")}</p>
                             </div>
                           );
                         }
@@ -899,7 +899,7 @@ export default function SchedulePage() {
                                 </div>
                                 <h5 className="font-medium text-slate-900 dark:text-white">{item.title}</h5>
                                 {item.type && (
-                                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 capitalize">{item.type}</p>
+                                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 capitalize">{t(item.type)}</p>
                                 )}
                               </div>
                             ))}
@@ -934,7 +934,7 @@ export default function SchedulePage() {
                                   </div>
                                 </div>
                                 <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                                  {session.duration} • ${session.price}
+                                  {t(session.duration)} • ${session.price}
                                 </div>
                               </div>
                             ))}
@@ -1060,14 +1060,14 @@ export default function SchedulePage() {
                   className="w-12 h-12 rounded-xl object-cover object-[center_20%]"
                 />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-slate-900 dark:text-white">{booking.subjects} Session</h4>
-                  <p className="text-slate-500 text-sm">{booking.date}, {booking.time} ({booking.duration})</p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">With: {booking.tutorName}</p>
+                  <h4 className="font-semibold text-slate-900 dark:text-white">{booking.subjects} {t("Tutoring Session")}</h4>
+                  <p className="text-slate-500 text-sm">{booking.date}, {booking.time} ({t(booking.duration)})</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("With:")} {booking.tutorName}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant="success">
                     <CheckCircle2 className="w-3 h-3" />
-                    Confirmed
+                    {t("Confirmed")}
                   </Badge>
                 </div>
               </div>
@@ -1091,7 +1091,7 @@ export default function SchedulePage() {
                 <div className="flex items-center gap-3">
                   <Badge variant={session.status === "confirmed" ? "success" : "warning"}>
                     {session.status === "confirmed" ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                    {session.status === "confirmed" ? "Confirmed" : "Pending"}
+                    {session.status === "confirmed" ? t("Confirmed") : t("Pending")}
                   </Badge>
                 </div>
               </div>
@@ -1217,8 +1217,8 @@ export default function SchedulePage() {
           <Card className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">My Study Groups</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Groups you've joined</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("My Study Groups")}</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Groups you've joined")}</p>
               </div>
             </div>
 
@@ -1239,7 +1239,7 @@ export default function SchedulePage() {
                         </p>
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-slate-600 dark:text-slate-300">
-                            {group.members + 1}/{group.maxMembers} members
+                            {group.members + 1}/{group.maxMembers} {t("members")}
                           </span>
                           <Button 
                             variant="ghost" 
@@ -1247,7 +1247,7 @@ export default function SchedulePage() {
                             onClick={() => handleJoinGroup(group.title)}
                             className="text-xs"
                           >
-                            Leave
+                            {t("Leave")}
                           </Button>
                         </div>
                       </div>
@@ -1262,8 +1262,8 @@ export default function SchedulePage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Open Study Groups</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Join collaborative learning sessions with other students</p>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Open Study Groups")}</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Join collaborative learning sessions with other students")}</p>
             </div>
           </div>
 
@@ -1286,7 +1286,7 @@ export default function SchedulePage() {
                     {isJoined && (
                       <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-full flex items-center gap-1.5 shadow-lg">
                         <CheckCircle2 className="w-3 h-3" />
-                        Joined
+                        {t("Joined")}
                       </div>
                     )}
                     <div className="absolute bottom-4 left-4 right-4">
@@ -1303,7 +1303,7 @@ export default function SchedulePage() {
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-slate-400" />
                         <span className="text-sm text-slate-500 dark:text-slate-400">
-                          {currentMembers}/{group.maxMembers} members
+                          {currentMembers}/{group.maxMembers} {t("members")}
                         </span>
                       </div>
                       <Button 
@@ -1316,7 +1316,7 @@ export default function SchedulePage() {
                           color: 'var(--theme-primary)' 
                         } : {}}
                       >
-                        {isFull ? "Full" : isJoined ? "Leave Group" : "Join Group"}
+                        {isFull ? t("Full") : isJoined ? t("Leave Group") : t("Join Group")}
                       </Button>
                     </div>
                   </div>
@@ -1480,7 +1480,7 @@ export default function SchedulePage() {
                         style={selectedTime ? { background: "var(--theme-primary)" } : {}}
                       >3</div>
                       <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
-                        Session Duration
+                        {t("Choose Duration")}
                       </h4>
                     </div>
                     
@@ -1497,7 +1497,7 @@ export default function SchedulePage() {
                             }`}
                             style={selectedDuration === duration ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                           >
-                            <div className="text-sm font-medium">{duration}</div>
+                            <div className="text-sm font-medium">{t(duration)}</div>
                             <div className={`text-xs mt-1 ${selectedDuration === duration ? "text-white/80" : "text-slate-500"}`}>
                               ${selectedTutor.price * getDurationHours(duration)}
                             </div>
@@ -1506,7 +1506,7 @@ export default function SchedulePage() {
                       </div>
                     ) : (
                       <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
-                        Please select a time first
+                        {t("Please select a time first")}
                       </p>
                     )}
                   </div>
@@ -1514,9 +1514,9 @@ export default function SchedulePage() {
                   {/* Price Summary */}
                   <div className="flex items-center justify-between mb-6 p-4 rounded-xl border-2 border-dashed" style={{ borderColor: "var(--theme-primary)" }}>
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400 text-sm">Session Total</span>
+                      <span className="text-slate-600 dark:text-slate-400 text-sm">{t("Session Total")}</span>
                       <div className="text-xs text-slate-500 dark:text-slate-500">
-                        {selectedDuration} × ${selectedTutor.price}/hr
+                        {t(selectedDuration)} × ${selectedTutor.price}/hr
                       </div>
                     </div>
                     <span className="text-2xl font-bold" style={{ color: "var(--theme-primary)" }}>${calculatePrice()}</span>

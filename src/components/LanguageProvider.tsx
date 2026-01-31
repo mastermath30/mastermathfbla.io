@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { defaultLanguage, LanguageCode, translations } from "@/lib/i18n";
 
+export type { LanguageCode };
+
 type LanguageContextValue = {
   language: LanguageCode;
   setLanguage: (language: LanguageCode) => void;
