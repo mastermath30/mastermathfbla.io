@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 interface FadeInProps {
   children: ReactNode;
@@ -18,6 +19,8 @@ export function FadeIn({
   direction = "up",
   className = "" 
 }: FadeInProps) {
+  const reducedMotion = useReducedMotion();
+  
   const directions = {
     up: { y: 40, x: 0 },
     down: { y: -40, x: 0 },
@@ -25,6 +28,11 @@ export function FadeIn({
     right: { y: 0, x: -40 },
     none: { y: 0, x: 0 },
   };
+
+  // If reduced motion, show content immediately without animation
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -60,6 +68,12 @@ export function FadeInStagger({
   className?: string;
   staggerDelay?: number;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       initial="hidden"
@@ -87,6 +101,12 @@ export function FadeInStaggerItem({
   children: ReactNode; 
   className?: string;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       variants={{

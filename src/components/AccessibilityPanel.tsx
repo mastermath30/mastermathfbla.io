@@ -153,9 +153,10 @@ export function AccessibilityPanel() {
       {/* Accessibility Toggle Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 left-6 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2"
+        className="fixed bottom-24 md:bottom-6 left-6 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
         aria-label="Open accessibility settings"
         title="Accessibility Settings (Alt+A)"
+        style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         <Accessibility className="w-6 h-6 text-slate-700 dark:text-slate-300" />
       </button>
@@ -297,9 +298,10 @@ export function AccessibilityPanel() {
                 </button>
 
                 {/* Keyboard Shortcuts */}
+                {/* Keyboard Shortcuts - Hidden on mobile */}
                 <button
                   onClick={() => setShowShortcuts(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-medium"
+                  className="hidden sm:flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-medium"
                   style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
                 >
                   <Keyboard className="w-4 h-4" />
@@ -326,10 +328,10 @@ export function AccessibilityPanel() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl z-[103] p-6"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md max-h-[80vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl z-[103] p-4 sm:p-6"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Keyboard Shortcuts</h3>
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Keyboard Shortcuts</h3>
                 <button
                   onClick={() => setShowShortcuts(false)}
                   className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -337,15 +339,15 @@ export function AccessibilityPanel() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {shortcuts.map((shortcut, i) => (
-                  <div key={i} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
-                    <span className="text-slate-600 dark:text-slate-400">{shortcut.description}</span>
-                    <div className="flex gap-1">
+                  <div key={i} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800 last:border-0 gap-2">
+                    <span className="text-sm sm:text-base text-slate-600 dark:text-slate-400 flex-1">{shortcut.description}</span>
+                    <div className="flex gap-1 flex-shrink-0">
                       {shortcut.keys.map((key, j) => (
                         <kbd
                           key={j}
-                          className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs font-mono font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                          className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs font-mono font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                         >
                           {key}
                         </kbd>

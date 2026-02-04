@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ReactNode, useRef } from "react";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 interface TiltCardProps {
   children: ReactNode;
@@ -16,6 +17,7 @@ export function TiltCard({
   tiltAmount = 10,
   glareOpacity = 0.15
 }: TiltCardProps) {
+  const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   
   const x = useMotionValue(0);
@@ -31,7 +33,7 @@ export function TiltCard({
   const glareY = useTransform(ySpring, [-0.5, 0.5], ["0%", "100%"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (!ref.current || reducedMotion) return;
     
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
@@ -50,6 +52,15 @@ export function TiltCard({
     x.set(0);
     y.set(0);
   };
+
+  // When reduced motion is enabled, render a static card
+  if (reducedMotion) {
+    return (
+      <div ref={ref} className={`relative ${className}`}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div

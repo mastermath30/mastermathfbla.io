@@ -189,9 +189,9 @@ export function QuickCalculator() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 50, scale: 0.9 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-4 bottom-24 md:right-8 md:bottom-24 z-[101]"
+              className="fixed inset-x-4 bottom-20 md:inset-auto md:right-8 md:bottom-24 z-[101] flex justify-center md:block"
             >
-              <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700 w-72">
+              <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700 w-full max-w-xs md:w-72">
                 {/* Header */}
                 <div className="flex items-center justify-between p-3 border-b border-slate-700 bg-slate-900">
                   <div className="flex items-center gap-2">
@@ -244,8 +244,8 @@ export function QuickCalculator() {
                   ))}
                 </div>
 
-                {/* Keyboard hint */}
-                <div className="px-4 py-2 text-center text-xs text-slate-500 border-t border-slate-700">
+                {/* Keyboard hint - hidden on mobile */}
+                <div className="hidden sm:block px-4 py-2 text-center text-xs text-slate-500 border-t border-slate-700">
                   Use keyboard for input • <kbd className="px-1 bg-slate-800 rounded">Esc</kbd> to clear
                 </div>
               </div>

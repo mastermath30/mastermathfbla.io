@@ -1,12 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 interface GlowingOrbsProps {
   variant?: "default" | "hero" | "section" | "subtle";
 }
 
 export function GlowingOrbs({ variant = "default" }: GlowingOrbsProps) {
+  const reducedMotion = useReducedMotion();
+
   const configs = {
     default: [
       { className: "top-20 left-10 w-72 h-72", delay: 0 },
@@ -29,6 +32,23 @@ export function GlowingOrbs({ variant = "default" }: GlowingOrbsProps) {
   };
 
   const orbs = configs[variant];
+
+  // When reduced motion is enabled, render static orbs with no animation
+  if (reducedMotion) {
+    return (
+      <>
+        {orbs.map((orb, index) => (
+          <div
+            key={index}
+            className={`absolute ${orb.className} rounded-full blur-3xl pointer-events-none opacity-10`}
+            style={{
+              background: index % 2 === 0 ? 'var(--theme-primary)' : 'var(--theme-primary-light)',
+            }}
+          />
+        ))}
+      </>
+    );
+  }
 
   return (
     <>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 interface PageWrapperProps {
   children: ReactNode;
@@ -9,6 +10,12 @@ interface PageWrapperProps {
 }
 
 export function PageWrapper({ children, className = "" }: PageWrapperProps) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,6 +42,12 @@ export function SectionReveal({
   className?: string;
   delay?: number;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <section className={className}>{children}</section>;
+  }
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 60, scale: 0.98 }}
@@ -63,15 +76,9 @@ export function ParallaxSection({
   speed?: number;
 }) {
   return (
-    <motion.div
-      initial={{ y: 0 }}
-      whileInView={{ y: 0 }}
-      viewport={{ once: false }}
-      style={{ willChange: "transform" }}
-      className={className}
-    >
+    <div className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -85,6 +92,12 @@ export function CardReveal({
   index?: number;
   className?: string;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -117,6 +130,12 @@ export function HeroText({
   className?: string;
   delay?: number;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
@@ -145,6 +164,12 @@ export function FloatingElement({
   duration?: number;
   distance?: number;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       animate={{ 
@@ -172,6 +197,12 @@ export function AnimatedCounter({
   className?: string;
   suffix?: string;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <span className={className}>{value}{suffix}</span>;
+  }
+
   return (
     <motion.span
       initial={{ opacity: 0, scale: 0.5 }}
@@ -203,6 +234,19 @@ export function GradientBorder({
   children: ReactNode; 
   className?: string;
 }) {
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return (
+      <div className={`relative p-[2px] rounded-2xl overflow-hidden ${className}`}>
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500" />
+        <div className="relative bg-white dark:bg-slate-900 rounded-2xl">
+          {children}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className={`relative p-[2px] rounded-2xl overflow-hidden ${className}`}

@@ -84,15 +84,16 @@ export function ToolsMenu() {
   return (
     <>
       {/* Tools Menu Button */}
-      <div className="tools-menu-container fixed bottom-24 md:bottom-6 left-[10rem] z-[89]">
+      <div className="tools-menu-container fixed bottom-24 md:bottom-6 left-24 md:left-[10rem] z-[89]">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-14 h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 shadow-xl flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 ${
+          className={`w-14 h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 touch-manipulation ${
             isOpen ? "ring-2 ring-white/50" : ""
           }`}
           aria-label="Open tools menu"
           title="Tools Menu"
           whileTap={{ scale: 0.95 }}
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           <motion.div
             animate={{ rotate: isOpen ? 90 : 0 }}
@@ -110,7 +111,7 @@ export function ToolsMenu() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute bottom-16 left-0 w-56 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+              className="absolute bottom-16 left-0 w-[calc(100vw-2rem)] max-w-[14rem] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
             >
               <div className="p-2 border-b border-slate-200 dark:border-slate-700">
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-2">
@@ -122,7 +123,7 @@ export function ToolsMenu() {
                   <button
                     key={tool.id}
                     onClick={() => openTool(tool.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors group touch-manipulation"
                   >
                     <div className={`p-2 rounded-lg bg-gradient-to-br ${tool.color} text-white`}>
                       {tool.icon}
@@ -131,7 +132,7 @@ export function ToolsMenu() {
                       <div className="text-sm font-medium text-slate-900 dark:text-white">
                         {tool.name}
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
                         {tool.shortcut}
                       </div>
                     </div>
@@ -207,9 +208,9 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="fixed bottom-40 md:bottom-20 left-4 z-[200]"
+      className="fixed bottom-40 md:bottom-20 left-4 right-4 md:right-auto z-[200]"
     >
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-4 space-y-4 w-64">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-4 space-y-4 w-full md:w-64">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Focus className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />

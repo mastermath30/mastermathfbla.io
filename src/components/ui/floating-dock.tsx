@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 export const FloatingDock = ({
   items,
@@ -30,6 +31,45 @@ const FloatingDockMobile = ({
   className?: string;
 }) => {
   const [open, setOpen] = useState(false);
+  const reducedMotion = useReducedMotion();
+  
+  // Static version for reduced motion
+  if (reducedMotion) {
+    return (
+      <div className={cn("fixed bottom-6 left-4 z-50 block md:hidden", className)}>
+        <div className="flex flex-col gap-2 items-start">
+          {open && (
+            <div className="absolute bottom-full mb-2 inset-x-0 flex flex-col gap-2">
+              {items.map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="h-12 w-12 min-h-[48px] min-w-[48px] rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700 touch-manipulation active:scale-95 transition-transform"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
+                >
+                  <div className="h-5 w-5">{item.icon}</div>
+                </Link>
+              ))}
+            </div>
+          )}
+          <button
+            onClick={() => setOpen(!open)}
+            className="h-12 w-12 min-h-[48px] min-w-[48px] rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700 touch-manipulation active:scale-95 transition-transform"
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("h-5 w-5 text-slate-600 dark:text-slate-300", open && "rotate-45")}>
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("fixed bottom-6 left-4 z-50 block md:hidden", className)}>
       <motion.div
@@ -113,6 +153,28 @@ const FloatingDockDesktop = ({
   className?: string;
 }) => {
   let mouseX = useMotionValue(Infinity);
+  const reducedMotion = useReducedMotion();
+  
+  // Static version for reduced motion
+  if (reducedMotion) {
+    return (
+      <div
+        className={cn(
+          "mx-auto hidden md:flex h-16 gap-4 items-end rounded-2xl bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm px-4 pb-3 border border-slate-200 dark:border-slate-700 shadow-xl",
+          className
+        )}
+      >
+        {items.map((item) => (
+          <Link key={item.title} href={item.href} className="cursor-pointer" title={item.title}>
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+              <div className="w-5 h-5 flex items-center justify-center">{item.icon}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}

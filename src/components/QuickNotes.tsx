@@ -123,10 +123,10 @@ export function QuickNotes() {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300]"
             />
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              className="fixed left-4 top-1/2 -translate-y-1/2 z-[301] w-[90%] max-w-sm max-h-[80vh]"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[301] w-[90%] max-w-sm max-h-[80vh]"
             >
               <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col max-h-[80vh]">
                 {/* Header */}
