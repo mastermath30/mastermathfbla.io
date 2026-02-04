@@ -8,7 +8,7 @@ import { Button } from "@/components/Button";
 import { Input, Textarea, Select } from "@/components/Input";
 import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   MessageCircle,
@@ -190,7 +190,7 @@ export default function CommunityPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -211,7 +211,7 @@ export default function CommunityPage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
-          <div className="max-w-2xl">
+          <HeroText className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <MessageCircle className="w-4 h-4" />
               {t("Discussion Forum")}
@@ -220,7 +220,7 @@ export default function CommunityPage() {
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               {t("Connect with fellow math enthusiasts, ask questions, and help others learn.")}
             </p>
-          </div>
+          </HeroText>
         </div>
       </header>
 
@@ -431,6 +431,6 @@ export default function CommunityPage() {
           </div>
         </div>
       </main>
-    </div>
+    </PageWrapper>
   );
 }

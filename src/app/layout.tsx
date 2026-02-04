@@ -5,6 +5,18 @@ import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { AIAssistant } from "@/components/AIAssistant";
+import { AccessibilityPanel } from "@/components/AccessibilityPanel";
+import { MathTipOfDay } from "@/components/MathTipOfDay";
+import { KeyboardNavigation } from "@/components/KeyboardNavigation";
+import { QuickCalculator } from "@/components/QuickCalculator";
+import { UnitConverter } from "@/components/UnitConverter";
+import { QuickNotes } from "@/components/QuickNotes";
+import { StudyStreak } from "@/components/StudyStreak";
+import { Confetti } from "@/components/Confetti";
+import { FloatingParticles } from "@/components/FloatingParticles";
+import { FormulaReference } from "@/components/FormulaReference";
+import { PomodoroTimer } from "@/components/PomodoroTimer";
+import { ToolsMenu } from "@/components/ToolsMenu";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,7 +29,7 @@ export const metadata: Metadata = {
   keywords: ["math", "tutoring", "learning", "education", "calculus", "algebra"],
 };
 
-// Script to apply theme before React hydrates (prevents flash)
+// Script to apply theme and accessibility before React hydrates (prevents flash)
 const themeInitScript = `
   (function() {
     try {
@@ -38,6 +50,15 @@ const themeInitScript = `
       }
       
       document.documentElement.classList.add('theme-' + savedColor);
+      
+      // Apply accessibility settings
+      const accessibility = JSON.parse(localStorage.getItem('mm_accessibility') || '{}');
+      if (accessibility.fontSize) document.documentElement.style.fontSize = accessibility.fontSize + '%';
+      if (accessibility.highContrast) document.documentElement.classList.add('high-contrast');
+      if (accessibility.reduceMotion) document.documentElement.classList.add('reduce-motion');
+      if (accessibility.dyslexiaFont) document.documentElement.classList.add('dyslexia-font');
+      if (accessibility.largePointer) document.documentElement.classList.add('large-pointer');
+      if (accessibility.focusHighlight) document.documentElement.classList.add('focus-highlight');
     } catch (e) {}
   })();
 `;
@@ -54,12 +75,29 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} antialiased min-h-screen bg-slate-50 dark:bg-slate-950`}>
         <LanguageProvider>
+          {/* Skip to main content link for keyboard navigation */}
+          <a href="#main-content" className="skip-to-content">
+            Skip to main content
+          </a>
+          
           <TopBar />
-          <main className="pb-24 md:pb-0">
+          <main id="main-content" className="pb-24 md:pb-0" tabIndex={-1}>
             {children}
           </main>
           <Navbar />
           <AIAssistant />
+          <AccessibilityPanel />
+          <MathTipOfDay />
+          <KeyboardNavigation />
+          <ToolsMenu />
+          <QuickCalculator />
+          <UnitConverter />
+          <QuickNotes />
+          <StudyStreak />
+          <Confetti />
+          <FloatingParticles />
+          <FormulaReference />
+          <PomodoroTimer />
         </LanguageProvider>
       </body>
     </html>

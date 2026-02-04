@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   BookOpen,
@@ -308,7 +308,7 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -329,7 +329,7 @@ export default function ResourcesPage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
-          <div className="max-w-2xl">
+          <HeroText className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <Sparkles className="w-4 h-4" />
               {t("Learning Hub")}
@@ -338,7 +338,7 @@ export default function ResourcesPage() {
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               {t("Access lessons, videos, quizzes, and downloadable materials to supercharge your learning.")}
             </p>
-          </div>
+          </HeroText>
         </div>
       </header>
 
@@ -346,18 +346,19 @@ export default function ResourcesPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Quick Access Categories */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 -mt-8">
-          {categories.map((cat) => (
-            <Link key={cat.title} href={cat.href}>
-              <Card className="h-full cursor-pointer overflow-hidden group" padding="none">
-                <div className="relative h-32">
-                  <Image
-                    src={cat.image}
-                    alt={cat.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), transparent)' }} />
+          {categories.map((cat, index) => (
+            <CardReveal key={cat.title} index={index}>
+              <Link href={cat.href}>
+                <Card className="h-full cursor-pointer overflow-hidden group" padding="none">
+                  <div className="relative h-32">
+                    <Image
+                      src={cat.image}
+                      alt={cat.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), transparent)' }} />
                   <div
                     className="absolute bottom-4 left-4 w-12 h-12 rounded-xl backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg"
                     style={{ background: 'rgba(var(--theme-primary-rgb), 0.8)', color: 'white' }}
@@ -371,6 +372,7 @@ export default function ResourcesPage() {
                 </div>
               </Card>
             </Link>
+            </CardReveal>
           ))}
         </div>
 
@@ -650,6 +652,6 @@ export default function ResourcesPage() {
             </button>
           </div>
         </div>
-      )}    </div>
+      )}    </PageWrapper>
   );
 }

@@ -152,11 +152,12 @@ export function TopBar() {
 									href="/auth"
 									className={`relative font-medium px-6 py-2 rounded-full flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
 										pathname === "/auth"
-											? "bg-violet-600 text-white shadow-lg shadow-violet-500/30"
-											: "bg-gradient-to-r from-violet-600 to-purple-500 text-white hover:shadow-violet-500/30"
+											? "text-white shadow-lg"
+											: "text-white"
 									}`}
 									style={{
-										background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))"
+										background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
+										boxShadow: pathname === "/auth" ? "0 10px 25px -5px rgba(var(--theme-primary-rgb), 0.3)" : undefined
 									}}
 								>
 									{isLoggedIn ? (

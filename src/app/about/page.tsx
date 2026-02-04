@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs } from "@/components/motion";
+import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Heart,
@@ -79,7 +79,7 @@ export default function AboutPage() {
   const values = getValues(t);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Team Member Modal */}
       {selectedMember && (
         <div 
@@ -87,7 +87,7 @@ export default function AboutPage() {
           onClick={() => setSelectedMember(null)}
         >
           <div 
-            className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+            className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-scale-pop"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header with image */}
@@ -413,6 +413,6 @@ export default function AboutPage() {
           </p>
         </div>
       </footer>
-    </div>
+    </PageWrapper>
   );
 }

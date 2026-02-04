@@ -9,7 +9,7 @@ import { Badge } from "@/components/Badge";
 import { StatCard } from "@/components/StatCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Clock,
@@ -158,7 +158,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -181,7 +181,7 @@ export default function DashboardPage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="text-slate-900 dark:text-white">
+            <HeroText className="text-slate-900 dark:text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900/20 dark:bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 {t("Learning Dashboard")}
@@ -194,7 +194,7 @@ export default function DashboardPage() {
               {/* Quick stats */}
               <div className="flex flex-wrap gap-4 md:gap-6 mt-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center animate-float-slow">
                     <Flame className="w-5 h-5" />
                   </div>
                   <div>
@@ -203,7 +203,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center animate-float-slow">
                     <Trophy className="w-5 h-5" />
                   </div>
                   <div>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </HeroText>
             
             <div className="flex gap-3">
               <Button onClick={() => setShowGoalModal(true)}>
@@ -589,7 +589,7 @@ export default function DashboardPage() {
                 <Button variant="outline" className="flex-1 min-h-[48px]" type="button" onClick={() => setShowGoalModal(false)}>
                   {t("Cancel")}
                 </Button>
-                <Button className="flex-1 min-h-[48px]" type="button" onClick={handleAddGoal}>
+                <Button className="flex-1 min-h-[48px] press-effect" type="button" onClick={handleAddGoal}>
                   {t("Create Goal")}
                 </Button>
               </div>
@@ -597,6 +597,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageWrapper>
   );
 }

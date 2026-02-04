@@ -9,7 +9,7 @@ import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { Avatar } from "@/components/Avatar";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   CalendarCheck,
@@ -900,7 +900,7 @@ export default function SchedulePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -923,7 +923,7 @@ export default function SchedulePage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <div className="flex flex-col md:flex-row md:items-center md:items-start md:justify-between gap-6">
-            <div className="text-white">
+            <HeroText className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <CalendarCheck className="w-4 h-4" />
                 {t("Tutoring Sessions")}
@@ -937,11 +937,11 @@ export default function SchedulePage() {
                 <span className="text-slate-200">{t("Next session in:")}</span>
                 <span className="font-mono text-xl md:text-2xl font-bold text-white">{countdown}</span>
               </div>
-            </div>
+            </HeroText>
             
             <div className="flex gap-3 relative">
               <Link href="/tutors">
-                <Button>
+                <Button className="press-effect">
                   <Plus className="w-4 h-4" />
                   {t("Book Session")}
                 </Button>
@@ -1851,7 +1851,7 @@ export default function SchedulePage() {
                   </div>
 
                   <Button 
-                    className="w-full" 
+                    className="w-full press-effect" 
                     onClick={proceedToCheckout}
                     disabled={!bookingDate || !selectedTime}
                     style={bookingDate && selectedTime ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
@@ -1865,6 +1865,6 @@ export default function SchedulePage() {
           </div>
         </div>
       )}
-    </div>
+    </PageWrapper>
   );
 }
