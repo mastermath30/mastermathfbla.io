@@ -133,6 +133,26 @@ export default function CommunityPage() {
     } catch {
       // Ignore
     }
+
+    const handlePostsUpdated = () => {
+      const updatedPosts = localStorage.getItem("mm_forum_posts");
+      if (updatedPosts) {
+        try {
+          const parsed = JSON.parse(updatedPosts);
+          if (Array.isArray(parsed)) {
+            setPosts(parsed);
+          }
+        } catch {
+          // Ignore
+        }
+      }
+    };
+
+    window.addEventListener("mm_forum_posts_updated", handlePostsUpdated);
+
+    return () => {
+      window.removeEventListener("mm_forum_posts_updated", handlePostsUpdated);
+    };
   }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

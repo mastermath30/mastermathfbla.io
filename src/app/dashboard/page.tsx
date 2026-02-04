@@ -115,8 +115,24 @@ export default function DashboardPage() {
     } catch {
       // Ignore
     }
+
+    const handleGoalsUpdated = () => {
+      try {
+        const storedGoals = JSON.parse(localStorage.getItem("mm_goals") || "null");
+        if (Array.isArray(storedGoals)) {
+          setGoals(storedGoals);
+        }
+      } catch {
+        // Ignore
+      }
+    };
+
+    window.addEventListener("mm_goals_updated", handleGoalsUpdated);
     
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("mm_goals_updated", handleGoalsUpdated);
+    };
   }, []);
 
   const handleAddGoal = () => {

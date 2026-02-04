@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { AIAssistant } from "@/components/AIAssistant";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({
             {children}
           </main>
           <Navbar />
+          <AIAssistant />
         </LanguageProvider>
       </body>
     </html>

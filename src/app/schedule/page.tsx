@@ -129,6 +129,14 @@ type ScheduleItem = {
   type?: "session" | "study" | "deadline";
 };
 
+type CustomScheduleItem = {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  type?: "session" | "study" | "deadline";
+};
+
 const scheduleTemplates: Array<{ day: number; items: ScheduleItem[] }> = [
   {
     day: 2,
@@ -194,7 +202,11 @@ const getScheduleItemsForMonth = (year: number, month: number) => {
   );
 };
 
-const getScheduleItemsForDate = (date: Date, joinedGroupsList: string[] = []) => {
+const getScheduleItemsForDate = (
+  date: Date,
+  joinedGroupsList: string[] = [],
+  customItems: CustomScheduleItem[] = []
+) => {
   const staticItems = getScheduleItemsForMonth(date.getFullYear(), date.getMonth()).filter((item) =>
     isSameDay(item.date, date)
   );
@@ -210,7 +222,16 @@ const getScheduleItemsForDate = (date: Date, joinedGroupsList: string[] = []) =>
       date: date,
     }));
   
-  return [...staticItems, ...studyGroupItems].sort((a, b) => {
+  const customScheduleItems = customItems
+    .filter((item) => isSameDay(new Date(item.date), date))
+    .map((item) => ({
+      time: item.time,
+      title: item.title,
+      type: item.type || "session",
+      date,
+    }));
+
+  return [...staticItems, ...studyGroupItems, ...customScheduleItems].sort((a, b) => {
     // Sort by time
     const timeA = a.time.replace(/(\d+):(\d+)\s*(AM|PM)/i, (_, h, m, p) => {
       let hour = parseInt(h);
@@ -306,6 +327,7 @@ export default function SchedulePage() {
   const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
   const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
   const [joinedGroups, setJoinedGroups] = useState<string[]>([]);
+  const [customScheduleItems, setCustomScheduleItems] = useState<CustomScheduleItem[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filterSubject, setFilterSubject] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
@@ -387,27 +409,63 @@ export default function SchedulePage() {
     const isLoggedInFlag = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(!!session || isLoggedInFlag === "true");
     
-    // Load booked sessions from localStorage
-    const savedBookings = localStorage.getItem("mm_booked_sessions");
-    if (savedBookings) {
-      try {
-        setBookedSessions(JSON.parse(savedBookings));
-      } catch {
-        // Ignore parse errors
+    const loadBookings = () => {
+      const savedBookings = localStorage.getItem("mm_booked_sessions");
+      if (savedBookings) {
+        try {
+          setBookedSessions(JSON.parse(savedBookings));
+          return;
+        } catch {
+          // Ignore parse errors
+        }
       }
-    }
+      setBookedSessions([]);
+    };
 
-    // Load joined study groups from localStorage
-    const savedGroups = localStorage.getItem("mm_joined_groups");
-    if (savedGroups) {
-      try {
-        setJoinedGroups(JSON.parse(savedGroups));
-      } catch {
-        // Ignore parse errors
+    const loadGroups = () => {
+      const savedGroups = localStorage.getItem("mm_joined_groups");
+      if (savedGroups) {
+        try {
+          setJoinedGroups(JSON.parse(savedGroups));
+          return;
+        } catch {
+          // Ignore parse errors
+        }
       }
-    }
+      setJoinedGroups([]);
+    };
+
+    const loadCustomItems = () => {
+      const savedItems = localStorage.getItem("mm_custom_schedule_items");
+      if (savedItems) {
+        try {
+          setCustomScheduleItems(JSON.parse(savedItems));
+          return;
+        } catch {
+          // Ignore parse errors
+        }
+      }
+      setCustomScheduleItems([]);
+    };
+
+    loadBookings();
+    loadGroups();
+    loadCustomItems();
+
+    const handleBookingsUpdated = () => loadBookings();
+    const handleGroupsUpdated = () => loadGroups();
+    const handleCustomItemsUpdated = () => loadCustomItems();
+
+    window.addEventListener("mm_booked_sessions_updated", handleBookingsUpdated);
+    window.addEventListener("mm_groups_updated", handleGroupsUpdated);
+    window.addEventListener("mm_custom_schedule_updated", handleCustomItemsUpdated);
 
     // Removed auto-open modal code since Book Now now redirects to tutors page
+    return () => {
+      window.removeEventListener("mm_booked_sessions_updated", handleBookingsUpdated);
+      window.removeEventListener("mm_groups_updated", handleGroupsUpdated);
+      window.removeEventListener("mm_custom_schedule_updated", handleCustomItemsUpdated);
+    };
   }, []);
 
   useEffect(() => {
@@ -622,7 +680,7 @@ export default function SchedulePage() {
       const date = new Date(currentYear, currentMonth, day);
       const isToday = isCurrentMonth && day === today.getDate();
       const isSelected = isSameDay(date, selectedDate);
-      const items = getScheduleItemsForDate(date, joinedGroups);
+      const items = getScheduleItemsForDate(date, joinedGroups, customScheduleItems);
       const maxItems = 2;
 
       calendarDays.push(
@@ -675,7 +733,7 @@ export default function SchedulePage() {
   const renderWeekView = () => {
     const weekDates = getWeekDates(selectedDate);
     return weekDates.map((date) => {
-      const items = getScheduleItemsForDate(date, joinedGroups);
+      const items = getScheduleItemsForDate(date, joinedGroups, customScheduleItems);
       const isToday = isSameDay(date, new Date());
       return (
         <button
@@ -711,7 +769,7 @@ export default function SchedulePage() {
   };
 
   const renderDayView = () => {
-    const items = getScheduleItemsForDate(selectedDate, joinedGroups);
+    const items = getScheduleItemsForDate(selectedDate, joinedGroups, customScheduleItems);
     if (items.length === 0) {
       return (
         <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-950/50 p-8 text-center text-slate-500 dark:text-slate-400">
@@ -870,7 +928,7 @@ export default function SchedulePage() {
                     {/* Sessions for this day */}
                     <div className="space-y-3 max-h-80 overflow-y-auto">
                       {(() => {
-                        const scheduleItems = getScheduleItemsForDate(selectedDate, joinedGroups);
+                        const scheduleItems = getScheduleItemsForDate(selectedDate, joinedGroups, customScheduleItems);
                         const bookedForDay = bookedSessions.filter(session => {
                           const sessionDate = new Date(session.date);
                           return isSameDay(sessionDate, selectedDate);
