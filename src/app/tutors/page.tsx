@@ -33,6 +33,9 @@ import {
   ChevronRight,
   X,
   CheckCircle2,
+  CreditCard,
+  Lock,
+  ShieldCheck,
 } from "lucide-react";
 
 // Generate realistic time slots
@@ -317,6 +320,16 @@ export default function TutorsPage() {
   const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
   const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Checkout state
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [billingZip, setBillingZip] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
     const session = localStorage.getItem("mm_session");
@@ -415,15 +428,91 @@ export default function TutorsPage() {
     setSelectedTutor(tutor);
     setShowBookingModal(true);
     setBookingConfirmed(false);
+    setShowCheckout(false);
     setBookingDate(null);
     setSelectedTime(null);
     setSelectedDuration("1 hour");
     setBookingMonth(currentDate.getMonth());
     setBookingYear(currentDate.getFullYear());
+    // Reset payment fields
+    setCardNumber("");
+    setCardExpiry("");
+    setCardCvc("");
+    setCardName("");
+    setBillingZip("");
+    setPaymentError("");
   };
 
-  const confirmBooking = () => {
+  // Format card number with spaces
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    const matches = v.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    if (parts.length) {
+      return parts.join(" ");
+    } else {
+      return v;
+    }
+  };
+
+  // Format expiry date
+  const formatExpiry = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    if (v.length >= 2) {
+      return v.slice(0, 2) + "/" + v.slice(2, 4);
+    }
+    return v;
+  };
+
+  // Validate card details
+  const validateCard = () => {
+    if (cardNumber.replace(/\s/g, "").length < 16) {
+      setPaymentError("Please enter a valid card number");
+      return false;
+    }
+    if (cardExpiry.length < 5) {
+      setPaymentError("Please enter a valid expiry date");
+      return false;
+    }
+    if (cardCvc.length < 3) {
+      setPaymentError("Please enter a valid CVC");
+      return false;
+    }
+    if (cardName.trim().length < 2) {
+      setPaymentError("Please enter the cardholder name");
+      return false;
+    }
+    if (billingZip.length < 5) {
+      setPaymentError("Please enter a valid ZIP code");
+      return false;
+    }
+    return true;
+  };
+
+  // Proceed to checkout
+  const proceedToCheckout = () => {
     if (!selectedTutor || !bookingDate || !selectedTime) return;
+    setShowCheckout(true);
+  };
+
+  // Process payment and confirm booking
+  const processPayment = async () => {
+    if (!validateCard()) return;
+    
+    setIsProcessing(true);
+    setPaymentError("");
+    
+    // Simulate payment processing
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    if (!selectedTutor || !bookingDate || !selectedTime) {
+      setIsProcessing(false);
+      return;
+    }
     
     const newBooking = {
       id: Date.now().toString(),
@@ -435,6 +524,7 @@ export default function TutorsPage() {
       duration: selectedDuration,
       price: calculatePrice(),
       status: "confirmed",
+      paymentMethod: `•••• ${cardNumber.slice(-4)}`,
     };
     
     // Save to localStorage
@@ -443,14 +533,16 @@ export default function TutorsPage() {
     bookedSessions.push(newBooking);
     localStorage.setItem("mm_booked_sessions", JSON.stringify(bookedSessions));
     
+    setIsProcessing(false);
     setBookingConfirmed(true);
     setTimeout(() => {
       setShowBookingModal(false);
       setBookingConfirmed(false);
+      setShowCheckout(false);
       setBookingDate(null);
       setSelectedTime(null);
       setSelectedDuration("1 hour");
-    }, 2000);
+    }, 2500);
   };
 
   // Render booking calendar
@@ -742,14 +834,199 @@ export default function TutorsPage() {
                 <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>
                   <CheckCircle2 className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Booking Confirmed!")}</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Payment Successful!")}</h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-4">
                   {t("Your session with")} {selectedTutor.name} {t("has been booked for")} {bookingDate && formatDate(bookingDate)} {t("at")} {selectedTime}.
                 </p>
+                <div className="inline-flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-full mb-4">
+                  <ShieldCheck className="w-4 h-4" />
+                  {t("Payment of")} ${calculatePrice()} {t("confirmed")}
+                </div>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {t("Check your schedule for details.")}
+                  {t("Check your schedule for details. A confirmation email has been sent.")}
                 </p>
               </div>
+            ) : showCheckout ? (
+              /* Checkout / Payment Step */
+              <>
+                <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={() => setShowCheckout(false)}
+                        className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        <ChevronLeft className="w-5 h-5 text-slate-500" />
+                      </button>
+                      <div>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Checkout")}</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Complete your booking")}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setShowBookingModal(false)}
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <X className="w-5 h-5 text-slate-500" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  {/* Order Summary */}
+                  <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 mb-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img 
+                        src={selectedTutor.image} 
+                        alt={selectedTutor.name}
+                        className="w-12 h-12 rounded-full object-cover object-[center_20%]"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-slate-900 dark:text-white">{selectedTutor.name}</h4>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          {bookingDate && formatDate(bookingDate)} • {selectedTime} • {selectedDuration}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500 dark:text-slate-400">{t("Session Rate")}</span>
+                        <span className="text-slate-900 dark:text-white">${selectedTutor.price}/hr × {getDurationHours(selectedDuration)} hr</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500 dark:text-slate-400">{t("Platform Fee")}</span>
+                        <span className="text-slate-900 dark:text-white">$0.00</span>
+                      </div>
+                      <div className="flex justify-between font-semibold pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <span className="text-slate-900 dark:text-white">{t("Total")}</span>
+                        <span className="text-lg gradient-text">${calculatePrice()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Form */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <CreditCard className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
+                      <h4 className="font-semibold text-slate-900 dark:text-white">{t("Payment Details")}</h4>
+                      <div className="flex-1" />
+                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                        <Lock className="w-3 h-3" />
+                        {t("Secure")}
+                      </div>
+                    </div>
+
+                    {paymentError && (
+                      <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm p-3 rounded-lg">
+                        {paymentError}
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                        {t("Card Number")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                          placeholder="1234 5678 9012 3456"
+                          maxLength={19}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ boxShadow: cardNumber ? '0 0 0 2px rgba(var(--theme-primary-rgb), 0.2)' : undefined }}
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa" className="h-4 opacity-50" />
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" className="h-4 opacity-50" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                          {t("Expiry Date")}
+                        </label>
+                        <input
+                          type="text"
+                          value={cardExpiry}
+                          onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
+                          placeholder="MM/YY"
+                          maxLength={5}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                          {t("CVC")}
+                        </label>
+                        <input
+                          type="text"
+                          value={cardCvc}
+                          onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                          placeholder="123"
+                          maxLength={4}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                        {t("Cardholder Name")}
+                      </label>
+                      <input
+                        type="text"
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value)}
+                        placeholder="John Doe"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                        {t("Billing ZIP Code")}
+                      </label>
+                      <input
+                        type="text"
+                        value={billingZip}
+                        onChange={(e) => setBillingZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                        placeholder="12345"
+                        maxLength={5}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Security Note */}
+                  <div className="flex items-center gap-2 mt-6 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl text-sm text-green-700 dark:text-green-400">
+                    <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+                    <p>{t("Your payment information is encrypted and secure. We never store your card details.")}</p>
+                  </div>
+
+                  {/* Pay Button */}
+                  <Button 
+                    className="w-full mt-6" 
+                    onClick={processPayment}
+                    disabled={isProcessing}
+                    style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        {t("Processing...")}
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        {t("Pay")} ${calculatePrice()}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </>
             ) : (
               <>
                 <div className="p-6 border-b border-slate-200 dark:border-slate-700">
@@ -953,12 +1230,12 @@ export default function TutorsPage() {
                   {/* Confirm Button */}
                   <Button 
                     className="w-full" 
-                    onClick={confirmBooking}
+                    onClick={proceedToCheckout}
                     disabled={!bookingDate || !selectedTime}
                     style={bookingDate && selectedTime ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                   >
-                    <CalendarPlus className="w-4 h-4" />
-                    {bookingDate && selectedTime ? `${t("Confirm Booking")} - $${calculatePrice()}` : t("Select date and time to book")}
+                    <CreditCard className="w-4 h-4" />
+                    {bookingDate && selectedTime ? `${t("Proceed to Checkout")} - $${calculatePrice()}` : t("Select date and time to book")}
                   </Button>
                 </div>
               </>

@@ -34,6 +34,13 @@ import {
   SquareRadical,
   Infinity,
   Calculator,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  CheckCircle2,
+  CreditCard,
+  Lock,
+  ShieldCheck,
 } from "lucide-react";
 
 const getStats = (t: (key: string) => string) => [
@@ -166,6 +173,62 @@ const getSteps = (t: (key: string) => string) => [
   },
 ];
 
+// Generate realistic time slots
+const generateTimeSlots = (): string[] => {
+  const slots = [];
+  for (let hour = 8; hour < 12; hour++) {
+    slots.push(`${hour}:00 AM`);
+    if (hour < 11) slots.push(`${hour}:30 AM`);
+  }
+  slots.push("12:00 PM");
+  slots.push("12:30 PM");
+  for (let hour = 1; hour <= 8; hour++) {
+    slots.push(`${hour}:00 PM`);
+    if (hour < 8) slots.push(`${hour}:30 PM`);
+  }
+  return slots;
+};
+
+const seededRandom = (seed: string): number => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  const x = Math.sin(hash) * 10000;
+  return x - Math.floor(x);
+};
+
+const getSeededAvailableSlots = (tutorName: string, dayOfWeek: number, allSlots: string[], availability: number = 0.7): string[] => {
+  return allSlots.filter((slot, index) => {
+    const seed = `${tutorName}-${dayOfWeek}-${slot}-${index}`;
+    return seededRandom(seed) < availability;
+  });
+};
+
+const isDayFullyBooked = (tutorName: string, dayOfWeek: number): boolean => {
+  const seed = `${tutorName}-${dayOfWeek}-fullbook`;
+  return seededRandom(seed) < 0.15;
+};
+
+const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
+  const patterns: Record<string, number[]> = {
+    "Sarah Johnson": [0.3, 0.8, 0.6, 0.7, 0.8, 0.5, 0.4],
+    "Emma Rodriguez": [0.3, 0.7, 0.6, 0.8, 0.7, 0.5, 0.8],
+    "Priya Patel": [0.4, 0.6, 0.8, 0.7, 0.5, 0.9, 0.7],
+  };
+  return patterns[tutorName]?.[dayOfWeek] || 0.6;
+};
+
+const ALL_TIME_SLOTS = generateTimeSlots();
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const currentDate = new Date();
+
+const getDaysInMonth = (month: number, year: number) => new Date(year, month + 1, 0).getDate();
+const getFirstDayOfMonth = (month: number, year: number) => new Date(year, month, 1).getDay();
+
 export default function Home() {
   const { t } = useTranslations();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -174,6 +237,26 @@ export default function Home() {
   const stats = getStats(t);
   const features = getFeatures(t);
   const steps = getSteps(t);
+  
+  // Booking modal state
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedTutor, setSelectedTutor] = useState<typeof topTutors[0] | null>(null);
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [bookingDate, setBookingDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState("1 hour");
+  const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
+  const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
+  
+  // Checkout state
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [billingZip, setBillingZip] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
     // Check if user is logged in
@@ -209,13 +292,211 @@ export default function Home() {
 
   const handleBookNow = (tutor: typeof topTutors[0]) => {
     if (!isLoggedIn) {
-      // Redirect to auth page with return URL
-      window.location.href = "/auth?redirect=/schedule&action=book";
+      window.location.href = "/auth?redirect=/&action=book";
       return;
     }
-    // Store selected tutor and redirect to schedule
-    localStorage.setItem("selectedTutor", JSON.stringify(tutor));
-    window.location.href = "/schedule?book=true";
+    setSelectedTutor(tutor);
+    setShowBookingModal(true);
+    setBookingConfirmed(false);
+    setShowCheckout(false);
+    setBookingDate(null);
+    setSelectedTime(null);
+    setSelectedDuration("1 hour");
+    setBookingMonth(currentDate.getMonth());
+    setBookingYear(currentDate.getFullYear());
+    setCardNumber("");
+    setCardExpiry("");
+    setCardCvc("");
+    setCardName("");
+    setBillingZip("");
+    setPaymentError("");
+  };
+
+  // Booking helper functions
+  const getDurationHours = (duration: string): number => {
+    switch (duration) {
+      case "1 hour": return 1;
+      case "1.5 hours": return 1.5;
+      case "2 hours": return 2;
+      default: return 1;
+    }
+  };
+
+  const calculatePrice = (): number => {
+    if (!selectedTutor) return 0;
+    return selectedTutor.price * getDurationHours(selectedDuration);
+  };
+
+  const formatDate = (date: Date): string => {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const getAllTimeSlotsWithAvailability = (): Array<{slot: string, available: boolean}> => {
+    if (!selectedTutor || !bookingDate) return ALL_TIME_SLOTS.map(slot => ({slot, available: false}));
+    const dayOfWeek = bookingDate.getDay();
+    if (isDayFullyBooked(selectedTutor.name, dayOfWeek)) {
+      return ALL_TIME_SLOTS.map(slot => ({slot, available: false}));
+    }
+    const availabilityRate = getTutorAvailability(selectedTutor.name, dayOfWeek);
+    const availableSlots = getSeededAvailableSlots(selectedTutor.name, dayOfWeek, ALL_TIME_SLOTS, availabilityRate);
+    return ALL_TIME_SLOTS.map(slot => ({
+      slot,
+      available: availableSlots.includes(slot)
+    }));
+  };
+
+  const getAvailableTimeSlots = (): string[] => {
+    return getAllTimeSlotsWithAvailability()
+      .filter(({available}) => available)
+      .map(({slot}) => slot);
+  };
+
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    const matches = v.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    return parts.length ? parts.join(" ") : v;
+  };
+
+  const formatExpiry = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    if (v.length >= 2) {
+      return v.slice(0, 2) + "/" + v.slice(2, 4);
+    }
+    return v;
+  };
+
+  const validateCard = () => {
+    if (cardNumber.replace(/\s/g, "").length < 16) {
+      setPaymentError("Please enter a valid card number");
+      return false;
+    }
+    if (cardExpiry.length < 5) {
+      setPaymentError("Please enter a valid expiry date");
+      return false;
+    }
+    if (cardCvc.length < 3) {
+      setPaymentError("Please enter a valid CVC");
+      return false;
+    }
+    if (cardName.trim().length < 2) {
+      setPaymentError("Please enter the cardholder name");
+      return false;
+    }
+    if (billingZip.length < 5) {
+      setPaymentError("Please enter a valid ZIP code");
+      return false;
+    }
+    return true;
+  };
+
+  const proceedToCheckout = () => {
+    if (!selectedTutor || !bookingDate || !selectedTime) return;
+    setShowCheckout(true);
+  };
+
+  const processPayment = async () => {
+    if (!validateCard()) return;
+    setIsProcessing(true);
+    setPaymentError("");
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    if (!selectedTutor || !bookingDate || !selectedTime) {
+      setIsProcessing(false);
+      return;
+    }
+    
+    const newBooking = {
+      id: Date.now().toString(),
+      tutorName: selectedTutor.name,
+      tutorImage: selectedTutor.image,
+      subjects: selectedTutor.subjects,
+      date: formatDate(bookingDate),
+      time: selectedTime,
+      duration: selectedDuration,
+      price: calculatePrice(),
+      status: "confirmed",
+    };
+    
+    const savedBookings = localStorage.getItem("mm_booked_sessions");
+    const bookedSessions = savedBookings ? JSON.parse(savedBookings) : [];
+    bookedSessions.push(newBooking);
+    localStorage.setItem("mm_booked_sessions", JSON.stringify(bookedSessions));
+    
+    setIsProcessing(false);
+    setBookingConfirmed(true);
+    setTimeout(() => {
+      setShowBookingModal(false);
+      setBookingConfirmed(false);
+      setShowCheckout(false);
+      setBookingDate(null);
+      setSelectedTime(null);
+      setSelectedDuration("1 hour");
+    }, 2500);
+  };
+
+  const renderBookingCalendar = () => {
+    const daysInMonth = getDaysInMonth(bookingMonth, bookingYear);
+    const firstDay = getFirstDayOfMonth(bookingMonth, bookingYear);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const calendarDays = [];
+    for (let i = 0; i < firstDay; i++) {
+      calendarDays.push(<div key={`empty-${i}`} className="h-10" />);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(bookingYear, bookingMonth, day);
+      const dayOfWeek = date.getDay();
+      const isPast = date < today;
+      const hasSlots = selectedTutor && !isDayFullyBooked(selectedTutor.name, dayOfWeek) && 
+                      getTutorAvailability(selectedTutor.name, dayOfWeek) > 0.3;
+      const isSelected = bookingDate && 
+        bookingDate.getDate() === day && 
+        bookingDate.getMonth() === bookingMonth && 
+        bookingDate.getFullYear() === bookingYear;
+      const isAvailable = !isPast && hasSlots;
+
+      calendarDays.push(
+        <button
+          key={day}
+          type="button"
+          onClick={() => {
+            if (isAvailable) {
+              setBookingDate(date);
+              setSelectedTime(null);
+            }
+          }}
+          disabled={!isAvailable}
+          className={`h-10 min-h-[44px] w-full rounded-lg text-sm transition-all touch-manipulation select-none ${
+            isSelected
+              ? "text-white font-semibold shadow-lg"
+              : isPast
+              ? "text-slate-400 dark:text-slate-600 cursor-not-allowed"
+              : hasSlots
+              ? "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+              : "text-slate-400 dark:text-slate-600 cursor-not-allowed"
+          }`}
+          style={{ 
+            WebkitTapHighlightColor: 'transparent',
+            ...(isSelected ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {})
+          }}
+        >
+          {day}
+          {hasSlots && !isPast && !isSelected && (
+            <div className="w-1 h-1 rounded-full mx-auto mt-0.5" style={{ backgroundColor: "var(--theme-primary)" }} />
+          )}
+        </button>
+      );
+    }
+
+    return calendarDays;
   };
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -1105,6 +1386,378 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedTutor && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div 
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            onClick={() => setShowBookingModal(false)}
+          />
+          
+          <div className="relative bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden">
+            <div className="relative h-32 bg-slate-950">
+              <Image
+                src={selectedTutor.image}
+                alt={selectedTutor.name}
+                fill
+                className="object-cover object-top opacity-50"
+              />
+              <div 
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 50%, transparent), transparent)" }}
+              />
+              <button
+                onClick={() => setShowBookingModal(false)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+              <div className="absolute bottom-4 left-6">
+                <h3 className="text-xl font-bold text-white">{selectedTutor.name}</h3>
+                <p className="text-white/80 text-sm">{selectedTutor.subjects}</p>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-6 max-h-[calc(90vh-8rem)] sm:max-h-[70vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+              {bookingConfirmed ? (
+                <div className="text-center py-8">
+                  <div 
+                    className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+                    style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+                  >
+                    <CheckCircle2 className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t("Payment Successful!")}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 mb-2">
+                    {t("Your session with")} {selectedTutor.name} {t("has been scheduled.")}
+                  </p>
+                  <div className="inline-flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-full mb-2">
+                    <ShieldCheck className="w-4 h-4" />
+                    {t("Payment of")} ${calculatePrice()} {t("confirmed")}
+                  </div>
+                  <p className="text-sm" style={{ color: "var(--theme-primary)" }}>
+                    {bookingDate && formatDate(bookingDate)} at {selectedTime}
+                  </p>
+                </div>
+              ) : showCheckout ? (
+                <>
+                  <button 
+                    onClick={() => setShowCheckout(false)}
+                    className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    {t("Back to booking")}
+                  </button>
+
+                  <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 mb-6">
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-3">{t("Order Summary")}</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">{t("Session")}</span>
+                        <span className="text-slate-900 dark:text-white">{bookingDate && formatDate(bookingDate)} • {selectedTime}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">{t("Duration")}</span>
+                        <span className="text-slate-900 dark:text-white">{selectedDuration}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">{t("Rate")}</span>
+                        <span className="text-slate-900 dark:text-white">${selectedTutor.price}/hr</span>
+                      </div>
+                      <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
+                        <div className="flex justify-between font-semibold">
+                          <span className="text-slate-900 dark:text-white">{t("Total")}</span>
+                          <span className="text-lg gradient-text">${calculatePrice()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CreditCard className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
+                      <h4 className="font-semibold text-slate-900 dark:text-white">{t("Payment Details")}</h4>
+                      <div className="flex-1" />
+                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                        <Lock className="w-3 h-3" />
+                        {t("Secure")}
+                      </div>
+                    </div>
+
+                    {paymentError && (
+                      <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm p-3 rounded-lg">
+                        {paymentError}
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                        {t("Card Number")}
+                      </label>
+                      <input
+                        type="text"
+                        value={cardNumber}
+                        onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                        placeholder="1234 5678 9012 3456"
+                        maxLength={19}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                          {t("Expiry Date")}
+                        </label>
+                        <input
+                          type="text"
+                          value={cardExpiry}
+                          onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
+                          placeholder="MM/YY"
+                          maxLength={5}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                          {t("CVC")}
+                        </label>
+                        <input
+                          type="text"
+                          value={cardCvc}
+                          onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                          placeholder="123"
+                          maxLength={4}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                        {t("Cardholder Name")}
+                      </label>
+                      <input
+                        type="text"
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value)}
+                        placeholder="John Doe"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                        {t("Billing ZIP Code")}
+                      </label>
+                      <input
+                        type="text"
+                        value={billingZip}
+                        onChange={(e) => setBillingZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                        placeholder="12345"
+                        maxLength={5}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl text-sm text-green-700 dark:text-green-400">
+                    <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+                    <p>{t("Your payment is encrypted and secure.")}</p>
+                  </div>
+
+                  <Button 
+                    className="w-full mt-4" 
+                    onClick={processPayment}
+                    disabled={isProcessing}
+                    style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        {t("Processing...")}
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        {t("Pay")} ${calculatePrice()}
+                      </>
+                    )}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* Step 1: Select Date */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "var(--theme-primary)" }}>1</div>
+                      <h4 className="font-semibold text-slate-900 dark:text-white">{t("Select a Date")}</h4>
+                    </div>
+                    
+                    <div className="bg-slate-100 dark:bg-slate-950 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <button
+                          onClick={() => {
+                            if (bookingMonth === 0) {
+                              setBookingMonth(11);
+                              setBookingYear(bookingYear - 1);
+                            } else {
+                              setBookingMonth(bookingMonth - 1);
+                            }
+                          }}
+                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                        >
+                          <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                        </button>
+                        <span className="font-semibold text-slate-900 dark:text-white">
+                          {monthNames[bookingMonth]} {bookingYear}
+                        </span>
+                        <button
+                          onClick={() => {
+                            if (bookingMonth === 11) {
+                              setBookingMonth(0);
+                              setBookingYear(bookingYear + 1);
+                            } else {
+                              setBookingMonth(bookingMonth + 1);
+                            }
+                          }}
+                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                        >
+                          <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-7 gap-1 mb-2">
+                        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+                          <div key={i} className="h-8 flex items-center justify-center text-xs font-medium text-slate-500">
+                            {d}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-7 gap-1">
+                        {renderBookingCalendar()}
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
+                        <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: "var(--theme-primary)" }} />
+                        {t("Dots indicate available days")}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 2: Select Time */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div 
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${!bookingDate ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400" : "text-white"}`}
+                        style={bookingDate ? { background: "var(--theme-primary)" } : {}}
+                      >2</div>
+                      <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                        {t("Select a Time")} {bookingDate && `- ${formatDate(bookingDate)}`}
+                      </h4>
+                    </div>
+                    
+                    {bookingDate ? (
+                      <div>
+                        <div className="grid grid-cols-3 gap-2">
+                          {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
+                            <button
+                              key={slot}
+                              onClick={() => available && setSelectedTime(slot)}
+                              disabled={!available}
+                              type="button"
+                              className={`p-3 min-h-[44px] rounded-lg text-sm font-medium transition-all touch-manipulation select-none ${
+                                selectedTime === slot
+                                  ? "text-white shadow-lg"
+                                  : available
+                                  ? "bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                                  : "bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50"
+                              }`}
+                              style={selectedTime === slot ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                            >
+                              {slot}
+                              {!available && <div className="text-xs mt-1 opacity-70">{t("Booked")}</div>}
+                            </button>
+                          ))}
+                        </div>
+                        {getAvailableTimeSlots().length === 0 && (
+                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div className="font-medium text-lg mb-1">🚫 {t("Fully Booked")}</div>
+                            <div className="text-sm">{t("No available slots for this day")}</div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                        {t("Please select a date first")}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Step 3: Duration */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div 
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${selectedTime ? "text-white" : "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400"}`}
+                        style={selectedTime ? { background: "var(--theme-primary)" } : {}}
+                      >3</div>
+                      <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                        {t("Choose Duration")}
+                      </h4>
+                    </div>
+                    
+                    {selectedTime ? (
+                      <div className="grid grid-cols-3 gap-2">
+                        {["1 hour", "1.5 hours", "2 hours"].map((duration) => (
+                          <button
+                            key={duration}
+                            onClick={() => setSelectedDuration(duration)}
+                            className={`p-3 rounded-lg text-center transition-all ${
+                              selectedDuration === duration
+                                ? "text-white shadow-lg"
+                                : "bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                            }`}
+                            style={selectedDuration === duration ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                          >
+                            <div className="text-sm font-medium">{t(duration)}</div>
+                            <div className={`text-xs mt-1 ${selectedDuration === duration ? "text-white/80" : "text-slate-500"}`}>
+                              ${selectedTutor.price * getDurationHours(duration)}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                        {t("Please select a time first")}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Price Summary */}
+                  <div className="flex items-center justify-between mb-6 p-4 rounded-xl border-2 border-dashed" style={{ borderColor: "var(--theme-primary)" }}>
+                    <div>
+                      <span className="text-slate-600 dark:text-slate-400 text-sm">{t("Session Total")}</span>
+                      <div className="text-xs text-slate-500 dark:text-slate-500">
+                        {t(selectedDuration)} × ${selectedTutor.price}/hr
+                      </div>
+                    </div>
+                    <span className="text-2xl font-bold" style={{ color: "var(--theme-primary)" }}>${calculatePrice()}</span>
+                  </div>
+
+                  <Button 
+                    className="w-full" 
+                    onClick={proceedToCheckout}
+                    disabled={!bookingDate || !selectedTime}
+                    style={bookingDate && selectedTime ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    {bookingDate && selectedTime ? `${t("Proceed to Checkout")} - $${calculatePrice()}` : t("Select date and time")}
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
