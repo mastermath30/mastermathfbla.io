@@ -306,6 +306,7 @@ export default function TutorsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [sortBy, setSortBy] = useState("rating");
+  const [userTutors, setUserTutors] = useState<typeof allTutors>([]);
   
   // Expanded specialties state
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
@@ -331,19 +332,46 @@ export default function TutorsPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState("");
 
+  // Load user-submitted tutors from localStorage
+  useEffect(() => {
+    const applications = JSON.parse(localStorage.getItem("mm_tutor_applications") || "[]");
+    const approvedTutors = applications
+      .filter((app: { status: string }) => app.status === "approved")
+      .map((app: { name: string; subjects: string; price: number; image: string; education: string; specialties: string[]; languages: string[]; experience: string }) => ({
+        name: app.name,
+        initials: app.name.split(" ").map((n: string) => n[0]).join("").toUpperCase(),
+        subjects: app.subjects,
+        rating: 5.0,
+        reviews: 0,
+        price: app.price,
+        image: app.image,
+        available: true,
+        experience: app.experience,
+        education: app.education,
+        specialties: app.specialties,
+        languages: app.languages,
+        responseTime: "< 1 hour",
+        completedSessions: 0,
+      }));
+    setUserTutors(approvedTutors);
+  }, []);
+
   useEffect(() => {
     const session = localStorage.getItem("mm_session");
     const isLoggedInFlag = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(!!session || isLoggedInFlag === "true");
   }, []);
 
+  // Combine built-in tutors with user-submitted tutors
+  const combinedTutors = [...allTutors, ...userTutors];
+
   // Get unique subjects
-  const subjects = ["All", ...new Set(allTutors.flatMap(tutor => 
+  const subjects = ["All", ...new Set(combinedTutors.flatMap(tutor => 
     tutor.subjects.split(", ").map(s => s.trim())
   ))];
 
   // Filter and sort tutors
-  const filteredTutors = allTutors
+  const filteredTutors = combinedTutors
     .filter(tutor => {
       const matchesSearch = tutor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            tutor.subjects.toLowerCase().includes(searchQuery.toLowerCase());
