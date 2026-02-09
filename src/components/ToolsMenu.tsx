@@ -173,25 +173,35 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
   const [fontSize, setFontSize] = useState(110);
   const [isDimmed, setIsDimmed] = useState(true);
   const [hideImages, setHideImages] = useState(false);
-  const [isActive, setIsActive] = useState(true);
+  const [lineSpacing, setLineSpacing] = useState(1.8);
+  const [focusIntensity, setFocusIntensity] = useState(70);
+  const [showControlPanel, setShowControlPanel] = useState(true);
+  const [breathingAnimation, setBreathingAnimation] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
     
-    if (isActive) {
-      root.classList.add("focus-reading-active");
-      root.style.setProperty("--focus-font-size", `${fontSize}%`);
-      if (isDimmed) root.classList.add("focus-dimmed");
-      else root.classList.remove("focus-dimmed");
-      if (hideImages) root.classList.add("focus-hide-images");
-      else root.classList.remove("focus-hide-images");
-    }
+    root.classList.add("focus-reading-active", "focus-mode-fullscreen");
+    root.style.setProperty("--focus-font-size", `${fontSize}%`);
+    root.style.setProperty("--focus-line-spacing", `${lineSpacing}`);
+    root.style.setProperty("--focus-intensity", `${focusIntensity}`);
+    
+    if (isDimmed) root.classList.add("focus-dimmed");
+    else root.classList.remove("focus-dimmed");
+    
+    if (hideImages) root.classList.add("focus-hide-images");
+    else root.classList.remove("focus-hide-images");
+
+    if (breathingAnimation) root.classList.add("focus-breathing");
+    else root.classList.remove("focus-breathing");
     
     return () => {
-      root.classList.remove("focus-reading-active", "focus-dimmed", "focus-hide-images");
+      root.classList.remove("focus-reading-active", "focus-dimmed", "focus-hide-images", "focus-mode-fullscreen", "focus-breathing");
       root.style.removeProperty("--focus-font-size");
+      root.style.removeProperty("--focus-line-spacing");
+      root.style.removeProperty("--focus-intensity");
     };
-  }, [isActive, fontSize, isDimmed, hideImages]);
+  }, [fontSize, isDimmed, hideImages, lineSpacing, focusIntensity, breathingAnimation]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -204,67 +214,177 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      className="fixed bottom-40 md:bottom-20 left-4 right-4 md:right-auto z-[200]"
-    >
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-4 space-y-4 w-full md:w-64">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Focus className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
-            <span className="font-semibold text-slate-900 dark:text-white">Focus Mode</span>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+    <>
+      {/* Full-screen dark overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[150] pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,${focusIntensity / 100 * 0.7}) 100%)`,
+        }}
+      />
+
+      {/* Breathing border animation */}
+      {breathingAnimation && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[149] pointer-events-none"
+          style={{
+            border: "4px solid",
+            borderColor: "var(--theme-primary)",
+            animation: "breathe 4s ease-in-out infinite",
+          }}
+        />
+      )}
+
+      {/* Exit button - always visible */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        onClick={onClose}
+        className="fixed top-4 right-4 z-[200] p-3 rounded-full bg-red-500/90 hover:bg-red-600 text-white shadow-lg transition-all hover:scale-105"
+        title="Exit Focus Mode (Esc)"
+      >
+        <X className="w-5 h-5" />
+      </motion.button>
+
+      {/* Toggle control panel button */}
+      <motion.button
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        onClick={() => setShowControlPanel(!showControlPanel)}
+        className="fixed top-4 left-4 z-[200] p-3 rounded-full bg-slate-800/90 hover:bg-slate-700 text-white shadow-lg transition-all hover:scale-105"
+        title={showControlPanel ? "Hide Controls" : "Show Controls"}
+      >
+        <Focus className="w-5 h-5" />
+      </motion.button>
+
+      {/* Control Panel */}
+      <AnimatePresence>
+        {showControlPanel && (
+          <motion.div
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="fixed top-20 left-4 z-[200] w-72"
           >
-            <X className="w-4 h-4 text-slate-500" />
-          </button>
-        </div>
+            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+              {/* Header */}
+              <div className="p-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Focus className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Focus Mode</h3>
+                    <p className="text-xs text-white/80">Distraction-free reading</p>
+                  </div>
+                </div>
+              </div>
 
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Text Size</span>
-            <span className="text-sm font-medium text-slate-900 dark:text-white">{fontSize}%</span>
-          </div>
-          <input
-            type="range"
-            min="90"
-            max="150"
-            value={fontSize}
-            onChange={(e) => setFontSize(Number(e.target.value))}
-            className="w-full accent-[var(--theme-primary)]"
-          />
-        </div>
+              {/* Controls */}
+              <div className="p-4 space-y-5">
+                {/* Text Size */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Text Size</span>
+                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{fontSize}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="90"
+                    max="150"
+                    value={fontSize}
+                    onChange={(e) => setFontSize(Number(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  />
+                </div>
 
-        <div className="space-y-2">
-          <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Dim Surroundings</span>
-            <div
-              onClick={() => setIsDimmed(!isDimmed)}
-              className={`w-10 h-6 rounded-full transition-colors ${isDimmed ? "bg-green-500" : "bg-slate-300"}`}
-            >
-              <div className={`w-4 h-4 bg-white rounded-full m-1 transition-transform ${isDimmed ? "translate-x-4" : ""}`} />
+                {/* Line Spacing */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Line Spacing</span>
+                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{lineSpacing.toFixed(1)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.2"
+                    max="2.5"
+                    step="0.1"
+                    value={lineSpacing}
+                    onChange={(e) => setLineSpacing(Number(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  />
+                </div>
+
+                {/* Focus Intensity */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Focus Intensity</span>
+                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{focusIntensity}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="90"
+                    value={focusIntensity}
+                    onChange={(e) => setFocusIntensity(Number(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  />
+                </div>
+
+                {/* Toggle Options */}
+                <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+                  <label className="flex items-center justify-between cursor-pointer group">
+                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Dim Distractions</span>
+                    <div
+                      onClick={() => setIsDimmed(!isDimmed)}
+                      className={`w-11 h-6 rounded-full transition-all duration-200 ${isDimmed ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
+                    >
+                      <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${isDimmed ? "translate-x-[22px]" : "translate-x-0.5"} mt-0.5`} />
+                    </div>
+                  </label>
+                  
+                  <label className="flex items-center justify-between cursor-pointer group">
+                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Hide Images</span>
+                    <div
+                      onClick={() => setHideImages(!hideImages)}
+                      className={`w-11 h-6 rounded-full transition-all duration-200 ${hideImages ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
+                    >
+                      <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${hideImages ? "translate-x-[22px]" : "translate-x-0.5"} mt-0.5`} />
+                    </div>
+                  </label>
+
+                  <label className="flex items-center justify-between cursor-pointer group">
+                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Breathing Border</span>
+                    <div
+                      onClick={() => setBreathingAnimation(!breathingAnimation)}
+                      className={`w-11 h-6 rounded-full transition-all duration-200 ${breathingAnimation ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
+                    >
+                      <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${breathingAnimation ? "translate-x-[22px]" : "translate-x-0.5"} mt-0.5`} />
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>Press <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded shadow-sm">Esc</kbd> to exit</span>
+                  <span className="text-indigo-500">Focus Active ✓</span>
+                </div>
+              </div>
             </div>
-          </label>
-          <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Hide Images</span>
-            <div
-              onClick={() => setHideImages(!hideImages)}
-              className={`w-10 h-6 rounded-full transition-colors ${hideImages ? "bg-green-500" : "bg-slate-300"}`}
-            >
-              <div className={`w-4 h-4 bg-white rounded-full m-1 transition-transform ${hideImages ? "translate-x-4" : ""}`} />
-            </div>
-          </label>
-        </div>
-
-        <div className="text-center text-xs text-slate-500">
-          Press <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-xs">Esc</kbd> to exit
-        </div>
-      </div>
-    </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 

@@ -149,24 +149,24 @@ export function QuickCalculator() {
   }, [isOpen, display, previousValue, operator, waitingForOperand]);
 
   const buttons = [
-    { label: "C", action: clearAll, className: "bg-red-500/20 text-red-400 hover:bg-red-500/30" },
-    { label: "±", action: toggleSign, className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "%", action: inputPercent, className: "bg-slate-700 text-white hover:bg-slate-600" },
+    { label: "C", action: clearAll, className: "bg-red-100 text-red-600 hover:bg-red-200" },
+    { label: "±", action: toggleSign, className: "bg-slate-200 text-slate-800 hover:bg-slate-300" },
+    { label: "%", action: inputPercent, className: "bg-slate-200 text-slate-800 hover:bg-slate-300" },
     { label: "÷", action: () => performOperation("/"), className: "bg-[var(--theme-primary)] text-white hover:opacity-80" },
-    { label: "7", action: () => inputDigit("7"), className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "8", action: () => inputDigit("8"), className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "9", action: () => inputDigit("9"), className: "bg-slate-700 text-white hover:bg-slate-600" },
+    { label: "7", action: () => inputDigit("7"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: "8", action: () => inputDigit("8"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: "9", action: () => inputDigit("9"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
     { label: "×", action: () => performOperation("*"), className: "bg-[var(--theme-primary)] text-white hover:opacity-80" },
-    { label: "4", action: () => inputDigit("4"), className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "5", action: () => inputDigit("5"), className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "6", action: () => inputDigit("6"), className: "bg-slate-700 text-white hover:bg-slate-600" },
+    { label: "4", action: () => inputDigit("4"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: "5", action: () => inputDigit("5"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: "6", action: () => inputDigit("6"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
     { label: "-", action: () => performOperation("-"), className: "bg-[var(--theme-primary)] text-white hover:opacity-80" },
-    { label: "1", action: () => inputDigit("1"), className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "2", action: () => inputDigit("2"), className: "bg-slate-700 text-white hover:bg-slate-600" },
-    { label: "3", action: () => inputDigit("3"), className: "bg-slate-700 text-white hover:bg-slate-600" },
+    { label: "1", action: () => inputDigit("1"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: "2", action: () => inputDigit("2"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: "3", action: () => inputDigit("3"), className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
     { label: "+", action: () => performOperation("+"), className: "bg-[var(--theme-primary)] text-white hover:opacity-80" },
-    { label: "0", action: () => inputDigit("0"), className: "col-span-2 bg-slate-700 text-white hover:bg-slate-600" },
-    { label: ".", action: inputDot, className: "bg-slate-700 text-white hover:bg-slate-600" },
+    { label: "0", action: () => inputDigit("0"), className: "col-span-2 bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
+    { label: ".", action: inputDot, className: "bg-white text-slate-900 hover:bg-slate-100 border border-slate-200" },
     { label: "=", action: () => performOperation("="), className: "bg-green-500 text-white hover:bg-green-600" },
   ];
 
@@ -185,13 +185,13 @@ export function QuickCalculator() {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
             />
             <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-x-4 bottom-20 md:inset-auto md:right-8 md:bottom-24 z-[101] flex justify-center md:block"
+              className="fixed inset-0 z-[101] flex items-center justify-center p-4"
             >
-              <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700 w-full max-w-xs md:w-72">
+              <div className="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-700 w-full max-w-xs">
                 {/* Header */}
                 <div className="flex items-center justify-between p-3 border-b border-slate-700 bg-slate-900">
                   <div className="flex items-center gap-2">
@@ -209,11 +209,11 @@ export function QuickCalculator() {
                 {/* Display */}
                 <div ref={inputRef} className="p-4 bg-slate-800">
                   {operator && previousValue !== null && (
-                    <div className="text-sm text-right mb-1 font-medium" style={{ color: '#059669' }}>
+                    <div className="text-sm text-right mb-1 font-medium text-emerald-400">
                       {previousValue} {operator === "*" ? "×" : operator === "/" ? "÷" : operator}
                     </div>
                   )}
-                  <div className="text-4xl font-mono text-right truncate font-bold" style={{ color: '#000000' }}>
+                  <div className="text-4xl font-mono text-right truncate font-bold text-white">
                     {display}
                   </div>
                 </div>

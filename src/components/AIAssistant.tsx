@@ -358,7 +358,7 @@ export function AIAssistant() {
 
   return (
     <>
-      <div className="fixed bottom-24 right-6 md:bottom-6 z-[200]">
+      <div className="fixed bottom-24 md:bottom-6 right-4 z-[200]">
         <Button
           aria-label="Open AI assistant"
           onClick={() => setIsOpen(true)}

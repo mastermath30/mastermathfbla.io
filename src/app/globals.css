@@ -1340,6 +1340,65 @@ header p {
   }
 }
 
+/* Enhanced Focus Mode - Fullscreen */
+.focus-mode-fullscreen {
+  /* Smooth transition for all focus mode changes */
+  transition: all 0.3s ease;
+}
+
+.focus-mode-fullscreen main {
+  position: relative;
+  z-index: 160;
+}
+
+/* Dynamic line spacing from focus mode */
+.focus-reading-active p,
+.focus-reading-active li,
+.focus-reading-active span {
+  line-height: var(--focus-line-spacing, 1.8) !important;
+}
+
+/* Breathing animation for focus border */
+@keyframes breathe {
+  0%, 100% {
+    opacity: 0.3;
+    box-shadow: inset 0 0 30px rgba(99, 102, 241, 0.1);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: inset 0 0 60px rgba(99, 102, 241, 0.2);
+  }
+}
+
+.focus-breathing {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Focus mode spotlight effect on main content */
+.focus-mode-fullscreen main::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(
+    ellipse 80% 60% at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(0, 0, 0, calc(var(--focus-intensity, 70) * 0.007)) 100%
+  );
+  pointer-events: none;
+  z-index: 140;
+  transition: all 0.5s ease;
+}
+
+/* Ensure focus mode controls stay above overlay */
+.focus-mode-fullscreen .tools-menu-container {
+  z-index: 200;
+}
+
 /* ===== Enhanced Page Flow Animations ===== */
 
 /* Smooth hover transitions for interactive elements */

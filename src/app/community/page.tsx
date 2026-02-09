@@ -23,7 +23,17 @@ import {
   Award,
   TrendingUp,
   Sparkles,
-} from "lucide-react";
+  Heart,
+  Share2,
+  Bookmark,
+  MoreHorizontal,
+  UserPlus,
+  Bell,
+  CheckCircle2,
+  MessageSquare,
+  Video,
+  ChevronRight,
+}from "lucide-react";
 
 interface Post {
   id: string;
@@ -54,6 +64,62 @@ const topContributors = [
   { name: "Alex Johnson", initials: "AJ", points: 1245, rank: "Gold", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop", icon: Trophy },
   { name: "David Kim", initials: "DK", points: 1098, rank: "Silver", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop", icon: Medal },
   { name: "Maria Garcia", initials: "MG", points: 987, rank: "Bronze", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop", icon: Award },
+];
+
+const featuredStudyGroups = [
+  {
+    id: "1",
+    name: "AP Calculus BC Study Group",
+    memberCount: 24,
+    nextSession: "Tomorrow at 10:00 AM",
+    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop",
+  },
+  {
+    id: "2",
+    name: "SAT Math Prep",
+    memberCount: 18,
+    nextSession: "Wednesday at 4:00 PM",
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=200&fit=crop",
+  },
+];
+
+const activityFeed = [
+  {
+    id: "1",
+    type: "achievement",
+    user: { name: "Sarah J.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" },
+    content: "earned the 'Calculus Master' badge!",
+    time: "2 hours ago",
+    icon: Trophy,
+    color: "text-yellow-500",
+  },
+  {
+    id: "2",
+    type: "join",
+    user: { name: "Michael C.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" },
+    content: "joined AP Calculus BC Study Group",
+    time: "3 hours ago",
+    icon: UserPlus,
+    color: "text-green-500",
+  },
+  {
+    id: "3",
+    type: "solved",
+    user: { name: "Emma R.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=50&h=50&fit=crop" },
+    content: "solved 10 calculus problems today!",
+    time: "5 hours ago",
+    icon: CheckCircle2,
+    color: "text-violet-500",
+  },
+  {
+    id: "4",
+    type: "session",
+    user: { name: "Alex T.", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop" },
+    content: "is hosting a live study session now",
+    time: "Live",
+    icon: Video,
+    color: "text-red-500",
+  },
 ];
 
 const seedPosts: Post[] = [
@@ -325,6 +391,88 @@ export default function CommunityPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Study Groups Section */}
+            <Card padding="none" className="overflow-hidden">
+              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 flex items-center justify-between">
+                <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Users className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
+                  {t("Study Groups")}
+                </h2>
+                <Link href="/study-groups" className="text-xs font-medium text-violet-600 hover:text-violet-700 flex items-center gap-1">
+                  View All <ChevronRight className="w-3 h-3" />
+                </Link>
+              </div>
+              <div className="p-4 space-y-3">
+                {featuredStudyGroups.map((group) => (
+                  <Link
+                    key={group.id}
+                    href="/study-groups"
+                    className="block p-3 rounded-xl bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={group.image}
+                        alt={group.name}
+                        width={48}
+                        height={48}
+                        className="w-12 h-12 rounded-lg object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-slate-900 dark:text-white truncate">{group.name}</p>
+                        <p className="text-xs text-slate-500">{group.memberCount} members</p>
+                        <p className="text-xs text-green-600">{group.nextSession}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+                <Link
+                  href="/study-groups"
+                  className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-500 hover:text-violet-600 hover:border-violet-300 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="text-sm font-medium">{t("Create or Join a Group")}</span>
+                </Link>
+              </div>
+            </Card>
+
+            {/* Activity Feed */}
+            <Card padding="none" className="overflow-hidden">
+              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+                <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Bell className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
+                  {t("Activity Feed")}
+                </h2>
+              </div>
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                {activityFeed.map((activity) => (
+                  <div key={activity.id} className="p-4 flex items-start gap-3">
+                    <div className="relative">
+                      <Image
+                        src={activity.user.image}
+                        alt={activity.user.name}
+                        width={36}
+                        height={36}
+                        className="w-9 h-9 rounded-full object-cover"
+                      />
+                      <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center`}>
+                        <activity.icon className={`w-3 h-3 ${activity.color}`} />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-slate-700 dark:text-slate-300">
+                        <span className="font-medium text-slate-900 dark:text-white">{activity.user.name}</span>{" "}
+                        {activity.content}
+                      </p>
+                      <p className={`text-xs mt-0.5 ${activity.time === "Live" ? "text-red-500 font-medium" : "text-slate-500"}`}>
+                        {activity.time === "Live" && <span className="inline-block w-2 h-2 bg-red-500 rounded-full mr-1 animate-pulse" />}
+                        {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
             {/* Stats */}
             <Card padding="none" className="overflow-hidden">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">

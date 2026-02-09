@@ -17,6 +17,8 @@ import { FloatingParticles } from "@/components/FloatingParticles";
 import { FormulaReference } from "@/components/FormulaReference";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { ToolsMenu } from "@/components/ToolsMenu";
+import { AIMathTutor } from "@/components/AIMathTutor";
+import { InteractiveWhiteboard } from "@/components/InteractiveWhiteboard";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -98,6 +100,8 @@ export default function RootLayout({
           <FloatingParticles />
           <FormulaReference />
           <PomodoroTimer />
+          <AIMathTutor />
+          <InteractiveWhiteboard />
         </LanguageProvider>
       </body>
     </html>
