@@ -4,7 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
 import { LanguageProvider } from "@/components/LanguageProvider";
-import { AIAssistant } from "@/components/AIAssistant";
+
 import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { MathTipOfDay } from "@/components/MathTipOfDay";
 import { KeyboardNavigation } from "@/components/KeyboardNavigation";
@@ -87,7 +87,7 @@ export default function RootLayout({
             {children}
           </main>
           <Navbar />
-          <AIAssistant />
+
           <AccessibilityPanel />
           <MathTipOfDay />
           <KeyboardNavigation />
