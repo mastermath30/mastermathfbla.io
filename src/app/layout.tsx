@@ -11,7 +11,6 @@ import { KeyboardNavigation } from "@/components/KeyboardNavigation";
 import { QuickCalculator } from "@/components/QuickCalculator";
 import { UnitConverter } from "@/components/UnitConverter";
 import { QuickNotes } from "@/components/QuickNotes";
-import { StudyStreak } from "@/components/StudyStreak";
 import { Confetti } from "@/components/Confetti";
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { FormulaReference } from "@/components/FormulaReference";
@@ -95,7 +94,6 @@ export default function RootLayout({
           <QuickCalculator />
           <UnitConverter />
           <QuickNotes />
-          <StudyStreak />
           <Confetti />
           <FloatingParticles />
           <FormulaReference />
