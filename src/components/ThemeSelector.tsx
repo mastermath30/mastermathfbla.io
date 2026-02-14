@@ -3,23 +3,24 @@
 import { useState, useEffect, useRef } from "react";
 import { Palette, Check, Sun, Moon, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLanguage, LanguageCode } from "./LanguageProvider";
+import { useLanguage, LanguageCode, useTranslations } from "./LanguageProvider";
 import { languages } from "@/lib/i18n";
 
-const COLOR_THEMES = [
-  { name: "Violet", value: "violet", color: "#7c3aed" },
-  { name: "Blue", value: "blue", color: "#2563eb" },
-  { name: "Green", value: "green", color: "#16a34a" },
-  { name: "Red", value: "red", color: "#dc2626" },
-  { name: "Orange", value: "orange", color: "#ea580c" },
-];
-
 export function ThemeSelector({ className = "" }: { className?: string }) {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [colorTheme, setColorTheme] = useState("violet");
   const [isDark, setIsDark] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage } = useLanguage();
+  
+  const COLOR_THEMES = [
+    { name: t("Violet"), value: "violet", color: "#7c3aed" },
+    { name: t("Blue"), value: "blue", color: "#2563eb" },
+    { name: t("Green"), value: "green", color: "#16a34a" },
+    { name: t("Red"), value: "red", color: "#dc2626" },
+    { name: t("Orange"), value: "orange", color: "#ea580c" },
+  ];
 
   const applyColorTheme = (colorName: string) => {
     // Remove all color theme classes
@@ -121,7 +122,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
               <div className="p-3">
                 {/* Dark/Light Mode Toggle */}
                 <div className="mb-3">
-                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">Appearance</div>
+                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">{t("Appearance")}</div>
                   <div className="flex gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
                     <button
                       onClick={() => { if (!isDark) handleModeToggle(); }}
@@ -132,7 +133,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                       }`}
                     >
                       <Moon className="w-4 h-4" />
-                      Dark
+                      {t("Dark")}
                     </button>
                     <button
                       onClick={() => { if (isDark) handleModeToggle(); }}
@@ -143,14 +144,14 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                       }`}
                     >
                       <Sun className="w-4 h-4" />
-                      Light
+                      {t("Light")}
                     </button>
                   </div>
                 </div>
 
                 {/* Color Theme */}
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
-                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">Accent Color</div>
+                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">{t("Accent Color")}</div>
                   <div className="grid grid-cols-5 gap-2 px-1">
                     {COLOR_THEMES.map((c) => {
                       const isSelected = colorTheme === c.value;
@@ -187,7 +188,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
                   <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5 flex items-center gap-1">
                     <Globe className="w-3 h-3" />
-                    Language
+                    {t("Language")}
                   </div>
                   <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
                     {languages.map((lang) => {

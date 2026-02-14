@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRightLeft, X, ChevronDown } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
-const categories = {
+// Category definitions (names will be translated in component)
+const getCategories = (t: (key: string) => string) => ({
   length: {
-    name: "Length",
+    name: t("Length"),
     units: {
       meters: 1,
       kilometers: 0.001,
@@ -19,7 +21,7 @@ const categories = {
     },
   },
   weight: {
-    name: "Weight",
+    name: t("Weight"),
     units: {
       kilograms: 1,
       grams: 1000,
@@ -30,7 +32,7 @@ const categories = {
     },
   },
   temperature: {
-    name: "Temperature",
+    name: t("Temperature"),
     units: {
       celsius: "C",
       fahrenheit: "F",
@@ -38,7 +40,7 @@ const categories = {
     },
   },
   area: {
-    name: "Area",
+    name: t("Area"),
     units: {
       "square meters": 1,
       "square kilometers": 0.000001,
@@ -49,7 +51,7 @@ const categories = {
     },
   },
   volume: {
-    name: "Volume",
+    name: t("Volume"),
     units: {
       liters: 1,
       milliliters: 1000,
@@ -60,7 +62,7 @@ const categories = {
     },
   },
   time: {
-    name: "Time",
+    name: t("Time"),
     units: {
       seconds: 1,
       minutes: 1 / 60,
@@ -70,17 +72,20 @@ const categories = {
       years: 1 / 31536000,
     },
   },
-};
+});
 
-type CategoryKey = keyof typeof categories;
+type CategoryKey = "length" | "weight" | "temperature" | "area" | "volume" | "time";
 
 export function UnitConverter() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [category, setCategory] = useState<CategoryKey>("length");
   const [fromUnit, setFromUnit] = useState("meters");
   const [toUnit, setToUnit] = useState("feet");
   const [fromValue, setFromValue] = useState("1");
   const [result, setResult] = useState("");
+  
+  const categories = getCategories(t);
 
   const convertTemperature = (value: number, from: string, to: string): number => {
     let celsius: number;
@@ -142,15 +147,20 @@ export function UnitConverter() {
       }
     };
     
-    const handleOpen = () => setIsOpen(true);
-    
     document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("open-unit-converter", handleOpen);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("open-unit-converter", handleOpen);
     };
   }, [isOpen]);
+
+  // Separate effect for handling the custom event (no dependencies to avoid re-registering)
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("open-unit-converter", handleOpen);
+    return () => {
+      window.removeEventListener("open-unit-converter", handleOpen);
+    };
+  }, []);
 
   const currentUnits = Object.keys(categories[category].units);
 
@@ -179,7 +189,7 @@ export function UnitConverter() {
                 <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-cyan-500 to-blue-600">
                   <div className="flex items-center gap-2">
                     <ArrowRightLeft className="w-5 h-5 text-white" />
-                    <span className="font-semibold text-white">Unit Converter</span>
+                    <span className="font-semibold text-white">{t("Unit Converter")}</span>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
@@ -192,7 +202,7 @@ export function UnitConverter() {
                 <div className="p-4 space-y-4">
                   {/* Category Selector */}
                   <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Category</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("Category")}</label>
                     <div className="relative">
                       <select
                         value={category}
@@ -209,14 +219,14 @@ export function UnitConverter() {
 
                   {/* From */}
                   <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">From</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("From")}</label>
                     <div className="flex gap-2">
                       <input
                         type="number"
                         value={fromValue}
                         onChange={(e) => setFromValue(e.target.value)}
                         className="flex-1 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                        placeholder="Enter value"
+                        placeholder={t("Enter value")}
                       />
                       <select
                         value={fromUnit}
@@ -242,7 +252,7 @@ export function UnitConverter() {
 
                   {/* To */}
                   <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">To</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("To")}</label>
                     <div className="flex gap-2">
                       <div className="flex-1 p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 font-mono text-lg font-semibold">
                         {result || "0"}

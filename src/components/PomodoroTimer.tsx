@@ -4,16 +4,20 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Timer, X, Play, Pause, RotateCcw, Coffee, Brain } from "lucide-react";
 import { triggerConfetti } from "./Confetti";
+import { useTranslations } from "./LanguageProvider";
 
 type TimerMode = "focus" | "shortBreak" | "longBreak";
 
-const TIMER_SETTINGS = {
-  focus: { duration: 25 * 60, label: "Focus", color: "from-rose-500 to-orange-500" },
-  shortBreak: { duration: 5 * 60, label: "Short Break", color: "from-green-500 to-emerald-500" },
-  longBreak: { duration: 15 * 60, label: "Long Break", color: "from-blue-500 to-cyan-500" },
-};
+// Timer settings (labels will be translated in component)
+const getTimerSettings = (t: (key: string) => string) => ({
+  focus: { duration: 25 * 60, label: t("Focus"), color: "from-rose-500 to-orange-500" },
+  shortBreak: { duration: 5 * 60, label: t("Short Break"), color: "from-green-500 to-emerald-500" },
+  longBreak: { duration: 15 * 60, label: t("Long Break"), color: "from-blue-500 to-cyan-500" },
+});
 
 export function PomodoroTimer() {
+  const { t } = useTranslations();
+  const TIMER_SETTINGS = getTimerSettings(t);
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<TimerMode>("focus");
   const [timeLeft, setTimeLeft] = useState(TIMER_SETTINGS.focus.duration);
@@ -69,12 +73,17 @@ export function PomodoroTimer() {
       }
     };
     
-    const handleOpen = () => setIsOpen(true);
-    
     document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("open-timer", handleOpen);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // Separate effect for handling the custom event (no dependencies to avoid re-registering)
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("open-timer", handleOpen);
+    return () => {
       window.removeEventListener("open-timer", handleOpen);
     };
   }, []);
@@ -123,7 +132,7 @@ export function PomodoroTimer() {
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-2 text-white">
                     <Timer className="w-5 h-5" />
-                    <span className="font-semibold">Pomodoro Timer</span>
+                    <span className="font-semibold">{t("Pomodoro Timer")}</span>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
@@ -142,7 +151,7 @@ export function PomodoroTimer() {
                     }`}
                   >
                     <Brain className="w-4 h-4" />
-                    Focus
+                    {t("Focus")}
                   </button>
                   <button
                     onClick={() => switchMode("shortBreak")}
@@ -151,7 +160,7 @@ export function PomodoroTimer() {
                     }`}
                   >
                     <Coffee className="w-4 h-4" />
-                    Short
+                    {t("Short")}
                   </button>
                   <button
                     onClick={() => switchMode("longBreak")}
@@ -160,7 +169,7 @@ export function PomodoroTimer() {
                     }`}
                   >
                     <Coffee className="w-4 h-4" />
-                    Long
+                    {t("Long")}
                   </button>
                 </div>
 
@@ -208,7 +217,7 @@ export function PomodoroTimer() {
                   <button
                     onClick={resetTimer}
                     className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                    title="Reset"
+                    title={t("Reset")}
                   >
                     <RotateCcw className="w-5 h-5" />
                   </button>
@@ -229,7 +238,7 @@ export function PomodoroTimer() {
 
                 {/* Sessions Info */}
                 <div className="p-3 text-center text-xs text-white/60 bg-black/10">
-                  Complete 4 focus sessions for a long break
+                  {t("Complete 4 focus sessions for a long break")}
                 </div>
               </div>
             </motion.div>

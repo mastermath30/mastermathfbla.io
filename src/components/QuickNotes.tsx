@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StickyNote, X, Plus, Trash2, Pin, PinOff } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
 interface Note {
   id: string;
@@ -12,21 +13,25 @@ interface Note {
   createdAt: number;
 }
 
-const noteColors = [
-  { bg: "bg-yellow-100 dark:bg-yellow-900/40", border: "border-yellow-300 dark:border-yellow-700", name: "Yellow" },
-  { bg: "bg-pink-100 dark:bg-pink-900/40", border: "border-pink-300 dark:border-pink-700", name: "Pink" },
-  { bg: "bg-blue-100 dark:bg-blue-900/40", border: "border-blue-300 dark:border-blue-700", name: "Blue" },
-  { bg: "bg-green-100 dark:bg-green-900/40", border: "border-green-300 dark:border-green-700", name: "Green" },
-  { bg: "bg-purple-100 dark:bg-purple-900/40", border: "border-purple-300 dark:border-purple-700", name: "Purple" },
-  { bg: "bg-orange-100 dark:bg-orange-900/40", border: "border-orange-300 dark:border-orange-700", name: "Orange" },
+// Color definitions (names will be translated in component)
+const getNoteColors = (t: (key: string) => string) => [
+  { bg: "bg-yellow-100 dark:bg-yellow-900/40", border: "border-yellow-300 dark:border-yellow-700", name: t("Yellow") },
+  { bg: "bg-pink-100 dark:bg-pink-900/40", border: "border-pink-300 dark:border-pink-700", name: t("Pink") },
+  { bg: "bg-blue-100 dark:bg-blue-900/40", border: "border-blue-300 dark:border-blue-700", name: t("Blue") },
+  { bg: "bg-green-100 dark:bg-green-900/40", border: "border-green-300 dark:border-green-700", name: t("Green") },
+  { bg: "bg-purple-100 dark:bg-purple-900/40", border: "border-purple-300 dark:border-purple-700", name: t("Purple") },
+  { bg: "bg-orange-100 dark:bg-orange-900/40", border: "border-orange-300 dark:border-orange-700", name: t("Orange") },
 ];
 
 export function QuickNotes() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [activeNote, setActiveNote] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  const noteColors = getNoteColors(t);
 
   // Load notes from localStorage
   useEffect(() => {
@@ -57,15 +62,20 @@ export function QuickNotes() {
       }
     };
     
-    const handleOpen = () => setIsOpen(true);
-    
     document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("open-quick-notes", handleOpen);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("open-quick-notes", handleOpen);
     };
   }, [isOpen]);
+
+  // Separate effect for handling the custom event (no dependencies to avoid re-registering)
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("open-quick-notes", handleOpen);
+    return () => {
+      window.removeEventListener("open-quick-notes", handleOpen);
+    };
+  }, []);
 
   const addNote = () => {
     const newNote: Note = {
@@ -108,32 +118,24 @@ export function QuickNotes() {
     return color || noteColors[0];
   };
 
-  // No floating button - accessed via Tools Menu
   return (
     <>
-      {/* Notes Panel */}
+      {/* Notes Panel - No floating button, accessed via Tools Menu */}
       <AnimatePresence>
         {isOpen && (
-          <>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300]"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[301] w-[90%] max-w-sm max-h-[80vh]"
+              initial={{ opacity: 0, scale: 0.9, x: 50 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: 50 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed right-4 top-4 bottom-4 z-[101] w-[90%] max-w-md"
             >
-              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col max-h-[80vh]">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col h-full overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-yellow-400 to-amber-500">
                   <div className="flex items-center gap-2">
                     <StickyNote className="w-5 h-5 text-white" />
-                    <span className="font-semibold text-white">Quick Notes</span>
+                    <span className="font-semibold text-white">{t("Quick Notes")}</span>
                     <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full text-white">
                       {notes.length}
                     </span>
@@ -166,7 +168,7 @@ export function QuickNotes() {
                     className="ml-auto flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-medium transition-colors"
                   >
                     <Plus className="w-4 h-4" />
-                    Add Note
+                    {t("Add Note")}
                   </button>
                 </div>
 
@@ -175,8 +177,8 @@ export function QuickNotes() {
                   {sortedNotes.length === 0 ? (
                     <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                       <StickyNote className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>No notes yet</p>
-                      <p className="text-sm">Click "Add Note" to get started</p>
+                      <p>{t("No notes yet")}</p>
+                      <p className="text-sm">{t('Click "Add Note" to get started')}</p>
                     </div>
                   ) : (
                     sortedNotes.map((note) => {
@@ -195,7 +197,7 @@ export function QuickNotes() {
                             <button
                               onClick={() => togglePin(note.id)}
                               className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10"
-                              title={note.pinned ? "Unpin" : "Pin"}
+                              title={note.pinned ? t("Unpin") : t("Pin")}
                             >
                               {note.pinned ? (
                                 <PinOff className="w-4 h-4 text-slate-600 dark:text-slate-300" />
@@ -206,7 +208,7 @@ export function QuickNotes() {
                             <button
                               onClick={() => deleteNote(note.id)}
                               className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30"
-                              title="Delete"
+                              title={t("Delete")}
                             >
                               <Trash2 className="w-4 h-4 text-red-500" />
                             </button>
@@ -222,7 +224,7 @@ export function QuickNotes() {
                             ref={activeNote === note.id ? textareaRef : null}
                             value={note.content}
                             onChange={(e) => updateNote(note.id, e.target.value)}
-                            placeholder="Write your note..."
+                            placeholder={t("Write your note...")}
                             className="w-full bg-transparent border-none resize-none focus:outline-none text-slate-800 dark:text-slate-200 placeholder-slate-400 min-h-[60px]"
                             rows={3}
                           />
@@ -239,11 +241,10 @@ export function QuickNotes() {
 
                 {/* Footer hint */}
                 <div className="p-2 text-center text-xs text-slate-500 border-t border-slate-200 dark:border-slate-700">
-                  Notes are saved automatically
+                  {t("Notes are saved automatically")} • Press <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded text-xs">Esc</kbd> to close
                 </div>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
     </>

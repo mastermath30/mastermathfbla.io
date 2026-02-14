@@ -16,6 +16,7 @@ import {
   MousePointer2,
   Keyboard,
 } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
 interface AccessibilitySettings {
   fontSize: number; // 100 = default, 75-150 range
@@ -36,6 +37,7 @@ const defaultSettings: AccessibilitySettings = {
 };
 
 export function AccessibilityPanel() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<AccessibilitySettings>(defaultSettings);
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -135,15 +137,15 @@ export function AccessibilityPanel() {
   }, [handleKeyDown]);
 
   const shortcuts = [
-    { keys: ["Alt", "A"], description: "Toggle accessibility panel" },
-    { keys: ["Alt", "K"], description: "Show keyboard shortcuts" },
-    { keys: ["Alt", "C"], description: "Open quick calculator" },
-    { keys: ["Alt", "F"], description: "Focus reading mode" },
-    { keys: ["Alt", "H"], description: "Go to Home" },
-    { keys: ["Alt", "D"], description: "Go to Dashboard" },
-    { keys: ["Alt", "S"], description: "Go to Schedule" },
-    { keys: ["Alt", "R"], description: "Go to Resources" },
-    { keys: ["Alt", "L"], description: "Go to Login/Account" },
+    { keys: ["Alt", "A"], description: t("Toggle navigation menu") },
+    { keys: ["Alt", "K"], description: t("View Keyboard Shortcuts") },
+    { keys: ["Alt", "C"], description: t("Open calculator") },
+    { keys: ["Alt", "F"], description: t("Focus Mode") },
+    { keys: ["Alt", "H"], description: `Go to ${t("Home")}` },
+    { keys: ["Alt", "D"], description: `Go to ${t("Dashboard")}` },
+    { keys: ["Alt", "S"], description: `Go to ${t("Schedule")}` },
+    { keys: ["Alt", "R"], description: `Go to ${t("Resources")}` },
+    { keys: ["Alt", "L"], description: `Go to ${t("Sign In")}` },
     { keys: ["Tab"], description: "Navigate between elements" },
     { keys: ["Esc"], description: "Close panels" },
   ];
@@ -189,8 +191,8 @@ export function AccessibilityPanel() {
                     <Accessibility className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">Accessibility</h2>
-                    <p className="text-xs text-slate-500">Customize your experience</p>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("Accessibility")}</h2>
+                    <p className="text-xs text-slate-500">{t("Customize your experience")}</p>
                   </div>
                 </div>
                 <button
@@ -209,7 +211,7 @@ export function AccessibilityPanel() {
                   <div className="flex items-center gap-3 mb-4">
                     <Type className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                     <div>
-                      <h3 className="font-semibold text-slate-900 dark:text-white">Text Size</h3>
+                      <h3 className="font-semibold text-slate-900 dark:text-white">{t("Text Size")}</h3>
                       <p className="text-xs text-slate-500">{settings.fontSize}%</p>
                     </div>
                   </div>
@@ -245,7 +247,7 @@ export function AccessibilityPanel() {
                   {/* High Contrast */}
                   <ToggleOption
                     icon={<Contrast className="w-5 h-5" />}
-                    title="High Contrast"
+                    title={t("High Contrast")}
                     description="Increase color contrast for better visibility"
                     enabled={settings.highContrast}
                     onChange={(v) => updateSetting("highContrast", v)}
@@ -254,7 +256,7 @@ export function AccessibilityPanel() {
                   {/* Reduce Motion */}
                   <ToggleOption
                     icon={<Zap className="w-5 h-5" />}
-                    title="Reduce Motion"
+                    title={t("Reduce Motion")}
                     description="Minimize animations and transitions"
                     enabled={settings.reduceMotion}
                     onChange={(v) => updateSetting("reduceMotion", v)}
@@ -263,7 +265,7 @@ export function AccessibilityPanel() {
                   {/* Dyslexia Font */}
                   <ToggleOption
                     icon={<Eye className="w-5 h-5" />}
-                    title="Dyslexia-Friendly Font"
+                    title={t("Dyslexia-Friendly Font")}
                     description="Use OpenDyslexic font for easier reading"
                     enabled={settings.dyslexiaFont}
                     onChange={(v) => updateSetting("dyslexiaFont", v)}
@@ -272,7 +274,7 @@ export function AccessibilityPanel() {
                   {/* Large Pointer */}
                   <ToggleOption
                     icon={<MousePointer2 className="w-5 h-5" />}
-                    title="Large Cursor"
+                    title={t("Large Cursor")}
                     description="Increase cursor size for better visibility"
                     enabled={settings.largePointer}
                     onChange={(v) => updateSetting("largePointer", v)}
@@ -281,7 +283,7 @@ export function AccessibilityPanel() {
                   {/* Focus Highlight */}
                   <ToggleOption
                     icon={<Keyboard className="w-5 h-5" />}
-                    title="Focus Highlight"
+                    title={t("Focus Highlight")}
                     description="Show prominent focus indicators"
                     enabled={settings.focusHighlight}
                     onChange={(v) => updateSetting("focusHighlight", v)}
@@ -294,7 +296,7 @@ export function AccessibilityPanel() {
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  Reset to Defaults
+                  {t("Reset to Defaults")}
                 </button>
 
                 {/* Keyboard Shortcuts */}
@@ -305,7 +307,7 @@ export function AccessibilityPanel() {
                   style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
                 >
                   <Keyboard className="w-4 h-4" />
-                  View Keyboard Shortcuts
+                  {t("View Keyboard Shortcuts")}
                 </button>
               </div>
             </motion.div>
@@ -331,7 +333,7 @@ export function AccessibilityPanel() {
               className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md max-h-[80vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl z-[103] p-4 sm:p-6"
             >
               <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Keyboard Shortcuts</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">{t("Keyboard Shortcuts")}</h3>
                 <button
                   onClick={() => setShowShortcuts(false)}
                   className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"

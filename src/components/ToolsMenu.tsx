@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wrench, X, Focus, ArrowRightLeft, StickyNote, Calculator, BookOpen, Timer } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
 interface Tool {
   id: string;
@@ -12,45 +13,46 @@ interface Tool {
   shortcut: string;
 }
 
-const tools: Tool[] = [
+// Tool definitions (names will be translated in component)
+const getTools = (t: (key: string) => string): Tool[] => [
   {
     id: "focus",
-    name: "Focus Mode",
+    name: t("Focus Mode"),
     icon: <Focus className="w-5 h-5" />,
     color: "from-indigo-500 to-purple-600",
     shortcut: "Alt+F",
   },
   {
     id: "converter",
-    name: "Unit Converter",
+    name: t("Unit Converter"),
     icon: <ArrowRightLeft className="w-5 h-5" />,
     color: "from-cyan-500 to-blue-600",
     shortcut: "Alt+U",
   },
   {
     id: "notes",
-    name: "Quick Notes",
+    name: t("Quick Notes"),
     icon: <StickyNote className="w-5 h-5" />,
     color: "from-yellow-400 to-amber-500",
     shortcut: "Alt+N",
   },
   {
     id: "calculator",
-    name: "Calculator",
+    name: t("Calculator"),
     icon: <Calculator className="w-5 h-5" />,
     color: "from-emerald-500 to-teal-600",
     shortcut: "Alt+C",
   },
   {
     id: "formulas",
-    name: "Formula Reference",
+    name: t("Formula Reference"),
     icon: <BookOpen className="w-5 h-5" />,
     color: "from-violet-500 to-purple-600",
     shortcut: "Alt+R",
   },
   {
     id: "timer",
-    name: "Pomodoro Timer",
+    name: t("Pomodoro Timer"),
     icon: <Timer className="w-5 h-5" />,
     color: "from-rose-500 to-orange-500",
     shortcut: "Alt+T",
@@ -58,8 +60,11 @@ const tools: Tool[] = [
 ];
 
 export function ToolsMenu() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
+  
+  const tools = getTools(t);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -113,9 +118,9 @@ export function ToolsMenu() {
               transition={{ duration: 0.15 }}
               className="absolute bottom-16 left-0 w-[calc(100vw-2rem)] max-w-[14rem] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
             >
-              <div className="p-2 border-b border-slate-200 dark:border-slate-700">
+              <div               className="p-2 border-b border-slate-200 dark:border-slate-700">
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-2">
-                  Study Tools
+                  {t("Study Tools")}
                 </div>
               </div>
               <div className="p-1">
@@ -170,6 +175,7 @@ export function ToolsMenu() {
 // Inline modal versions of each tool (no floating buttons)
 
 function ReadingModeModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslations();
   const [fontSize, setFontSize] = useState(110);
   const [isDimmed, setIsDimmed] = useState(true);
   const [hideImages, setHideImages] = useState(false);
@@ -259,7 +265,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
         exit={{ opacity: 0, x: -20 }}
         onClick={() => setShowControlPanel(!showControlPanel)}
         className="fixed top-4 left-4 z-[200] p-3 rounded-full bg-slate-800/90 hover:bg-slate-700 text-white shadow-lg transition-all hover:scale-105"
-        title={showControlPanel ? "Hide Controls" : "Show Controls"}
+        title={showControlPanel ? t("Hide Controls") : t("Show Controls")}
       >
         <Focus className="w-5 h-5" />
       </motion.button>
@@ -282,8 +288,8 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                     <Focus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Focus Mode</h3>
-                    <p className="text-xs text-white/80">Distraction-free reading</p>
+                    <h3 className="font-semibold">{t("Focus Mode")}</h3>
+                    <p className="text-xs text-white/80">{t("Distraction-free reading")}</p>
                   </div>
                 </div>
               </div>
@@ -293,7 +299,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                 {/* Text Size */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Text Size</span>
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Text Size")}</span>
                     <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{fontSize}%</span>
                   </div>
                   <input
@@ -309,7 +315,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                 {/* Line Spacing */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Line Spacing</span>
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Line Spacing")}</span>
                     <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{lineSpacing.toFixed(1)}</span>
                   </div>
                   <input
@@ -326,7 +332,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                 {/* Focus Intensity */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Focus Intensity</span>
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Focus Intensity")}</span>
                     <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{focusIntensity}%</span>
                   </div>
                   <input
@@ -342,7 +348,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                 {/* Toggle Options */}
                 <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-700">
                   <label className="flex items-center justify-between cursor-pointer group">
-                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Dim Distractions</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{t("Dim Distractions")}</span>
                     <div
                       onClick={() => setIsDimmed(!isDimmed)}
                       className={`w-11 h-6 rounded-full transition-all duration-200 ${isDimmed ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
@@ -352,7 +358,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                   </label>
                   
                   <label className="flex items-center justify-between cursor-pointer group">
-                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Hide Images</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{t("Hide Images")}</span>
                     <div
                       onClick={() => setHideImages(!hideImages)}
                       className={`w-11 h-6 rounded-full transition-all duration-200 ${hideImages ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
@@ -362,7 +368,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                   </label>
 
                   <label className="flex items-center justify-between cursor-pointer group">
-                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Breathing Border</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{t("Breathing Border")}</span>
                     <div
                       onClick={() => setBreathingAnimation(!breathingAnimation)}
                       className={`w-11 h-6 rounded-full transition-all duration-200 ${breathingAnimation ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
@@ -390,46 +396,76 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
 
 function UnitConverterModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("open-unit-converter"));
-    const timer = setTimeout(onClose, 50);
-    return () => clearTimeout(timer);
+    // Small delay to ensure component is mounted and listening
+    const dispatchTimer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-unit-converter"));
+    }, 10);
+    const timer = setTimeout(onClose, 100);
+    return () => {
+      clearTimeout(dispatchTimer);
+      clearTimeout(timer);
+    };
   }, [onClose]);
   return null;
 }
 
 function QuickNotesModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("open-quick-notes"));
-    const timer = setTimeout(onClose, 50);
-    return () => clearTimeout(timer);
+    // Small delay to ensure component is mounted and listening
+    const dispatchTimer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-quick-notes"));
+    }, 10);
+    const timer = setTimeout(onClose, 100);
+    return () => {
+      clearTimeout(dispatchTimer);
+      clearTimeout(timer);
+    };
   }, [onClose]);
   return null;
 }
 
 function CalculatorModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("open-calculator"));
+    // Small delay to ensure component is mounted and listening
+    const dispatchTimer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-calculator"));
+    }, 10);
     // Delay onClose to ensure event is processed
-    const timer = setTimeout(onClose, 50);
-    return () => clearTimeout(timer);
+    const timer = setTimeout(onClose, 100);
+    return () => {
+      clearTimeout(dispatchTimer);
+      clearTimeout(timer);
+    };
   }, [onClose]);
   return null;
 }
 
 function FormulaModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("open-formulas"));
-    const timer = setTimeout(onClose, 50);
-    return () => clearTimeout(timer);
+    // Small delay to ensure component is mounted and listening
+    const dispatchTimer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-formulas"));
+    }, 10);
+    const timer = setTimeout(onClose, 100);
+    return () => {
+      clearTimeout(dispatchTimer);
+      clearTimeout(timer);
+    };
   }, [onClose]);
   return null;
 }
 
 function TimerModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("open-timer"));
-    const timer = setTimeout(onClose, 50);
-    return () => clearTimeout(timer);
+    // Small delay to ensure component is mounted and listening
+    const dispatchTimer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-timer"));
+    }, 10);
+    const timer = setTimeout(onClose, 100);
+    return () => {
+      clearTimeout(dispatchTimer);
+      clearTimeout(timer);
+    };
   }, [onClose]);
   return null;
 }
