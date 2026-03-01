@@ -136,6 +136,12 @@ export function AccessibilityPanel() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("open-accessibility", handler);
+    return () => window.removeEventListener("open-accessibility", handler);
+  }, []);
+
   const shortcuts = [
     { keys: ["Alt", "A"], description: t("Toggle navigation menu") },
     { keys: ["Alt", "K"], description: t("View Keyboard Shortcuts") },
@@ -155,7 +161,7 @@ export function AccessibilityPanel() {
       {/* Accessibility Toggle Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 left-6 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed bottom-6 left-6 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
         aria-label="Open accessibility settings"
         title="Accessibility Settings (Alt+A)"
         style={{ WebkitTapHighlightColor: 'transparent' }}

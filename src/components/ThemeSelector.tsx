@@ -69,6 +69,12 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
   }, []);
 
   useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("open-theme-selector", handler);
+    return () => window.removeEventListener("open-theme-selector", handler);
+  }, []);
+
+  useEffect(() => {
     if (!isOpen) return;
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
@@ -112,12 +118,12 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
       <AnimatePresence>
         {isOpen && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+            <div className="fixed inset-0 z-[100]" onClick={() => setIsOpen(false)} />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="absolute left-0 md:right-0 md:left-auto bottom-full mb-2 md:mt-2 md:bottom-auto md:top-full w-64 bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50"
+              className="fixed left-4 right-4 bottom-auto top-1/2 -translate-y-1/2 md:absolute md:left-auto md:right-0 md:top-full md:bottom-auto md:translate-y-0 md:mt-2 w-auto md:w-64 bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-[101]"
             >
               <div className="p-3">
                 {/* Dark/Light Mode Toggle */}

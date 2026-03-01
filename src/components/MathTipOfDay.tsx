@@ -101,6 +101,12 @@ export function MathTipOfDay() {
     setHasSeenToday(true);
   };
 
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("open-mathtip", handler);
+    return () => window.removeEventListener("open-mathtip", handler);
+  }, []);
+
   const getNextTip = () => {
     const currentIndex = mathTips.indexOf(currentTip);
     const nextIndex = (currentIndex + 1) % mathTips.length;
@@ -115,7 +121,7 @@ export function MathTipOfDay() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 md:bottom-6 left-[5.5rem] z-[89] w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-xl flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+          className="hidden md:flex fixed bottom-6 left-[5.5rem] z-[89] w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-xl items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
           aria-label="Math tip of the day"
           title="Math Tip of the Day"
         >
