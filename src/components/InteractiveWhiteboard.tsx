@@ -309,9 +309,29 @@ export function InteractiveWhiteboard() {
     };
   };
 
+  const getTouchPos = (e: React.TouchEvent<HTMLCanvasElement>): Point => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    };
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const pos = getMousePos(e);
+    startDrawing(pos);
+  };
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const pos = getTouchPos(e);
+    startDrawing(pos);
+  };
+
+  const startDrawing = (pos: Point) => {
     if (currentTool === "text") {
       setTextPosition(pos);
       return;
@@ -341,8 +361,19 @@ export function InteractiveWhiteboard() {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !currentElement) return;
-    
     const pos = getMousePos(e);
+    continueDrawing(pos);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!isDrawing || !currentElement) return;
+    const pos = getTouchPos(e);
+    continueDrawing(pos);
+  };
+
+  const continueDrawing = (pos: Point) => {
+    if (!currentElement) return;
 
     if (currentElement.type === "path") {
       setCurrentElement({
@@ -374,6 +405,15 @@ export function InteractiveWhiteboard() {
   };
 
   const handleMouseUp = () => {
+    finishDrawing();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    finishDrawing();
+  };
+
+  const finishDrawing = () => {
     if (!isDrawing || !currentElement) return;
     
     setIsDrawing(false);
@@ -479,12 +519,18 @@ export function InteractiveWhiteboard() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
       <motion.button
         onClick={() => setIsOpen(true)}
+<<<<<<< HEAD
         className="fixed bottom-24 md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open Interactive Whiteboard")}
         title={t("Interactive Whiteboard (Alt+W)")}
+=======
+        className="hidden md:flex fixed bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
+        aria-label="Open Interactive Whiteboard"
+        title="Interactive Whiteboard (Alt+W)"
+>>>>>>> 1954830 (fixes)
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -501,14 +547,19 @@ export function InteractiveWhiteboard() {
             className="fixed inset-0 bg-slate-100 dark:bg-slate-900 z-[300] flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
-                  <Pencil className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-between p-2 md:p-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="p-1.5 md:p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
+                  <Pencil className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
                 <div>
+<<<<<<< HEAD
                   <h2 className="font-bold text-slate-900 dark:text-white">{t("Interactive Whiteboard")}</h2>
                   <p className="text-xs text-slate-500">{t("Collaborate and draw together")}</p>
+=======
+                  <h2 className="font-bold text-sm md:text-base text-slate-900 dark:text-white">Whiteboard</h2>
+                  <p className="text-xs text-slate-500 hidden md:block">Collaborate and draw together</p>
+>>>>>>> 1954830 (fixes)
                 </div>
               </div>
 
@@ -668,14 +719,18 @@ export function InteractiveWhiteboard() {
               </div>
 
               {/* Canvas */}
-              <div ref={containerRef} className="flex-1 relative overflow-hidden">
+              <div ref={containerRef} className="flex-1 relative overflow-hidden touch-none">
                 <canvas
                   ref={canvasRef}
-                  className="absolute inset-0 cursor-crosshair"
+                  className="absolute inset-0 cursor-crosshair touch-none"
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchEnd}
                 />
 
                 {/* Text Input Overlay */}
