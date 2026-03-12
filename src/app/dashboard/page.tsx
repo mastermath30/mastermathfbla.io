@@ -73,6 +73,14 @@ const initialGoals = [
   { title: "Attend 3 Study Sessions", status: "completed", progress: 100, label: "3/3" },
 ];
 
+const colorClasses: Record<string, { bg: string; text: string }> = {
+  violet: { bg: "bg-violet-100", text: "text-violet-500" },
+  green: { bg: "bg-green-100", text: "text-green-500" },
+  yellow: { bg: "bg-yellow-100", text: "text-yellow-500" },
+  purple: { bg: "bg-purple-100", text: "text-purple-500" },
+  blue: { bg: "bg-blue-100", text: "text-blue-500" },
+};
+
 export default function DashboardPage() {
   const { t } = useTranslations();
   const [userName, setUserName] = useState("Student");
@@ -389,7 +397,7 @@ export default function DashboardPage() {
               {challenges.map((challenge) => (
                 <div key={challenge.title} className="p-4 transition-colors">
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-lg bg-${challenge.color}-100 flex items-center justify-center text-${challenge.color}-500 flex-shrink-0`}>
+                    <div className={`w-10 h-10 rounded-lg ${colorClasses[challenge.color]?.bg ?? "bg-slate-100"} flex items-center justify-center ${colorClasses[challenge.color]?.text ?? "text-slate-500"} flex-shrink-0`}>
                       <challenge.icon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -436,7 +444,7 @@ export default function DashboardPage() {
               <div className="space-y-4">
                 {activities.map((activity, index) => (
                   <div key={index} className="flex gap-4 pb-4 border-b border-slate-200 dark:border-slate-800 last:border-0 last:pb-0">
-                    <div className={`w-10 h-10 rounded-xl bg-${activity.color}-100 flex items-center justify-center text-${activity.color}-500 flex-shrink-0`}>
+                    <div className={`w-10 h-10 rounded-xl ${colorClasses[activity.color]?.bg ?? "bg-slate-100"} flex items-center justify-center ${colorClasses[activity.color]?.text ?? "text-slate-500"} flex-shrink-0`}>
                       <activity.icon className="w-5 h-5" />
                     </div>
                     <div>

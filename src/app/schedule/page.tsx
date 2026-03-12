@@ -313,7 +313,7 @@ interface BookedSession {
 
 export default function SchedulePage() {
   const router = useRouter();
-  const { t } = useTranslations();
+  const { t, language } = useTranslations();
   const [countdown, setCountdown] = useState("--:--:--");
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
@@ -413,7 +413,7 @@ export default function SchedulePage() {
   // Format date for display
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString(language, options);
   };
 
   useEffect(() => {
@@ -490,7 +490,7 @@ export default function SchedulePage() {
       const now = new Date();
       const diff = nextSession.getTime() - now.getTime();
       if (diff <= 0) {
-        setCountdown("Starting now!");
+        setCountdown(t("Starting now!"));
         return;
       }
       const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -557,23 +557,23 @@ export default function SchedulePage() {
   // Validate card details
   const validateCard = () => {
     if (cardNumber.replace(/\s/g, "").length < 16) {
-      setPaymentError("Please enter a valid card number");
+      setPaymentError(t("Please enter a valid card number"));
       return false;
     }
     if (cardExpiry.length < 5) {
-      setPaymentError("Please enter a valid expiry date");
+      setPaymentError(t("Please enter a valid expiry date"));
       return false;
     }
     if (cardCvc.length < 3) {
-      setPaymentError("Please enter a valid CVC");
+      setPaymentError(t("Please enter a valid CVC"));
       return false;
     }
     if (cardName.trim().length < 2) {
-      setPaymentError("Please enter the cardholder name");
+      setPaymentError(t("Please enter the cardholder name"));
       return false;
     }
     if (billingZip.length < 5) {
-      setPaymentError("Please enter a valid ZIP code");
+      setPaymentError(t("Please enter a valid ZIP code"));
       return false;
     }
     return true;
@@ -747,11 +747,11 @@ export default function SchedulePage() {
       const start = getStartOfWeek(selectedDate);
       const end = new Date(start);
       end.setDate(start.getDate() + 6);
-      const startLabel = start.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      const endLabel = end.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      const startLabel = start.toLocaleDateString(language, { month: "short", day: "numeric" });
+      const endLabel = end.toLocaleDateString(language, { month: "short", day: "numeric", year: "numeric" });
       return `${t("Week")} ${t("of")} ${startLabel} - ${endLabel}`;
     }
-    return selectedDate.toLocaleDateString("en-US", {
+    return selectedDate.toLocaleDateString(language, {
       weekday: "short",
       month: "long",
       day: "numeric",
@@ -922,7 +922,7 @@ export default function SchedulePage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row md:items-center md:items-start md:justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <HeroText className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
                 <CalendarCheck className="w-4 h-4" />
@@ -1179,7 +1179,7 @@ export default function SchedulePage() {
             {viewMode === "day" && (
               <div className="space-y-4">
                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                  {selectedDate.toLocaleDateString("en-US", {
+                  {selectedDate.toLocaleDateString(language, {
                     weekday: "long",
                     month: "long",
                     day: "numeric",

@@ -302,7 +302,7 @@ const allTutors = [
 ];
 
 export default function TutorsPage() {
-  const { t } = useTranslations();
+  const { t, language } = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [sortBy, setSortBy] = useState("rating");
@@ -437,7 +437,7 @@ export default function TutorsPage() {
   // Format date for display
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString(language, options);
   };
 
   const getDaysInMonth = (month: number, year: number) => {
@@ -499,23 +499,23 @@ export default function TutorsPage() {
   // Validate card details
   const validateCard = () => {
     if (cardNumber.replace(/\s/g, "").length < 16) {
-      setPaymentError("Please enter a valid card number");
+      setPaymentError(t("Please enter a valid card number"));
       return false;
     }
     if (cardExpiry.length < 5) {
-      setPaymentError("Please enter a valid expiry date");
+      setPaymentError(t("Please enter a valid expiry date"));
       return false;
     }
     if (cardCvc.length < 3) {
-      setPaymentError("Please enter a valid CVC");
+      setPaymentError(t("Please enter a valid CVC"));
       return false;
     }
     if (cardName.trim().length < 2) {
-      setPaymentError("Please enter the cardholder name");
+      setPaymentError(t("Please enter the cardholder name"));
       return false;
     }
     if (billingZip.length < 5) {
-      setPaymentError("Please enter a valid ZIP code");
+      setPaymentError(t("Please enter a valid ZIP code"));
       return false;
     }
     return true;
@@ -1106,7 +1106,7 @@ export default function TutorsPage() {
                           <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                         </button>
                         <h4 className="font-semibold text-slate-900 dark:text-white">
-                          {new Date(bookingYear, bookingMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                          {new Date(bookingYear, bookingMonth).toLocaleDateString(language, { month: 'long', year: 'numeric' })}
                         </h4>
                         <button 
                           onClick={() => {

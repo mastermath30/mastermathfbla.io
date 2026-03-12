@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lightbulb, X, ChevronRight, Sparkles } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
 const mathTips = [
   {
@@ -68,6 +69,7 @@ const mathTips = [
 ];
 
 export function MathTipOfDay() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [currentTip, setCurrentTip] = useState(mathTips[0]);
   const [hasSeenToday, setHasSeenToday] = useState(false);
@@ -122,8 +124,8 @@ export function MathTipOfDay() {
           animate={{ scale: 1 }}
           onClick={() => setIsOpen(true)}
           className="hidden md:flex fixed bottom-6 left-[5.5rem] z-[89] w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-xl items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
-          aria-label="Math tip of the day"
-          title="Math Tip of the Day"
+          aria-label={t("Math Tip of the Day")}
+          title={t("Math Tip of the Day")}
         >
           <Lightbulb className="w-6 h-6 text-white" />
         </motion.button>
@@ -162,7 +164,7 @@ export function MathTipOfDay() {
                       <Sparkles className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white/80">Math Tip of the Day</p>
+                      <p className="text-sm font-medium text-white/80">{t("Math Tip of the Day")}</p>
                       <p className="text-xs text-white/60">{currentTip.category}</p>
                     </div>
                   </div>
@@ -182,7 +184,7 @@ export function MathTipOfDay() {
                     onClick={getNextTip}
                     className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-[var(--theme-primary)] transition-colors"
                   >
-                    Show another tip
+                    {t("Show another tip")}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                   <button
@@ -190,7 +192,7 @@ export function MathTipOfDay() {
                     className="px-4 py-2 rounded-lg font-medium text-white"
                     style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
                   >
-                    Got it!
+                    {t("Got it!")}
                   </button>
                 </div>
               </div>

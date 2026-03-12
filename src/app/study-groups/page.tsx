@@ -239,13 +239,13 @@ export default function StudyGroupsPage() {
 
             <HeroText>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
-                Learn Together,{" "}
+                {t("Learn Together,")}{" "}
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  Succeed Together
+                  {t("Succeed Together")}
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl">
-                Join study groups with peers who share your goals. Collaborate, practice, and master math concepts together.
+                {t("Join study groups with peers who share your goals. Collaborate, practice, and master math concepts together.")}
               </p>
             </HeroText>
 
@@ -258,7 +258,7 @@ export default function StudyGroupsPage() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">50+</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Active Groups</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">{t("Active Groups")}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -267,7 +267,7 @@ export default function StudyGroupsPage() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">500+</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Members</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">{t("Members")}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -276,7 +276,7 @@ export default function StudyGroupsPage() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">100+</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Sessions/Week</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">{t("Sessions/Week")}</div>
                   </div>
                 </div>
               </div>
@@ -292,11 +292,11 @@ export default function StudyGroupsPage() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Star className="w-6 h-6 text-yellow-500" />
-                    My Groups
+                    {t("My Groups")}
                   </h2>
                   <Link href="#all-groups">
                     <Button variant="ghost" size="sm">
-                      View All <ChevronRight className="w-4 h-4 ml-1" />
+                      {t("View all")} <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>
                 </div>
@@ -320,9 +320,9 @@ export default function StudyGroupsPage() {
                           />
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-slate-900 dark:text-white truncate">{group.name}</h3>
-                            <p className="text-xs text-slate-500">Hosted by {group.host.name}</p>
+                            <p className="text-xs text-slate-500">{t("Hosted by")} {group.host.name}</p>
                           </div>
-                          <Badge color="violet">Member</Badge>
+                          <Badge color="violet">{t("Member")}</Badge>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
                           <span className="flex items-center gap-1">
@@ -352,7 +352,7 @@ export default function StudyGroupsPage() {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Search groups by name, topic, or tags..."
+                    placeholder={t("Search groups by name, topic, or tags...")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -364,11 +364,11 @@ export default function StudyGroupsPage() {
                     className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700"
                   >
                     <Filter className="w-5 h-5" />
-                    Filters
+                    {t("Filters")}
                   </button>
                   <Button onClick={() => setShowCreateModal(true)}>
                     <Plus className="w-5 h-5 mr-2" />
-                    Create Group
+                    {t("Create Group")}
                   </Button>
                 </div>
               </div>
@@ -384,7 +384,7 @@ export default function StudyGroupsPage() {
                   >
                     <div className="flex flex-wrap gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Subject</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Subject")}</label>
                         <div className="flex flex-wrap gap-2">
                           {SUBJECTS.map((subject) => (
                             <button
@@ -402,7 +402,7 @@ export default function StudyGroupsPage() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Level</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t("Level")}</label>
                         <div className="flex flex-wrap gap-2">
                           {LEVELS.map((level) => (
                             <button
@@ -426,7 +426,7 @@ export default function StudyGroupsPage() {
 
               {/* Results Count */}
               <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                Showing {filteredGroups.length} of {groups.length} groups
+                {t("Showing")} {filteredGroups.length} {t("of")} {groups.length} {t("groups")}
               </p>
             </FadeIn>
 
@@ -451,11 +451,11 @@ export default function StudyGroupsPage() {
                         <Badge color={levelColors[group.level] || "default"}>{group.level}</Badge>
                         {group.isOnline ? (
                           <Badge color="success" className="flex items-center gap-1">
-                            <Globe className="w-3 h-3" /> Online
+                            <Globe className="w-3 h-3" /> {t("Online")}
                           </Badge>
                         ) : (
                           <Badge color="info" className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" /> In-Person
+                            <MapPin className="w-3 h-3" /> {t("In-Person")}
                           </Badge>
                         )}
                         {group.isPrivate && (
@@ -521,7 +521,7 @@ export default function StudyGroupsPage() {
                             onClick={() => setShowGroupDetail(group)}
                             className="px-3 py-1.5 rounded-lg text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
                           >
-                            View
+                            {t("View")}
                           </button>
                           <button
                             onClick={(e) => {
@@ -537,10 +537,10 @@ export default function StudyGroupsPage() {
                             {joinedGroups.includes(group.id) ? (
                               <>
                                 <Check className="w-4 h-4 inline mr-1" />
-                                Joined
+                                {t("Joined")}
                               </>
                             ) : (
-                              "Join"
+                              t("Join Group")
                             )}
                           </button>
                         </div>
@@ -554,11 +554,11 @@ export default function StudyGroupsPage() {
             {filteredGroups.length === 0 && (
               <div className="text-center py-16">
                 <Users className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No groups found</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">Try adjusting your filters or create a new group!</p>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t("No groups found")}</h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-4">{t("Try adjusting your filters or create a new group!")}</p>
                 <Button onClick={() => setShowCreateModal(true)}>
                   <Plus className="w-5 h-5 mr-2" />
-                  Create Group
+                  {t("Create Group")}
                 </Button>
               </div>
             )}
@@ -592,6 +592,7 @@ export default function StudyGroupsPage() {
 }
 
 function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (group: Omit<StudyGroup, "id">) => void }) {
+  const { t } = useTranslations();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [subject, setSubject] = useState("Algebra");
@@ -642,7 +643,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
       >
         <div className="p-6 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Create Study Group</h2>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Create Group")}</h2>
             <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
               <X className="w-5 h-5 text-slate-500" />
             </button>
@@ -651,22 +652,22 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
 
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Group Name</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Group Name")}</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., AP Calculus Study Squad"
+              placeholder={t("e.g., AP Calculus Study Squad")}
               className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Description")}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What will your group focus on?"
+              placeholder={t("What will your group focus on?")}
               rows={3}
               className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white resize-none"
             />
@@ -674,7 +675,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Subject</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Subject")}</label>
               <select
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
@@ -686,7 +687,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Level</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Level")}</label>
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
@@ -700,18 +701,18 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Schedule</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Schedule")}</label>
             <input
               type="text"
               value={schedule}
               onChange={(e) => setSchedule(e.target.value)}
-              placeholder="e.g., Saturdays at 10:00 AM"
+              placeholder={t("e.g., Saturdays at 10:00 AM")}
               className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Max Members</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Max Members")}</label>
             <input
               type="number"
               value={maxMembers}
@@ -730,7 +731,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
                 onChange={(e) => setIsOnline(e.target.checked)}
                 className="w-4 h-4 rounded border-slate-300"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">Online Group</span>
+              <span className="text-sm text-slate-700 dark:text-slate-300">{t("Online Group")}</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -739,16 +740,16 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
                 onChange={(e) => setIsPrivate(e.target.checked)}
                 className="w-4 h-4 rounded border-slate-300"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">Private (Invite Only)</span>
+              <span className="text-sm text-slate-700 dark:text-slate-300">{t("Private (Invite Only)")}</span>
             </label>
           </div>
         </div>
 
         <div className="p-6 border-t border-slate-200 dark:border-slate-700 flex gap-3">
-          <Button variant="ghost" onClick={onClose} className="flex-1">Cancel</Button>
+          <Button variant="ghost" onClick={onClose} className="flex-1">{t("Cancel")}</Button>
           <Button onClick={handleSubmit} disabled={!name.trim() || !description.trim()} className="flex-1">
             <Plus className="w-4 h-4 mr-2" />
-            Create Group
+            {t("Create Group")}
           </Button>
         </div>
       </motion.div>
@@ -757,6 +758,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
 }
 
 function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGroup; onClose: () => void; isJoined: boolean; onJoin: () => void }) {
+  const { t } = useTranslations();
   const [copied, setCopied] = useState(false);
 
   const copyInviteLink = () => {
@@ -794,9 +796,9 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
             <div className="flex gap-2 mb-2">
               <Badge color={levelColors[group.level] || "default"}>{group.level}</Badge>
               {group.isOnline ? (
-                <Badge color="success">Online</Badge>
+                <Badge color="success">{t("Online")}</Badge>
               ) : (
-                <Badge color="info">In-Person</Badge>
+                <Badge color="info">{t("In-Person")}</Badge>
               )}
               {group.isPrivate && <Badge color="default"><Lock className="w-3 h-3" /></Badge>}
             </div>
@@ -820,13 +822,13 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
                 <p className="font-semibold text-slate-900 dark:text-white">{group.host.name}</p>
                 <Crown className="w-4 h-4 text-yellow-500" />
               </div>
-              <p className="text-sm text-slate-500">Group Host</p>
+              <p className="text-sm text-slate-500">{t("Group Host")}</p>
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">About</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t("About")}</h3>
             <p className="text-slate-600 dark:text-slate-400">{group.description}</p>
           </div>
 
@@ -835,28 +837,28 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Calendar className="w-5 h-5 text-violet-500" />
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Schedule</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Schedule")}</p>
                 <p className="text-xs text-slate-500">{group.schedule}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Clock className="w-5 h-5 text-green-500" />
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Next Session</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Next Session")}</p>
                 <p className="text-xs text-slate-500">{group.nextSession}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Users className="w-5 h-5 text-blue-500" />
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Members</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Members")}</p>
                 <p className="text-xs text-slate-500">{group.memberCount} / {group.maxMembers}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <BookOpen className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Subject</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Subject")}</p>
                 <p className="text-xs text-slate-500">{group.subject}</p>
               </div>
             </div>
@@ -864,7 +866,7 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
 
           {/* Tags */}
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Topics</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t("Topics")}</h3>
             <div className="flex flex-wrap gap-2">
               {group.tags.map((tag) => (
                 <span key={tag} className="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full text-sm">
@@ -876,7 +878,7 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
 
           {/* Members */}
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Members</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t("Members")}</h3>
             <div className="flex items-center gap-2">
               <div className="flex -space-x-3">
                 {group.members.slice(0, 5).map((member, i) => (
@@ -904,18 +906,18 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
             className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
           >
             {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-            {copied ? "Copied!" : "Share"}
+            {copied ? t("Copied!") : t("Share")}
           </button>
           <Button onClick={onJoin} className="flex-1">
             {isJoined ? (
               <>
                 <Check className="w-5 h-5 mr-2" />
-                Joined
+                {t("Joined")}
               </>
             ) : (
               <>
                 <UserPlus className="w-5 h-5 mr-2" />
-                Join Group
+                {t("Join Group")}
               </>
             )}
           </Button>

@@ -230,7 +230,7 @@ const getDaysInMonth = (month: number, year: number) => new Date(year, month + 1
 const getFirstDayOfMonth = (month: number, year: number) => new Date(year, month, 1).getDay();
 
 export default function Home() {
-  const { t } = useTranslations();
+  const { t, language } = useTranslations();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [countdown, setCountdown] = useState("--:--:-");
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
@@ -274,7 +274,7 @@ export default function Home() {
       const now = new Date();
       const diff = nextSession.getTime() - now.getTime();
       if (diff <= 0) {
-        setCountdown("Starting now!");
+        setCountdown(t("Starting now!"));
         return;
       }
       const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -329,7 +329,7 @@ export default function Home() {
 
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString(language, options);
   };
 
   const getAllTimeSlotsWithAvailability = (): Array<{slot: string, available: boolean}> => {
@@ -373,23 +373,23 @@ export default function Home() {
 
   const validateCard = () => {
     if (cardNumber.replace(/\s/g, "").length < 16) {
-      setPaymentError("Please enter a valid card number");
+      setPaymentError(t("Please enter a valid card number"));
       return false;
     }
     if (cardExpiry.length < 5) {
-      setPaymentError("Please enter a valid expiry date");
+      setPaymentError(t("Please enter a valid expiry date"));
       return false;
     }
     if (cardCvc.length < 3) {
-      setPaymentError("Please enter a valid CVC");
+      setPaymentError(t("Please enter a valid CVC"));
       return false;
     }
     if (cardName.trim().length < 2) {
-      setPaymentError("Please enter the cardholder name");
+      setPaymentError(t("Please enter the cardholder name"));
       return false;
     }
     if (billingZip.length < 5) {
-      setPaymentError("Please enter a valid ZIP code");
+      setPaymentError(t("Please enter a valid ZIP code"));
       return false;
     }
     return true;
@@ -1346,10 +1346,10 @@ export default function Home() {
             <div>
               <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Platform")}</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Dashboard</Link></li>
-                <li><Link href="/schedule" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Schedule</Link></li>
-                <li><Link href="/resources" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Resources</Link></li>
-                <li><Link href="/community" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">Community</Link></li>
+                <li><Link href="/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Dashboard")}</Link></li>
+                <li><Link href="/schedule" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Schedule")}</Link></li>
+                <li><Link href="/resources" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Resources")}</Link></li>
+                <li><Link href="/community" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Community")}</Link></li>
                 </ul>
             </div>
 
@@ -1611,7 +1611,7 @@ export default function Home() {
                           <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         </button>
                         <span className="font-semibold text-slate-900 dark:text-white">
-                          {monthNames[bookingMonth]} {bookingYear}
+                          {new Date(bookingYear, bookingMonth).toLocaleDateString(language, { month: 'long', year: 'numeric' })}
                         </span>
                         <button
                           onClick={() => {
@@ -1628,9 +1628,9 @@ export default function Home() {
                         </button>
                       </div>
                       <div className="grid grid-cols-7 gap-1 mb-2">
-                        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+                        {Array.from({ length: 7 }, (_, i) => (
                           <div key={i} className="h-8 flex items-center justify-center text-xs font-medium text-slate-500">
-                            {d}
+                            {new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'narrow' })}
                           </div>
                         ))}
                       </div>

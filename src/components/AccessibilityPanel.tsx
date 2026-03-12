@@ -147,13 +147,13 @@ export function AccessibilityPanel() {
     { keys: ["Alt", "K"], description: t("View Keyboard Shortcuts") },
     { keys: ["Alt", "C"], description: t("Open calculator") },
     { keys: ["Alt", "F"], description: t("Focus Mode") },
-    { keys: ["Alt", "H"], description: `Go to ${t("Home")}` },
-    { keys: ["Alt", "D"], description: `Go to ${t("Dashboard")}` },
-    { keys: ["Alt", "S"], description: `Go to ${t("Schedule")}` },
-    { keys: ["Alt", "R"], description: `Go to ${t("Resources")}` },
-    { keys: ["Alt", "L"], description: `Go to ${t("Sign In")}` },
-    { keys: ["Tab"], description: "Navigate between elements" },
-    { keys: ["Esc"], description: "Close panels" },
+    { keys: ["Alt", "H"], description: `${t("Go to")} ${t("Home")}` },
+    { keys: ["Alt", "D"], description: `${t("Go to")} ${t("Dashboard")}` },
+    { keys: ["Alt", "S"], description: `${t("Go to")} ${t("Schedule")}` },
+    { keys: ["Alt", "R"], description: `${t("Go to")} ${t("Resources")}` },
+    { keys: ["Alt", "L"], description: `${t("Go to")} ${t("Sign In")}` },
+    { keys: ["Tab"], description: t("Navigate between elements") },
+    { keys: ["Esc"], description: t("Close panels") },
   ];
 
   return (
@@ -254,7 +254,7 @@ export function AccessibilityPanel() {
                   <ToggleOption
                     icon={<Contrast className="w-5 h-5" />}
                     title={t("High Contrast")}
-                    description="Increase color contrast for better visibility"
+                    description={t("Increase color contrast for better visibility")}
                     enabled={settings.highContrast}
                     onChange={(v) => updateSetting("highContrast", v)}
                   />
@@ -263,7 +263,7 @@ export function AccessibilityPanel() {
                   <ToggleOption
                     icon={<Zap className="w-5 h-5" />}
                     title={t("Reduce Motion")}
-                    description="Minimize animations and transitions"
+                    description={t("Minimize animations and transitions")}
                     enabled={settings.reduceMotion}
                     onChange={(v) => updateSetting("reduceMotion", v)}
                   />
@@ -272,7 +272,7 @@ export function AccessibilityPanel() {
                   <ToggleOption
                     icon={<Eye className="w-5 h-5" />}
                     title={t("Dyslexia-Friendly Font")}
-                    description="Use OpenDyslexic font for easier reading"
+                    description={t("Use OpenDyslexic font for easier reading")}
                     enabled={settings.dyslexiaFont}
                     onChange={(v) => updateSetting("dyslexiaFont", v)}
                   />
@@ -281,7 +281,7 @@ export function AccessibilityPanel() {
                   <ToggleOption
                     icon={<MousePointer2 className="w-5 h-5" />}
                     title={t("Large Cursor")}
-                    description="Increase cursor size for better visibility"
+                    description={t("Increase cursor size for better visibility")}
                     enabled={settings.largePointer}
                     onChange={(v) => updateSetting("largePointer", v)}
                   />
@@ -290,7 +290,7 @@ export function AccessibilityPanel() {
                   <ToggleOption
                     icon={<Keyboard className="w-5 h-5" />}
                     title={t("Focus Highlight")}
-                    description="Show prominent focus indicators"
+                    description={t("Show prominent focus indicators")}
                     enabled={settings.focusHighlight}
                     onChange={(v) => updateSetting("focusHighlight", v)}
                   />

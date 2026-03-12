@@ -1059,9 +1059,12 @@ body {
 
 /* Ensure minimum touch target size for accessibility */
 @media (pointer: coarse) {
-  button, a, [role="button"], input, select, textarea {
+  button, a, [role="button"] {
     min-height: 44px;
     min-width: 44px;
+  }
+  input, select, textarea {
+    min-height: 44px;
   }
 }
 

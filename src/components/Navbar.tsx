@@ -115,7 +115,7 @@ export function Navbar() {
       color: "from-slate-600 to-slate-800",
     },
     {
-      title: "Math Tip",
+      title: t("Math Tip"),
       icon: <Lightbulb className="w-5 h-5" />,
       event: "open-mathtip",
       color: "from-amber-400 to-orange-500",
@@ -142,7 +142,7 @@ export function Navbar() {
           marginBottom:
             "max(0px, calc(env(safe-area-inset-bottom) - 1rem))",
         }}
-        aria-label={isOpen ? "Close menu" : "Open menu"}
+        aria-label={isOpen ? t("Close menu") : t("Open menu")}
       >
         <motion.div
           animate={{ rotate: isOpen ? 90 : 0 }}

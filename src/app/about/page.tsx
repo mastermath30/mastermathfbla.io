@@ -228,13 +228,9 @@ export default function AboutPage() {
                     <Award className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900 dark:text-white">98% Success Rate</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Students improving grades</p>
+                    <p className="font-bold text-slate-900 dark:text-white">98% {t("Success Rate")}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{t("Students improving grades")}</p>
                   </div>
-                </div>
-                <div className="absolute bottom-4 left-6">
-                  <p className="font-bold text-slate-900 dark:text-white">{t("Success Rate")}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{t("Students improving grades")}</p>
                 </div>
               </div>
             </div>

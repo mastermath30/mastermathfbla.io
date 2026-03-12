@@ -141,17 +141,27 @@ const seedPosts: Post[] = [
   },
 ];
 
-function formatTimeAgo(iso: string) {
+function formatTimeAgo(iso: string, locale: string = "en") {
   const ts = iso ? new Date(iso).getTime() : 0;
   if (!ts) return "";
   const diff = Date.now() - ts;
   const mins = Math.floor(diff / (1000 * 60));
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
+  try {
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+    if (mins < 1) return rtf.format(0, "minute");
+    if (mins < 60) return rtf.format(-mins, "minute");
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return rtf.format(-hours, "hour");
+    const days = Math.floor(hours / 24);
+    return rtf.format(-days, "day");
+  } catch {
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
 }
 
 export default function CommunityPage() {
@@ -159,7 +169,7 @@ export default function CommunityPage() {
   const [error, setError] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userName, setUserName] = useState("Guest");
-  const { t } = useTranslations();
+  const { t, language } = useTranslations();
 
   useEffect(() => {
     // Load posts from localStorage
@@ -231,7 +241,7 @@ export default function CommunityPage() {
     const tag = (form.elements.namedItem("tag") as HTMLSelectElement).value;
 
     if (!title || !body) {
-      setError("Please fill in all fields.");
+      setError(t("Please fill in all fields."));
       return;
     }
 
@@ -352,7 +362,7 @@ export default function CommunityPage() {
                     {t("Latest Posts")}
                   </h3>
                 </div>
-                <div className="divide-y divide-slate-800">
+                <div className="divide-y divide-slate-200 dark:divide-slate-800">
                   {sortedPosts.length === 0 ? (
                     <div className="p-8 text-center">
                       <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-900 flex items-center justify-center mx-auto mb-4">
@@ -371,7 +381,7 @@ export default function CommunityPage() {
                             <div className="flex items-start justify-between gap-3">
                               <h4 className="font-semibold text-slate-900 dark:text-white hover:text-primary-themed cursor-pointer transition-colors">{post.title}</h4>
                               <span className="text-slate-400 text-xs shrink-0">
-                                {formatTimeAgo(post.createdAt)}
+                                {formatTimeAgo(post.createdAt, language)}
                               </span>
                             </div>
                             <div className="flex items-center gap-2 mt-1.5">

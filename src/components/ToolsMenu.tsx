@@ -101,8 +101,8 @@ export function ToolsMenu() {
           className={`flex w-14 h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 touch-manipulation ${
             isOpen ? "ring-2 ring-white/50" : ""
           }`}
-          aria-label="Open tools menu"
-          title="Tools Menu"
+          aria-label={t("Open tools menu")}
+          title={t("Study Tools")}
           whileTap={{ scale: 0.95 }}
           style={{ WebkitTapHighlightColor: 'transparent' }}
         >
