@@ -1,320 +1,206 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, X } from "lucide-react";
 import { useTranslations } from "./LanguageProvider";
 
+declare global {
+  interface Window {
+    Desmos?: {
+      GraphingCalculator: (elt: HTMLElement, options?: Record<string, unknown>) => {
+        destroy: () => void;
+      };
+    };
+  }
+}
+
 export function QuickCalculator() {
   const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [display, setDisplay] = useState("0");
-  const [previousValue, setPreviousValue] = useState<number | null>(null);
-  const [operator, setOperator] = useState<string | null>(null);
-  const [waitingForOperand, setWaitingForOperand] = useState(false);
-  const [history, setHistory] = useState<string[]>([]);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [size, setSize] = useState<"sm" | "md" | "lg">("md");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const calculatorRef = useRef<{ destroy: () => void } | null>(null);
 
-  const inputDigit = (digit: string) => {
-    if (waitingForOperand) {
-      setDisplay(digit);
-      setWaitingForOperand(false);
-    } else {
-      setDisplay((prev) => prev === "0" ? digit : prev + digit);
-    }
-  };
+  // Load Desmos API script once on the client
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const inputDot = () => {
-    if (waitingForOperand) {
-      setDisplay("0.");
-      setWaitingForOperand(false);
-    } else {
-      setDisplay((prev) => prev.includes(".") ? prev : prev + ".");
-    }
-  };
-
-  const clearAll = () => {
-    setDisplay("0");
-    setPreviousValue(null);
-    setOperator(null);
-    setWaitingForOperand(false);
-  };
-
-  const backspace = () => {
-    setDisplay((prev) => {
-      if (prev.length === 1 || (prev.length === 2 && prev[0] === "-")) {
-        return "0";
-      }
-      return prev.slice(0, -1);
-    });
-  };
-
-  const toggleSign = () => {
-    setDisplay((prev) => String(-parseFloat(prev)));
-  };
-
-  const inputPercent = () => {
-    setDisplay((prev) => String(parseFloat(prev) / 100));
-  };
-
-  const performOperation = (nextOperator: string) => {
-    const inputValue = parseFloat(display);
-
-    if (previousValue === null) {
-      setPreviousValue(inputValue);
-    } else if (operator) {
-      const currentValue = previousValue;
-      let result: number;
-
-      switch (operator) {
-        case "+":
-          result = currentValue + inputValue;
-          break;
-        case "-":
-          result = currentValue - inputValue;
-          break;
-        case "*":
-          result = currentValue * inputValue;
-          break;
-        case "/":
-          result = inputValue !== 0 ? currentValue / inputValue : 0;
-          break;
-        default:
-          return;
-      }
-
-      result = Math.round(result * 100000000) / 100000000;
-
-      const historyEntry = `${currentValue} ${operator === "*" ? "×" : operator === "/" ? "÷" : operator} ${inputValue} = ${result}`;
-      setHistory((prev) => [historyEntry, ...prev.slice(0, 4)]);
-
-      setDisplay(String(result));
-      setPreviousValue(result);
+    if (window.Desmos) {
+      setIsScriptLoaded(true);
+      return;
     }
 
-    setWaitingForOperand(true);
-    setOperator(nextOperator === "=" ? null : nextOperator);
-  };
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src^="https://www.desmos.com/api/v1.11/calculator.js"]'
+    );
+    if (existing) {
+      existing.addEventListener("load", () => setIsScriptLoaded(true));
+      existing.addEventListener("error", () =>
+        setLoadError("Failed to load Desmos calculator.")
+      );
+      return;
+    }
 
+    const script = document.createElement("script");
+    script.src =
+      "https://www.desmos.com/api/v1.11/calculator.js?apiKey=4623762d63fa4908af685d51e6d03006";
+    script.async = true;
+    script.onload = () => setIsScriptLoaded(true);
+    script.onerror = () => setLoadError("Failed to load Desmos calculator.");
+    document.body.appendChild(script);
+  }, []);
+
+  // Global keyboard shortcut: Alt + C toggles the Desmos calculator
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.altKey && e.key.toLowerCase() === "c") {
         e.preventDefault();
         setIsOpen((prev) => !prev);
-        return;
-      }
-      
-      if (!isOpen) return;
-
-      if (/^[0-9]$/.test(e.key)) {
-        e.preventDefault();
-        inputDigit(e.key);
-      } else if (e.key === ".") {
-        e.preventDefault();
-        inputDot();
-      } else if (e.key === "+") {
-        e.preventDefault();
-        performOperation("+");
-      } else if (e.key === "-") {
-        e.preventDefault();
-        performOperation("-");
-      } else if (e.key === "*") {
-        e.preventDefault();
-        performOperation("*");
-      } else if (e.key === "/") {
-        e.preventDefault();
-        performOperation("/");
-      } else if (e.key === "Enter" || e.key === "=") {
-        e.preventDefault();
-        performOperation("=");
-      } else if (e.key === "Escape") {
+      } else if (e.key === "Escape" && isOpen) {
         e.preventDefault();
         setIsOpen(false);
-      } else if (e.key === "Backspace") {
-        e.preventDefault();
-        backspace();
+        setIsFullscreen(false);
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, display, previousValue, operator, waitingForOperand]);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
+  // Allow other components to open the calculator via custom event
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
-    window.addEventListener("open-calculator", handleOpen);
-    return () => {
-      window.removeEventListener("open-calculator", handleOpen);
-    };
+    window.addEventListener("open-calculator", handleOpen as EventListener);
+    return () => window.removeEventListener("open-calculator", handleOpen as EventListener);
   }, []);
 
-  const inputPi = () => {
-    setDisplay(String(Math.PI));
-    setWaitingForOperand(false);
-  };
+  // Initialize / destroy Desmos instance when modal is open
+  useEffect(() => {
+    if (!isOpen || !isScriptLoaded || !containerRef.current || !window.Desmos) return;
 
-  const inputE = () => {
-    setDisplay(String(Math.E));
-    setWaitingForOperand(false);
-  };
-
-  const performScientificOperation = (operation: string) => {
-    const value = parseFloat(display);
-    let result: number;
-
-    switch (operation) {
-      case "sin":
-        result = Math.sin(value);
-        break;
-      case "cos":
-        result = Math.cos(value);
-        break;
-      case "tan":
-        result = Math.tan(value);
-        break;
-      case "sqrt":
-        result = Math.sqrt(value);
-        break;
-      case "square":
-        result = value * value;
-        break;
-      case "cube":
-        result = value * value * value;
-        break;
-      case "log":
-        result = Math.log10(value);
-        break;
-      case "ln":
-        result = Math.log(value);
-        break;
-      case "exp":
-        result = Math.exp(value);
-        break;
-      case "factorial":
-        result = 1;
-        for (let i = 2; i <= value; i++) {
-          result *= i;
-        }
-        break;
-      case "inverse":
-        result = 1 / value;
-        break;
-      default:
-        return;
+    if (!calculatorRef.current) {
+      calculatorRef.current = window.Desmos.GraphingCalculator(containerRef.current, {
+        expressions: true,
+        keypad: true,
+      });
     }
 
-    result = Math.round(result * 100000000) / 100000000;
-    setDisplay(String(result));
-    setWaitingForOperand(true);
-  };
+    return () => {
+      if (calculatorRef.current) {
+        calculatorRef.current.destroy();
+        calculatorRef.current = null;
+      }
+    };
+  }, [isOpen, isScriptLoaded]);
 
-  const buttons = [
-    { label: "C", action: clearAll, className: "bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/60" },
-    { label: "( )", action: () => {}, className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" },
-    { label: "%", action: inputPercent, className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" },
-    { label: "÷", action: () => performOperation("/"), className: "bg-emerald-600 text-white hover:bg-emerald-700" },
-    { label: "sin", action: () => performScientificOperation("sin"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "cos", action: () => performScientificOperation("cos"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "tan", action: () => performScientificOperation("tan"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "×", action: () => performOperation("*"), className: "bg-emerald-600 text-white hover:bg-emerald-700" },
-    { label: "π", action: inputPi, className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" },
-    { label: "e", action: inputE, className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" },
-    { label: "√", action: () => performScientificOperation("sqrt"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" },
-    { label: "-", action: () => performOperation("-"), className: "bg-emerald-600 text-white hover:bg-emerald-700" },
-    { label: "x²", action: () => performScientificOperation("square"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "x³", action: () => performScientificOperation("cube"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "log", action: () => performScientificOperation("log"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "+", action: () => performOperation("+"), className: "bg-emerald-600 text-white hover:bg-emerald-700" },
-    { label: "7", action: () => inputDigit("7"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "8", action: () => inputDigit("8"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "9", action: () => inputDigit("9"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "ln", action: () => performScientificOperation("ln"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "4", action: () => inputDigit("4"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "5", action: () => inputDigit("5"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "6", action: () => inputDigit("6"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "1/x", action: () => performScientificOperation("inverse"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "1", action: () => inputDigit("1"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "2", action: () => inputDigit("2"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "3", action: () => inputDigit("3"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "x!", action: () => performScientificOperation("factorial"), className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 text-xs" },
-    { label: "0", action: () => inputDigit("0"), className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: ".", action: inputDot, className: "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" },
-    { label: "±", action: toggleSign, className: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" },
-    { label: "=", action: () => performOperation("="), className: "bg-green-600 text-white hover:bg-green-700" },
-  ];
+  const wrapperWidthClass =
+    size === "sm"
+      ? "w-[320px] md:w-[480px]"
+      : size === "lg"
+      ? "w-[420px] md:w-[800px]"
+      : "w-[360px] md:w-[640px]";
+
+  const containerHeightClass =
+    size === "sm"
+      ? "h-[220px] md:h-[300px]"
+      : size === "lg"
+      ? "h-[320px] md:h-[480px]"
+      : "h-[260px] md:h-[360px]";
 
   return (
     <>
       <AnimatePresence>
         {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-4 bottom-24 md:right-8 md:bottom-24 z-[101] w-80"
-            >
-              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                {/* Header */}
-                <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-emerald-600">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className={
+              isFullscreen
+                ? "fixed inset-0 z-[101] flex items-center justify-center p-4 md:p-8 bg-black/40"
+                : `fixed right-4 bottom-24 md:right-8 md:bottom-24 z-[101] ${wrapperWidthClass}`
+            }
+          >
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh] w-full md:max-w-5xl">
+              {/* Header */}
+              <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-emerald-600">
+                <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <Calculator className="w-4 h-4 text-white" />
-                    <span className="text-sm font-medium text-white">{t("Quick Calculator")}</span>
+                    <span className="text-sm font-medium text-white">
+                      {t("Graphing Calculator (Desmos)")}
+                    </span>
                   </div>
+                  {!isFullscreen && (
+                    <div className="hidden md:flex items-center gap-1 rounded-full bg-white/10 px-1 py-0.5">
+                    {[
+                      { id: "sm" as const, label: "S" },
+                      { id: "md" as const, label: "M" },
+                      { id: "lg" as const, label: "L" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => setSize(opt.id)}
+                        className={`px-2 py-0.5 text-[10px] rounded-full border transition-colors ${
+                          size === opt.id
+                            ? "bg-white text-emerald-700 border-white"
+                            : "bg-transparent text-white/80 border-white/30 hover:bg-white/15"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-1">
                   <button
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setIsFullscreen((prev) => !prev)}
+                    className="hidden md:inline-flex px-2 py-1 rounded text-[10px] font-medium bg-white/15 text-white hover:bg-white/25"
+                  >
+                    {isFullscreen ? t("Exit Fullscreen") : t("Fullscreen")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      setIsFullscreen(false);
+                    }}
                     className="p-1 rounded hover:bg-white/20 text-white/80 hover:text-white"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
+              </div>
 
-                {/* Display */}
-                <div ref={inputRef} className="p-4 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                  {operator && previousValue !== null && (
-                    <div className="text-sm text-right mb-1 font-medium text-emerald-600 dark:text-emerald-400">
-                      {previousValue} {operator === "*" ? "×" : operator === "/" ? "÷" : operator}
-                    </div>
-                  )}
-                  <div className="text-4xl font-mono text-right truncate font-bold text-slate-900 dark:text-white">
-                    {display}
-                  </div>
-                </div>
-
-                {/* History */}
-                {history.length > 0 && (
-                  <div className="px-4 py-2 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 max-h-20 overflow-y-auto">
-                    {history.map((entry, i) => (
-                      <div key={i} className="text-xs text-slate-500 dark:text-slate-400 text-right">
-                        {entry}
-                      </div>
-                    ))}
+              {/* Body: Desmos container or status */}
+              <div className="p-2 bg-slate-50 dark:bg-slate-900 flex-1 min-h-[260px] md:min-h-[360px]">
+                {loadError && (
+                  <div className="text-sm text-red-600 dark:text-red-400">
+                    {loadError}
                   </div>
                 )}
-
-                {/* Buttons */}
-                <div className="grid grid-cols-4 gap-1 p-2 max-h-[400px] overflow-y-auto bg-slate-100 dark:bg-slate-900">
-                  {buttons.map((btn, i) => (
-                    <button
-                      key={i}
-                      onClick={btn.action}
-                      className={`p-2.5 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 ${
-                        btn.className || "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600"
-                      }`}
-                    >
-                      {btn.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Keyboard hint */}
-                <div className="px-4 py-2 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-700">
-                  {t("Press Esc to close")} • Alt+C
-                </div>
+                {!loadError && !isScriptLoaded && (
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                    {t("Loading Desmos graphing calculator...")}
+                  </div>
+                )}
+                <div
+                  ref={containerRef}
+                  className={`w-full ${containerHeightClass} bg-white dark:bg-slate-800 rounded-xl overflow-hidden`}
+                />
               </div>
-            </motion.div>
+
+              {/* Keyboard hint */}
+              <div className="px-4 py-2 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-700">
+                {t("Press Esc to close")} • Alt+C
+              </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
