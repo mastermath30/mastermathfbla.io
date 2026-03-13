@@ -318,7 +318,7 @@ export function QuickCalculator() {
 
                 {/* Keyboard hint */}
                 <div className="px-4 py-2 text-center text-xs text-slate-500 border-t border-slate-700">
-                  Press <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-xs">Esc</kbd> to close • Alt+C to toggle
+                  {t("Press Esc to close")} • Alt+C
                 </div>
               </div>
             </motion.div>

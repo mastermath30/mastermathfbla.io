@@ -82,7 +82,7 @@ const colorClasses: Record<string, { bg: string; text: string }> = {
 };
 
 export default function DashboardPage() {
-  const { t } = useTranslations();
+  const { t, language } = useTranslations();
   const [userName, setUserName] = useState("Student");
   const [mounted, setMounted] = useState(false);
   const [goals, setGoals] = useState(initialGoals);

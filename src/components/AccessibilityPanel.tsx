@@ -162,8 +162,8 @@ export function AccessibilityPanel() {
       <button
         onClick={() => setIsOpen(true)}
         className="hidden md:flex fixed bottom-6 left-6 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
-        aria-label="Open accessibility settings"
-        title="Accessibility Settings (Alt+A)"
+        aria-label={t("Open accessibility settings")}
+        title={t("Accessibility") + " (Alt+A)"}
         style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         <Accessibility className="w-6 h-6 text-slate-700 dark:text-slate-300" />
@@ -204,7 +204,7 @@ export function AccessibilityPanel() {
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Close accessibility panel"
+                  aria-label={t("Close accessibility panel")}
                 >
                   <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                 </button>
@@ -225,7 +225,7 @@ export function AccessibilityPanel() {
                     <button
                       onClick={() => updateSetting("fontSize", Math.max(75, settings.fontSize - 10))}
                       className="p-2 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-[var(--theme-primary)] transition-colors"
-                      aria-label="Decrease font size"
+                      aria-label={t("Decrease font size")}
                     >
                       <Minus className="w-4 h-4" />
                     </button>
@@ -241,7 +241,7 @@ export function AccessibilityPanel() {
                     <button
                       onClick={() => updateSetting("fontSize", Math.min(150, settings.fontSize + 10))}
                       className="p-2 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-[var(--theme-primary)] transition-colors"
-                      aria-label="Increase font size"
+                      aria-label={t("Increase font size")}
                     >
                       <Plus className="w-4 h-4" />
                     </button>

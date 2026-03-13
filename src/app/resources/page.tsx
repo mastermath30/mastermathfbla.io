@@ -414,10 +414,10 @@ export default function ResourcesPage() {
                     />
                     <div className="flex-1 min-w-0 flex flex-col h-full">
                       <div className="flex items-center justify-between gap-3">
-                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{lesson.title}</h4>
+                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{t(lesson.title)}</h4>
                         <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-[var(--theme-primary)] transition-colors" />
                       </div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 leading-relaxed">{lesson.description}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 leading-relaxed">{t(lesson.description)}</p>
                     </div>
                   </div>
                   <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
@@ -426,7 +426,7 @@ export default function ResourcesPage() {
                         key={tag} 
                         className="text-xs px-2.5 py-1 rounded-full font-medium transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
                       >
-                        {tag}
+                        {t(tag)}
                       </span>
                     ))}
                   </div>
@@ -468,10 +468,10 @@ export default function ResourcesPage() {
                     />
                     <div className="flex-1 min-w-0 flex flex-col">
                       <div className="flex items-center justify-between gap-3">
-                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{item.title}</h4>
+                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-[var(--theme-primary)] transition-colors">{t(item.title)}</h4>
                         <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-[var(--theme-primary)] transition-colors" />
                       </div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 flex-1">{item.description}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 flex-1">{t(item.description)}</p>
                     </div>
                   </div>
                 </Card>
@@ -504,18 +504,18 @@ export default function ResourcesPage() {
             {displayedQuizzes.map((quiz) => (
               <Card key={quiz.title} className="relative overflow-hidden h-full flex flex-col">
                 <div className="absolute top-0 right-0 px-3 py-1 bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-200 text-xs font-medium rounded-bl-xl border-l border-b border-slate-200 dark:border-slate-700">
-                  {quiz.difficulty}
+                  {t(quiz.difficulty)}
                 </div>
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                     <quiz.icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-white">{quiz.title}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-xs">{quiz.time}</p>
+                    <h4 className="font-semibold text-slate-900 dark:text-white">{t(quiz.title)}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs">{t(quiz.time)}</p>
                   </div>
                 </div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 flex-1">{quiz.description}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 flex-1">{t(quiz.description)}</p>
                 <Button className="w-full mt-auto" onClick={() => handleStartQuiz(quiz)} type="button">
                   <Play className="w-4 h-4" />
                   {t("Start Quiz")}
@@ -563,15 +563,15 @@ export default function ResourcesPage() {
                       </div>
                     </div>
                     <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/70 text-white text-xs rounded">
-                      {video.duration}
+                      {t(video.duration)}
                     </div>
                     <div className="absolute bottom-2 left-2 px-2 py-1 bg-slate-900/80 border border-slate-700 text-slate-200 text-xs font-medium rounded">
                       {video.channel}
                     </div>
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
-                    <h4 className="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-primary-themed transition-colors">{video.title}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">{video.description}</p>
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-primary-themed transition-colors">{t(video.title)}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">{t(video.description)}</p>
                   </div>
                 </Card>
               </a>
@@ -619,7 +619,7 @@ export default function ResourcesPage() {
               <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
                 <selectedQuiz.icon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedQuiz.title}</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t(selectedQuiz.title)}</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Choose your difficulty level")}</p>
             </div>
 

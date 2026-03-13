@@ -29,6 +29,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "./LanguageProvider";
 import {
   Brain,
   Send,
@@ -106,6 +107,7 @@ const PAGE_LABELS: Record<string, string> = {
 };
 
 export function AIMathTutor() {
+  const { t } = useTranslations();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -214,7 +216,7 @@ export function AIMathTutor() {
       });
 
       const data = await response.json();
-      const rawReply = data.reply || "I could not generate a response. Please try again.";
+      const rawReply = data.reply || t("I could not generate a response. Please try again.");
       const { cleanContent, path } = extractNavigation(rawReply);
 
       const assistantMessage: Message = {
@@ -234,7 +236,7 @@ export function AIMathTutor() {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "Sorry, I encountered an error. Please try again.",
+        content: t("Sorry, I encountered an error. Please try again."),
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -262,7 +264,7 @@ export function AIMathTutor() {
   const clearChat = () => {
     if (messages.length > 0) {
       // Save current conversation to history
-      const title = messages[0]?.content.slice(0, 50) || "Conversation";
+      const title = messages[0]?.content.slice(0, 50) || t("Conversation");
       const newConversation: ConversationHistory = {
         id: Date.now().toString(),
         title,
@@ -331,22 +333,22 @@ export function AIMathTutor() {
                     <Brain className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-lg">AI Agent</h2>
-                    <p className="text-xs text-white/80">Powered by MathMaster AI</p>
+                    <h2 className="font-bold text-lg">{t("AI Agent")}</h2>
+                    <p className="text-xs text-white/80">{t("Powered by MathMaster AI")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowHistory(!showHistory)}
                     className="p-2 rounded-lg hover:bg-white/20 transition-colors"
-                    title="Conversation History"
+                    title={t("Conversation History")}
                   >
                     <History className="w-5 h-5" />
                   </button>
                   <button
                     onClick={clearChat}
                     className="p-2 rounded-lg hover:bg-white/20 transition-colors"
-                    title="New Chat"
+                    title={t("New Chat")}
                   >
                     <RefreshCw className="w-5 h-5" />
                   </button>
@@ -370,7 +372,7 @@ export function AIMathTutor() {
                   >
                     <div className="p-3 bg-slate-50 dark:bg-slate-800 max-h-40 overflow-y-auto">
                       {conversations.length === 0 ? (
-                        <p className="text-sm text-slate-500 text-center py-2">No conversation history</p>
+                        <p className="text-sm text-slate-500 text-center py-2">{t("No conversation history")}</p>
                       ) : (
                         <div className="space-y-2">
                           {conversations.map((conv) => (
@@ -400,16 +402,16 @@ export function AIMathTutor() {
                         <Sparkles className="w-8 h-8 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                        Hi! I&apos;m your MathMaster AI Agent
+                        {t("Hi! I'm your MathMaster AI Agent")}
                       </h3>
                       <p className="text-slate-600 dark:text-slate-400">
-                        I can solve math problems, navigate you around the site, and answer questions about MathMaster!
+                        {t("I can solve math problems, navigate you around the site, and answer questions about MathMaster!")}
                       </p>
                     </div>
 
                     {/* Quick Prompts */}
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">QUICK ACTIONS</p>
+                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">{t("QUICK ACTIONS")}</p>
                       <div className="grid grid-cols-2 gap-2">
                         {QUICK_PROMPTS.map((qp) => (
                           <button
@@ -418,7 +420,7 @@ export function AIMathTutor() {
                             className="flex items-center gap-2 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
                           >
                             <qp.icon className="w-4 h-4 text-violet-500" />
-                            <span className="text-sm text-slate-700 dark:text-slate-300">{qp.label}</span>
+                            <span className="text-sm text-slate-700 dark:text-slate-300">{t(qp.label)}</span>
                           </button>
                         ))}
                       </div>
@@ -426,7 +428,7 @@ export function AIMathTutor() {
 
                     {/* Navigation & Website Actions */}
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">EXPLORE & NAVIGATE</p>
+                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">{t("EXPLORE & NAVIGATE")}</p>
                       <div className="grid grid-cols-2 gap-2">
                         {NAVIGATION_PROMPTS.map((np) => (
                           <button
@@ -435,7 +437,7 @@ export function AIMathTutor() {
                             className="flex items-center gap-2 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors text-left border border-purple-200 dark:border-purple-800"
                           >
                             <np.icon className="w-4 h-4 text-purple-500" />
-                            <span className="text-sm text-slate-700 dark:text-slate-300">{np.label}</span>
+                            <span className="text-sm text-slate-700 dark:text-slate-300">{t(np.label)}</span>
                           </button>
                         ))}
                       </div>
@@ -443,7 +445,7 @@ export function AIMathTutor() {
 
                     {/* Topics */}
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">MATH TOPICS</p>
+                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">{t("MATH TOPICS")}</p>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                         {MATH_TOPICS.map((topic) => (
                           <div
@@ -452,7 +454,7 @@ export function AIMathTutor() {
                           >
                             <div className="flex items-center gap-2 mb-2">
                               <span className="text-lg">{topic.icon}</span>
-                              <span className="font-medium text-slate-900 dark:text-white text-sm">{topic.label}</span>
+                              <span className="font-medium text-slate-900 dark:text-white text-sm">{t(topic.label)}</span>
                             </div>
                             <div className="space-y-1">
                               {topic.examples.map((ex) => (
@@ -497,11 +499,11 @@ export function AIMathTutor() {
                           >
                             {copiedId === msg.id ? (
                               <>
-                                <Check className="w-3 h-3" /> Copied
+                                <Check className="w-3 h-3" /> {t("Copied")}
                               </>
                             ) : (
                               <>
-                                <Copy className="w-3 h-3" /> Copy
+                                <Copy className="w-3 h-3" /> {t("Copy")}
                               </>
                             )}
                           </button>
@@ -523,7 +525,7 @@ export function AIMathTutor() {
                       className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium hover:opacity-90 transition-opacity shadow-lg"
                     >
                       <Navigation className="w-4 h-4" />
-                      Go to {PAGE_LABELS[pendingNavigation] || pendingNavigation}
+                      {t("Go to")} {t(PAGE_LABELS[pendingNavigation] || pendingNavigation)}
                     </button>
                   </motion.div>
                 )}
@@ -557,7 +559,7 @@ export function AIMathTutor() {
                         handleSend();
                       }
                     }}
-                    placeholder="Ask me anything..."
+                    placeholder={t("Ask me anything...")}
                     className="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                     rows={1}
                   />
@@ -570,7 +572,7 @@ export function AIMathTutor() {
                   </button>
                 </div>
                 <p className="text-xs text-slate-500 mt-2 text-center">
-                  Press Enter to send &bull; Shift+Enter for new line
+                  {t("Press Enter to send • Shift+Enter for new line")}
                 </p>
               </div>
             </motion.div>

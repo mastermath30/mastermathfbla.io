@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { useTranslations } from "@/components/LanguageProvider";
 
 export const FloatingDock = ({
   items,
@@ -32,6 +33,7 @@ const FloatingDockMobile = ({
 }) => {
   const [open, setOpen] = useState(false);
   const reducedMotion = useReducedMotion();
+  const { t } = useTranslations();
   
   // Static version for reduced motion
   if (reducedMotion) {
@@ -57,7 +59,7 @@ const FloatingDockMobile = ({
             onClick={() => setOpen(!open)}
             className="h-12 w-12 min-h-[48px] min-w-[48px] rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700 touch-manipulation active:scale-95 transition-transform"
             type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("Close menu") : t("Open menu")}
             style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("h-5 w-5 text-slate-600 dark:text-slate-300", open && "rotate-45")}>
@@ -119,7 +121,7 @@ const FloatingDockMobile = ({
           className="h-12 w-12 min-h-[48px] min-w-[48px] rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg border border-slate-200 dark:border-slate-700 cursor-pointer select-none touch-manipulation active:scale-95 transition-transform"
           style={{ WebkitTapHighlightColor: 'transparent' }}
           type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t("Close menu") : t("Open menu")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

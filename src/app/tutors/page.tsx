@@ -103,7 +103,6 @@ const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
 };
 
 const ALL_TIME_SLOTS = generateTimeSlots();
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const currentDate = new Date();
 
 const allTutors = [
@@ -303,6 +302,9 @@ const allTutors = [
 
 export default function TutorsPage() {
   const { t, language } = useTranslations();
+  const localizedDays = Array.from({ length: 7 }, (_, i) =>
+    new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'narrow' })
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [sortBy, setSortBy] = useState("rating");
@@ -730,7 +732,7 @@ export default function TutorsPage() {
                       </span>
                     </div>
                     <span className="text-slate-500 dark:text-slate-400 text-sm">
-                      ({tutor.reviews} reviews)
+                      ({tutor.reviews} {t("reviews")})
                     </span>
                   </div>
                 </div>
@@ -800,7 +802,7 @@ export default function TutorsPage() {
                         <span className="text-2xl font-bold" style={{ color: 'var(--theme-primary)' }}>
                           ${tutor.price}
                         </span>
-                        <span className="text-slate-500 dark:text-slate-400">/hr</span>
+                        <span className="text-slate-500 dark:text-slate-400">{t("/hr")}</span>
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
@@ -912,14 +914,14 @@ export default function TutorsPage() {
                       <div className="flex-1">
                         <h4 className="font-semibold text-slate-900 dark:text-white">{selectedTutor.name}</h4>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                          {bookingDate && formatDate(bookingDate)} • {selectedTime} • {selectedDuration}
+                          {bookingDate && formatDate(bookingDate)} • {selectedTime} • {t(selectedDuration)}
                         </p>
                       </div>
                     </div>
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500 dark:text-slate-400">{t("Session Rate")}</span>
-                        <span className="text-slate-900 dark:text-white">${selectedTutor.price}/hr × {getDurationHours(selectedDuration)} hr</span>
+                        <span className="text-slate-900 dark:text-white">${selectedTutor.price}{t("/hr")} × {getDurationHours(selectedDuration)} {t("hr")}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500 dark:text-slate-400">{t("Platform Fee")}</span>
@@ -1123,8 +1125,8 @@ export default function TutorsPage() {
                         </button>
                       </div>
                       <div className="grid grid-cols-7 gap-1 mb-2">
-                        {days.map(day => (
-                          <div key={day} className="text-center text-xs font-medium text-slate-500 py-2">{day}</div>
+                        {localizedDays.map((day, i) => (
+                          <div key={i} className="text-center text-xs font-medium text-slate-500 py-2">{day}</div>
                         ))}
                       </div>
                       <div className="grid grid-cols-7 gap-1">
@@ -1210,7 +1212,7 @@ export default function TutorsPage() {
                             }`}
                             style={selectedDuration === duration ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" } : {}}
                           >
-                            {duration}
+                            {t(duration)}
                           </button>
                         ))}
                       </div>
@@ -1248,7 +1250,7 @@ export default function TutorsPage() {
                             <span className="text-lg font-bold gradient-text">${calculatePrice()}</span>
                           </div>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            ${selectedTutor.price}/hr × {getDurationHours(selectedDuration)} {t("hours")}
+                            ${selectedTutor.price}{t("/hr")} × {getDurationHours(selectedDuration)} {t("hours")}
                           </p>
                         </div>
                       </div>

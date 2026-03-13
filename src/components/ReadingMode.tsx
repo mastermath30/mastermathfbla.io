@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Focus, X, Minus, Plus, Moon, Sun, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
 export function ReadingMode() {
+  const { t } = useTranslations();
   const [isActive, setIsActive] = useState(false);
   const [fontSize, setFontSize] = useState(110);
   const [isDimmed, setIsDimmed] = useState(true);
@@ -72,8 +74,8 @@ export function ReadingMode() {
             ? "bg-[var(--theme-primary)] ring-2 ring-[var(--theme-primary)] ring-offset-2" 
             : "bg-gradient-to-br from-indigo-500 to-purple-600 focus:ring-indigo-400"
         }`}
-        aria-label={isActive ? "Exit focus mode" : "Enter focus mode"}
-        title="Focus Reading Mode (Alt+F)"
+        aria-label={isActive ? t("Exit Focus Mode (Esc)") : t("Focus Mode")}
+        title={t("Focus Mode") + " (Alt+F)"}
       >
         <Focus className="w-6 h-6 text-white" />
       </button>
@@ -92,7 +94,7 @@ export function ReadingMode() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Focus className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
-                  <span className="font-semibold text-slate-900 dark:text-white">Focus Mode</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{t("Focus Mode")}</span>
                 </div>
                 <button
                   onClick={() => setIsActive(false)}
@@ -105,7 +107,7 @@ export function ReadingMode() {
               {/* Font Size */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 dark:text-slate-400">Text Size</span>
+                  <span className="text-slate-600 dark:text-slate-400">{t("Text Size")}</span>
                   <span className="font-medium text-slate-900 dark:text-white">{fontSize}%</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -145,7 +147,7 @@ export function ReadingMode() {
                 >
                   <div className="flex items-center gap-2">
                     {isDimmed ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                    <span className="text-sm font-medium">Dim Surroundings</span>
+                    <span className="text-sm font-medium">{t("Dim Distractions")}</span>
                   </div>
                   <div className={`w-4 h-4 rounded-full border-2 ${
                     isDimmed ? "bg-[var(--theme-primary)] border-[var(--theme-primary)]" : "border-slate-300"
@@ -162,7 +164,7 @@ export function ReadingMode() {
                 >
                   <div className="flex items-center gap-2">
                     {hideImages ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    <span className="text-sm font-medium">Hide Images</span>
+                    <span className="text-sm font-medium">{t("Hide Images")}</span>
                   </div>
                   <div className={`w-4 h-4 rounded-full border-2 ${
                     hideImages ? "bg-[var(--theme-primary)] border-[var(--theme-primary)]" : "border-slate-300"
@@ -172,7 +174,7 @@ export function ReadingMode() {
 
               {/* Keyboard hint */}
               <div className="text-center text-xs text-slate-500">
-                Press <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-xs">Esc</kbd> to exit
+                {t("Press Esc to exit")}
               </div>
             </div>
           </motion.div>

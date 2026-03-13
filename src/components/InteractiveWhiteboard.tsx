@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "./LanguageProvider";
 import {
   Pencil,
   Eraser,
@@ -78,6 +79,7 @@ const TOOLS = [
 ];
 
 export function InteractiveWhiteboard() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [elements, setElements] = useState<DrawingElement[]>([]);
   const [currentTool, setCurrentTool] = useState("pen");
@@ -481,8 +483,8 @@ export function InteractiveWhiteboard() {
       <motion.button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-24 md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
-        aria-label="Open Interactive Whiteboard"
-        title="Interactive Whiteboard (Alt+W)"
+        aria-label={t("Open Interactive Whiteboard")}
+        title={t("Interactive Whiteboard (Alt+W)")}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -505,8 +507,8 @@ export function InteractiveWhiteboard() {
                   <Pencil className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-slate-900 dark:text-white">Interactive Whiteboard</h2>
-                  <p className="text-xs text-slate-500">Collaborate and draw together</p>
+                  <h2 className="font-bold text-slate-900 dark:text-white">{t("Interactive Whiteboard")}</h2>
+                  <p className="text-xs text-slate-500">{t("Collaborate and draw together")}</p>
                 </div>
               </div>
 
@@ -515,7 +517,7 @@ export function InteractiveWhiteboard() {
                 <button
                   onClick={() => setShowGrid(!showGrid)}
                   className={`p-2 rounded-lg transition-colors ${showGrid ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"}`}
-                  title="Toggle Grid"
+                  title={t("Toggle Grid")}
                 >
                   <Grid3X3 className="w-5 h-5" />
                 </button>
@@ -525,7 +527,7 @@ export function InteractiveWhiteboard() {
                   onClick={undo}
                   disabled={historyIndex <= 0}
                   className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-600"
-                  title="Undo (Ctrl+Z)"
+                  title={t("Undo (Ctrl+Z)")}
                 >
                   <Undo className="w-5 h-5" />
                 </button>
@@ -533,7 +535,7 @@ export function InteractiveWhiteboard() {
                   onClick={redo}
                   disabled={historyIndex >= history.length - 1}
                   className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-600"
-                  title="Redo (Ctrl+Shift+Z)"
+                  title={t("Redo (Ctrl+Shift+Z)")}
                 >
                   <Redo className="w-5 h-5" />
                 </button>
@@ -544,14 +546,14 @@ export function InteractiveWhiteboard() {
                 <button
                   onClick={() => setShowSaveModal(true)}
                   className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
-                  title="Save Board"
+                  title={t("Save Board")}
                 >
                   <Save className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setShowLoadModal(true)}
                   className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
-                  title="Load Board"
+                  title={t("Load Board")}
                 >
                   <FolderOpen className="w-5 h-5" />
                 </button>
@@ -560,7 +562,7 @@ export function InteractiveWhiteboard() {
                 <button
                   onClick={downloadCanvas}
                   className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
-                  title="Download as PNG"
+                  title={t("Download as PNG")}
                 >
                   <Download className="w-5 h-5" />
                 </button>
@@ -569,7 +571,7 @@ export function InteractiveWhiteboard() {
                 <button
                   onClick={clearCanvas}
                   className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200"
-                  title="Clear Canvas"
+                  title={t("Clear Canvas")}
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -600,7 +602,7 @@ export function InteractiveWhiteboard() {
                         ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg"
                         : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
                     }`}
-                    title={tool.label}
+                    title={t(tool.label)}
                   >
                     <tool.icon className="w-5 h-5" />
                   </button>
@@ -613,7 +615,7 @@ export function InteractiveWhiteboard() {
                   <button
                     onClick={() => setShowColorPicker(!showColorPicker)}
                     className="w-full p-2 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center"
-                    title="Color"
+                    title={t("Color")}
                   >
                     <div
                       className="w-6 h-6 rounded-full border-2 border-white shadow"
@@ -695,7 +697,7 @@ export function InteractiveWhiteboard() {
                       }}
                       autoFocus
                       className="px-2 py-1 border-2 border-emerald-500 rounded-lg bg-white text-slate-900 text-sm focus:outline-none"
-                      placeholder="Type text..."
+                      placeholder={t("Type text...")}
                       style={{ color: currentColor }}
                     />
                   </div>
@@ -720,12 +722,12 @@ export function InteractiveWhiteboard() {
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-slate-800 rounded-2xl p-6 w-80 shadow-2xl"
                   >
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Save Board</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t("Save Board")}</h3>
                     <input
                       type="text"
                       value={boardName}
                       onChange={(e) => setBoardName(e.target.value)}
-                      placeholder="Enter board name..."
+                      placeholder={t("Enter board name...")}
                       className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white mb-4"
                     />
                     <div className="flex gap-2">
@@ -733,14 +735,14 @@ export function InteractiveWhiteboard() {
                         onClick={() => setShowSaveModal(false)}
                         className="flex-1 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                       <button
                         onClick={saveBoard}
                         disabled={!boardName.trim()}
                         className="flex-1 px-4 py-2 rounded-lg bg-emerald-500 text-white disabled:opacity-50"
                       >
-                        Save
+                        {t("Save")}
                       </button>
                     </div>
                   </motion.div>
@@ -765,9 +767,9 @@ export function InteractiveWhiteboard() {
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-slate-800 rounded-2xl p-6 w-96 max-h-96 shadow-2xl"
                   >
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Load Board</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t("Load Board")}</h3>
                     {savedBoards.length === 0 ? (
-                      <p className="text-slate-500 text-center py-4">No saved boards</p>
+                      <p className="text-slate-500 text-center py-4">{t("No saved boards")}</p>
                     ) : (
                       <div className="space-y-2 max-h-64 overflow-y-auto">
                         {savedBoards.map((board) => (
@@ -780,7 +782,7 @@ export function InteractiveWhiteboard() {
                               className="flex-1 text-left"
                             >
                               <p className="font-medium text-slate-900 dark:text-white">{board.name}</p>
-                              <p className="text-xs text-slate-500">{board.elements.length} elements</p>
+                              <p className="text-xs text-slate-500">{board.elements.length} {t("elements")}</p>
                             </button>
                             <button
                               onClick={() => deleteBoard(board.id)}
@@ -796,7 +798,7 @@ export function InteractiveWhiteboard() {
                       onClick={() => setShowLoadModal(false)}
                       className="w-full mt-4 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
                     >
-                      Cancel
+                      {t("Cancel")}
                     </button>
                   </motion.div>
                 </motion.div>

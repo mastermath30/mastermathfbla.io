@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, X, Calendar, Trophy, Star } from "lucide-react";
+import { useTranslations } from "./LanguageProvider";
 
 interface StreakData {
   currentStreak: number;
@@ -13,6 +14,7 @@ interface StreakData {
 }
 
 export function StudyStreak() {
+  const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [streakData, setStreakData] = useState<StreakData>({
     currentStreak: 0,
@@ -101,7 +103,7 @@ export function StudyStreak() {
         className="fixed top-20 right-4 z-[89] flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        title="Study Streak"
+        title={t("Study Streak")}
       >
         <Flame className="w-5 h-5 text-white" />
         <span className="text-white font-bold">{streakData.currentStreak}</span>
@@ -127,7 +129,7 @@ export function StudyStreak() {
           >
             <div className="flex items-center gap-2">
               <Trophy className="w-6 h-6" />
-              <span className="font-bold">{streakData.currentStreak} Day Streak! 🎉</span>
+              <span className="font-bold">{streakData.currentStreak} {t("Day Streak")}! 🎉</span>
             </div>
           </motion.div>
         )}
@@ -183,7 +185,7 @@ export function StudyStreak() {
                   >
                     <Flame className="w-16 h-16 mx-auto mb-2" />
                     <div className="text-5xl font-bold">{streakData.currentStreak}</div>
-                    <div className="text-white/80">Day Streak</div>
+                    <div className="text-white/80">{t("Day Streak")}</div>
                   </motion.div>
                 </div>
 
@@ -194,14 +196,14 @@ export function StudyStreak() {
                       <Trophy className="w-4 h-4" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">{streakData.longestStreak}</div>
-                    <div className="text-xs text-slate-500">Longest Streak</div>
+                    <div className="text-xs text-slate-500">{t("Longest Streak")}</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-blue-500 mb-1">
                       <Calendar className="w-4 h-4" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">{streakData.totalDays}</div>
-                    <div className="text-xs text-slate-500">Total Days</div>
+                    <div className="text-xs text-slate-500">{t("Total Days")}</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-yellow-500 mb-1">
@@ -210,13 +212,13 @@ export function StudyStreak() {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {Math.floor(streakData.totalDays / 7)}
                     </div>
-                    <div className="text-xs text-slate-500">Weeks Active</div>
+                    <div className="text-xs text-slate-500">{t("Weeks Active")}</div>
                   </div>
                 </div>
 
                 {/* Calendar */}
                 <div className="p-4">
-                  <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Last 30 Days</div>
+                  <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">{t("Last 30 Days")}</div>
                   <div className="grid grid-cols-10 gap-1">
                     {last30Days.map((day, i) => {
                       const visited = streakData.visitHistory.includes(day);
@@ -243,10 +245,10 @@ export function StudyStreak() {
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/50 text-center">
                   <p className="text-sm text-slate-600 dark:text-slate-400">
                     {streakData.currentStreak >= 7
-                      ? "🔥 Amazing! Keep the fire burning!"
+                      ? t("Amazing! Keep the fire burning!")
                       : streakData.currentStreak >= 3
-                      ? "💪 Great progress! You're building momentum!"
-                      : "🌟 Every day counts. Come back tomorrow!"}
+                      ? t("Great progress! You're building momentum!")
+                      : t("Every day counts. Come back tomorrow!")}
                   </p>
                 </div>
               </div>

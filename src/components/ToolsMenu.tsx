@@ -180,7 +180,7 @@ export function ToolsMenu() {
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Close tools"
+                  aria-label={t("Close tools")}
                 >
                   <X className="w-4 h-4 text-slate-500" />
                 </button>
@@ -312,7 +312,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
         exit={{ opacity: 0, scale: 0.9 }}
         onClick={onClose}
         className="fixed top-4 right-4 z-[200] p-3 rounded-full bg-red-500/90 hover:bg-red-600 text-white shadow-lg transition-all hover:scale-105"
-        title="Exit Focus Mode (Esc)"
+        title={t("Exit Focus Mode (Esc)")}
       >
         <X className="w-5 h-5" />
       </motion.button>
@@ -441,8 +441,8 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
               {/* Footer */}
               <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Press <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-700 rounded shadow-sm">Esc</kbd> to exit</span>
-                  <span className="text-indigo-500">Focus Active ✓</span>
+                  <span>{t("Press Esc to exit")}</span>
+                  <span className="text-indigo-500">{t("Focus Active")} ✓</span>
                 </div>
               </div>
             </div>

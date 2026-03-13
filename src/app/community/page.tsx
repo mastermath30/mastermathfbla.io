@@ -171,6 +171,11 @@ export default function CommunityPage() {
   const [userName, setUserName] = useState("Guest");
   const { t, language } = useTranslations();
 
+  const translatedTagOptions = tagOptions.map((opt) => ({
+    ...opt,
+    label: t(opt.label),
+  }));
+
   useEffect(() => {
     // Load posts from localStorage
     const savedPosts = localStorage.getItem("mm_forum_posts");
@@ -337,7 +342,7 @@ export default function CommunityPage() {
                       <div className="md:col-span-2">
                         <Input name="title" placeholder={t("e.g., How do I factor this quadratic?")} />
                       </div>
-                      <Select name="tag" options={tagOptions} />
+                      <Select name="tag" options={translatedTagOptions} />
                     </div>
                     <Textarea
                       name="body"
@@ -409,7 +414,7 @@ export default function CommunityPage() {
                   {t("Study Groups")}
                 </h2>
                 <Link href="/study-groups" className="text-xs font-medium text-violet-600 hover:text-violet-700 flex items-center gap-1">
-                  View All <ChevronRight className="w-3 h-3" />
+                  {t("View All")} <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="p-4 space-y-3">
@@ -429,8 +434,8 @@ export default function CommunityPage() {
                       />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-slate-900 dark:text-white truncate">{group.name}</p>
-                        <p className="text-xs text-slate-500">{group.memberCount} members</p>
-                        <p className="text-xs text-green-600">{group.nextSession}</p>
+                        <p className="text-xs text-slate-500">{group.memberCount} {t("members")}</p>
+                        <p className="text-xs text-green-600">{t(group.nextSession)}</p>
                       </div>
                     </div>
                   </Link>
@@ -471,11 +476,11 @@ export default function CommunityPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-slate-700 dark:text-slate-300">
                         <span className="font-medium text-slate-900 dark:text-white">{activity.user.name}</span>{" "}
-                        {activity.content}
+                        {t(activity.content)}
                       </p>
                       <p className={`text-xs mt-0.5 ${activity.time === "Live" ? "text-red-500 font-medium" : "text-slate-500"}`}>
                         {activity.time === "Live" && <span className="inline-block w-2 h-2 bg-red-500 rounded-full mr-1 animate-pulse" />}
-                        {activity.time}
+                        {activity.time === "Live" ? t("Live") : activity.time}
                       </p>
                     </div>
                   </div>
@@ -552,7 +557,7 @@ export default function CommunityPage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-medium text-sm text-slate-900 dark:text-white">{contributor.name}</p>
-                      <p className="text-slate-500 dark:text-slate-400 text-xs">{contributor.points.toLocaleString()} points</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs">{contributor.points.toLocaleString(language)} {t("points")}</p>
                     </div>
                     <Badge
                       variant={
@@ -561,7 +566,7 @@ export default function CommunityPage() {
                       }
                     >
                       <contributor.icon className="w-3 h-3" />
-                      {contributor.rank}
+                      {t(contributor.rank)}
                     </Badge>
                   </div>
                 ))}

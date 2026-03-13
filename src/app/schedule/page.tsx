@@ -123,7 +123,6 @@ const studyGroups = [
   },
 ];
 
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const currentDate = new Date();
 
 type ScheduleItem = {
@@ -741,7 +740,7 @@ export default function SchedulePage() {
 
   const getHeaderTitle = () => {
     if (viewMode === "month") {
-      return `${monthNames[currentMonth]} ${currentYear}`;
+      return `${new Date(currentYear, currentMonth).toLocaleDateString(language, { month: 'long' })} ${currentYear}`;
     }
     if (viewMode === "week") {
       const start = getStartOfWeek(selectedDate);
@@ -850,7 +849,7 @@ export default function SchedulePage() {
           }`}
         >
           <div className="flex items-center justify-between text-sm font-semibold text-slate-900 dark:text-white">
-            <span>{days[date.getDay()]}</span>
+            <span>{date.toLocaleDateString(language, { weekday: 'short' })}</span>
             <span className="text-slate-400">{date.getDate()}</span>
           </div>
           <div className="mt-2 space-y-1">
@@ -893,11 +892,6 @@ export default function SchedulePage() {
       </div>
     );
   };
-
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
 
   return (
     <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
@@ -1014,7 +1008,7 @@ export default function SchedulePage() {
                   <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-xl font-bold text-slate-900 dark:text-white">
-                        {selectedDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                        {selectedDate.toLocaleDateString(language, { weekday: 'long', month: 'long', day: 'numeric' })}
                       </h4>
                       <button 
                         onClick={() => setShowDayDetail(false)}
@@ -1164,8 +1158,10 @@ export default function SchedulePage() {
             {viewMode === "month" && (
               <>
                 <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-3">
-                  {days.map((day) => (
-                    <div key={day} className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-slate-400">
+                  {Array.from({ length: 7 }, (_, i) =>
+                    new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'short' })
+                  ).map((day, i) => (
+                    <div key={i} className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-slate-400">
                       {day}
                     </div>
                   ))}
@@ -1337,7 +1333,7 @@ export default function SchedulePage() {
                               color: 'white'
                             }}
                           >
-                            {expandedSpecialties[tutor.name] ? 'Show less' : `+${(tutor as any).specialties.length - 2}`}
+                            {expandedSpecialties[tutor.name] ? t('Show less') : `+${(tutor as any).specialties.length - 2}`}
                           </button>
                         )}
                       </div>
@@ -1562,7 +1558,7 @@ export default function SchedulePage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 dark:text-slate-400">{t("Duration")}</span>
-                        <span className="text-slate-900 dark:text-white">{selectedDuration}</span>
+                        <span className="text-slate-900 dark:text-white">{t(selectedDuration)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 dark:text-slate-400">{t("Rate")}</span>
@@ -1698,7 +1694,7 @@ export default function SchedulePage() {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "var(--theme-primary)" }}>1</div>
-                      <h4 className="font-semibold text-slate-900 dark:text-white">Select a Date</h4>
+                      <h4 className="font-semibold text-slate-900 dark:text-white">{t("Select a Date")}</h4>
                     </div>
                     
                     {/* Mini Calendar */}
@@ -1718,7 +1714,7 @@ export default function SchedulePage() {
                           <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         </button>
                         <span className="font-semibold text-slate-900 dark:text-white">
-                          {monthNames[bookingMonth]} {bookingYear}
+                          {new Date(bookingYear, bookingMonth).toLocaleDateString(language, { month: 'long' })} {bookingYear}
                         </span>
                         <button
                           onClick={() => {
@@ -1735,7 +1731,9 @@ export default function SchedulePage() {
                         </button>
                       </div>
                       <div className="grid grid-cols-7 gap-1 mb-2">
-                        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+                        {Array.from({ length: 7 }, (_, i) =>
+                          new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'narrow' })
+                        ).map((d, i) => (
                           <div key={i} className="h-8 flex items-center justify-center text-xs font-medium text-slate-500">
                             {d}
                           </div>
@@ -1759,7 +1757,7 @@ export default function SchedulePage() {
                         style={bookingDate ? { background: "var(--theme-primary)" } : {}}
                       >2</div>
                       <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
-                        Select a Time {bookingDate && `- ${formatDate(bookingDate)}`}
+                        {t("Select a Time")} {bookingDate && `- ${formatDate(bookingDate)}`}
                       </h4>
                     </div>
                     
@@ -1788,14 +1786,14 @@ export default function SchedulePage() {
                         </div>
                         {getAvailableTimeSlots().length === 0 && (
                           <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div className="font-medium text-lg mb-1">🚫 Fully Booked</div>
+                            <div className="font-medium text-lg mb-1">🚫 {t("Fully Booked")}</div>
                             <div className="text-sm">{t("No available slots for this day")}</div>
                           </div>
                         )}
                       </div>
                     ) : (
                       <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
-                        Please select a date first
+                        {t("Please select a date first")}
                       </p>
                     )}
                   </div>

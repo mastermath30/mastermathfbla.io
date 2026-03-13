@@ -134,7 +134,7 @@ export function Navbar() {
       {/* Single FAB Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-all touch-manipulation"
+        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-all touch-manipulation"
         style={{
           background:
             "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))",
@@ -165,7 +165,7 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[98]"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
             />
 
             <motion.div
@@ -173,9 +173,9 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[99] bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl border-t border-slate-200 dark:border-slate-700 max-h-[80vh] overflow-y-auto"
+              className="fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl border-t border-slate-200 dark:border-slate-700 max-h-[80vh] overflow-y-auto"
               style={{
-                paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))",
+                paddingBottom: "max(6rem, calc(env(safe-area-inset-bottom) + 5rem))",
               }}
             >
               {/* Handle bar */}
@@ -188,7 +188,7 @@ export function Navbar() {
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                   {t("Navigation")}
                 </p>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-4 gap-3">
                   {links.map((link, idx) => (
                     <motion.div
                       key={link.title}
@@ -199,10 +199,10 @@ export function Navbar() {
                       <Link
                         href={link.href}
                         onClick={() => setIsOpen(false)}
-                        className="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors touch-manipulation"
+                        className="flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors touch-manipulation h-full"
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
-                        <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                        <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0">
                           {link.icon}
                         </div>
                         <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
@@ -215,11 +215,11 @@ export function Navbar() {
               </div>
 
               {/* Quick Actions */}
-              <div className="px-5 pb-6 pt-2 border-t border-slate-200 dark:border-slate-700">
+              <div className="px-5 pb-4 pt-2 border-t border-slate-200 dark:border-slate-700">
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                   {t("Quick Actions")}
                 </p>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-4 gap-3">
                   {utilities.map((util, idx) => (
                     <motion.div
                       key={util.event}
@@ -229,11 +229,11 @@ export function Navbar() {
                     >
                       <button
                         onClick={() => handleUtilityClick(util.event)}
-                        className="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors touch-manipulation w-full"
+                        className="flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors touch-manipulation w-full h-full"
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
                         <div
-                          className={`w-10 h-10 rounded-full bg-gradient-to-br ${util.color} flex items-center justify-center text-white`}
+                          className={`w-10 h-10 rounded-full bg-gradient-to-br ${util.color} flex items-center justify-center text-white flex-shrink-0`}
                         >
                           {util.icon}
                         </div>
