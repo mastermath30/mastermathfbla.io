@@ -18,7 +18,7 @@
  *       → This is how the deployed app works (frontend + backend on
  *         the same Vercel instance).
  *
- *  2. The frontend NEVER sees the OpenAI API key.
+ *  2. The frontend NEVER sees the Claude (Anthropic) API key.
  *     The key lives only in the backend's server environment.
  *
  * =========================================================================
@@ -29,6 +29,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import { useTranslations } from "./LanguageProvider";
 import {
   Brain,
@@ -285,12 +287,62 @@ export function AIMathTutor() {
   };
 
   const formatContent = (content: string) => {
-    // Simple markdown-like formatting
-    return content
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    const displayBlocks: string[] = [];
+    const inlineBlocks: string[] = [];
+    const singleDollarBlocks: string[] = [];
+
+    const renderLatex = (tex: string, displayMode: boolean): string => {
+      try {
+        return katex.renderToString(tex.trim(), {
+          displayMode,
+          throwOnError: false,
+          output: "html",
+          strict: false,
+        });
+      } catch {
+        return `<span class="text-red-600 dark:text-red-400">${escapeHtml(tex)}</span>`;
+      }
+    };
+
+    const escapeHtml = (s: string) =>
+      s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+    // 1) Display math $$...$$ (must run first so $$ is consumed)
+    let out = content.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
+      const html = renderLatex(tex, true);
+      displayBlocks.push(`<div class="my-2 overflow-x-auto">${html}</div>`);
+      return `__MATH_D_${displayBlocks.length - 1}__`;
+    });
+
+    // 2) Single-$ inline math $...$ (e.g. $\frac{d}{dx}[x^n] = nx^{n-1}$)
+    out = out.replace(/\$([^$\n]+)\$/g, (_, tex) => {
+      singleDollarBlocks.push(renderLatex(tex, false));
+      return `__MATH_S_${singleDollarBlocks.length - 1}__`;
+    });
+
+    // 3) Paren inline math \(...\)
+    out = out.replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => {
+      inlineBlocks.push(renderLatex(tex, false));
+      return `__MATH_I_${inlineBlocks.length - 1}__`;
+    });
+
+    // Markdown-like formatting
+    out = out
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/`([^`]+)`/g, '<code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-sm">$1</code>')
       .replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-200 dark:bg-slate-700 p-2 rounded my-2 overflow-x-auto text-sm"><code>$1</code></pre>')
-      .replace(/\n/g, '<br />');
+      .replace(/\n/g, "<br />");
+
+    // Restore rendered math
+    out = out.replace(/__MATH_D_(\d+)__/g, (_, i) => displayBlocks[Number(i)] ?? "");
+    out = out.replace(/__MATH_S_(\d+)__/g, (_, i) => singleDollarBlocks[Number(i)] ?? "");
+    out = out.replace(/__MATH_I_(\d+)__/g, (_, i) => inlineBlocks[Number(i)] ?? "");
+
+    return out;
   };
 
   return (

@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- * /api/ai — Backend proxy for OpenAI
+ * /api/ai — Backend proxy for Anthropic Claude
  * =========================================================================
  *
  * ARCHITECTURE
@@ -12,10 +12,10 @@
  *       ▼
  *   This route (/api/ai)            ← runs on the server, never in the browser
  *       │
- *       │  Reads OPENAI_API_KEY from process.env (server-only)
- *       │  Forwards the request to OpenAI Chat Completions
+ *       │  Reads ANTHROPIC_API_KEY from process.env (server-only)
+ *       │  Forwards the request to Anthropic Messages API (Claude)
  *       ▼
- *   OpenAI API (gpt-4o)
+ *   Anthropic API (Claude)
  *       │
  *       │  Returns completion
  *       ▼
@@ -24,7 +24,7 @@
  *
  * WHY THIS EXISTS
  * ─────────────────────────────────────────────────────────────────────────
- *  • The OPENAI_API_KEY never leaves the server — it is NOT bundled into
+ *  • The ANTHROPIC_API_KEY never leaves the server — it is NOT bundled into
  *    the client JS, so users cannot steal it from the browser.
  *  • Teammates who only work on the frontend do NOT need the key.
  *    They set NEXT_PUBLIC_API_URL to point at the deployed instance and
@@ -34,29 +34,25 @@
  *
  * ENVIRONMENT VARIABLES (server-only)
  * ─────────────────────────────────────────────────────────────────────────
- *  OPENAI_API_KEY  — Required. Your OpenAI secret key (sk-…).
- *                    Set in .env.local (local) or your hosting dashboard
- *                    (Vercel / Railway / etc.).
+ *  ANTHROPIC_API_KEY  — Required. Your Anthropic secret key (sk-ant-…).
+ *                       Set in .env.local (local) or your hosting dashboard
+ *                       (Vercel / Railway / etc.).
  * =========================================================================
  */
 
 import { NextResponse } from "next/server";
 
-// ── OpenAI model to use ───────────────────────────────────────────────────
-const MODEL = "gpt-4o";
+// ── Claude model to use ───────────────────────────────────────────────────
+// Current model IDs: https://docs.anthropic.com/en/docs/models-overview
+const MODEL = "claude-sonnet-4-6";
 
 // ── CORS helpers ──────────────────────────────────────────────────────────
-// These headers allow the frontend running on a DIFFERENT origin
-// (e.g. http://localhost:3001) to call this endpoint during local dev.
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*", // tighten to your domain in production if desired
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-/**
- * OPTIONS — preflight handler required by browsers for cross-origin POST.
- */
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders });
 }
@@ -68,16 +64,14 @@ export async function OPTIONS() {
  * Returns: { reply: string }
  */
 export async function POST(request: Request) {
-  // ── 1. Read the server-only secret ────────────────────────────────────
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { reply: "OpenAI API key is missing. Please set OPENAI_API_KEY in the server environment." },
+      { reply: "Claude API key is missing. Please set ANTHROPIC_API_KEY in the server environment." },
       { status: 500, headers: corsHeaders }
     );
   }
 
-  // ── 2. Parse the incoming request ─────────────────────────────────────
   const body = await request.json();
   const message = typeof body?.message === "string" ? body.message : "";
   const history = Array.isArray(body?.history) ? body.history : [];
@@ -89,7 +83,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // ── 3. Build the message array for OpenAI ─────────────────────────────
   const systemPrompt = `You are MathMaster AI Agent, the intelligent assistant for MathMaster — an interactive peer-tutoring and math learning platform created by students for students, built for FBLA (Future Business Leaders of America).
 
 ## YOUR CAPABILITIES
@@ -159,27 +152,26 @@ You are an expert in ALL areas of mathematics:
 - For complex problems, break them into manageable steps
 - If you are unsure about something non-math related, be honest but helpful`;
 
-  const messages = [
-    { role: "system" as const, content: systemPrompt },
+  // Build messages for Claude: alternating user/assistant; system is separate
+  const messages: { role: "user" | "assistant"; content: string }[] = [
     ...history.map((entry: { role: string; content: string }) => ({
-      role: (entry.role === "assistant" ? "assistant" : "user") as
-        | "assistant"
-        | "user",
+      role: (entry.role === "assistant" ? "assistant" : "user") as "assistant" | "user",
       content: entry.content,
     })),
-    { role: "user" as const, content: message },
+    { role: "user", content: message },
   ];
 
-  // ── 4. Forward to OpenAI ──────────────────────────────────────────────
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`, // server-only — never sent to browser
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 1500,
+      system: systemPrompt,
       messages,
     }),
   });
@@ -187,16 +179,15 @@ You are an expert in ALL areas of mathematics:
   if (!response.ok) {
     const errorText = await response.text();
     return NextResponse.json(
-      { reply: `OpenAI API error: ${response.status} ${errorText}` },
+      { reply: `Claude API error: ${response.status} ${errorText}` },
       { status: 500, headers: corsHeaders }
     );
   }
 
-  // ── 5. Extract the reply and return it ────────────────────────────────
   const data = await response.json();
+  const textBlock = data?.content?.find((block: { type: string }) => block.type === "text");
   const reply =
-    data?.choices?.[0]?.message?.content ??
-    "I could not generate a response. Please try again.";
+    textBlock?.text ?? "I could not generate a response. Please try again.";
 
   return NextResponse.json({ reply }, { headers: corsHeaders });
 }

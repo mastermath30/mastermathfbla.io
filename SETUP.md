@@ -17,20 +17,20 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │  BACKEND SERVER  (src/app/api/ai/route.ts)                      │
 │                                                                 │
-│  • Reads OPENAI_API_KEY from process.env (server-only)          │
-│  • Forwards the request to OpenAI Chat Completions API          │
+│  • Reads ANTHROPIC_API_KEY from process.env (server-only)       │
+│  • Forwards the request to Anthropic Messages API (Claude)      │
 │  • Returns { reply: "..." } to the frontend                    │
 │  • CORS enabled for cross-origin local dev                      │
 └─────────────────────────────────────────────────────────────────┘
                                │
                                ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  OPENAI API  (gpt-4o)                                           │
-│  https://api.openai.com/v1/chat/completions                     │
+│  ANTHROPIC API  (Claude)                                        │
+│  https://api.anthropic.com/v1/messages                          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Key security principle:** The `OPENAI_API_KEY` never leaves the server.
+**Key security principle:** The `ANTHROPIC_API_KEY` never leaves the server.
 It is NOT a `NEXT_PUBLIC_*` variable, so Next.js will never bundle it into
 the client-side JavaScript.
 
@@ -43,7 +43,7 @@ src/
 ├── app/
 │   ├── api/
 │   │   └── ai/
-│   │       └── route.ts        ← Backend proxy (OpenAI key lives here)
+│   │       └── route.ts        ← Backend proxy (Claude key lives here)
 │   ├── layout.tsx              ← Root layout (mounts AIMathTutor globally)
 │   └── ...pages
 ├── components/
@@ -63,8 +63,8 @@ SETUP.md                        ← This file
 # 1. Copy the env template
 cp .env.example .env.local
 
-# 2. Add your OpenAI key to .env.local
-#    OPENAI_API_KEY=sk-...
+# 2. Add your Anthropic key to .env.local
+#    ANTHROPIC_API_KEY=sk-ant-...
 #    NEXT_PUBLIC_API_URL=          ← leave empty
 
 # 3. Install dependencies & run
@@ -81,7 +81,7 @@ The frontend calls `/api/ai` on the same origin (localhost:3000).
 cp .env.example .env.local
 
 # 2. Point at the hosted backend
-#    OPENAI_API_KEY=               ← leave empty, you don't need it
+#    ANTHROPIC_API_KEY=            ← leave empty, you don't need it
 #    NEXT_PUBLIC_API_URL=https://mathmaster.vercel.app
 
 # 3. Install dependencies & run
@@ -100,15 +100,15 @@ You can work on all frontend code without ever touching the API key.
 2. Import the repo in [Vercel](https://vercel.com).
 3. In the Vercel dashboard, go to **Settings → Environment Variables** and add:
 
-   | Name                   | Value              | Environment  |
-   |------------------------|--------------------|--------------|
-   | `OPENAI_API_KEY`       | `sk-...`           | Production   |
-   | `NEXT_PUBLIC_API_URL`  | *(leave empty)*    | Production   |
+   | Name                    | Value              | Environment  |
+   |-------------------------|--------------------|--------------|
+   | `ANTHROPIC_API_KEY`     | `sk-ant-...`       | Production   |
+   | `NEXT_PUBLIC_API_URL`   | *(leave empty)*    | Production   |
 
-4. Deploy. The backend route will read `OPENAI_API_KEY` from the server
+4. Deploy. The backend route will read `ANTHROPIC_API_KEY` from the server
    environment and the frontend will call `/api/ai` on the same origin.
 
-> **Important:** Never put `OPENAI_API_KEY` in a `NEXT_PUBLIC_*` variable.
+> **Important:** Never put `ANTHROPIC_API_KEY` in a `NEXT_PUBLIC_*` variable.
 > That would expose it to every browser that loads your site.
 
 ---
@@ -117,7 +117,7 @@ You can work on all frontend code without ever touching the API key.
 
 | Variable               | Where it runs | Required by         | Description                                      |
 |------------------------|---------------|---------------------|--------------------------------------------------|
-| `OPENAI_API_KEY`       | Server only   | Backend deployer    | OpenAI secret key for GPT-4o                     |
+| `ANTHROPIC_API_KEY`    | Server only   | Backend deployer    | Anthropic secret key for Claude                  |
 | `NEXT_PUBLIC_API_URL`  | Client bundle | Frontend-only devs  | URL of hosted backend (empty = same origin)      |
 
 ---
