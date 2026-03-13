@@ -248,10 +248,30 @@ const videos = [
 ];
 
 const downloads = [
-  { title: "Algebra Formula Sheet", description: "All essential formulas in one place", icon: "📐", file: "/downloads/algebra-formula-sheet.pdf" },
-  { title: "Trig Identities Cheat Sheet", description: "Quick reference for all trig identities", icon: "📊", file: "/downloads/trig-identities-cheat-sheet.pdf" },
-  { title: "Calculus Reference Guide", description: "Derivatives and integrals reference", icon: "∫", file: "/downloads/calculus-reference-guide.pdf" },
-  { title: "Practice Worksheet Pack", description: "50+ problems with solutions", icon: "📝", file: "/downloads/practice-worksheet-pack.pdf" },
+  {
+    title: "Evaluating Limits (Calculus)",
+    description: "Practice evaluating one-sided and two-sided limits.",
+    icon: "📈",
+    file: "/downloads/limits-calculus.pdf",
+  },
+  {
+    title: "U-Substitution for Definite Integrals",
+    description: "Step-by-step practice with u-substitution on definite integrals.",
+    icon: "∫",
+    file: "/downloads/integration-definite-substitution.pdf",
+  },
+  {
+    title: "Two-Step Inequalities Practice",
+    description: "Solve and graph two-step inequalities in one variable.",
+    icon: "≶",
+    file: "/downloads/two-step-inequalities.pdf",
+  },
+  {
+    title: "Trig Equations & Identities",
+    description: "Trig equations using factoring and fundamental identities.",
+    icon: "θ",
+    file: "/downloads/trig-identities-equations.pdf",
+  },
 ];
 
 export default function ResourcesPage() {
