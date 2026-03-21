@@ -256,7 +256,7 @@ function AuthPageContent() {
           </div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-6 py-8 pb-32">
+        <div className="max-w-4xl mx-auto px-6 py-8 pb-32">
           <Card className="mb-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Actions")}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -479,7 +479,7 @@ function AuthPageContent() {
               </div>
             </div>
           )}
-        </main>
+        </div>
       </div>
     );
   }
@@ -623,7 +623,9 @@ function AuthPageContent() {
 
             {mode === "signin" && (
               <div className="flex justify-end">
-                <button type="button" onClick={() => alert(t("Password reset functionality coming soon!"))} className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>{t("Forgot password?")}</button>
+                <Link href="/support#contact" className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>
+                  {t("Forgot password?")}
+                </Link>
               </div>
             )}
 

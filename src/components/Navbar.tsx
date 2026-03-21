@@ -17,10 +17,12 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Palette, Accessibility, Lightbulb, Wrench } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "./LanguageProvider";
 
 export function Navbar() {
   const { t } = useTranslations();
+  const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +52,7 @@ export function Navbar() {
         setUserName("");
       }
     }
-  }, []);
+  }, [pathname]);
 
   const links = [
     { title: t("Home"), icon: <IconHome className="h-6 w-6" />, href: "/" },
@@ -63,6 +65,16 @@ export function Navbar() {
       title: t("Schedule"),
       icon: <IconCalendar className="h-6 w-6" />,
       href: "/schedule",
+    },
+    {
+      title: t("Tutors"),
+      icon: <IconUser className="h-6 w-6" />,
+      href: "/tutors",
+    },
+    {
+      title: t("Study Groups"),
+      icon: <IconUsers className="h-6 w-6" />,
+      href: "/study-groups",
     },
     {
       title: t("Dashboard"),
@@ -188,7 +200,7 @@ export function Navbar() {
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                   {t("Navigation")}
                 </p>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   {links.map((link, idx) => (
                     <motion.div
                       key={link.title}
@@ -199,10 +211,18 @@ export function Navbar() {
                       <Link
                         href={link.href}
                         onClick={() => setIsOpen(false)}
-                        className="flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors touch-manipulation h-full"
+                        className={`flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl transition-colors touch-manipulation h-full ${
+                          pathname === link.href
+                            ? "bg-slate-200 dark:bg-slate-700"
+                            : "hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700"
+                        }`}
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
-                        <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 flex-shrink-0">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          pathname === link.href
+                            ? "bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                        }`}>
                           {link.icon}
                         </div>
                         <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">

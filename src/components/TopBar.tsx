@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,11 +12,9 @@ export function TopBar() {
 	const pathname = usePathname();
 	const { t } = useTranslations();
 	const [isOpen, setIsOpen] = useState(false);
-	const [isVisible, setIsVisible] = useState(true);
 	const [hasLoaded, setHasLoaded] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userName, setUserName] = useState("");
-	const lastScrollY = useRef(0);
 
 	useEffect(() => {
 		// Check if user is logged in
@@ -47,47 +45,14 @@ export function TopBar() {
 		const timer = setTimeout(() => {
 			setHasLoaded(true);
 		}, 100);
-
-		const controlNavbar = () => {
-			if (typeof window !== "undefined") {
-				const currentScrollY = window.scrollY;
-
-				// Only hide/show after scrolling past 50px to avoid flickering at top
-				if (currentScrollY > 50) {
-					if (
-						currentScrollY > lastScrollY.current &&
-						currentScrollY - lastScrollY.current > 5
-					) {
-						// Scrolling down - hide navbar
-						setIsVisible(false);
-					} else if (lastScrollY.current - currentScrollY > 5) {
-						// Scrolling up - show navbar
-						setIsVisible(true);
-					}
-				} else {
-					// Always show navbar when near top
-					setIsVisible(true);
-				}
-
-				lastScrollY.current = currentScrollY;
-			}
-		};
-
-		if (typeof window !== "undefined") {
-			window.addEventListener("scroll", controlNavbar, { passive: true });
-
-			return () => {
-				window.removeEventListener("scroll", controlNavbar);
-				clearTimeout(timer);
-			};
-		}
-
 		return () => clearTimeout(timer);
 	}, []);
 
 	const navigation = [
 		{ name: t("About"), href: "/about" },
 		{ name: t("Schedule"), href: "/schedule" },
+		{ name: t("Tutors"), href: "/tutors" },
+		{ name: t("Study Groups"), href: "/study-groups" },
 		{ name: t("Dashboard"), href: "/dashboard" },
 		{ name: t("Resources"), href: "/resources" },
 		{ name: t("Community"), href: "/community" },
@@ -98,10 +63,8 @@ export function TopBar() {
 		<>
 			<nav
 				className={`hidden md:block fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-					isVisible
-						? "translate-y-0 opacity-100"
-						: "-translate-y-20 md:-translate-y-24 opacity-0"
-				} ${hasLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+					hasLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+				}`}
 				style={{
 					transition: hasLoaded
 						? "all 0.5s ease-out"
@@ -203,21 +166,14 @@ export function TopBar() {
 					{/* Backdrop overlay */}
 					<div
 						className={`fixed inset-0 bg-black/20 backdrop-blur-sm transition-all duration-300 ${
-							isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+							isOpen ? "opacity-100 z-40" : "opacity-0 pointer-events-none"
 						}`}
 						onClick={() => setIsOpen(false)}
-						style={{
-							top: "0",
-							left: "0",
-							right: "0",
-							bottom: "0",
-							zIndex: -1,
-						}}
 					/>
 
 					{/* Menu container */}
 					<div
-						className={`mt-2 w-[90vw] max-w-xs mx-auto transition-all duration-500 ease-out transform-gpu ${
+						className={`relative z-50 mt-2 w-[90vw] max-w-xs mx-auto transition-all duration-500 ease-out transform-gpu ${
 							isOpen
 								? "opacity-100 translate-y-0 scale-100"
 								: "opacity-0 -translate-y-8 scale-95 pointer-events-none"

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
@@ -44,10 +45,10 @@ import {
 } from "lucide-react";
 
 const getStats = (t: (key: string) => string) => [
-  { value: 12000, label: t("Students Helped") },
-  { value: 320, label: t("Peer Tutors") },
-  { value: 98, label: t("Success Rate") },
-  { value: 24, label: t("Support") },
+  { value: 12000, label: t("Sessions Completed") },
+  { value: 320, label: t("Verified Tutors") },
+  { value: 98, label: t("Student Satisfaction") },
+  { value: 24, label: t("Avg Response Time (min)") },
 ];
 
 const sessions = [
@@ -231,8 +232,8 @@ const getFirstDayOfMonth = (month: number, year: number) => new Date(year, month
 
 export default function Home() {
   const { t, language } = useTranslations();
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [countdown, setCountdown] = useState("--:--:-");
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
   const features = getFeatures(t);
@@ -265,34 +266,9 @@ export default function Home() {
     setIsLoggedIn(!!session || isLoggedInFlag === "true");
   }, []);
 
-  useEffect(() => {
-    const nextSession = new Date();
-    nextSession.setDate(nextSession.getDate() + 1);
-    nextSession.setHours(15, 0, 0, 0);
-
-    const updateCountdown = () => {
-      const now = new Date();
-      const diff = nextSession.getTime() - now.getTime();
-      if (diff <= 0) {
-        setCountdown(t("Starting now!"));
-        return;
-      }
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setCountdown(
-        `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
-      );
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   const handleBookNow = (tutor: typeof topTutors[0]) => {
     if (!isLoggedIn) {
-      window.location.href = "/auth?redirect=/&action=book";
+      router.push("/auth?redirect=/&action=book");
       return;
     }
     setSelectedTutor(tutor);
@@ -530,53 +506,73 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left content */}
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight break-words">
-                {t("Master Mathematics")}
-                <br />
-                <span className="gradient-text relative inline-block">
-                  {t("With Expert Tutors")}
-                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
-                    <path d="M2 10C50 4 150 4 298 10" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
-                    <defs>
-                      <linearGradient id="gradient" x1="0" y1="0" x2="300" y2="0">
-                        <stop style={{ stopColor: 'var(--theme-primary)' }} />
-                        <stop offset="1" style={{ stopColor: 'var(--theme-primary-light)' }} />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </span>
-              </h1>
+              <FadeIn delay={0.02}>
+                <SectionLabel icon={Sparkles} className="mb-4">
+                  {t("Trusted peer tutoring for ambitious students")}
+                </SectionLabel>
+              </FadeIn>
+              <FadeIn delay={0.08}>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight break-words">
+                  {t("Boost Your Math Grades")}
+                  <br />
+                  <span className="gradient-text relative inline-block">
+                    {t("With 1-on-1 Expert Tutors")}
+                    <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
+                      <path d="M2 10C50 4 150 4 298 10" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
+                      <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="300" y2="0">
+                          <stop style={{ stopColor: 'var(--theme-primary)' }} />
+                          <stop offset="1" style={{ stopColor: 'var(--theme-primary-light)' }} />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </span>
+                </h1>
+              </FadeIn>
 
-              <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-xl leading-relaxed">
-                {t("Connect with top-rated peer tutors and master mathematics through personalized, interactive learning sessions.")}
-              </p>
+              <FadeIn delay={0.14}>
+                <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-xl leading-relaxed">
+                  {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
+                </p>
+              </FadeIn>
 
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
-                <Link href="/auth">
-                  <Button size="lg" className="shadow-xl group" style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.25)' }}>
-                    <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                    {t("Start Learning Now")}
-                  </Button>
-                </Link>
-                <Link href="/tutors">
-                  <Button variant="outline" size="lg" className="bg-white/60 dark:bg-slate-950/60 backdrop-blur border-slate-300 dark:border-slate-700">
-                    <Users className="w-5 h-5" />
-                    {t("Browse All Tutors")}
-                  </Button>
-                </Link>
-              </div>
+              <FadeIn delay={0.2}>
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
+                  <Link href="/tutors">
+                    <Button size="lg" className="shadow-xl group" style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.25)' }}>
+                      <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                      {t("Book Your First Session")}
+                    </Button>
+                  </Link>
+                  <Link href="/auth">
+                    <Button variant="outline" size="lg" className="bg-white/60 dark:bg-slate-950/60 backdrop-blur border-slate-300 dark:border-slate-700">
+                      <Users className="w-5 h-5" />
+                      {t("Create Free Account")}
+                    </Button>
+                  </Link>
+                </div>
+              </FadeIn>
 
               {/* Stats inline */}
-              <div className="flex flex-wrap gap-4 md:gap-8 justify-center lg:justify-start">
-                {stats.map((stat, index) => (
-                  <div key={stat.label} className="text-center group cursor-default" style={{ animationDelay: `${index * 0.1}s` }}>
+              <FadeInStagger className="flex flex-wrap gap-4 md:gap-8 justify-center lg:justify-start" staggerDelay={0.08}>
+                {stats.map((stat) => (
+                  <FadeInStaggerItem key={stat.label} className="text-center group cursor-default">
                     <div className="text-2xl md:text-3xl font-bold gradient-text font-mono group-hover:scale-110 transition-transform duration-300">
                       <AnimatedNumberClient value={stat.value} duration={900} label={stat.label} />
                     </div>
                     <div className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mt-1">{stat.label}</div>
-                  </div>
+                  </FadeInStaggerItem>
                 ))}
-              </div>
+              </FadeInStagger>
+              <FadeIn delay={0.3}>
+                <Link
+                  href="#features"
+                  className="mt-8 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-[var(--theme-primary)] transition-colors"
+                >
+                  {t("See how it works")}
+                  <ChevronDown className="w-4 h-4 animate-bounce" />
+                </Link>
+              </FadeIn>
             </div>
 
             {/* Right content - Hero Image */}
@@ -616,7 +612,7 @@ export default function Home() {
 
                 <Link
                   href="/schedule"
-                  aria-label={t("Next Session")}
+                  aria-label={t("Study sessions this month")}
                   className="absolute -bottom-4 -right-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
                   style={{ animationDelay: '1s' }}
                 >
@@ -625,8 +621,8 @@ export default function Home() {
                       <Clock className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white font-mono">{countdown}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{t("Next Session")}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">1,200+</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{t("Study sessions this month")}</p>
                     </div>
                   </div>
                 </Link>
@@ -634,7 +630,7 @@ export default function Home() {
                 {/* Additional floating element */}
                 <Link
                   href="/dashboard"
-                  aria-label={t("This week")}
+                  aria-label={t("Verified tutors")}
                   className="absolute top-1/2 -right-8 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-3 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
                   style={{ animationDelay: '0.5s' }}
                 >
@@ -643,8 +639,8 @@ export default function Home() {
                       <TrendingUp className="w-4 h-4 text-green-600" />
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-green-600">+24%</p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400">{t("This week")}</p>
+                      <p className="text-xs font-semibold text-green-600">320</p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">{t("Verified tutors")}</p>
                     </div>
                   </div>
                 </Link>
@@ -655,6 +651,7 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
+      {isLoggedIn && (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
         
         {/* Recent Sessions - only for logged in users */}
@@ -822,11 +819,13 @@ export default function Home() {
           </>
         )}
       </div>
+      )}
 
       {/* For new users: Show marketing sections before tutors */}
       {!isLoggedIn && (
         <>
           {/* Trusted By Section */}
+          <FadeIn>
           <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
               <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">{t("Trusted by students from top institutions")}</p>
@@ -870,12 +869,13 @@ export default function Home() {
               </div>
             </div>
           </section>
+          </FadeIn>
 
           {/* Features Section */}
           <section id="features" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
             <GlowingOrbs variant="section" />
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-              <div className="text-center mb-12 md:mb-16">
+              <FadeIn className="text-center mb-12 md:mb-16">
                 <SectionLabel icon={Zap} className="mb-4">
                   {t("Why Choose MathMaster?")}
                 </SectionLabel>
@@ -885,11 +885,12 @@ export default function Home() {
                 <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
                   {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
                 </p>
-              </div>
+              </FadeIn>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 gap-8" staggerDelay={0.09}>
                 {features.map((feature, index) => (
-                  <Card key={feature.title} className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <FadeInStaggerItem key={feature.title}>
+                  <Card className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
                     <div className="flex flex-col md:flex-row h-full">
                       <div className="md:w-2/5 relative h-48 md:h-auto min-h-[200px] overflow-hidden">
                         <Image
@@ -920,12 +921,14 @@ export default function Home() {
                       </div>
                     </div>
                   </Card>
+                  </FadeInStaggerItem>
                 ))}
-              </div>
+              </FadeInStagger>
             </div>
           </section>
 
           {/* How It Works */}
+          <FadeIn>
           <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
             <GlowingOrbs variant="subtle" />
             <div className="relative max-w-6xl mx-auto px-6">
@@ -978,8 +981,10 @@ export default function Home() {
               </div>
             </div>
           </section>
+          </FadeIn>
 
           {/* Testimonials */}
+          <FadeIn>
           <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
             <GlowingOrbs variant="section" />
             <div className="relative max-w-7xl mx-auto px-6">
@@ -994,6 +999,7 @@ export default function Home() {
               <TestimonialsScroll />
             </div>
           </section>
+          </FadeIn>
 
           {/* Now show Top Rated Tutors for new users */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">

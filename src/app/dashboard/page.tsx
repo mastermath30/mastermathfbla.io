@@ -246,7 +246,7 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-8">
           <StatCard
@@ -417,10 +417,10 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-              <button onClick={() => document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
-                {t("View all challenges")}
+              <Link href="/resources#quizzes" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+                {t("Practice in Resources")}
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
           </Card>
         </div>
@@ -466,10 +466,10 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => document.getElementById('recent-activity')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
-                {t("View all activity")}
+              <Link href="/community" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
+                {t("Join Community Discussions")}
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -550,7 +550,7 @@ export default function DashboardPage() {
               </Link>
           </div>
         </div>
-      </main>
+      </div>
 
       {showGoalModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">

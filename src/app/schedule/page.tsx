@@ -1109,7 +1109,7 @@ export default function SchedulePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8 pb-32">
+      <div className="max-w-7xl mx-auto px-6 py-8 pb-32">
         {/* Calendar */}
         <Card className="mb-8 overflow-hidden">
           <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700">
@@ -1227,6 +1227,11 @@ export default function SchedulePage() {
             ))}
             
             {/* Sample sessions for demo */}
+            {filteredSessions.length > 0 && (
+              <div className="px-4 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-950">
+                {t("Suggested sessions")}
+              </div>
+            )}
             {filteredSessions.map((session) => (
               <div key={session.title} className="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                 <Image
@@ -1478,7 +1483,7 @@ export default function SchedulePage() {
             })}
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Booking Modal */}
       {showBookingModal && selectedTutor && (

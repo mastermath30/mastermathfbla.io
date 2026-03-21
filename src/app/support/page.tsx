@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/Button";
 import { Input, Textarea } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Search,
@@ -83,7 +83,7 @@ const getHelpCategories = (t: (key: string) => string) => [
     links: [
       { text: t("Community guidelines"), href: "/community" },
       { text: t("Discussion forums"), href: "/community" },
-      { text: t("Study groups"), href: "/community" }
+      { text: t("Study groups"), href: "/study-groups" }
     ],
     image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&h=100&fit=crop",
   },
@@ -130,7 +130,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -160,23 +160,28 @@ export default function SupportPage() {
             {t("Find answers to common questions or get in touch with our friendly team")}
           </p>
 
-          {/* Search */}
+          {/* Quick links */}
           <div className="max-w-xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
-              <input
-                type="text"
-                placeholder={t("Search help articles...")}
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-2xl text-white placeholder:text-slate-300 shadow-xl focus:outline-none focus:ring-4"
-                style={{ boxShadow: '0 0 0 4px rgba(var(--theme-primary-rgb), 0.2)' }}
-              />
+            <div className="flex flex-wrap justify-center gap-3">
+              <a href="#faq">
+                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
+                  <Search className="w-4 h-4" />
+                  {t("Browse FAQs")}
+                </Button>
+              </a>
+              <a href="#contact">
+                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
+                  <MessageCircle className="w-4 h-4" />
+                  {t("Contact Support")}
+                </Button>
+              </a>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Contact Methods */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 -mt-8 mb-12">
           {contactMethods.map((method) => (
@@ -364,7 +369,7 @@ export default function SupportPage() {
             </Card>
           </FadeIn>
         </div>
-      </main>
+      </div>
 
       {/* Footer */}
       <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
@@ -374,6 +379,6 @@ export default function SupportPage() {
           </p>
         </div>
       </footer>
-    </div>
+    </PageWrapper>
   );
 }

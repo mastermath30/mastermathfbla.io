@@ -226,12 +226,12 @@ export default function StudyGroupsPage() {
   };
 
   return (
-    <PageWrapper>
-      <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <PageWrapper className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 pt-20 md:pt-24">
+      <div className="min-h-screen">
         <GlowingOrbs />
 
         {/* Hero Section */}
-        <section className="relative pt-32 pb-16 px-4 overflow-hidden">
+        <section className="relative pt-24 md:pt-28 pb-16 px-4 overflow-hidden">
           <div className="max-w-6xl mx-auto">
             <FadeIn>
               <SectionLabel icon={Users}>{t("Study Groups")}</SectionLabel>
@@ -586,7 +586,7 @@ export default function StudyGroupsPage() {
             />
           )}
         </AnimatePresence>
-      </main>
+      </div>
     </PageWrapper>
   );
 }

@@ -306,7 +306,7 @@ export default function CommunityPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32 relative">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>
@@ -384,7 +384,7 @@ export default function CommunityPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-3">
-                              <h4 className="font-semibold text-slate-900 dark:text-white hover:text-primary-themed cursor-pointer transition-colors">{post.title}</h4>
+                              <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
                               <span className="text-slate-400 text-xs shrink-0">
                                 {formatTimeAgo(post.createdAt, language)}
                               </span>
@@ -593,7 +593,7 @@ export default function CommunityPage() {
             </Card>
           </div>
         </div>
-      </main>
+      </div>
     </PageWrapper>
   );
 }

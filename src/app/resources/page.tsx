@@ -363,7 +363,7 @@ export default function ResourcesPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Quick Access Categories */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 -mt-8">
           {categories.map((cat, index) => (
@@ -408,8 +408,8 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Free, high-quality resources to help you learn")}</p>
               </div>
             </div>
-            <Link href="#lessons" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
-              {t("View all")}
+            <Link href="#quizzes" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
+              {t("Try quizzes")}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -557,7 +557,7 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Visual explanations to help concepts click")}</p>
               </div>
             </div>
-            <Link href="#videos" className="text-primary-themed text-sm font-medium hover:underline">{t("View all")}</Link>
+            <Link href="#downloads" className="text-primary-themed text-sm font-medium hover:underline">{t("Get worksheets")}</Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -630,7 +630,7 @@ export default function ResourcesPage() {
             </div>
           </div>
         </Card>
-      </main>
+      </div>
       {/* Difficulty Selection Modal */}
       {showDifficultyModal && selectedQuiz && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setShowDifficultyModal(false)}>
