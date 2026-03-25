@@ -246,8 +246,9 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Stats Grid */}
+        <FadeIn delay={0.05}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-8">
           <StatCard
             icon={Clock}
@@ -288,8 +289,10 @@ export default function DashboardPage() {
             subtextColor="text-purple-600"
           />
         </div>
+        </FadeIn>
 
         {/* Main Grid */}
+        <FadeIn delay={0.1}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Progress Chart */}
           <div className="lg:col-span-2" id="learning-progress">
@@ -417,15 +420,17 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-              <Link href="/resources#quizzes" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
-                {t("Practice in Resources")}
+              <button onClick={() => document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+                {t("View all challenges")}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </Card>
         </div>
+        </FadeIn>
 
         {/* Secondary Grid */}
+        <FadeIn delay={0.16}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Recent Activity */}
           <Card className="overflow-hidden" id="recent-activity">
@@ -466,10 +471,10 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-              <Link href="/community" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
-                {t("Join Community Discussions")}
+              <button onClick={() => document.getElementById('recent-activity')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
+                {t("View all activity")}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </CardContent>
           </Card>
 
@@ -525,8 +530,10 @@ export default function DashboardPage() {
             </div>
           </Card>
         </div>
+        </FadeIn>
 
         {/* Motivational Banner */}
+        <FadeIn delay={0.22}>
           <div className="mt-8 relative overflow-hidden rounded-2xl">
           <div className="absolute inset-0">
             <Image
@@ -550,7 +557,8 @@ export default function DashboardPage() {
               </Link>
           </div>
         </div>
-      </div>
+        </FadeIn>
+      </main>
 
       {showGoalModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">

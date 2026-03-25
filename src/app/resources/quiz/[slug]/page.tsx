@@ -6,6 +6,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
+import { FadeIn } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 
 type QuizQuestion = {
@@ -601,7 +602,7 @@ function QuizPageContent() {
   if (!quiz || questions.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-        <div className="max-w-3xl mx-auto px-6 py-12">
+        <main className="max-w-3xl mx-auto px-6 py-12">
           <Card className="p-8 text-center">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz not found")}</h1>
             <p className="text-slate-500 dark:text-slate-400 mb-6">
@@ -611,7 +612,7 @@ function QuizPageContent() {
               {t("Back to Resources")}
             </Button>
           </Card>
-        </div>
+        </main>
       </div>
     );
   }
@@ -649,7 +650,8 @@ function QuizPageContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-      <div className="max-w-4xl mx-auto px-6 py-12 pb-24">
+      <main className="max-w-4xl mx-auto px-6 py-12 pb-24">
+        <FadeIn>
         <div className="flex flex-col gap-4 mb-8">
           <SectionLabel>{`${quiz.topic} Quiz`}</SectionLabel>
           <div className="flex flex-col gap-2">
@@ -664,7 +666,9 @@ function QuizPageContent() {
             </div>
           </div>
         </div>
+        </FadeIn>
 
+        <FadeIn delay={0.08}>
         <Card className="p-6 md:p-8">
           {showResults ? (
             <div className="text-center">
@@ -772,7 +776,8 @@ function QuizPageContent() {
             </div>
           )}
         </Card>
-      </div>
+        </FadeIn>
+      </main>
     </div>
   );
 }

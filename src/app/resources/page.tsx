@@ -363,7 +363,7 @@ export default function ResourcesPage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Quick Access Categories */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 -mt-8">
           {categories.map((cat, index) => (
@@ -397,6 +397,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Lessons Section */}
+        <FadeIn delay={0.04}>
         <section id="lessons" className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -408,8 +409,8 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Free, high-quality resources to help you learn")}</p>
               </div>
             </div>
-            <Link href="#quizzes" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
-              {t("Try quizzes")}
+            <Link href="#lessons" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group" style={{ color: 'var(--theme-primary)' }}>
+              {t("View all")}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -455,8 +456,10 @@ export default function ResourcesPage() {
             ))}
           </div>
         </section>
+        </FadeIn>
 
         {/* Practice Section */}
+        <FadeIn delay={0.08}>
         <section id="practice" className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
@@ -499,8 +502,10 @@ export default function ResourcesPage() {
             ))}
           </div>
         </section>
+        </FadeIn>
 
         {/* Quizzes Section */}
+        <FadeIn delay={0.12}>
         <section id="quizzes" className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -544,8 +549,10 @@ export default function ResourcesPage() {
             ))}
           </div>
         </section>
+        </FadeIn>
 
         {/* Videos Section */}
+        <FadeIn delay={0.16}>
         <section id="videos" className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -557,7 +564,7 @@ export default function ResourcesPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Visual explanations to help concepts click")}</p>
               </div>
             </div>
-            <Link href="#downloads" className="text-primary-themed text-sm font-medium hover:underline">{t("Get worksheets")}</Link>
+            <Link href="#videos" className="text-primary-themed text-sm font-medium hover:underline">{t("View all")}</Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -598,8 +605,10 @@ export default function ResourcesPage() {
             ))}
           </div>
         </section>
+        </FadeIn>
 
         {/* Downloads Section */}
+        <FadeIn delay={0.2}>
         <Card id="downloads" className="overflow-hidden" padding="none">
           <div className="p-6 bg-gradient-to-r from-slate-200 dark:from-slate-800 to-slate-300 dark:to-slate-950">
             <div className="flex items-center gap-3">
@@ -630,7 +639,8 @@ export default function ResourcesPage() {
             </div>
           </div>
         </Card>
-      </div>
+        </FadeIn>
+      </main>
       {/* Difficulty Selection Modal */}
       {showDifficultyModal && selectedQuiz && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setShowDifficultyModal(false)}>

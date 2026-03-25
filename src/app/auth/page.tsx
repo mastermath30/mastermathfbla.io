@@ -256,7 +256,8 @@ function AuthPageContent() {
           </div>
         </header>
 
-        <div className="max-w-4xl mx-auto px-6 py-8 pb-32">
+        <main className="max-w-4xl mx-auto px-6 py-8 pb-32">
+          <FadeIn delay={0.05}>
           <Card className="mb-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Actions")}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -278,6 +279,7 @@ function AuthPageContent() {
               </Link>
             </div>
           </Card>
+          </FadeIn>
 
           {successMessage && (
             <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-900 flex items-center gap-3">
@@ -286,6 +288,7 @@ function AuthPageContent() {
             </div>
           )}
 
+          <FadeIn delay={0.1}>
           <Card>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Account Settings")}</h2>
             <div className="space-y-4">
@@ -348,6 +351,7 @@ function AuthPageContent() {
               </Button>
             </div>
           </Card>
+          </FadeIn>
 
           {/* Edit Profile Modal */}
           {isEditingProfile && (
@@ -479,7 +483,7 @@ function AuthPageContent() {
               </div>
             </div>
           )}
-        </div>
+        </main>
       </div>
     );
   }
@@ -623,9 +627,7 @@ function AuthPageContent() {
 
             {mode === "signin" && (
               <div className="flex justify-end">
-                <Link href="/support#contact" className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>
-                  {t("Forgot password?")}
-                </Link>
+                <button type="button" onClick={() => alert(t("Password reset functionality coming soon!"))} className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>{t("Forgot password?")}</button>
               </div>
             )}
 

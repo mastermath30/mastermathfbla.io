@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -233,6 +233,7 @@ const getFirstDayOfMonth = (month: number, year: number) => new Date(year, month
 export default function Home() {
   const { t, language } = useTranslations();
   const router = useRouter();
+  const heroRef = useRef<HTMLElement | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
@@ -264,6 +265,25 @@ export default function Home() {
     const session = localStorage.getItem("mm_session");
     const isLoggedInFlag = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(!!session || isLoggedInFlag === "true");
+  }, []);
+
+  useEffect(() => {
+    const updateDepthProgress = () => {
+      if (!heroRef.current || typeof window === "undefined") return;
+      const rect = heroRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || 1;
+      const traveled = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight * 1.25), 0), 1);
+      heroRef.current.style.setProperty("--hero-depth-progress", traveled.toFixed(3));
+    };
+
+    updateDepthProgress();
+    window.addEventListener("scroll", updateDepthProgress, { passive: true });
+    window.addEventListener("resize", updateDepthProgress);
+
+    return () => {
+      window.removeEventListener("scroll", updateDepthProgress);
+      window.removeEventListener("resize", updateDepthProgress);
+    };
   }, []);
 
   const handleBookNow = (tutor: typeof topTutors[0]) => {
@@ -477,30 +497,24 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 px-safe">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 px-safe">
+        <div className="hero-depth-backdrop" aria-hidden="true">
+          <div className="hero-depth-glow" />
+          <div className="hero-mesh-plane" />
+          <div className="hero-noise-layer" />
+          <div className="hero-depth-vignette" />
+        </div>
+
         {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-0">
           <Image
             src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&h=1080&fit=crop"
             alt="Mathematics background"
             fill
-            className="object-cover opacity-5 dark:opacity-20"
+            className="object-cover opacity-[0.06] dark:opacity-[0.18]"
             priority
           />
         </div>
-        
-        {/* Animated gradient orbs */}
-        <div className="absolute top-20 left-10 w-48 h-48 md:w-72 md:h-72 rounded-full blur-3xl animate-pulse opacity-20 dark:opacity-10" style={{ background: 'var(--theme-primary)' }} />
-        <div className="absolute bottom-20 right-10 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl animate-pulse delay-1000 opacity-15 dark:opacity-10" style={{ background: 'var(--theme-primary-light)' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-[600px] md:h-[600px] rounded-full blur-3xl opacity-10 dark:opacity-5" style={{ background: 'var(--theme-primary)' }} />
-
-        {/* Floating math symbols - hidden on small screens */}
-        <div className="hidden md:block absolute top-20 left-[15%] text-5xl md:text-7xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3s', color: 'var(--theme-primary)' }}>∫</div>
-        <div className="hidden md:block absolute top-32 right-[20%] text-4xl md:text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary-light)' }}>π</div>
-        <div className="hidden md:block absolute bottom-40 left-[10%] text-3xl md:text-5xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary)' }}>∑</div>
-        <div className="hidden md:block absolute bottom-32 right-[15%] text-4xl md:text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary-light)' }}>√</div>
-        <div className="hidden lg:block absolute top-1/2 left-[5%] text-3xl md:text-5xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '5s', animationDelay: '2s', color: 'var(--theme-primary)' }}>∞</div>
-        <div className="hidden lg:block absolute top-[40%] right-[8%] text-3xl md:text-4xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '3.8s', animationDelay: '0.8s', color: 'var(--theme-primary-light)' }}>θ</div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -539,13 +553,13 @@ export default function Home() {
               <FadeIn delay={0.2}>
                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
                   <Link href="/tutors">
-                    <Button size="lg" className="shadow-xl group" style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.25)' }}>
+                    <Button size="lg" className="shadow-xl group glow-premium" style={{ boxShadow: '0 14px 48px rgba(var(--theme-primary-rgb), 0.32)' }}>
                       <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                       {t("Book Your First Session")}
                     </Button>
                   </Link>
                   <Link href="/auth">
-                    <Button variant="outline" size="lg" className="bg-white/60 dark:bg-slate-950/60 backdrop-blur border-slate-300 dark:border-slate-700">
+                    <Button variant="outline" size="lg" className="glass-premium">
                       <Users className="w-5 h-5" />
                       {t("Create Free Account")}
                     </Button>
@@ -597,7 +611,7 @@ export default function Home() {
                 <Link
                   href="/tutors"
                   aria-label={t("Top Rated")}
-                  className="absolute -top-4 -left-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  className="absolute -top-4 -left-4 glass-premium rounded-2xl shadow-xl p-4 animate-float hover:scale-105 transition-transform cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(var(--theme-primary-rgb), 0.1)' }}>
@@ -613,7 +627,7 @@ export default function Home() {
                 <Link
                   href="/schedule"
                   aria-label={t("Study sessions this month")}
-                  className="absolute -bottom-4 -right-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  className="absolute -bottom-4 -right-4 glass-premium rounded-2xl shadow-xl p-4 animate-float hover:scale-105 transition-transform cursor-pointer"
                   style={{ animationDelay: '1s' }}
                 >
                   <div className="flex items-center gap-3">
@@ -631,7 +645,7 @@ export default function Home() {
                 <Link
                   href="/dashboard"
                   aria-label={t("Verified tutors")}
-                  className="absolute top-1/2 -right-8 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-3 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  className="absolute top-1/2 -right-8 glass-premium rounded-2xl shadow-xl p-3 animate-float hover:scale-105 transition-transform cursor-pointer"
                   style={{ animationDelay: '0.5s' }}
                 >
                   <div className="flex items-center gap-2">
@@ -650,12 +664,18 @@ export default function Home() {
         </div>
       </section>
 
+      <div
+        className="h-px w-full"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.35), transparent)" }}
+      />
+
       {/* Main Content */}
       {isLoggedIn && (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
         
         {/* Recent Sessions - only for logged in users */}
         {isLoggedIn && (
+          <FadeIn delay={0.04}>
           <Card className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
@@ -696,12 +716,14 @@ export default function Home() {
               ))}
             </div>
           </Card>
+          </FadeIn>
         )}
 
         {/* For logged in users: Show tutors first */}
         {isLoggedIn && (
           <>
             {/* Top Rated Tutors - for logged in users */}
+            <FadeIn delay={0.08}>
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
@@ -816,6 +838,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
+            </FadeIn>
           </>
         )}
       </div>
@@ -1002,6 +1025,7 @@ export default function Home() {
           </FadeIn>
 
           {/* Now show Top Rated Tutors for new users */}
+          <FadeIn delay={0.16}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
@@ -1118,6 +1142,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+          </FadeIn>
         </>
       )}
 
@@ -1125,6 +1150,7 @@ export default function Home() {
       {isLoggedIn && (
         <>
           {/* Trusted By Section */}
+          <FadeIn>
           <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
               <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">{t("Trusted by students from top institutions")}</p>
@@ -1168,13 +1194,14 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
       {/* Features Section */}
       <section id="features" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 md:mb-16">
+          <FadeIn className="text-center mb-12 md:mb-16">
             <SectionLabel icon={Zap} className="mb-4">
               {t("Why Choose MathMaster?")}
             </SectionLabel>
@@ -1184,11 +1211,12 @@ export default function Home() {
             <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
               {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
             </p>
-          </div>
+          </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 gap-8" staggerDelay={0.09}>
             {features.map((feature, index) => (
-              <Card key={feature.title} className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+              <FadeInStaggerItem key={feature.title}>
+              <Card className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="flex flex-col md:flex-row h-full">
                   <div className="md:w-2/5 relative h-48 md:h-auto min-h-[200px] overflow-hidden">
                     <Image
@@ -1219,12 +1247,14 @@ export default function Home() {
                   </div>
                 </div>
               </Card>
+              </FadeInStaggerItem>
             ))}
-          </div>
+          </FadeInStagger>
         </div>
       </section>
 
       {/* How It Works */}
+      <FadeIn>
       <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
@@ -1282,8 +1312,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
       {/* Testimonials */}
+      <FadeIn>
       <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
@@ -1302,6 +1334,7 @@ export default function Home() {
           <TestimonialsScroll />
         </div>
       </section>
+      </FadeIn>
         </>
       )}
 

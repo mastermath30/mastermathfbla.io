@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/Button";
 import { Input, Textarea } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper } from "@/components/motion";
+import { FadeIn, GlowingOrbs } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Search,
@@ -83,7 +83,7 @@ const getHelpCategories = (t: (key: string) => string) => [
     links: [
       { text: t("Community guidelines"), href: "/community" },
       { text: t("Discussion forums"), href: "/community" },
-      { text: t("Study groups"), href: "/study-groups" }
+      { text: t("Study groups"), href: "/community" }
     ],
     image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&h=100&fit=crop",
   },
@@ -130,7 +130,7 @@ export default function SupportPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -160,29 +160,25 @@ export default function SupportPage() {
             {t("Find answers to common questions or get in touch with our friendly team")}
           </p>
 
-          {/* Quick links */}
+          {/* Search */}
           <div className="max-w-xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-3">
-              <a href="#faq">
-                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
-                  <Search className="w-4 h-4" />
-                  {t("Browse FAQs")}
-                </Button>
-              </a>
-              <a href="#contact">
-                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
-                  <MessageCircle className="w-4 h-4" />
-                  {t("Contact Support")}
-                </Button>
-              </a>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+              <input
+                type="text"
+                placeholder={t("Search help articles...")}
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-2xl text-white placeholder:text-slate-300 shadow-xl focus:outline-none focus:ring-4"
+                style={{ boxShadow: '0 0 0 4px rgba(var(--theme-primary-rgb), 0.2)' }}
+              />
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Contact Methods */}
+        <FadeIn delay={0.04}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 -mt-8 mb-12">
           {contactMethods.map((method) => (
             <Card key={method.title} className="text-center">
@@ -199,8 +195,10 @@ export default function SupportPage() {
             </Card>
           ))}
         </div>
+        </FadeIn>
 
         {/* Help Categories */}
+        <FadeIn delay={0.08}>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">{t("Browse by Category")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {helpCategories.map((cat) => (
@@ -253,8 +251,10 @@ export default function SupportPage() {
             </a>
           </Card>
         </div>
+        </FadeIn>
 
         {/* FAQ Section */}
+        <FadeIn delay={0.12}>
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white text-center mb-8">{t("Frequently Asked Questions")}</h2>
 
@@ -285,6 +285,7 @@ export default function SupportPage() {
             ))}
           </div>
         </div>
+        </FadeIn>
 
         {/* Contact Form */}
         <div className="max-w-4xl mx-auto">
@@ -369,7 +370,7 @@ export default function SupportPage() {
             </Card>
           </FadeIn>
         </div>
-      </div>
+      </main>
 
       {/* Footer */}
       <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
@@ -379,6 +380,6 @@ export default function SupportPage() {
           </p>
         </div>
       </footer>
-    </PageWrapper>
+    </div>
   );
 }

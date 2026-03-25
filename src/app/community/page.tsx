@@ -306,13 +306,14 @@ export default function CommunityPage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32 relative">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32 relative">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Forum Section */}
           <div className="lg:col-span-2">
+            <FadeIn>
             <Card padding="none" className="overflow-hidden">
               <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
                 <div className="flex items-center justify-between mb-6">
@@ -402,11 +403,13 @@ export default function CommunityPage() {
                 </div>
               </div>
             </Card>
+            </FadeIn>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Study Groups Section */}
+            <FadeIn delay={0.06}>
             <Card padding="none" className="overflow-hidden">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 flex items-center justify-between">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
@@ -449,8 +452,10 @@ export default function CommunityPage() {
                 </Link>
               </div>
             </Card>
+            </FadeIn>
 
             {/* Activity Feed */}
+            <FadeIn delay={0.1}>
             <Card padding="none" className="overflow-hidden">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
@@ -487,8 +492,10 @@ export default function CommunityPage() {
                 ))}
               </div>
             </Card>
+            </FadeIn>
 
             {/* Stats */}
+            <FadeIn delay={0.14}>
             <Card padding="none" className="overflow-hidden">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
@@ -526,8 +533,10 @@ export default function CommunityPage() {
                 </div>
               </div>
             </Card>
+            </FadeIn>
 
             {/* Top Contributors */}
+            <FadeIn delay={0.18}>
             <Card padding="none" className="overflow-hidden">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
                 <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
@@ -572,8 +581,10 @@ export default function CommunityPage() {
                 ))}
               </div>
             </Card>
+            </FadeIn>
 
             {/* Quick Links */}
+            <FadeIn delay={0.22}>
             <Card>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Links")}</h3>
               <div className="space-y-3">
@@ -591,9 +602,10 @@ export default function CommunityPage() {
                 </Link>
               </div>
             </Card>
+            </FadeIn>
           </div>
         </div>
-      </div>
+      </main>
     </PageWrapper>
   );
 }

@@ -1109,8 +1109,9 @@ export default function SchedulePage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8 pb-32">
+      <main className="max-w-7xl mx-auto px-6 py-8 pb-32">
         {/* Calendar */}
+        <FadeIn delay={0.04}>
         <Card className="mb-8 overflow-hidden">
           <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-4">
@@ -1187,8 +1188,10 @@ export default function SchedulePage() {
             )}
           </div>
         </Card>
+        </FadeIn>
 
         {/* Upcoming Sessions */}
+        <FadeIn delay={0.08}>
         <Card padding="none" className="mb-8 overflow-hidden">
           <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950">
             <div className="flex items-center gap-3">
@@ -1227,11 +1230,6 @@ export default function SchedulePage() {
             ))}
             
             {/* Sample sessions for demo */}
-            {filteredSessions.length > 0 && (
-              <div className="px-4 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-950">
-                {t("Suggested sessions")}
-              </div>
-            )}
             {filteredSessions.map((session) => (
               <div key={session.title} className="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                 <Image
@@ -1256,8 +1254,10 @@ export default function SchedulePage() {
             ))}
           </div>
         </Card>
+        </FadeIn>
 
         {/* Available Tutors */}
+        <FadeIn delay={0.12}>
         <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -1369,9 +1369,11 @@ export default function SchedulePage() {
             ))}
           </div>
         </div>
+        </FadeIn>
 
         {/* My Study Groups - only show if user has joined groups */}
         {isLoggedIn && joinedGroups.length > 0 && (
+          <FadeIn delay={0.16}>
           <Card className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
@@ -1414,9 +1416,11 @@ export default function SchedulePage() {
                 ))}
             </div>
           </Card>
+          </FadeIn>
         )}
 
         {/* Study Groups */}
+        <FadeIn delay={0.2}>
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -1483,7 +1487,8 @@ export default function SchedulePage() {
             })}
           </div>
         </div>
-      </div>
+        </FadeIn>
+      </main>
 
       {/* Booking Modal */}
       {showBookingModal && selectedTutor && (
