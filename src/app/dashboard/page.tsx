@@ -166,7 +166,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -187,7 +187,7 @@ export default function DashboardPage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-8 md:pt-36 md:pb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <HeroText className="text-slate-900 dark:text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900/20 dark:bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
@@ -417,7 +417,7 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-              <Link href="/resources#quizzes" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+              <Link href="/learn#quizzes" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
                 {t("Practice in Resources")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -542,7 +542,7 @@ export default function DashboardPage() {
               <h3 className="text-2xl font-bold mb-2">{t("Keep up the great work!")}</h3>
               <p className="text-slate-700 dark:text-slate-200">{t("You're on track to complete your weekly goals. Just 3 more problems to go!")}</p>
             </div>
-              <Link href="/resources">
+              <Link href="/learn">
                 <Button className="shrink-0">
                   {t("Continue Learning")}
                   <ArrowRight className="w-4 h-4" />

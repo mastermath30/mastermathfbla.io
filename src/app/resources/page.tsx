@@ -328,7 +328,7 @@ export default function ResourcesPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -348,13 +348,13 @@ export default function ResourcesPage() {
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-16">
           <HeroText className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <Sparkles className="w-4 h-4" />
               {t("Learning Hub")}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">{t("Resources")}</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">{t("Learn")}</h1>
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               {t("Access lessons, videos, quizzes, and downloadable materials to supercharge your learning.")}
             </p>

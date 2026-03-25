@@ -61,11 +61,11 @@ export function GlowingOrbs({ variant = "default" }: GlowingOrbsProps) {
           }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
-            opacity: [0.08, 0.15, 0.08],
-            scale: [1, 1.1, 1],
+            opacity: [0.06, 0.11, 0.06],
+            scale: [1, 1.08, 1],
           }}
           transition={{
-            duration: 8,
+            duration: 16,
             delay: orb.delay,
             repeat: Infinity,
             ease: "easeInOut",

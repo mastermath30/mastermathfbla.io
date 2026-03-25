@@ -62,29 +62,19 @@ export function Navbar() {
       href: "/about",
     },
     {
+      title: t("Learn"),
+      icon: <IconBook className="h-6 w-6" />,
+      href: "/learn",
+    },
+    {
       title: t("Schedule"),
       icon: <IconCalendar className="h-6 w-6" />,
       href: "/schedule",
     },
     {
-      title: t("Tutors"),
-      icon: <IconUser className="h-6 w-6" />,
-      href: "/tutors",
-    },
-    {
-      title: t("Study Groups"),
-      icon: <IconUsers className="h-6 w-6" />,
-      href: "/study-groups",
-    },
-    {
       title: t("Dashboard"),
       icon: <IconChartBar className="h-6 w-6" />,
       href: "/dashboard",
-    },
-    {
-      title: t("Resources"),
-      icon: <IconBook className="h-6 w-6" />,
-      href: "/resources",
     },
     {
       title: t("Community"),
@@ -211,6 +201,7 @@ export function Navbar() {
                       <Link
                         href={link.href}
                         onClick={() => setIsOpen(false)}
+                        title={link.href === "/auth" && isLoggedIn && userName ? userName : undefined}
                         className={`flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl transition-colors touch-manipulation h-full ${
                           pathname === link.href
                             ? "bg-slate-200 dark:bg-slate-700"
@@ -225,7 +216,7 @@ export function Navbar() {
                         }`}>
                           {link.icon}
                         </div>
-                        <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
+                        <span className="w-full max-w-full text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight truncate">
                           {link.title}
                         </span>
                       </Link>

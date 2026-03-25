@@ -150,7 +150,7 @@ export function AccessibilityPanel() {
     { keys: ["Alt", "H"], description: `${t("Go to")} ${t("Home")}` },
     { keys: ["Alt", "D"], description: `${t("Go to")} ${t("Dashboard")}` },
     { keys: ["Alt", "S"], description: `${t("Go to")} ${t("Schedule")}` },
-    { keys: ["Alt", "R"], description: `${t("Go to")} ${t("Resources")}` },
+    { keys: ["Alt", "R"], description: `${t("Go to")} ${t("Learn")}` },
     { keys: ["Alt", "L"], description: `${t("Go to")} ${t("Sign In")}` },
     { keys: ["Tab"], description: t("Navigate between elements") },
     { keys: ["Esc"], description: t("Close panels") },

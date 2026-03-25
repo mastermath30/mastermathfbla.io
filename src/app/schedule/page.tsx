@@ -894,7 +894,7 @@ export default function SchedulePage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -915,7 +915,7 @@ export default function SchedulePage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15%200L30%2015L15%2030L0%2015z%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%2F%3E%3C%2Fsvg%3E')]" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-8 md:pt-36 md:pb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <HeroText className="text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">

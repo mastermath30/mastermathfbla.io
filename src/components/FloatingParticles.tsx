@@ -58,7 +58,7 @@ export function FloatingParticles() {
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: 12 + Math.random() * 16,
-        duration: 20 + Math.random() * 30,
+        duration: 40 + Math.random() * 40,
         delay: Math.random() * 10,
       });
     }
@@ -68,7 +68,7 @@ export function FloatingParticles() {
   if (isReducedMotion || particles.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden opacity-[0.07] dark:opacity-[0.05]">
+    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden opacity-[0.05] dark:opacity-[0.04]">
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
@@ -80,10 +80,10 @@ export function FloatingParticles() {
             color: "var(--theme-primary)",
           }}
           animate={{
-            y: [0, -30, 0, 30, 0],
-            x: [0, 20, 0, -20, 0],
-            rotate: [0, 10, 0, -10, 0],
-            opacity: [0.3, 0.7, 0.3],
+            y: [0, -20, 0, 20, 0],
+            x: [0, 14, 0, -14, 0],
+            rotate: [0, 8, 0, -8, 0],
+            opacity: [0.22, 0.46, 0.22],
           }}
           transition={{
             duration: particle.duration,

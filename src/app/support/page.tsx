@@ -69,9 +69,9 @@ const getHelpCategories = (t: (key: string) => string) => [
     description: t("Find tutorials and guides to enhance your learning."),
     color: "green",
     links: [
-      { text: t("Video tutorials"), href: "/resources" },
-      { text: t("Practice problems"), href: "/resources" },
-      { text: t("Study guides"), href: "/resources" }
+      { text: t("Video tutorials"), href: "/learn" },
+      { text: t("Practice problems"), href: "/learn" },
+      { text: t("Study guides"), href: "/learn" }
     ],
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=100&h=100&fit=crop",
   },
@@ -130,7 +130,7 @@ export default function SupportPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -150,7 +150,7 @@ export default function SupportPage() {
           />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-20 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4 md:mb-6">
             <Headphones className="w-4 h-4" />
             {t("We're here to help")}

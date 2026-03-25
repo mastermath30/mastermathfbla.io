@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
@@ -123,7 +124,7 @@ const getFeatures = (t: (key: string) => string) => [
     icon: Brain,
     title: t("Interactive Learning"),
     description: t("Engage with step-by-step lessons and practice problems that adapt to your learning pace."),
-    link: "/resources",
+    link: "/learn",
     linkText: t("Explore Resources"),
     image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=400&h=300&fit=crop",
   },
@@ -518,7 +519,15 @@ export default function Home() {
                   <span className="gradient-text relative inline-block">
                     {t("With 1-on-1 Expert Tutors")}
                     <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
-                      <path d="M2 10C50 4 150 4 298 10" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
+                      <motion.path
+                        d="M2 10C50 4 150 4 298 10"
+                        stroke="url(#gradient)"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: [0, 1, 1], opacity: [0, 1, 0.85] }}
+                        transition={{ duration: 3.8, times: [0, 0.65, 1], repeat: Number.POSITIVE_INFINITY, repeatDelay: 1.2, ease: "easeInOut" }}
+                      />
                       <defs>
                         <linearGradient id="gradient" x1="0" y1="0" x2="300" y2="0">
                           <stop style={{ stopColor: 'var(--theme-primary)' }} />
@@ -1354,7 +1363,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Dashboard")}</Link></li>
                 <li><Link href="/schedule" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Schedule")}</Link></li>
-                <li><Link href="/resources" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Resources")}</Link></li>
+                <li><Link href="/learn" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Learn")}</Link></li>
                 <li><Link href="/community" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Community")}</Link></li>
                 </ul>
             </div>

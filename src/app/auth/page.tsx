@@ -268,9 +268,9 @@ function AuthPageContent() {
                 <Calendar className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Schedule")}</span>
               </Link>
-              <Link href="/resources" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
+              <Link href="/learn" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
                 <BookOpen className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Resources")}</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("Learn")}</span>
               </Link>
               <Link href="/community" className="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 text-center transition-all group shadow-sm hover:shadow-md">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 group-hover:scale-110 transition-transform" style={{ color: "var(--theme-primary)" }} />

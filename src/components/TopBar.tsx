@@ -50,11 +50,9 @@ export function TopBar() {
 
 	const navigation = [
 		{ name: t("About"), href: "/about" },
+		{ name: t("Learn"), href: "/learn" },
 		{ name: t("Schedule"), href: "/schedule" },
-		{ name: t("Tutors"), href: "/tutors" },
-		{ name: t("Study Groups"), href: "/study-groups" },
 		{ name: t("Dashboard"), href: "/dashboard" },
-		{ name: t("Resources"), href: "/resources" },
 		{ name: t("Community"), href: "/community" },
 		{ name: t("Support"), href: "/support" },
 	];
@@ -110,10 +108,11 @@ export function TopBar() {
 							</div>
 
 							{/* Desktop Auth Button */}
-							<div className="hidden md:block">
+							<div className="hidden md:block min-w-0">
 								<Link
 									href="/auth"
-									className={`relative font-medium px-6 py-2 rounded-full flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
+									title={isLoggedIn && userName ? userName : undefined}
+									className={`relative font-medium px-4 lg:px-6 py-2 rounded-full flex items-center gap-2 min-w-0 max-w-[11rem] lg:max-w-[14rem] transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
 										pathname === "/auth"
 											? "text-white shadow-lg"
 											: "text-white"
@@ -125,8 +124,8 @@ export function TopBar() {
 								>
 									{isLoggedIn ? (
 										<>
-											<User className="w-4 h-4" />
-											<span>{userName || t("Account")}</span>
+											<User className="w-4 h-4 shrink-0" />
+											<span className="truncate">{userName || t("Account")}</span>
 										</>
 									) : (
 										<span>{t("Sign In")}</span>
@@ -216,6 +215,7 @@ export function TopBar() {
 								<div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
 								<Link
 									href="/auth"
+									title={isLoggedIn && userName ? userName : undefined}
 									className={`relative text-white font-medium px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group transform ${
 										isOpen ? "animate-mobile-menu-item" : ""
 									}`}
@@ -229,8 +229,8 @@ export function TopBar() {
 								>
 									{isLoggedIn ? (
 										<>
-											<User className="w-4 h-4" />
-											<span>{userName || t("Account")}</span>
+											<User className="w-4 h-4 shrink-0" />
+											<span className="truncate max-w-[11rem]">{userName || t("Account")}</span>
 										</>
 									) : (
 										<span>{t("Sign In")}</span>

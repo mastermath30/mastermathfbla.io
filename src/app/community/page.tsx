@@ -139,6 +139,54 @@ const seedPosts: Post[] = [
     author: "Student",
     createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
   },
+  {
+    id: "seed_3",
+    title: "Best way to remember SOH-CAH-TOA?",
+    body: "I keep mixing up sine and cosine in right-triangle problems. Any memory tricks that actually stick?",
+    tag: "Geometry",
+    author: "Nina P.",
+    createdAt: new Date(Date.now() - 7 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "seed_4",
+    title: "Quick check on standard deviation steps",
+    body: "When we compute sample standard deviation, do we divide by n-1 before or after taking the square root?",
+    tag: "Statistics",
+    author: "Jordan K.",
+    createdAt: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "seed_5",
+    title: "Derivative of ln(3x^2 + 1)",
+    body: "I got 1/(3x^2+1). I think I forgot chain rule somewhere. Can someone show the clean steps?",
+    tag: "Calculus",
+    author: "Ari M.",
+    createdAt: new Date(Date.now() - 13 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "seed_6",
+    title: "Systems of equations word problems are confusing",
+    body: "I can solve equations but translating the story into equations takes forever. Any strategy?",
+    tag: "Algebra",
+    author: "Sam R.",
+    createdAt: new Date(Date.now() - 17 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "seed_7",
+    title: "How do you study for a timed math test?",
+    body: "I understand concepts at home, but I freeze on timed tests. Looking for practical routine ideas.",
+    tag: "Other",
+    author: "Maya L.",
+    createdAt: new Date(Date.now() - 21 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "seed_8",
+    title: "Need feedback on this geometry proof structure",
+    body: "I can write statements but reasons feel repetitive. Is there a cleaner format teachers prefer?",
+    tag: "Geometry",
+    author: "Leo D.",
+    createdAt: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
+  },
 ];
 
 function formatTimeAgo(iso: string, locale: string = "en") {
@@ -271,7 +319,7 @@ export default function CommunityPage() {
   );
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
@@ -291,7 +339,7 @@ export default function CommunityPage() {
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-16">
           <HeroText className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4">
               <MessageCircle className="w-4 h-4" />
@@ -310,9 +358,9 @@ export default function CommunityPage() {
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8">
           {/* Forum Section */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-8 min-w-0">
             <Card padding="none" className="overflow-hidden">
               <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
                 <div className="flex items-center justify-between mb-6">
@@ -405,7 +453,7 @@ export default function CommunityPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:col-span-4 lg:w-full lg:max-w-sm lg:justify-self-end min-w-0">
             {/* Study Groups Section */}
             <Card padding="none" className="overflow-hidden">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 flex items-center justify-between">
@@ -577,7 +625,7 @@ export default function CommunityPage() {
             <Card>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Links")}</h3>
               <div className="space-y-3">
-                <Link href="/resources" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
+                <Link href="/learn" className="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-primary-themed transition-all text-sm">
                   <BookOpen className="w-5 h-5" />
                   {t("Browse Resources")}
                 </Link>

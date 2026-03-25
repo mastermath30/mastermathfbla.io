@@ -27,7 +27,8 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "About",
     "Dashboard": "Dashboard",
-    "Resources": "Resources",
+    "Learn": "Learn",
+    "Resources": "Learn",
     "Community": "Community",
     "Support": "Support",
     "Sign In": "Sign In",
@@ -129,7 +130,7 @@ export const translations: TranslationTable = {
     "Top Contributors": "Top Contributors",
     "Practice Problems": "Practice Problems",
     "Video Lessons": "Video Lessons",
-    "Interactive Quizzes": "Interactive Quizzes",
+    "Interactive Quizzes": "Quizzess",
     
     // Dashboard - Missing translations
     "Learning Dashboard": "Learning Dashboard",
@@ -614,7 +615,8 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "Acerca de",
     "Dashboard": "Panel",
-    "Resources": "Recursos",
+    "Learn": "Aprender",
+    "Resources": "Aprender",
     "Community": "Comunidad",
     "Support": "Soporte",
     "Sign In": "Iniciar Sesion",
@@ -821,7 +823,7 @@ export const translations: TranslationTable = {
     "Top Contributors": "Mejores Contribuyentes",
     "Practice Problems": "Problemas de Practica",
     "Video Lessons": "Lecciones en Video",
-    "Interactive Quizzes": "Cuestionarios Interactivos",
+    "Interactive Quizzes": "Quizzess",
     
     // Dashboard - Missing translations
     "Learning Dashboard": "Panel de Aprendizaje",
@@ -1328,7 +1330,8 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "A Propos",
     "Dashboard": "Tableau de Bord",
-    "Resources": "Ressources",
+    "Learn": "Apprendre",
+    "Resources": "Apprendre",
     "Community": "Communaute",
     "Support": "Assistance",
     "Sign In": "Se Connecter",
@@ -1535,7 +1538,7 @@ export const translations: TranslationTable = {
     "Top Contributors": "Meilleurs Contributeurs",
     "Practice Problems": "Problemes de Pratique",
     "Video Lessons": "Lecons Video",
-    "Interactive Quizzes": "Quiz Interactifs",
+    "Interactive Quizzes": "Quizzess",
     
     // Dashboard - Missing translations
     "Learning Dashboard": "Tableau de Bord d Apprentissage",

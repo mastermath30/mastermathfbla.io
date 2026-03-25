@@ -93,12 +93,13 @@ const NAVIGATION_PROMPTS = [
 ];
 
 // Valid navigation paths the AI can direct users to
-const VALID_PATHS = ["/", "/about", "/resources", "/dashboard", "/schedule", "/tutors", "/community", "/study-groups", "/support", "/auth"];
+const VALID_PATHS = ["/", "/about", "/learn", "/resources", "/dashboard", "/schedule", "/tutors", "/community", "/study-groups", "/support", "/auth"];
 
 const PAGE_LABELS: Record<string, string> = {
   "/": "Home",
   "/about": "About Us",
-  "/resources": "Resources",
+  "/learn": "Learn",
+  "/resources": "Learn",
   "/dashboard": "Dashboard",
   "/schedule": "Schedule",
   "/tutors": "Tutors",

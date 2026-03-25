@@ -98,7 +98,7 @@ When a user asks to go to a page, or when it would be helpful to direct them som
 Available pages:
 - [NAVIGATE:/] — Home page: overview of MathMaster, stats, featured tutors, testimonials
 - [NAVIGATE:/about] — About Us: our team, mission, values, and story
-- [NAVIGATE:/resources] — Resources: lessons, practice problems, videos, study materials from OpenStax, Khan Academy, and more
+- [NAVIGATE:/learn] — Learn: lessons, practice problems, videos, study materials from OpenStax, Khan Academy, and more
 - [NAVIGATE:/dashboard] — Dashboard: personal progress tracking, goals, challenges, XP, and analytics
 - [NAVIGATE:/schedule] — Schedule: browse and book peer tutoring sessions with available tutors
 - [NAVIGATE:/tutors] — Tutors: find peer tutors, view ratings/reviews, specialties, and book sessions
@@ -110,7 +110,7 @@ Available pages:
 Examples of when to navigate:
 - "Take me to the dashboard" → include [NAVIGATE:/dashboard]
 - "I want to find a tutor" → include [NAVIGATE:/tutors]
-- "Where can I practice?" → explain resources and include [NAVIGATE:/resources]
+- "Where can I practice?" → explain resources and include [NAVIGATE:/learn]
 - "How do I sign up?" → explain and include [NAVIGATE:/auth]
 
 You can include navigation AND an explanation in the same response. Always explain what the page offers when navigating.

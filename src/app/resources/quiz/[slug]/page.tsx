@@ -607,7 +607,7 @@ function QuizPageContent() {
             <p className="text-slate-500 dark:text-slate-400 mb-6">
               {t("The quiz you are looking for does not exist yet.")}
             </p>
-            <Button onClick={() => router.push("/resources#quizzes")} type="button">
+            <Button onClick={() => router.push("/learn#quizzes")} type="button">
               {t("Back to Resources")}
             </Button>
           </Card>
@@ -676,7 +676,7 @@ function QuizPageContent() {
                 <Button onClick={handleRestart} type="button">
                   {t("Restart Quiz")}
                 </Button>
-                <Button variant="outline" onClick={() => router.push("/resources#quizzes")} type="button">
+                <Button variant="outline" onClick={() => router.push("/learn#quizzes")} type="button">
                   {t("Back to Resources")}
                 </Button>
               </div>
@@ -763,7 +763,7 @@ function QuizPageContent() {
                   {isLastQuestion ? t("Finish Quiz") : t("Next Question")}
                 </Button>
                 <Link
-                  href="/resources#quizzes"
+                  href="/learn#quizzes"
                   className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
                 >
                   {t("Exit Quiz")}
