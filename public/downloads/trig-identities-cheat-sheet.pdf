@@ -1,0 +1,142 @@
+%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+>>
+>>
+>>
+endobj
+4 0 obj
+<<
+/Length 3000
+>>
+stream
+BT
+/F2 24 Tf
+50 740 Td
+(TRIGONOMETRY IDENTITIES) Tj
+/F1 12 Tf
+0 -30 Td
+(MathMaster - Complete Trig Reference) Tj
+0 -40 Td
+/F2 16 Tf
+(PYTHAGOREAN IDENTITIES) Tj
+/F1 11 Tf
+0 -20 Td
+(sin^2\(x\) + cos^2\(x\) = 1) Tj
+0 -15 Td
+(1 + tan^2\(x\) = sec^2\(x\)) Tj
+0 -15 Td
+(1 + cot^2\(x\) = csc^2\(x\)) Tj
+0 -30 Td
+/F2 16 Tf
+(RECIPROCAL IDENTITIES) Tj
+/F1 11 Tf
+0 -20 Td
+(csc\(x\) = 1/sin\(x\)) Tj
+0 -15 Td
+(sec\(x\) = 1/cos\(x\)) Tj
+0 -15 Td
+(cot\(x\) = 1/tan\(x\) = cos\(x\)/sin\(x\)) Tj
+0 -30 Td
+/F2 16 Tf
+(QUOTIENT IDENTITIES) Tj
+/F1 11 Tf
+0 -20 Td
+(tan\(x\) = sin\(x\)/cos\(x\)) Tj
+0 -15 Td
+(cot\(x\) = cos\(x\)/sin\(x\)) Tj
+0 -30 Td
+/F2 16 Tf
+(SUM AND DIFFERENCE FORMULAS) Tj
+/F1 11 Tf
+0 -20 Td
+(sin\(A +/- B\) = sin\(A\)cos\(B\) +/- cos\(A\)sin\(B\)) Tj
+0 -15 Td
+(cos\(A +/- B\) = cos\(A\)cos\(B\) -/+ sin\(A\)sin\(B\)) Tj
+0 -15 Td
+(tan\(A +/- B\) = \(tan\(A\) +/- tan\(B\)\)/\(1 -/+ tan\(A\)tan\(B\)\)) Tj
+0 -30 Td
+/F2 16 Tf
+(DOUBLE ANGLE FORMULAS) Tj
+/F1 11 Tf
+0 -20 Td
+(sin\(2x\) = 2sin\(x\)cos\(x\)) Tj
+0 -15 Td
+(cos\(2x\) = cos^2\(x\) - sin^2\(x\) = 2cos^2\(x\) - 1 = 1 - 2sin^2\(x\)) Tj
+0 -15 Td
+(tan\(2x\) = 2tan\(x\)/\(1 - tan^2\(x\)\)) Tj
+0 -30 Td
+/F2 16 Tf
+(HALF ANGLE FORMULAS) Tj
+/F1 11 Tf
+0 -20 Td
+(sin\(x/2\) = +/- sqrt\(\(1 - cos\(x\)\)/2\)) Tj
+0 -15 Td
+(cos\(x/2\) = +/- sqrt\(\(1 + cos\(x\)\)/2\)) Tj
+0 -15 Td
+(tan\(x/2\) = \(1 - cos\(x\)\)/sin\(x\) = sin\(x\)/\(1 + cos\(x\)\)) Tj
+0 -30 Td
+/F2 16 Tf
+(UNIT CIRCLE VALUES) Tj
+/F1 11 Tf
+0 -20 Td
+(0: sin=0, cos=1 | 30: sin=1/2, cos=sqrt3/2) Tj
+0 -15 Td
+(45: sin=sqrt2/2, cos=sqrt2/2 | 60: sin=sqrt3/2, cos=1/2) Tj
+0 -15 Td
+(90: sin=1, cos=0 | 180: sin=0, cos=-1) Tj
+ET
+endstream
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+>>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000266 00000 n 
+0000003320 00000 n 
+0000003397 00000 n 
+trailer
+<<
+/Size 7
+/Root 1 0 R
+>>
+startxref
+3479
+%%EOF
