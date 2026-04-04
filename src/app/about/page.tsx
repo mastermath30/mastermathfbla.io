@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
+import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Heart,
@@ -77,6 +77,9 @@ export default function AboutPage() {
   const steps = getSteps(t);
   const team = getTeam(t);
   const values = getValues(t);
+  const aboutWord = t("About");
+  const aboutWordSpeed = 74;
+  const brandWordDelay = aboutWord.length * aboutWordSpeed + 420;
 
   return (
     <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -129,7 +132,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <header className="relative min-h-[70vh] flex items-center overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0">
+        <ParallaxSection className="absolute inset-0" speed={0.12}>
           <Image
             src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&h=1080&fit=crop"
             alt="Students collaborating"
@@ -138,7 +141,9 @@ export default function AboutPage() {
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/60" />
-        </div>
+          <div className="hero-vignette-layer" />
+          <div className="hero-grain-layer" />
+        </ParallaxSection>
 
         {/* Decorative elements */}
         <div className="absolute top-20 right-10 md:right-20 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl opacity-30" style={{ background: 'var(--theme-primary)' }} />
@@ -157,7 +162,10 @@ export default function AboutPage() {
               {t("Our Story")}
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              {t("About")} <span className="gradient-text">MathMaster</span>
+              <TypingText text={aboutWord} speedMs={aboutWordSpeed} />{" "}
+              <span className="gradient-text">
+                <TypingText text="MathMaster" speedMs={70} delayMs={brandWordDelay} />
+              </span>
             </h1>
             <p className="text-xl text-white leading-relaxed mb-8">
               {t("We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you're stuck.")}

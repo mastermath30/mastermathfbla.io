@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/Button";
 import { Input, Textarea } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Search,
@@ -136,7 +136,7 @@ export default function SupportPage() {
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <div className="absolute inset-0">
+        <ParallaxSection className="absolute inset-0" speed={0.1}>
           <Image
             src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=500&fit=crop"
             alt="Support team"
@@ -148,14 +148,18 @@ export default function SupportPage() {
             className="absolute inset-0"
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
-        </div>
+          <div className="hero-vignette-layer" />
+          <div className="hero-grain-layer" />
+        </ParallaxSection>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-20 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4 md:mb-6">
             <Headphones className="w-4 h-4" />
             {t("We're here to help")}
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">{t("Support Center")}</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+            <TypingText text={t("Support Center")} speedMs={74} />
+          </h1>
           <p className="text-base sm:text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-6 md:mb-8 px-4">
             {t("Find answers to common questions or get in touch with our friendly team")}
           </p>

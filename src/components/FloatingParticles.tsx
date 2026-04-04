@@ -68,7 +68,7 @@ export function FloatingParticles() {
   if (isReducedMotion || particles.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden opacity-[0.05] dark:opacity-[0.04]">
+    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden opacity-[0.035] dark:opacity-[0.03]">
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
@@ -83,7 +83,7 @@ export function FloatingParticles() {
             y: [0, -20, 0, 20, 0],
             x: [0, 14, 0, -14, 0],
             rotate: [0, 8, 0, -8, 0],
-            opacity: [0.22, 0.46, 0.22],
+            opacity: [0.16, 0.3, 0.16],
           }}
           transition={{
             duration: particle.duration,

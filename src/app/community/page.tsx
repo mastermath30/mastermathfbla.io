@@ -8,7 +8,7 @@ import { Button } from "@/components/Button";
 import { Input, Textarea, Select } from "@/components/Input";
 import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   MessageCircle,
@@ -325,7 +325,7 @@ export default function CommunityPage() {
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <div className="absolute inset-0">
+        <ParallaxSection className="absolute inset-0" speed={0.11}>
           <Image
             src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=500&fit=crop"
             alt="Community"
@@ -337,7 +337,9 @@ export default function CommunityPage() {
             className="absolute inset-0"
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
-        </div>
+          <div className="hero-vignette-layer" />
+          <div className="hero-grain-layer" />
+        </ParallaxSection>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-16">
           <HeroText className="max-w-2xl">
@@ -345,7 +347,9 @@ export default function CommunityPage() {
               <MessageCircle className="w-4 h-4" />
               {t("Discussion Forum")}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">{t("Community")}</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              <TypingText text={t("Community")} speedMs={74} />
+            </h1>
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               {t("Connect with fellow math enthusiasts, ask questions, and help others learn.")}
             </p>

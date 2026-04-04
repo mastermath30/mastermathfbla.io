@@ -17,13 +17,13 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         className={clsx(
           "rounded-2xl transition-all duration-300 ease-out group/card",
           {
-            "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 shadow-sm": variant === "default",
+            "glass-subtle shadow-sm": variant === "default",
             "bg-transparent border border-slate-300 dark:border-slate-700": variant === "outline",
-            "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 shadow-lg": variant === "glass",
+            "glass-medium shadow-lg": variant === "glass",
             "bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-700/50": variant === "gradient",
-            "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50": variant === "elevated",
+            "glass-strong shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50": variant === "elevated",
           },
-          hover && "hover:-translate-y-1 hover:shadow-lg",
+          hover && "hover:-translate-y-0.5 hover:shadow-xl hover:shadow-slate-200/45 dark:hover:shadow-slate-900/45",
           glow && "shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.08)] dark:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.12)] hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.15)] dark:hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.2)]",
           interactive && "cursor-pointer active:scale-[0.98] hover:border-[var(--theme-primary)]/30",
           {

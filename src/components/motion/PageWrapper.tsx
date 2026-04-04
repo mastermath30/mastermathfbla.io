@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { ReactNode, useRef } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 interface PageWrapperProps {
@@ -75,10 +75,31 @@ export function ParallaxSection({
   className?: string;
   speed?: number;
 }) {
+  const reducedMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const shift = Math.max(20, Math.min(120, speed * 100));
+  const yRaw = useTransform(scrollYProgress, [0, 1], [-shift, shift]);
+  const y = useSpring(yRaw, { stiffness: 70, damping: 22, mass: 0.2 });
+  const scaleRaw = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [1 + speed * 0.015, 1, 1 - speed * 0.015]
+  );
+  const scale = useSpring(scaleRaw, { stiffness: 90, damping: 24, mass: 0.25 });
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
-    <div className={className}>
+    <motion.div ref={sectionRef} style={{ y, scale }} className={className}>
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -109,8 +130,8 @@ export function CardReveal({
         ease: [0.25, 0.4, 0.25, 1]
       }}
       whileHover={{ 
-        y: -8, 
-        scale: 1.02,
+        y: -4, 
+        scale: 1.01,
         transition: { duration: 0.25 } 
       }}
       className={className}

@@ -7,7 +7,7 @@ import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn } from "@/components/motion";
+import { FadeIn, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Star,
@@ -302,6 +302,10 @@ const allTutors = [
 
 export default function TutorsPage() {
   const { t, language } = useTranslations();
+  const heroTitleMain = t("Expert Math Tutors");
+  const heroTitleAccent = t("Ready to Help");
+  const heroTitleMainSpeed = 72;
+  const heroTitleAccentDelay = heroTitleMain.length * heroTitleMainSpeed + 420;
   const localizedDays = Array.from({ length: 7 }, (_, i) =>
     new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'narrow' })
   );
@@ -651,16 +655,20 @@ export default function TutorsPage() {
             </Link>
           </div>
           
-          <div className="text-center mb-6 md:mb-8">
-            <SectionLabel>{t("Our Tutors")}</SectionLabel>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              {t("Expert Math Tutors")}
-              <span className="gradient-text block">{t("Ready to Help")}</span>
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-4">
-              {t("Connect with experienced peer tutors and professionals who are passionate about helping you succeed in mathematics.")}
-            </p>
-          </div>
+          <ParallaxSection speed={0.06}>
+            <div className="text-center mb-6 md:mb-8">
+              <SectionLabel>{t("Our Tutors")}</SectionLabel>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+                <TypingText text={heroTitleMain} speedMs={heroTitleMainSpeed} />
+                <span className="gradient-text block">
+                  <TypingText text={heroTitleAccent} speedMs={68} delayMs={heroTitleAccentDelay} />
+                </span>
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-4">
+                {t("Connect with experienced peer tutors and professionals who are passionate about helping you succeed in mathematics.")}
+              </p>
+            </div>
+          </ParallaxSection>
 
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">

@@ -6,7 +6,6 @@ import { TopBar } from "@/components/TopBar";
 import { LanguageProvider } from "@/components/LanguageProvider";
 
 import { AccessibilityPanel } from "@/components/AccessibilityPanel";
-import { MathTipOfDay } from "@/components/MathTipOfDay";
 import { KeyboardNavigation } from "@/components/KeyboardNavigation";
 import { QuickCalculator } from "@/components/QuickCalculator";
 import { UnitConverter } from "@/components/UnitConverter";
@@ -88,7 +87,6 @@ export default function RootLayout({
           <Navbar />
 
           <AccessibilityPanel />
-          <MathTipOfDay />
           <KeyboardNavigation />
           <ToolsMenu />
           <QuickCalculator />

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   BookOpen,
@@ -334,7 +334,7 @@ export default function ResourcesPage() {
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <div className="absolute inset-0">
+        <ParallaxSection className="absolute inset-0" speed={0.12}>
           <Image
             src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1920&h=500&fit=crop"
             alt="Library"
@@ -346,7 +346,9 @@ export default function ResourcesPage() {
             className="absolute inset-0"
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
-        </div>
+          <div className="hero-vignette-layer" />
+          <div className="hero-grain-layer" />
+        </ParallaxSection>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-16">
           <HeroText className="max-w-2xl">
@@ -354,7 +356,9 @@ export default function ResourcesPage() {
               <Sparkles className="w-4 h-4" />
               {t("Learning Hub")}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">{t("Learn")}</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              <TypingText text={t("Learn")} speedMs={74} />
+            </h1>
             <p className="text-slate-200 text-base sm:text-lg md:text-xl">
               {t("Access lessons, videos, quizzes, and downloadable materials to supercharge your learning.")}
             </p>

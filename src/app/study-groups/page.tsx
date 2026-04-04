@@ -9,7 +9,7 @@ import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { Input, Textarea, Select } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Users,
@@ -196,6 +196,10 @@ const levelColors: Record<string, "success" | "info" | "purple"> = {
 
 export default function StudyGroupsPage() {
   const { t } = useTranslations();
+  const heroTitleMain = t("Learn Together,");
+  const heroTitleAccent = t("Succeed Together");
+  const heroTitleMainSpeed = 72;
+  const heroTitleAccentDelay = heroTitleMain.length * heroTitleMainSpeed + 420;
   const [groups, setGroups] = useState<StudyGroup[]>(SAMPLE_GROUPS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All Subjects");
@@ -227,21 +231,23 @@ export default function StudyGroupsPage() {
 
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 pt-20 md:pt-24">
-      <div className="min-h-screen">
-        <GlowingOrbs />
+      <div className="min-h-screen relative">
+        <ParallaxSection className="absolute inset-0" speed={0.07}>
+          <GlowingOrbs />
+        </ParallaxSection>
 
         {/* Hero Section */}
         <section className="relative pt-24 md:pt-28 pb-16 px-4 overflow-hidden">
-          <div className="max-w-6xl mx-auto">
+          <ParallaxSection className="max-w-6xl mx-auto" speed={0.05}>
             <FadeIn>
               <SectionLabel icon={Users}>{t("Study Groups")}</SectionLabel>
             </FadeIn>
 
             <HeroText>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
-                {t("Learn Together,")}{" "}
+                <TypingText text={heroTitleMain} speedMs={heroTitleMainSpeed} />{" "}
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  {t("Succeed Together")}
+                  <TypingText text={heroTitleAccent} speedMs={68} delayMs={heroTitleAccentDelay} />
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl">
@@ -281,7 +287,7 @@ export default function StudyGroupsPage() {
                 </div>
               </div>
             </FadeIn>
-          </div>
+          </ParallaxSection>
         </section>
 
         {/* My Groups Section */}

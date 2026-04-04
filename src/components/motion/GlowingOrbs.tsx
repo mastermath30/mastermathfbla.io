@@ -59,13 +59,13 @@ export function GlowingOrbs({ variant = "default" }: GlowingOrbsProps) {
           style={{
             background: index % 2 === 0 ? 'var(--theme-primary)' : 'var(--theme-primary-light)',
           }}
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.92 }}
           animate={{ 
-            opacity: [0.06, 0.11, 0.06],
-            scale: [1, 1.08, 1],
+            opacity: [0.035, 0.065, 0.035],
+            scale: [1, 1.04, 1],
           }}
           transition={{
-            duration: 16,
+            duration: 22,
             delay: orb.delay,
             repeat: Infinity,
             ease: "easeInOut",

@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Avatar } from "@/components/Avatar";
 import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
-import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs } from "@/components/motion";
+import { AuroraVolume, FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   GraduationCap,
@@ -126,7 +126,7 @@ const getFeatures = (t: (key: string) => string) => [
     description: t("Engage with step-by-step lessons and practice problems that adapt to your learning pace."),
     link: "/learn",
     linkText: t("Explore Resources"),
-    image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=400&h=300&fit=crop",
+    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop",
   },
   {
     icon: TrendingUp,
@@ -134,7 +134,7 @@ const getFeatures = (t: (key: string) => string) => [
     description: t("Monitor your learning journey with detailed analytics and personalized goal tracking."),
     link: "/dashboard",
     linkText: t("View Dashboard"),
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
+    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
   },
   {
     icon: Users,
@@ -142,7 +142,7 @@ const getFeatures = (t: (key: string) => string) => [
     description: t("Connect with experienced peer tutors for live sessions and personalized help."),
     link: "/schedule",
     linkText: t("Book a Session"),
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop",
+    image: "https://images.unsplash.com/photo-1596496050755-c923e73e42e1?w=400&h=300&fit=crop",
   },
   {
     icon: MessageCircle,
@@ -150,7 +150,7 @@ const getFeatures = (t: (key: string) => string) => [
     description: t("Ask questions, share solutions, and learn together with our supportive community."),
     link: "/community",
     linkText: t("Join Discussion"),
-    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop",
+    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop",
   },
 ];
 
@@ -159,19 +159,19 @@ const getSteps = (t: (key: string) => string) => [
     icon: UserPlus,
     title: t("Create Your Profile"),
     description: t("Sign up for free and tell us about your learning goals. Our system will personalize your experience based on your current level and objectives."),
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=300&h=200&fit=crop",
   },
   {
     icon: BookOpen,
     title: t("Learn & Practice"),
     description: t("Access interactive lessons, video tutorials, and practice problems. Book sessions with peer tutors when you need extra help."),
-    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=200&fit=crop",
   },
   {
     icon: Trophy,
     title: t("Track & Succeed"),
     description: t("Monitor your progress on the dashboard, earn achievements, and watch your math skills grow over time."),
-    image: "https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=300&h=200&fit=crop",
+    image: "https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=300&h=200&fit=crop",
   },
 ];
 
@@ -230,15 +230,26 @@ const currentDate = new Date();
 
 const getDaysInMonth = (month: number, year: number) => new Date(year, month + 1, 0).getDate();
 const getFirstDayOfMonth = (month: number, year: number) => new Date(year, month, 1).getDay();
+const HOME_HERO_SIDE_IMAGES = [
+  "https://images.unsplash.com/photo-1596496050755-c923e73e42e1?w=600&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=600&h=600&fit=crop",
+];
 
 export default function Home() {
   const { t, language } = useTranslations();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [heroSideImageIndex, setHeroSideImageIndex] = useState(0);
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
   const features = getFeatures(t);
   const steps = getSteps(t);
+  const primaryHeroLine = t("Find Your Math Tutor");
+  const secondaryHeroLine = t("Build Real Confidence");
+  const primaryHeroSpeed = 78;
+  const secondaryHeroDelay = primaryHeroLine.length * primaryHeroSpeed + 500;
   
   // Booking modal state
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -266,6 +277,34 @@ export default function Home() {
     const isLoggedInFlag = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(!!session || isLoggedInFlag === "true");
   }, []);
+
+  useEffect(() => {
+    if (HOME_HERO_SIDE_IMAGES.length <= 1) return;
+
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    const queueNextImage = () => {
+      const delayMs = 10000 + Math.floor(Math.random() * 5001);
+      timeoutId = setTimeout(() => {
+        setHeroSideImageIndex((previousIndex) => {
+          let nextIndex = previousIndex;
+          while (nextIndex === previousIndex) {
+            nextIndex = Math.floor(Math.random() * HOME_HERO_SIDE_IMAGES.length);
+          }
+          return nextIndex;
+        });
+        queueNextImage();
+      }, delayMs);
+    };
+
+    queueNextImage();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const heroSideImage = HOME_HERO_SIDE_IMAGES[heroSideImageIndex];
 
   const handleBookNow = (tutor: typeof topTutors[0]) => {
     if (!isLoggedIn) {
@@ -480,7 +519,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 px-safe">
         {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
+        <ParallaxSection className="absolute inset-0" speed={0.14}>
           <Image
             src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&h=1080&fit=crop"
             alt="Mathematics background"
@@ -488,12 +527,23 @@ export default function Home() {
             className="object-cover opacity-5 dark:opacity-20"
             priority
           />
-        </div>
+          <div className="hero-vignette-layer" />
+          <div className="hero-grain-layer" />
+        </ParallaxSection>
+
+        {/* Aurora volume layer */}
+        <AuroraVolume />
+
+        {/* Readability overlay for hero copy/CTAs */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/28 via-white/34 to-white/45 dark:from-slate-950/35 dark:via-slate-950/48 dark:to-slate-950/62" />
+        <div
+          className="absolute inset-0 pointer-events-none opacity-45 dark:opacity-38"
+          style={{ background: "radial-gradient(80% 65% at 55% 42%, transparent, color-mix(in srgb, var(--theme-primary) 12%, #020617) 100%)" }}
+        />
         
         {/* Animated gradient orbs */}
-        <div className="absolute top-20 left-10 w-48 h-48 md:w-72 md:h-72 rounded-full blur-3xl animate-pulse opacity-20 dark:opacity-10" style={{ background: 'var(--theme-primary)' }} />
-        <div className="absolute bottom-20 right-10 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl animate-pulse delay-1000 opacity-15 dark:opacity-10" style={{ background: 'var(--theme-primary-light)' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-[600px] md:h-[600px] rounded-full blur-3xl opacity-10 dark:opacity-5" style={{ background: 'var(--theme-primary)' }} />
+        <div className="absolute top-16 left-8 w-40 h-40 md:w-56 md:h-56 rounded-full blur-3xl opacity-6 dark:opacity-5" style={{ background: "var(--theme-primary)" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-[520px] md:h-[520px] rounded-full blur-3xl opacity-6 dark:opacity-4" style={{ background: "var(--theme-primary-light)" }} />
 
         {/* Floating math symbols - hidden on small screens */}
         <div className="hidden md:block absolute top-20 left-[15%] text-5xl md:text-7xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3s', color: 'var(--theme-primary)' }}>∫</div>
@@ -514,10 +564,10 @@ export default function Home() {
               </FadeIn>
               <FadeIn delay={0.08}>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight break-words">
-                  {t("Boost Your Math Grades")}
+                  <TypingText text={primaryHeroLine} speedMs={primaryHeroSpeed} />
                   <br />
                   <span className="gradient-text relative inline-block">
-                    {t("With 1-on-1 Expert Tutors")}
+                    <TypingText text={secondaryHeroLine} speedMs={72} delayMs={secondaryHeroDelay} />
                     <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
                       <motion.path
                         d="M2 10C50 4 150 4 298 10"
@@ -592,13 +642,23 @@ export default function Home() {
                   <div className="absolute inset-0 rounded-3xl rotate-6 opacity-20" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }} />
                   <div className="absolute inset-0 rounded-3xl -rotate-3 opacity-10" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }} />
                   <div className="relative bg-white dark:bg-slate-950 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                    <Image
-                      src="https://images.unsplash.com/photo-1596496050755-c923e73e42e1?w=600&h=600&fit=crop"
-                      alt="Student studying mathematics"
-                      width={600}
-                      height={600}
-                      className="object-cover"
-                    />
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={heroSideImage}
+                        initial={{ opacity: 0, y: 18, scale: 0.97, filter: "blur(6px)" }}
+                        animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, y: -12, scale: 1.03, filter: "blur(4px)" }}
+                        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <Image
+                          src={heroSideImage}
+                          alt="Student studying mathematics"
+                          width={600}
+                          height={600}
+                          className="object-cover"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
                 </div>
 

@@ -9,7 +9,7 @@ import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { Avatar } from "@/components/Avatar";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   CalendarCheck,
@@ -900,7 +900,7 @@ export default function SchedulePage() {
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <div className="absolute inset-0">
+        <ParallaxSection className="absolute inset-0" speed={0.12}>
           <Image
             src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&h=400&fit=crop"
             alt="Tutoring session"
@@ -913,7 +913,9 @@ export default function SchedulePage() {
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15%200L30%2015L15%2030L0%2015z%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%2F%3E%3C%2Fsvg%3E')]" />
-        </div>
+          <div className="hero-vignette-layer" />
+          <div className="hero-grain-layer" />
+        </ParallaxSection>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-8 md:pt-36 md:pb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -922,7 +924,9 @@ export default function SchedulePage() {
                 <CalendarCheck className="w-4 h-4" />
                 {t("Tutoring Sessions")}
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">{t("Schedule")}</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+                <TypingText text={t("Schedule")} speedMs={74} />
+              </h1>
               <p className="text-slate-200 text-base md:text-lg mb-4">
                 {t("Manage your study sessions and tutoring appointments.")}
               </p>
