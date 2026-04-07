@@ -352,8 +352,8 @@ export function AIMathTutor() {
       <motion.button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-24 md:bottom-6 right-[84px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
-        aria-label="Open AI Agent"
-        title="AI Agent (Alt+M)"
+        aria-label={t("Open AI Agent")}
+        title={t("AI Agent (Alt+M)")}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -516,7 +516,7 @@ export function AIMathTutor() {
                                   onClick={() => handleTopicExample(ex)}
                                   className="block w-full text-left text-xs text-violet-600 dark:text-violet-400 hover:underline truncate"
                                 >
-                                  &quot;{ex}&quot;
+                                  &quot;{t(ex)}&quot;
                                 </button>
                               ))}
                             </div>

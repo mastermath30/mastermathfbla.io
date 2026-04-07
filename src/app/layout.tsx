@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { SkipToContentLink } from "@/components/SkipToContentLink";
 
 import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { KeyboardNavigation } from "@/components/KeyboardNavigation";
@@ -75,10 +76,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} antialiased min-h-screen bg-slate-50 dark:bg-slate-950`}>
         <LanguageProvider>
-          {/* Skip to main content link for keyboard navigation */}
-          <a href="#main-content" className="skip-to-content">
-            Skip to main content
-          </a>
+          <SkipToContentLink />
           
           <TopBar />
           <main id="main-content" className="pb-24 md:pb-0" tabIndex={-1}>

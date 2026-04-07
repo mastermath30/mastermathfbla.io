@@ -13,6 +13,7 @@ import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
 import { AuroraVolume, FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { getFeaturedTutors, getTutorByName } from "@/data/people";
 import {
   GraduationCap,
   Rocket,
@@ -60,7 +61,7 @@ const sessions = [
     tutor: "Sarah Johnson",
     status: "confirmed",
     color: "violet",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop",
+    image: getTutorByName("Sarah Johnson")?.image ?? "",
   },
   {
     icon: Infinity,
@@ -69,7 +70,7 @@ const sessions = [
     tutor: "Priya Patel",
     status: "pending",
     color: "purple",
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=60&h=60&fit=crop",
+    image: getTutorByName("Priya Patel")?.image ?? "",
   },
   {
     icon: Calculator,
@@ -78,46 +79,12 @@ const sessions = [
     tutor: "Michael Chen",
     status: "confirmed",
     color: "blue",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop",
+    image: getTutorByName("Michael Chen")?.image ?? "",
   },
 ];
 
 // Top 3 rated tutors for home page
-const topTutors = [
-  {
-    name: "Sarah Johnson",
-    initials: "SJ",
-    subjects: "Calculus, Statistics, Differential Equations",
-    rating: 4.9,
-    reviews: 128,
-    price: 52,
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-    available: true,
-    specialties: ["AP Calculus BC", "College Statistics", "Research Methods"],
-  },
-  {
-    name: "Emma Rodriguez",
-    initials: "ER",
-    subjects: "Precalculus, Geometry, Algebra",
-    rating: 4.5,
-    reviews: 112,
-    price: 42,
-    image: "https://images.unsplash.com/photo-1591084728795-1149f32d9866?w=200&h=200&fit=crop",
-    available: true,
-    specialties: ["Geometry Proofs", "Trigonometry", "Pre-Calc"],
-  },
-  {
-    name: "Priya Patel",
-    initials: "PP",
-    subjects: "Linear Algebra, Geometry, Discrete Math",
-    rating: 4.1,
-    reviews: 96,
-    price: 35,
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop",
-    available: true,
-    specialties: ["Linear Algebra", "Proof Writing", "Competition Math"],
-  },
-];
+const topTutors = getFeaturedTutors();
 
 const getFeatures = (t: (key: string) => string) => [
   {
@@ -246,8 +213,8 @@ export default function Home() {
   const stats = getStats(t);
   const features = getFeatures(t);
   const steps = getSteps(t);
-  const primaryHeroLine = t("Find Your Math Tutor");
-  const secondaryHeroLine = t("Build Real Confidence");
+  const primaryHeroLine = t("Master Mathematics");
+  const secondaryHeroLine = t("With Expert Tutors");
   const primaryHeroSpeed = 78;
   const secondaryHeroDelay = primaryHeroLine.length * primaryHeroSpeed + 500;
   

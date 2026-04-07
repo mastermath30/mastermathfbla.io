@@ -216,7 +216,7 @@ export function Navbar() {
                         }`}>
                           {link.icon}
                         </div>
-                        <span className="w-full max-w-full text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight truncate">
+                        <span className="w-full max-w-full text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight whitespace-normal break-words">
                           {link.title}
                         </span>
                       </Link>

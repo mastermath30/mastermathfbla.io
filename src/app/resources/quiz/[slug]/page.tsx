@@ -651,15 +651,15 @@ function QuizPageContent() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       <div className="max-w-4xl mx-auto px-6 py-12 pb-24">
         <div className="flex flex-col gap-4 mb-8">
-          <SectionLabel>{`${quiz.topic} Quiz`}</SectionLabel>
+          <SectionLabel>{`${t(quiz.topic)} ${t("Quiz")}`}</SectionLabel>
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{quiz.title}</h1>
-            <p className="text-slate-500 dark:text-slate-400">{quiz.description}</p>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t(quiz.title)}</h1>
+            <p className="text-slate-500 dark:text-slate-400">{t(quiz.description)}</p>
             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <span className={`px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-medium ${difficultyLabels[difficulty]?.color || ''}`}>
                 {difficultyLabels[difficulty]?.label || t('Medium')} {t("Mode")}
               </span>
-              <span>{quiz.time}</span>
+              <span>{t(quiz.time)}</span>
               <span>{totalQuestions} {t("questions")}</span>
             </div>
           </div>
@@ -699,7 +699,7 @@ function QuizPageContent() {
                 />
               </div>
 
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-5">{question.prompt}</h2>
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-5">{t(question.prompt)}</h2>
               <div className="grid grid-cols-1 gap-3">
                 {question.options.map((option, index) => {
                   const isSelected = selectedIndex === index;
@@ -743,7 +743,7 @@ function QuizPageContent() {
                           answered && isCorrect ? "text-emerald-700 dark:text-emerald-300" : "",
                           answered && isIncorrect ? "text-rose-700 dark:text-rose-300" : "",
                           answered && !isCorrect && !isIncorrect ? "text-slate-500 dark:text-slate-400" : "",
-                        ].filter(Boolean).join(" ")}>{option}</span>
+                        ].filter(Boolean).join(" ")}>{t(option)}</span>
                       </div>
                     </button>
                   );

@@ -10,6 +10,7 @@ import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { personImages } from "@/data/people";
 import {
   MessageCircle,
   Plus,
@@ -61,9 +62,9 @@ const tagColors: Record<string, "violet" | "success" | "info" | "purple" | "defa
 };
 
 const topContributors = [
-  { name: "Alex Johnson", initials: "AJ", points: 1245, rank: "Gold", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop", icon: Trophy },
-  { name: "David Kim", initials: "DK", points: 1098, rank: "Silver", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop", icon: Medal },
-  { name: "Maria Garcia", initials: "MG", points: 987, rank: "Bronze", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop", icon: Award },
+  { name: "Alex Johnson", initials: "AJ", points: 1245, rank: "Gold", image: personImages.alexThompson, icon: Trophy },
+  { name: "David Kim", initials: "DK", points: 1098, rank: "Silver", image: personImages.davidKim, icon: Medal },
+  { name: "Maria Garcia", initials: "MG", points: 987, rank: "Bronze", image: personImages.mariaSantos, icon: Award },
 ];
 
 const featuredStudyGroups = [
@@ -87,7 +88,7 @@ const activityFeed = [
   {
     id: "1",
     type: "achievement",
-    user: { name: "Sarah J.", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" },
+    user: { name: "Sarah J.", image: personImages.sarahJohnson },
     content: "earned the 'Calculus Master' badge!",
     time: "2 hours ago",
     icon: Trophy,
@@ -96,7 +97,7 @@ const activityFeed = [
   {
     id: "2",
     type: "join",
-    user: { name: "Michael C.", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" },
+    user: { name: "Michael C.", image: personImages.michaelChen },
     content: "joined AP Calculus BC Study Group",
     time: "3 hours ago",
     icon: UserPlus,
@@ -105,7 +106,7 @@ const activityFeed = [
   {
     id: "3",
     type: "solved",
-    user: { name: "Emma R.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=50&h=50&fit=crop" },
+    user: { name: "Emma R.", image: personImages.emmaRodriguez },
     content: "solved 10 calculus problems today!",
     time: "5 hours ago",
     icon: CheckCircle2,
@@ -114,7 +115,7 @@ const activityFeed = [
   {
     id: "4",
     type: "session",
-    user: { name: "Alex T.", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop" },
+    user: { name: "Alex T.", image: personImages.alexThompson },
     content: "is hosting a live study session now",
     time: "Live",
     icon: Video,

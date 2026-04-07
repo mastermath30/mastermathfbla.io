@@ -31,10 +31,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [language]);
 
   const value = useMemo<LanguageContextValue>(() => {
+    const englishDictionary = translations.en;
+
     return {
       language,
       setLanguage,
-      t: (key: string) => translations[language]?.[key] ?? key,
+      t: (key: string) => {
+        const translated = translations[language]?.[key];
+        if (translated) return translated;
+        return englishDictionary[key] ?? key;
+      },
     };
   }, [language]);
 

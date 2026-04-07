@@ -1,17 +1,17 @@
 export const languages = [
   { code: "en", label: "English" },
-  { code: "es", label: "Spanish" },
-  { code: "fr", label: "French" },
+  { code: "es", label: "Espanol" },
+  { code: "fr", label: "Français" },
   { code: "hi", label: "Hindi" },
-  { code: "zh", label: "Chinese" },
-  { code: "ar", label: "Arabic" },
-  { code: "pt", label: "Portuguese" },
-  { code: "ja", label: "Japanese" },
-  { code: "de", label: "German" },
-  { code: "ko", label: "Korean" },
-  { code: "ru", label: "Russian" },
-  { code: "it", label: "Italian" },
-  { code: "vi", label: "Vietnamese" },
+  { code: "zh", label: "中文" },
+  { code: "ar", label: "العربية" },
+  { code: "pt", label: "Portugues" },
+  { code: "ja", label: "日本語" },
+  { code: "de", label: "Deutsch" },
+  { code: "ko", label: "한국어" },
+  { code: "ru", label: "Русский" },
+  { code: "it", label: "Italiano" },
+  { code: "vi", label: "Tiếng Việt" },
 ] as const;
 
 export type LanguageCode = (typeof languages)[number]["code"];

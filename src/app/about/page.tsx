@@ -8,6 +8,7 @@ import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { personImages } from "@/data/people";
 import {
   Heart,
   Target,
@@ -43,7 +44,7 @@ const getTeam = (t: (key: string) => string) => [
     initials: "SJ", 
     bio: t("PhD in Mathematics with 10+ years of teaching experience at top universities."), 
     fullBio: "Dr. Sarah Johnson earned her PhD in Applied Mathematics from MIT and has dedicated her career to making math accessible to everyone. With over 10 years of teaching experience at Stanford and Berkeley, she noticed that many students struggled not because they lacked ability, but because they lacked the right resources and support. This inspired her to create MathMaster. Sarah believes that every student can excel in mathematics with the right guidance and community support. When she's not teaching, she enjoys hiking, playing chess, and mentoring young educators.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" 
+    image: personImages.sarahJohnson
   },
   { 
     name: "Michael Chen", 
@@ -51,7 +52,7 @@ const getTeam = (t: (key: string) => string) => [
     initials: "MC", 
     bio: t("Software Engineer & Education Technology Specialist. Built platforms for millions of users."), 
     fullBio: "Michael Chen brings 15 years of experience in software engineering and education technology to MathMaster. Previously, he led engineering teams at Google and Coursera, where he built learning platforms used by millions of students worldwide. Michael is passionate about creating intuitive, accessible technology that removes barriers to education. He holds a Master's degree in Computer Science from Carnegie Mellon and is a strong advocate for open-source education tools. In his free time, Michael contributes to coding education nonprofits and enjoys building robots with his two kids.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" 
+    image: personImages.michaelChen
   },
   { 
     name: "Priya Patel", 
@@ -59,7 +60,7 @@ const getTeam = (t: (key: string) => string) => [
     initials: "PP", 
     bio: t("Expert in building and nurturing learning communities. Passionate about student success."), 
     fullBio: "Priya Patel has spent her career fostering supportive learning environments where students thrive. With a background in Educational Psychology from Columbia University, she understands the importance of community in the learning process. Before joining MathMaster, Priya managed student success programs at Khan Academy and built volunteer tutor networks serving underrepresented students. She believes that peer support and mentorship are just as important as great content. Priya is fluent in four languages and loves connecting with students from diverse backgrounds around the world.",
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" 
+    image: personImages.priyaPatel
   },
 ];
 
@@ -413,7 +414,7 @@ export default function AboutPage() {
       <footer className="py-12 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
-            © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
+            {t("© 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.")}
           </p>
         </div>
       </footer>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { personImages } from "@/data/people";
 
 interface Testimonial {
   name: string;
@@ -16,31 +17,31 @@ const leftColumnTestimonials: Testimonial[] = [
     name: "Sarah Chen",
     role: "AP Calculus Student",
     text: "MathMaster helped me go from a C to an A in AP Calc! The tutors explain concepts in ways that actually make sense.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+    image: personImages.sarahJohnson,
   },
   {
     name: "Marcus Johnson",
     role: "High School Junior",
     text: "I was struggling with algebra for years. After just 2 months with MathMaster, I'm now helping my classmates!",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+    image: personImages.michaelChen,
   },
   {
     name: "Emily Rodriguez",
     role: "High School Senior",
     text: "The SAT math prep resources are incredible. I improved my score by 150 points and got into my dream school!",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
+    image: personImages.emmaRodriguez,
   },
   {
     name: "Alex Turner",
     role: "Calculus Student",
     text: "MathMaster helped me understand complex concepts I struggled with for years. Now I tutor other students!",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+    image: personImages.alexThompson,
   },
   {
     name: "Priya Sharma",
     role: "Pre-Med Student",
     text: "The statistics course was exactly what I needed for my research methods class. Highly recommend!",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+    image: personImages.priyaPatel,
   },
 ];
 
@@ -49,37 +50,37 @@ const middleColumnTestimonials: Testimonial[] = [
     name: "James Wilson",
     role: "College Freshman",
     text: "The transition from high school to college math was seamless thanks to MathMaster's preparation courses.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    image: personImages.jamesWilson,
   },
   {
     name: "David Park",
     role: "Engineering Student",
     text: "Linear algebra and differential equations finally clicked! The visual explanations are game-changing.",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop",
+    image: personImages.robertFoster,
   },
   {
     name: "Aisha Patel",
     role: "Math Competition Winner",
     text: "I won 2nd place in the state math competition after practicing with MathMaster's advanced problems.",
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&h=100&fit=crop",
+    image: personImages.jessicaWu,
   },
   {
     name: "Kevin O'Brien",
     role: "Math Tutor",
     text: "As a tutor, I recommend MathMaster to all my students. It reinforces what we cover in sessions perfectly.",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop",
+    image: personImages.davidKim,
   },
   {
     name: "Jennifer Liu",
     role: "Graduate Student",
     text: "The advanced calculus materials helped me prepare for my qualifying exams. Passed on my first try!",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop",
+    image: personImages.lisaZhang,
   },
   {
     name: "Tom Bradley",
     role: "Physics Major",
     text: "The integration between math concepts and real-world physics applications is brilliant.",
-    image: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100&h=100&fit=crop",
+    image: personImages.jamesWilson,
   },
 ];
 
@@ -88,31 +89,31 @@ const rightColumnTestimonials: Testimonial[] = [
     name: "Rachel Kim",
     role: "Geometry Student",
     text: "Proofs used to terrify me. Now I actually enjoy solving them! The step-by-step approach is perfect.",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop",
+    image: personImages.rachelGreen,
   },
   {
     name: "Lisa Thompson",
     role: "Parent",
     text: "My daughter's confidence in math has skyrocketed. Worth every penny for the peace of mind.",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop",
+    image: personImages.mariaSantos,
   },
   {
     name: "Michael Brown",
     role: "ACT Prep Student",
     text: "Raised my ACT math score from 24 to 33! The practice tests mirror the real thing perfectly.",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop",
+    image: personImages.davidKim,
   },
   {
     name: "Sophie Anderson",
     role: "Algebra Student",
     text: "I went from failing to getting A's in just one semester. The step-by-step explanations are incredible.",
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop",
+    image: personImages.emmaRodriguez,
   },
   {
     name: "Daniel Martinez",
     role: "Computer Science Major",
     text: "Discrete math finally makes sense! The visualizations and practice problems are top-notch.",
-    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop",
+    image: personImages.michaelChen,
   },
 ];
 

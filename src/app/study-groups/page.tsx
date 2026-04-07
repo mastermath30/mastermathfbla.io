@@ -11,6 +11,7 @@ import { Input, Textarea, Select } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { personImages } from "@/data/people";
 import {
   Users,
   Plus,
@@ -81,12 +82,12 @@ const SAMPLE_GROUPS: StudyGroup[] = [
     isPrivate: false,
     host: {
       name: "Sarah Johnson",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+      image: personImages.sarahJohnson,
     },
     members: [
-      { name: "Alex", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop" },
-      { name: "Maria", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop" },
-      { name: "David", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" },
+      { name: "Alex", image: personImages.alexThompson },
+      { name: "Maria", image: personImages.mariaSantos },
+      { name: "David", image: personImages.davidKim },
     ],
     tags: ["AP Exam", "Derivatives", "Integrals"],
     isMember: true,
@@ -106,11 +107,11 @@ const SAMPLE_GROUPS: StudyGroup[] = [
     isPrivate: false,
     host: {
       name: "Michael Chen",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+      image: personImages.michaelChen,
     },
     members: [
-      { name: "Emma", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=50&h=50&fit=crop" },
-      { name: "James", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop" },
+      { name: "Emma", image: personImages.emmaRodriguez },
+      { name: "James", image: personImages.jamesWilson },
     ],
     tags: ["SAT", "Test Prep", "Strategy"],
   },
@@ -129,10 +130,10 @@ const SAMPLE_GROUPS: StudyGroup[] = [
     isPrivate: false,
     host: {
       name: "Emma Rodriguez",
-      image: "https://images.unsplash.com/photo-1591084728795-1149f32d9866?w=100&h=100&fit=crop",
+      image: personImages.emmaRodriguez,
     },
     members: [
-      { name: "Sophie", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" },
+      { name: "Sophie", image: personImages.rachelGreen },
     ],
     tags: ["Proofs", "Competition", "AMC"],
   },
@@ -151,11 +152,11 @@ const SAMPLE_GROUPS: StudyGroup[] = [
     isPrivate: true,
     host: {
       name: "Priya Patel",
-      image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&h=100&fit=crop",
+      image: personImages.priyaPatel,
     },
     members: [
-      { name: "Kevin", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop" },
-      { name: "Lisa", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop" },
+      { name: "Kevin", image: personImages.robertFoster },
+      { name: "Lisa", image: personImages.lisaZhang },
     ],
     tags: ["Python", "R", "Data Analysis"],
   },
@@ -174,12 +175,12 @@ const SAMPLE_GROUPS: StudyGroup[] = [
     isPrivate: false,
     host: {
       name: "Alex Thompson",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+      image: personImages.alexThompson,
     },
     members: [
-      { name: "Sam", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" },
-      { name: "Nina", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=50&h=50&fit=crop" },
-      { name: "Tom", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop" },
+      { name: "Sam", image: personImages.michaelChen },
+      { name: "Nina", image: personImages.jessicaWu },
+      { name: "Tom", image: personImages.jamesWilson },
     ],
     tags: ["Equations", "Functions", "Basics"],
   },
@@ -625,7 +626,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
       isPrivate,
       host: {
         name: "You",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+        image: personImages.sarahJohnson,
       },
       members: [],
       tags: [subject, level],
