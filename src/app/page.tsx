@@ -922,7 +922,7 @@ export default function Home() {
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/40" />
+                        <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/40" />
                         <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), transparent)' }} />
                       </div>
                       <div className="md:w-3/5 p-6 flex flex-col">

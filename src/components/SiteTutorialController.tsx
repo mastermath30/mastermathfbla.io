@@ -147,7 +147,7 @@ export function SiteTutorialController() {
       <button
         type="button"
         onClick={startTutorial}
-        className="md:hidden fixed bottom-24 right-4 z-[92] rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 shadow-lg flex items-center gap-2"
+        className="md:hidden fixed bottom-24 left-4 z-[92] rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 shadow-lg flex items-center gap-2"
         aria-label={t("Open website tutorial")}
       >
         <HelpCircle className="w-4 h-4 text-[var(--theme-primary)]" />

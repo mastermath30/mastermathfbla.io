@@ -6,6 +6,31 @@
 
 ---
 
+## CRITICAL FIND (Round 2 correction): Fixed-Layer UI Clustering Over Feature Cards
+
+**Component:** `src/components/SiteTutorialController.tsx` + `src/components/StudyStreak.tsx` + `src/app/page.tsx` (feature card image gradient)
+
+**Affected section:** Landing page features section (`id="features"`) — cards with "Interactive Learning", "Track Progress", "Peer Tutoring", "Community Forum"
+
+**Exact root cause:** Three persistent `fixed`-position elements all lived on the **right side** of the mobile viewport simultaneously:
+1. `StudyStreak` — `fixed top-20 right-4 z-[89]` — orange/red flame pill, always rendered, blocked top-right of visible card
+2. `SiteTutorialController` mobile button — `fixed bottom-24 right-4 z-[92]` — white "Tutorial" pill, always rendered, formed a cluster with the Navbar FAB below it
+3. Navbar FAB — `fixed bottom-6 right-6 z-[102]` — expected navigation, but the Tutorial pill directly above it amplified the visual mess
+
+When any feature card fills the mobile viewport, all three right-side fixed elements appear visually **inside** the card, looking like floating decorative chips layered over card content. The Tutorial pill + FAB stacked vertically in the bottom-right are exactly the "cluttered overlapping floating icons/chips/buttons near the bottom-right" the user described.
+
+**Additional issue in `src/app/page.tsx`:** The feature card image has `bg-gradient-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/40` — a right-to-white horizontal fade designed for desktop (content to the right of image). On mobile (content below image), this gradient creates an unexplained right-edge fade artifact on every feature card image.
+
+**Fixes applied:**
+- `SiteTutorialController.tsx`: moved mobile Tutorial button from `right-4` → `left-4` — separates it from the right-side FAB cluster
+- `StudyStreak.tsx`: changed streak button to `hidden md:flex` — removes it from mobile where it blocked card content top-right
+- `StudyStreak.tsx`: changed celebration popup to `hidden md:block` — same right-side clutter fix
+- `page.tsx`: changed right-fade image gradient to `hidden md:block` — removes visual artifact on mobile; desktop-only makes sense since the content side transition only applies in side-by-side layout
+
+**Why previous audit missed it:** The previous audit searched for `absolute` positioned elements inside components and sections. These three elements are `fixed` positioned at the layout level — they are not inside any card or section's DOM. A DOM-level search of the feature section finds no absolute children. The clutter is caused by fixed-layer elements Z-compositing over the scrollable content, which is only visible by examining all `fixed` elements across the entire component tree simultaneously.
+
+---
+
 ## Root Problem: Decorative Absolute Elements Breaking Out of Containers on Mobile
 
 Several pages use `absolute` positioned floating badges, cards, and orbs that extend beyond their parent's bounding box. When the layout collapses to a single column on mobile, these elements collide with adjacent content, creating visible clutter.
