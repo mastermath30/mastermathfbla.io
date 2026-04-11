@@ -522,15 +522,9 @@ export function InteractiveWhiteboard() {
       {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
       <motion.button
         onClick={() => setIsOpen(true)}
-<<<<<<< HEAD
         className="fixed bottom-24 md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open Interactive Whiteboard")}
         title={t("Interactive Whiteboard (Alt+W)")}
-=======
-        className="hidden md:flex fixed bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
-        aria-label="Open Interactive Whiteboard"
-        title="Interactive Whiteboard (Alt+W)"
->>>>>>> 1954830 (fixes)
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -553,13 +547,8 @@ export function InteractiveWhiteboard() {
                   <Pencil className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
                 <div>
-<<<<<<< HEAD
                   <h2 className="font-bold text-slate-900 dark:text-white">{t("Interactive Whiteboard")}</h2>
                   <p className="text-xs text-slate-500">{t("Collaborate and draw together")}</p>
-=======
-                  <h2 className="font-bold text-sm md:text-base text-slate-900 dark:text-white">Whiteboard</h2>
-                  <p className="text-xs text-slate-500 hidden md:block">Collaborate and draw together</p>
->>>>>>> 1954830 (fixes)
                 </div>
               </div>
 

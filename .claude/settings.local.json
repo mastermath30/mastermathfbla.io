@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(curl:*)",
-      "Bash(npx next build:*)"
+      "Bash(npx next build:*)",
+      "Bash(npm run:*)",
+      "Bash(grep -E \"^katex$|^@supabase$\")",
+      "Bash(npm install:*)"
     ]
   }
 }
