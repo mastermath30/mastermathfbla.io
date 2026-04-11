@@ -100,6 +100,14 @@ export function SiteTutorialController() {
     router.push(firstStep.route);
   };
 
+  // Allow external triggers (e.g. Navbar mobile menu) to start the tutorial
+  useEffect(() => {
+    const handler = () => startTutorial();
+    window.addEventListener("open-tutorial", handler);
+    return () => window.removeEventListener("open-tutorial", handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const closeAndComplete = () => {
     setGlobalTutorialCompleted(true);
     setGlobalTutorialStep(0);
@@ -144,15 +152,7 @@ export function SiteTutorialController() {
         <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{t("Tutorial")}</span>
       </button>
 
-      <button
-        type="button"
-        onClick={startTutorial}
-        className="md:hidden fixed bottom-24 left-4 z-[92] rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 shadow-lg flex items-center gap-2"
-        aria-label={t("Open website tutorial")}
-      >
-        <HelpCircle className="w-4 h-4 text-[var(--theme-primary)]" />
-        <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{t("Tutorial")}</span>
-      </button>
+      {/* Mobile tutorial access is via the Navbar bottom sheet */}
 
       {open && (
         <div className="fixed inset-0 z-[160]">

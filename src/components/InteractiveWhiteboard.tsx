@@ -147,6 +147,13 @@ export function InteractiveWhiteboard() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, textPosition]);
 
+  // Allow external components (e.g. Navbar mobile menu) to open whiteboard
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("open-whiteboard", handler);
+    return () => window.removeEventListener("open-whiteboard", handler);
+  }, []);
+
   // Redraw canvas
   const redrawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -522,7 +529,7 @@ export function InteractiveWhiteboard() {
       {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open Interactive Whiteboard")}
         title={t("Interactive Whiteboard (Alt+W)")}
         whileHover={{ scale: 1.1 }}

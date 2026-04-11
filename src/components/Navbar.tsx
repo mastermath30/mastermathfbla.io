@@ -15,7 +15,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Palette, Accessibility, Wrench } from "lucide-react";
+import { Palette, Accessibility, Wrench, Brain, Pencil, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "./LanguageProvider";
 
@@ -113,6 +113,24 @@ export function Navbar() {
       icon: <Wrench className="w-5 h-5" />,
       event: "open-tools",
       color: "from-slate-600 to-slate-800",
+    },
+    {
+      title: t("AI Tutor"),
+      icon: <Brain className="w-5 h-5" />,
+      event: "open-ai-tutor",
+      color: "from-violet-500 to-purple-600",
+    },
+    {
+      title: t("Whiteboard"),
+      icon: <Pencil className="w-5 h-5" />,
+      event: "open-whiteboard",
+      color: "from-emerald-500 to-teal-600",
+    },
+    {
+      title: t("Tutorial"),
+      icon: <HelpCircle className="w-5 h-5" />,
+      event: "open-tutorial",
+      color: "from-orange-500 to-amber-500",
     },
   ];
 

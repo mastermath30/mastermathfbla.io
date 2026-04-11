@@ -6,6 +6,30 @@
 
 ---
 
+## Mobile UX Refactor: Collapse All Floating Actions Into Single FAB Menu
+
+**Issue:** On mobile, every floating quick-action rendered as its own independent fixed button, creating a cluster of overlapping controls that competed with page content:
+- `AIMathTutor` — brain circle at `bottom-24 right-[84px]` (always visible)
+- `InteractiveWhiteboard` — pencil circle at `bottom-24 right-[156px]` (always visible)
+- `SiteTutorialController` — "Tutorial" pill at `bottom-24 left-4` (always visible)
+- `StudyStreak` — flame pill at `top-20 right-4` (always visible)
+- `Navbar` FAB — `bottom-6 right-6` (correct; the primary trigger)
+
+**Mobile UX rule:** On mobile (< md), only the single 3-line Navbar FAB is visible. All other floating quick actions are hidden and accessed through the FAB's expandable bottom sheet.
+
+**Files changed:**
+- `AIMathTutor.tsx` — floating button: `fixed bottom-24 md:bottom-6 right-[84px] flex` → `hidden md:flex fixed md:bottom-6 right-[84px]`; stays at desktop position unchanged; already listens to `open-ai-tutor` event
+- `InteractiveWhiteboard.tsx` — same pattern; added `useEffect` listener for `open-whiteboard` event
+- `SiteTutorialController.tsx` — mobile pill button removed entirely; added `useEffect` listener for `open-tutorial` event; desktop side tab unchanged
+- `Navbar.tsx` — added `Brain`, `Pencil`, `HelpCircle` to lucide imports; added AI Tutor (`open-ai-tutor`), Whiteboard (`open-whiteboard`), Tutorial (`open-tutorial`) to the `utilities` quick-actions array; renders as a clean 2-row × 3-col grid in the bottom sheet
+
+**Result on mobile (375px / 390px / 414px):**
+- Only 1 visible floating control: the 3-line Navbar FAB at bottom-right
+- Tap FAB → bottom sheet slides up with Navigation links + 6 Quick Actions (Theme, Accessibility, Tools, AI Tutor, Whiteboard, Tutorial)
+- All actions reachable with one extra tap; no floating controls visible by default
+
+---
+
 ## CRITICAL FIND (Round 2 correction): Fixed-Layer UI Clustering Over Feature Cards
 
 **Component:** `src/components/SiteTutorialController.tsx` + `src/components/StudyStreak.tsx` + `src/app/page.tsx` (feature card image gradient)
