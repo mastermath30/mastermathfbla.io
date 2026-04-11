@@ -5,7 +5,19 @@ import { communityEvents, studyGroupSpotlights } from "@/data/courses";
 import { Card } from "@/components/Card";
 import { CalendarClock, Users } from "lucide-react";
 
-export function CommunitySpotlight() {
+type CommunitySpotlightProps = {
+  studyGroupId?: string;
+  discussionLabel?: string;
+};
+
+export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunitySpotlightProps) {
+  const orderedGroups = studyGroupId
+    ? [
+        ...studyGroupSpotlights.filter((group) => group.id === studyGroupId),
+        ...studyGroupSpotlights.filter((group) => group.id !== studyGroupId),
+      ]
+    : studyGroupSpotlights;
+
   return (
     <Card>
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">Community Spotlight</h2>
@@ -13,12 +25,22 @@ export function CommunitySpotlight() {
         Join a study group, drop into office hours, or ask peers for help.
       </p>
 
+      {discussionLabel && (
+        <div className="mt-3 rounded-lg border border-violet-200 dark:border-violet-800 bg-violet-50/70 dark:bg-violet-900/20 px-3 py-2 text-xs text-violet-700 dark:text-violet-300">
+          Topic thread: {discussionLabel}
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-2 gap-3 mt-4">
-        {studyGroupSpotlights.slice(0, 2).map((group) => (
+        {orderedGroups.slice(0, 2).map((group) => (
           <Link
             key={group.id}
             href={group.href}
-            className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 hover:border-[var(--theme-primary)] transition-colors"
+            className={`rounded-xl border p-4 hover:border-[var(--theme-primary)] transition-colors ${
+              group.id === studyGroupId
+                ? "border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 dark:bg-[var(--theme-primary)]/20"
+                : "border-slate-200 dark:border-slate-700"
+            }`}
           >
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-[var(--theme-primary)]" />

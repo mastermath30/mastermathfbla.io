@@ -139,8 +139,8 @@ const getFeatures = (t: (key: string) => string) => [
     icon: Users,
     title: t("Peer Tutoring"),
     description: t("Connect with experienced peer tutors for live sessions and personalized help."),
-    link: "/schedule",
-    linkText: t("Book a Session"),
+    link: "/tutoring-request",
+    linkText: t("Request Tutoring"),
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop",
   },
   {

@@ -15,6 +15,7 @@ This repository is standardized on `npm`.
 
 ```bash
 npm install
+npm run verify:learning
 npm run dev
 ```
 
@@ -34,3 +35,12 @@ Deploy on Vercel using the standard project setup. Build/install commands are de
 
 - `installCommand`: `npm install`
 - `buildCommand`: `npm run build`
+
+## Supabase (Market-Ready Data)
+
+To enable cloud auth/progress/community persistence, set:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Then run the SQL bootstrap in [supabase/schema.sql](/Users/ayaanoberoi/Code/Final%20FBLA%20Website/mastermathfbla.io/supabase/schema.sql).

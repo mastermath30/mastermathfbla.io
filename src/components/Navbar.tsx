@@ -15,7 +15,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Palette, Accessibility, Lightbulb, Wrench } from "lucide-react";
+import { Palette, Accessibility, Wrench } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "./LanguageProvider";
 
@@ -55,9 +55,9 @@ export function Navbar() {
   const links = [
     { title: t("Home"), icon: <IconHome className="h-6 w-6" />, href: "/" },
     {
-      title: t("About"),
-      icon: <IconInfoCircle className="h-6 w-6" />,
-      href: "/about",
+      title: t("Learn"),
+      icon: <IconBook className="h-6 w-6" />,
+      href: "/learn",
     },
     {
       title: t("Schedule"),
@@ -70,11 +70,6 @@ export function Navbar() {
       href: "/dashboard",
     },
     {
-      title: t("Learn"),
-      icon: <IconBook className="h-6 w-6" />,
-      href: "/learn",
-    },
-    {
       title: t("Community"),
       icon: <IconUsers className="h-6 w-6" />,
       href: "/community",
@@ -83,6 +78,11 @@ export function Navbar() {
       title: t("Support"),
       icon: <IconLifebuoy className="h-6 w-6" />,
       href: "/support",
+    },
+    {
+      title: t("About"),
+      icon: <IconInfoCircle className="h-6 w-6" />,
+      href: "/about",
     },
     {
       title: isLoggedIn ? userName || t("Account") : t("Sign In"),
@@ -113,12 +113,6 @@ export function Navbar() {
       icon: <Wrench className="w-5 h-5" />,
       event: "open-tools",
       color: "from-slate-600 to-slate-800",
-    },
-    {
-      title: t("Math Tip"),
-      icon: <Lightbulb className="w-5 h-5" />,
-      event: "open-mathtip",
-      color: "from-amber-400 to-orange-500",
     },
   ];
 

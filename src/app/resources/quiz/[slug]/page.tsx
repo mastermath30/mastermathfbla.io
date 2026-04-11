@@ -8,7 +8,7 @@ import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
-import { addQuizAttempt } from "@/lib/progress";
+import { addQuizAttempt, getLearningProgress } from "@/lib/progress";
 import { topicByQuizSlug } from "@/data/courses";
 
 type QuizQuestion = {
@@ -594,6 +594,7 @@ function QuizPageContent() {
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const unlockThreshold = getLearningProgress().unlockThreshold;
 
   const difficultyLabels: Record<string, { label: string; color: string }> = {
     easy: { label: t("Easy"), color: "text-green-500" },
@@ -611,7 +612,7 @@ function QuizPageContent() {
               {t("The quiz you are looking for does not exist yet.")}
             </p>
             <Button onClick={() => router.push("/resources#quizzes")} type="button">
-              {t("Back to Resources")}
+              {t("Back to Learn")}
             </Button>
           </Card>
         </main>
@@ -690,12 +691,17 @@ function QuizPageContent() {
               <p className="text-slate-500 dark:text-slate-400 mb-6">
                 {t("You scored")} {score} {t("out of")} {totalQuestions}.
               </p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+                {Math.round((score / totalQuestions) * 100) >= Math.round(unlockThreshold * 100)
+                  ? `Mastery unlocked. You can continue to the next topic (${Math.round(unlockThreshold * 100)}% threshold).`
+                  : `Mastery not reached. Review support is recommended before retrying (${Math.round(unlockThreshold * 100)}% threshold).`}
+              </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={handleRestart} type="button">
                   {t("Restart Quiz")}
                 </Button>
-                <Button variant="outline" onClick={() => router.push("/resources#quizzes")} type="button">
-                  {t("Back to Resources")}
+                <Button variant="outline" onClick={() => router.push("/learn")} type="button">
+                  {t("Back to Learn")}
                 </Button>
               </div>
             </div>

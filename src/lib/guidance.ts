@@ -1,4 +1,4 @@
-import { allTopics, topicByQuizSlug, studyGroupSpotlights } from "@/data/courses";
+import { allTopics, courses, studyGroupSpotlights, topicByQuizSlug } from "@/data/courses";
 import { LearningProgress } from "@/lib/progress";
 
 export type RecommendationKind =
@@ -16,6 +16,11 @@ export type Recommendation = {
   title: string;
   reason: string;
   href: string;
+  ctaLabel: string;
+  priority: number;
+  confidence: number;
+  sourceSignals: string[];
+  primary?: boolean;
 };
 
 function toLabel(value: string): string {
@@ -31,14 +36,28 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
   const selectedCourseId = progress.selectedCourseId;
   const latestQuiz = progress.quizAttempts[0];
   const lowQuiz = progress.quizAttempts.find((attempt) => attempt.accuracy < 0.7);
+  const selectedCourse = courses.find((course) => course.id === selectedCourseId);
+  const selectedSequence = selectedCourse?.recommendedSequence ?? [];
+  const selectedTopicIndex = selectedTopic ? selectedSequence.indexOf(selectedTopic.id) : -1;
+  const nextTopicId =
+    selectedTopicIndex >= 0 && selectedTopicIndex < selectedSequence.length - 1
+      ? selectedSequence[selectedTopicIndex + 1]
+      : null;
+  const nextTopic = nextTopicId ? allTopics.find((topic) => topic.id === nextTopicId) : null;
 
   if (selectedTopic) {
     recommendations.push({
       id: "next-action-topic",
       kind: "next-best-action",
-      title: `Next step: ${selectedTopic.title} practice sprint`,
-      reason: "You are currently focused on this topic. Momentum matters.",
+      title: nextTopic ? `Next step: ${nextTopic.title}` : `Finish ${selectedTopic.title} mastery check`,
+      reason: nextTopic
+        ? "Complete the current topic and move forward in sequence."
+        : "You are at the end of your sequence. Lock in mastery before changing courses.",
       href: `/resources/quiz/${selectedTopic.quizSlugs[0]}`,
+      ctaLabel: "Open topic quiz",
+      priority: 100,
+      confidence: 0.94,
+      sourceSignals: ["selected_topic", "sequence_position"],
     });
 
     if (selectedTopic.prerequisites.length > 0) {
@@ -48,6 +67,10 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
         title: `Review prerequisite: ${selectedTopic.prerequisites[0]}`,
         reason: "Prerequisite review improves quiz confidence and retention.",
         href: "/learn",
+        ctaLabel: "Review prerequisite",
+        priority: 70,
+        confidence: 0.86,
+        sourceSignals: ["selected_topic", "prerequisites"],
       });
     }
   }
@@ -60,23 +83,35 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       title: `Targeted practice: ${weakTopic?.title ?? toLabel(lowQuiz.slug)}`,
       reason: `Your recent score was ${Math.round(lowQuiz.accuracy * 100)}%. Focused review can quickly lift this area.`,
       href: `/resources/quiz/${lowQuiz.slug}?difficulty=easy`,
+      ctaLabel: "Start easy recovery set",
+      priority: 95,
+      confidence: 0.96,
+      sourceSignals: ["quiz_performance", "weak_area"],
     });
     recommendations.push({
       id: "ai-weak-area",
       kind: "ai-help",
       title: "Ask AI for a step-by-step recovery plan",
       reason: "A guided walkthrough is best right after a low-scoring attempt.",
-      href: "/learn#ai-help",
+      href: "/learn#learn-action-grid",
+      ctaLabel: "Open AI support path",
+      priority: 65,
+      confidence: 0.89,
+      sourceSignals: ["quiz_performance", "student_intent"],
     });
   }
 
-  if (progress.intent === "test-prep") {
+  if (progress.intent === "test-prep" || progress.testPrepMode) {
     recommendations.push({
       id: "test-prep-mode",
       kind: "quiz",
       title: "Test-prep mode: take an intermediate mixed quiz",
       reason: "You selected test-prep intent. Timed practice is the highest-value next action.",
-      href: "/resources#quizzes",
+      href: "/learn#quizzes",
+      ctaLabel: "Start timed prep",
+      priority: 80,
+      confidence: 0.91,
+      sourceSignals: ["test_prep_mode", "student_intent"],
     });
   }
 
@@ -88,6 +123,10 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       title: `Level up with a harder set in ${strongerTopic?.courseTitle ?? "your course"}`,
       reason: `You scored ${Math.round(latestQuiz.accuracy * 100)}% recently. You're ready for a challenge.`,
       href: `/resources/quiz/${latestQuiz.slug}?difficulty=hard`,
+      ctaLabel: "Try harder quiz",
+      priority: 64,
+      confidence: 0.84,
+      sourceSignals: ["quiz_performance", "mastery_signal"],
     });
   }
 
@@ -97,7 +136,11 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "video",
       title: "Video-first review path",
       reason: "Your preference is set to videos, so we are prioritizing visual lessons.",
-      href: "/learn#videos",
+      href: "/learn#learn-workspace",
+      ctaLabel: "Open video resources",
+      priority: 50,
+      confidence: 0.8,
+      sourceSignals: ["resource_preference"],
     });
   } else if (progress.resourcePreference === "worksheets") {
     recommendations.push({
@@ -105,7 +148,11 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "practice",
       title: "Worksheet-focused review path",
       reason: "Your preference is worksheets, so we are prioritizing printable drills.",
-      href: "/learn#worksheets",
+      href: "/learn#learn-workspace",
+      ctaLabel: "Open worksheet path",
+      priority: 50,
+      confidence: 0.8,
+      sourceSignals: ["resource_preference"],
     });
   }
 
@@ -121,6 +168,10 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       title: `Join ${relevantGroup.name}`,
       reason: "Peer accountability improves completion and confidence.",
       href: relevantGroup.href,
+      ctaLabel: "Join community support",
+      priority: 45,
+      confidence: 0.78,
+      sourceSignals: ["selected_course", "community_signal"],
     });
   }
 
@@ -131,8 +182,19 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       title: "Pick a course to unlock your guided plan",
       reason: "We will build your personalized path once you choose a course.",
       href: "/learn",
+      ctaLabel: "Choose your course",
+      priority: 30,
+      confidence: 0.72,
+      sourceSignals: ["missing_context"],
     });
   }
 
-  return recommendations.slice(0, 5);
+  const ranked = recommendations
+    .sort((a, b) => b.priority - a.priority || b.confidence - a.confidence)
+    .slice(0, 3);
+
+  return ranked.map((item, index) => ({
+    ...item,
+    primary: index === 0,
+  }));
 }

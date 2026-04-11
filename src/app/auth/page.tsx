@@ -11,6 +11,10 @@ import { MathLogo } from "@/components/MathLogo";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
 import { useLanguage } from "@/components/LanguageProvider";
 import { languages } from "@/lib/i18n";
+import { setGlobalTutorialCompleted, setGlobalTutorialLastRoute, setGlobalTutorialStep } from "@/lib/progress";
+import { saveLearningProgressToCloud, upsertProfile } from "@/lib/cloud";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { getLearningProgress } from "@/lib/progress";
 import {
   User,
   Lock,
@@ -97,7 +101,7 @@ function AuthPageContent() {
     }
   }, [searchParams, router]);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     const form = e.currentTarget;
@@ -125,15 +129,75 @@ function AuthPageContent() {
         return;
       }
 
+      const supabase = getSupabaseBrowserClient();
+      let supabaseUserId: string | null = null;
+      if (supabase) {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              first_name: firstName,
+              last_name: lastName,
+              username: username || `${firstName} ${lastName}`,
+            },
+          },
+        });
+        if (signUpError) {
+          setError(signUpError.message);
+          return;
+        }
+        supabaseUserId = data.user?.id ?? null;
+      }
+
       // Use username if provided, otherwise default to FirstName LastName
       const displayUsername = username || `${firstName} ${lastName}`;
       const newProfile: Profile = { email, firstName, lastName, username: displayUsername };
       localStorage.setItem("mm_profile", JSON.stringify(newProfile));
       localStorage.setItem("mm_session", JSON.stringify({ email }));
       localStorage.setItem("isLoggedIn", "true");
+      if (supabaseUserId) {
+        localStorage.setItem("mm_user_id", supabaseUserId);
+        await upsertProfile({
+          userId: supabaseUserId,
+          email,
+          firstName,
+          lastName,
+          username: displayUsername,
+        });
+        const migratedKey = `mm_cloud_progress_migrated_${supabaseUserId}`;
+        if (localStorage.getItem(migratedKey) !== "true") {
+          await saveLearningProgressToCloud(supabaseUserId, getLearningProgress());
+          localStorage.setItem(migratedKey, "true");
+        }
+      }
+      localStorage.setItem("mm_global_tutorial_pending_v1", "true");
+      setGlobalTutorialCompleted(false);
+      setGlobalTutorialStep(0);
+      setGlobalTutorialLastRoute("/");
       setProfile(newProfile);
       router.push(redirectUrl || "/dashboard");
     } else {
+      const supabase = getSupabaseBrowserClient();
+      if (supabase) {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (signInError) {
+          setError(signInError.message);
+          return;
+        }
+        if (data.user?.id) {
+          localStorage.setItem("mm_user_id", data.user.id);
+          const migratedKey = `mm_cloud_progress_migrated_${data.user.id}`;
+          if (localStorage.getItem(migratedKey) !== "true") {
+            await saveLearningProgressToCloud(data.user.id, getLearningProgress());
+            localStorage.setItem(migratedKey, "true");
+          }
+        }
+      }
+
       const storedProfile = JSON.parse(localStorage.getItem("mm_profile") || "null");
       if (storedProfile && storedProfile.email === email) {
         localStorage.setItem("mm_session", JSON.stringify({ email }));
@@ -141,14 +205,29 @@ function AuthPageContent() {
         setProfile(storedProfile);
         router.push(redirectUrl || "/dashboard");
       } else {
-        setError(t("Account not found. Please sign up first."));
+        const fallbackProfile: Profile = {
+          email,
+          firstName: email.split("@")[0] || "Student",
+          lastName: "",
+          username: email.split("@")[0] || "Student",
+        };
+        localStorage.setItem("mm_profile", JSON.stringify(fallbackProfile));
+        localStorage.setItem("mm_session", JSON.stringify({ email }));
+        localStorage.setItem("isLoggedIn", "true");
+        setProfile(fallbackProfile);
+        router.push(redirectUrl || "/dashboard");
       }
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    const supabase = getSupabaseBrowserClient();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     localStorage.removeItem("mm_session");
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("mm_user_id");
     setProfile(null);
   };
 

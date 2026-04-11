@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/Card";
+import { useTranslations } from "@/components/LanguageProvider";
 import { LearningProgress } from "@/lib/progress";
 import { CheckCircle2, Circle } from "lucide-react";
 
@@ -9,25 +10,26 @@ type GuidedOnboardingProps = {
 };
 
 export function GuidedOnboarding({ progress }: GuidedOnboardingProps) {
+  const { t } = useTranslations();
   const items = [
     {
       id: "course",
-      label: "Choose your class",
+      label: t("Choose your class"),
       done: Boolean(progress.selectedCourseId),
     },
     {
       id: "topic",
-      label: "Pick a unit/topic",
+      label: t("Pick a unit/topic"),
       done: Boolean(progress.selectedTopicId),
     },
     {
       id: "quiz",
-      label: "Complete one quiz",
+      label: t("Complete one quiz"),
       done: progress.quizAttempts.length > 0,
     },
     {
       id: "community",
-      label: "Join one community activity",
+      label: t("Join one community activity"),
       done: progress.recentActivity.some((entry) => entry.toLowerCase().includes("community")),
     },
   ];
@@ -36,9 +38,9 @@ export function GuidedOnboarding({ progress }: GuidedOnboardingProps) {
 
   return (
     <Card>
-      <h2 className="text-xl font-bold text-slate-900 dark:text-white">First-Time Student Checklist</h2>
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Post-Tutorial Checklist")}</h2>
       <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-        {doneCount}/4 complete. Follow this once to unlock a clearer, guided experience.
+        {t("{count}/4 complete. Use this checklist after the website tour to build momentum.", { count: doneCount })}
       </p>
 
       <div className="space-y-2 mt-4">

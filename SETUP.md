@@ -127,6 +127,20 @@ You can work on all frontend code without ever touching the API key.
 |------------------------|---------------|---------------------|--------------------------------------------------|
 | `ANTHROPIC_API_KEY`    | Server only   | Backend deployer    | Anthropic secret key for Claude                  |
 | `NEXT_PUBLIC_API_URL`  | Client bundle | Frontend-only devs  | URL of hosted backend (empty = same origin)      |
+| `NEXT_PUBLIC_SUPABASE_URL` | Client bundle | Launch deployments | Supabase project URL for real auth/data          |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client bundle | Launch deployments | Supabase anon key for browser client access      |
+
+## Learning Integrity Check
+
+Run before deploy:
+
+```bash
+npm run verify:learning
+```
+
+This verifies:
+- every course `quizSlugs` entry has a real quiz definition
+- local worksheet/download links resolve to existing files
 
 ---
 

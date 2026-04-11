@@ -7,6 +7,7 @@ import { BookOpen, Brain, MessageCircle, PlayCircle, Target, Trophy } from "luci
 type ActionGridProps = {
   intent: LearningProgress["intent"];
   onSetIntent: (intent: LearningProgress["intent"]) => void;
+  showHeader?: boolean;
 };
 
 const intentOptions: Array<{
@@ -41,15 +42,19 @@ const intentOptions: Array<{
   },
 ];
 
-export function ActionGrid({ intent, onSetIntent }: ActionGridProps) {
+export function ActionGrid({ intent, onSetIntent, showHeader = true }: ActionGridProps) {
   return (
     <section>
-      <h2 className="text-xl font-bold text-slate-900 dark:text-white">What do you need right now?</h2>
-      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-        Pick your immediate goal and we will adjust recommendations.
-      </p>
+      {showHeader && (
+        <>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">What do you need right now?</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            Pick your immediate goal and we will adjust recommendations.
+          </p>
+        </>
+      )}
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+      <div className={`grid sm:grid-cols-2 lg:grid-cols-4 gap-3 ${showHeader ? "mt-4" : "mt-1"}`}>
         {intentOptions.map((option) => (
           <button
             key={option.id}
@@ -69,7 +74,7 @@ export function ActionGrid({ intent, onSetIntent }: ActionGridProps) {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">
-        <Button size="sm" onClick={() => window.location.assign("/learn#ai-help")}>
+        <Button size="sm" onClick={() => window.location.assign("/learn#learn-action-grid")}>
           <Brain className="w-4 h-4" />
           Ask AI Tutor
         </Button>
@@ -77,7 +82,7 @@ export function ActionGrid({ intent, onSetIntent }: ActionGridProps) {
           <MessageCircle className="w-4 h-4" />
           Get Community Help
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => window.location.assign("/resources#videos")}>
+        <Button size="sm" variant="ghost" onClick={() => window.location.assign("/learn")}>
           <PlayCircle className="w-4 h-4" />
           Watch a Video
         </Button>

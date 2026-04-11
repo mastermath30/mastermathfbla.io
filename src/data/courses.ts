@@ -24,6 +24,12 @@ export type TopicNode = {
   studyGroupId: string;
   resources: ResourceItem[];
   recommendedActions: TopicAction[];
+  estimatedMinutes: number;
+  masteryGoal: string;
+  readinessSignals: string[];
+  nextTopicIds: string[];
+  reviewTopicIds: string[];
+  testPrepTags: string[];
 };
 
 export type UnitNode = {
@@ -31,6 +37,7 @@ export type UnitNode = {
   title: string;
   summary: string;
   topics: TopicNode[];
+  milestones: string[];
 };
 
 export type CourseNode = {
@@ -38,9 +45,28 @@ export type CourseNode = {
   title: string;
   summary: string;
   units: UnitNode[];
+  recommendedSequence: string[];
 };
 
-export const courses: CourseNode[] = [
+type RawTopicNode = Omit<TopicNode, "estimatedMinutes" | "masteryGoal" | "readinessSignals" | "nextTopicIds" | "reviewTopicIds" | "testPrepTags"> &
+  Partial<
+    Pick<
+      TopicNode,
+      "estimatedMinutes" | "masteryGoal" | "readinessSignals" | "nextTopicIds" | "reviewTopicIds" | "testPrepTags"
+    >
+  >;
+
+type RawUnitNode = Omit<UnitNode, "topics" | "milestones"> & {
+  topics: RawTopicNode[];
+  milestones?: string[];
+};
+
+type RawCourseNode = Omit<CourseNode, "units" | "recommendedSequence"> & {
+  units: RawUnitNode[];
+  recommendedSequence?: string[];
+};
+
+const rawCourses: RawCourseNode[] = [
   {
     id: "algebra-1",
     title: "Algebra 1",
@@ -86,7 +112,7 @@ export const courses: CourseNode[] = [
             summary: "Factor, complete the square, and solve quadratic equations.",
             difficulty: "intermediate",
             prerequisites: ["Linear equations", "Factoring basics"],
-            quizSlugs: ["quadratic-equations", "polynomial-operations"],
+            quizSlugs: ["quadratic-equations"],
             aiPrompt: "Walk me through solving quadratic equations step by step.",
             communityThread: "Quadratics Help Desk",
             studyGroupId: "algebra-problem-lab",
@@ -197,7 +223,7 @@ export const courses: CourseNode[] = [
               {
                 title: "Circle Practice Pack",
                 kind: "worksheet",
-                href: "/downloads/circles-and-area.pdf",
+                href: "/downloads/two-step-inequalities.pdf",
               },
             ],
             recommendedActions: ["learn-concept", "do-practice", "take-quiz", "ask-ai"],
@@ -259,7 +285,7 @@ export const courses: CourseNode[] = [
               {
                 title: "Sequence Drill Worksheet",
                 kind: "worksheet",
-                href: "/downloads/sequences-series-practice.pdf",
+                href: "/downloads/trig-identities-equations.pdf",
               },
             ],
             recommendedActions: ["watch-video", "do-practice", "take-quiz", "ask-ai"],
@@ -376,6 +402,78 @@ export const courses: CourseNode[] = [
     ],
   },
 ];
+
+function defaultEstimatedMinutes(difficulty: TopicNode["difficulty"]) {
+  if (difficulty === "beginner") return 35;
+  if (difficulty === "intermediate") return 50;
+  return 70;
+}
+
+function normalizeCourses(source: RawCourseNode[]): CourseNode[] {
+  return source.map((course) => {
+    const flattenedTopicIds = course.units.flatMap((unit) => unit.topics.map((topic) => topic.id));
+    const recommendedSequence =
+      course.recommendedSequence && course.recommendedSequence.length
+        ? course.recommendedSequence
+        : flattenedTopicIds;
+
+    return {
+      ...course,
+      recommendedSequence,
+      units: course.units.map((unit, unitIndex) => ({
+        ...unit,
+        milestones:
+          unit.milestones && unit.milestones.length
+            ? unit.milestones
+            : [
+                `Complete ${unit.title} topic walkthroughs`,
+                "Score 80%+ on at least one unit quiz",
+                "Join one related community support session",
+              ],
+        topics: unit.topics.map((topic, topicIndex) => {
+          const nextTopicId =
+            unit.topics[topicIndex + 1]?.id ??
+            course.units[unitIndex + 1]?.topics[0]?.id ??
+            null;
+          const reviewTopicId = unit.topics[topicIndex - 1]?.id ?? null;
+          return {
+            ...topic,
+            estimatedMinutes: topic.estimatedMinutes ?? defaultEstimatedMinutes(topic.difficulty),
+            masteryGoal:
+              topic.masteryGoal ??
+              `Demonstrate ${topic.title.toLowerCase()} confidence by explaining one solution path and passing quiz checks.`,
+            readinessSignals:
+              topic.readinessSignals && topic.readinessSignals.length
+                ? topic.readinessSignals
+                : [
+                    "Can solve two scaffolded problems without hints",
+                    "Can explain one prerequisite concept in own words",
+                    "Can choose the right strategy before calculating",
+                  ],
+            nextTopicIds:
+              topic.nextTopicIds && topic.nextTopicIds.length
+                ? topic.nextTopicIds
+                : nextTopicId
+                ? [nextTopicId]
+                : [],
+            reviewTopicIds:
+              topic.reviewTopicIds && topic.reviewTopicIds.length
+                ? topic.reviewTopicIds
+                : reviewTopicId
+                ? [reviewTopicId]
+                : [],
+            testPrepTags:
+              topic.testPrepTags && topic.testPrepTags.length
+                ? topic.testPrepTags
+                : [course.id, topic.difficulty, "timed-practice"],
+          };
+        }),
+      })),
+    };
+  });
+}
+
+export const courses: CourseNode[] = normalizeCourses(rawCourses);
 
 export type StudyGroupSpotlight = {
   id: string;

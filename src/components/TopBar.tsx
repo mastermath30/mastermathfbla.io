@@ -85,12 +85,12 @@ export function TopBar() {
 	}, []);
 
 	const navigation = [
-		{ name: t("About"), href: "/about" },
+		{ name: t("Learn"), href: "/learn" },
 		{ name: t("Schedule"), href: "/schedule" },
 		{ name: t("Dashboard"), href: "/dashboard" },
-		{ name: t("Learn"), href: "/learn" },
 		{ name: t("Community"), href: "/community" },
 		{ name: t("Support"), href: "/support" },
+		{ name: t("About"), href: "/about" },
 	];
 
 	return (

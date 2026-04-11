@@ -934,10 +934,10 @@ export default function SchedulePage() {
             </HeroText>
             
             <div className="flex gap-3 relative">
-              <Link href="/tutors">
+              <Link href="/tutoring-request">
                 <Button className="press-effect">
                   <Plus className="w-4 h-4" />
-                  {t("Book Session")}
+                  {t("Request Tutoring")}
                 </Button>
               </Link>
               <Button 

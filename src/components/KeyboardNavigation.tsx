@@ -16,7 +16,7 @@ export function KeyboardNavigation() {
         h: "/",           // Home
         d: "/dashboard",  // Dashboard
         s: "/schedule",   // Schedule
-        r: "/resources",  // Resources
+        r: "/learn",      // Learn/Resources
         // Alt+C is reserved for the Desmos calculator
         p: "/support",    // suPport
         t: "/tutors",     // Tutors

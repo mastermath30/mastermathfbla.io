@@ -94,7 +94,7 @@ const SAMPLE_GROUPS: StudyGroup[] = [
   {
     id: "2",
     name: "SAT Math Prep",
-    description: "Prepare for the SAT Math section with practice tests, strategy sessions, and targeted review. Score 750+ guaranteed with consistent attendance!",
+    description: "Prepare for the SAT Math section with practice tests, strategy sessions, and targeted review.",
     subject: "SAT Prep",
     level: "Intermediate",
     memberCount: 18,

@@ -10,6 +10,12 @@ import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { containsFlaggedLanguage, sanitizeText } from "@/lib/moderation";
+import {
+  createCommunityPostCloud,
+  reportCommunityPostCloud,
+  type PostModerationState,
+} from "@/lib/cloud";
 import {
   MessageCircle,
   Plus,
@@ -42,6 +48,7 @@ interface Post {
   tag: string;
   author: string;
   createdAt: string;
+  moderationState?: PostModerationState;
 }
 
 const tagOptions = [
@@ -115,8 +122,8 @@ const activityFeed = [
     id: "4",
     type: "session",
     user: { name: "Alex T.", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop" },
-    content: "is hosting a live study session now",
-    time: "Live",
+    content: "hosted a study session recently",
+    time: "Recently",
     icon: Video,
     color: "text-red-500",
   },
@@ -166,6 +173,7 @@ function formatTimeAgo(iso: string, locale: string = "en") {
 
 export default function CommunityPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [reports, setReports] = useState<{ postId: string; reason: string; createdAt: string }[]>([]);
   const [error, setError] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userName, setUserName] = useState("Guest");
@@ -215,6 +223,15 @@ export default function CommunityPage() {
       // Ignore
     }
 
+    try {
+      const savedReports = JSON.parse(localStorage.getItem("mm_forum_reports") || "[]");
+      if (Array.isArray(savedReports)) {
+        setReports(savedReports);
+      }
+    } catch {
+      // Ignore
+    }
+
     const handlePostsUpdated = () => {
       const updatedPosts = localStorage.getItem("mm_forum_posts");
       if (updatedPosts) {
@@ -252,18 +269,35 @@ export default function CommunityPage() {
 
     const newPost: Post = {
       id: `p_${Date.now()}`,
-      title,
-      body,
+      title: sanitizeText(title),
+      body: sanitizeText(body),
       tag,
       author: isSignedIn ? userName : "Guest",
       createdAt: new Date().toISOString(),
+      moderationState:
+        containsFlaggedLanguage(title) || containsFlaggedLanguage(body) ? "flagged" : "visible",
     };
 
     const updatedPosts = [...posts, newPost];
     setPosts(updatedPosts);
     localStorage.setItem("mm_forum_posts", JSON.stringify(updatedPosts));
+    void createCommunityPostCloud(newPost);
 
     form.reset();
+  };
+
+  const handleReportPost = (postId: string) => {
+    const reason = "Inappropriate content";
+    const next = [...reports, { postId, reason, createdAt: new Date().toISOString() }];
+    setReports(next);
+    localStorage.setItem("mm_forum_reports", JSON.stringify(next));
+    const reporterId = localStorage.getItem("mm_user_id") || "anonymous";
+    void reportCommunityPostCloud({
+      postId,
+      reporterId,
+      reason,
+      createdAt: new Date().toISOString(),
+    });
   };
 
   const sortedPosts = [...posts].sort(
@@ -385,7 +419,12 @@ export default function CommunityPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-3">
-                              <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
+                                {post.moderationState === "flagged" && (
+                                  <Badge variant="warning">Flagged</Badge>
+                                )}
+                              </div>
                               <span className="text-slate-400 text-xs shrink-0">
                                 {formatTimeAgo(post.createdAt, language)}
                               </span>
@@ -395,6 +434,15 @@ export default function CommunityPage() {
                               <span className="text-slate-400 text-xs">{t("by")} {post.author}</span>
                             </div>
                             <p className="text-slate-500 text-sm mt-2 line-clamp-2">{post.body}</p>
+                            <div className="mt-2">
+                              <button
+                                type="button"
+                                onClick={() => handleReportPost(post.id)}
+                                className="text-xs text-rose-500 hover:text-rose-400"
+                              >
+                                Report post
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -408,6 +456,14 @@ export default function CommunityPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            <FadeIn delay={0.03}>
+            <Card>
+              <h3 className="font-semibold text-slate-900 dark:text-white">{t("Moderation Queue")}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                {reports.length} reported posts in review.
+              </p>
+            </Card>
+            </FadeIn>
             {/* Study Groups Section */}
             <FadeIn delay={0.06}>
             <Card padding="none" className="overflow-hidden">

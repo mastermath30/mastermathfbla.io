@@ -546,7 +546,7 @@ export default function DashboardPage() {
           <div className="mt-8 grid xl:grid-cols-[2fr_1fr] gap-6">
             <RecommendationPanel
               recommendations={recommendations}
-              title="Your Recommended Next Steps"
+              title={t("Your Recommended Next Steps")}
             />
             <CommunitySpotlight />
           </div>
