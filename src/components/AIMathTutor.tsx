@@ -69,6 +69,11 @@ interface ConversationHistory {
   messages: Message[];
 }
 
+type OpenAITutorEventDetail = {
+  prompt?: string;
+  autoSend?: boolean;
+};
+
 const MATH_TOPICS = [
   { label: "Algebra", icon: "\u{1F522}", examples: ["Solve 2x + 5 = 15", "Factor x\u00B2 - 9"] },
   { label: "Calculus", icon: "\u222B", examples: ["Find derivative of x\u00B3", "Integrate sin(x)"] },
@@ -185,68 +190,98 @@ export function AIMathTutor() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
+  const sendText = useCallback(
+    async (messageText: string) => {
+      if (!messageText.trim() || isLoading) return;
+
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: "user",
+        content: messageText.trim(),
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, userMessage]);
+      setShowTopics(false);
+      setIsLoading(true);
+
+      try {
+        const history = messages.slice(-10).map((m) => ({
+          role: m.role,
+          content: m.content,
+        }));
+
+        const response = await fetch(`${API_BASE}/api/ai`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            message: userMessage.content,
+            history,
+          }),
+        });
+
+        const data = await response.json();
+        const rawReply = data.reply || t("I could not generate a response. Please try again.");
+        const { cleanContent, path } = extractNavigation(rawReply);
+
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: cleanContent,
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+
+        if (path) {
+          setPendingNavigation(path);
+        }
+      } catch {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: t("Sorry, I encountered an error. Please try again."),
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [extractNavigation, isLoading, messages, t]
+  );
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
+    const messageText = input.trim();
+    setInput("");
+    await sendText(messageText);
+  };
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: input.trim(),
-      timestamp: new Date(),
+  useEffect(() => {
+    const onOpenAITutor = (event: Event) => {
+      const customEvent = event as CustomEvent<OpenAITutorEventDetail>;
+      const prompt = customEvent.detail?.prompt?.trim() ?? "";
+      const autoSend = Boolean(customEvent.detail?.autoSend);
+
+      setIsOpen(true);
+      setShowHistory(false);
+
+      if (!prompt) return;
+
+      if (autoSend) {
+        setInput("");
+        void sendText(prompt);
+        return;
+      }
+
+      setInput(prompt);
+      window.setTimeout(() => inputRef.current?.focus(), 120);
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput("");
-    setShowTopics(false);
-    setIsLoading(true);
-
-    try {
-      const history = messages.slice(-10).map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
-      // Call the backend proxy — see API_BASE above for how this resolves.
-      // In production: same-origin /api/ai
-      // In local dev without key: points at hosted backend via NEXT_PUBLIC_API_URL
-      const response = await fetch(`${API_BASE}/api/ai`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          message: userMessage.content,
-          history,
-        }),
-      });
-
-      const data = await response.json();
-      const rawReply = data.reply || t("I could not generate a response. Please try again.");
-      const { cleanContent, path } = extractNavigation(rawReply);
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: cleanContent,
-        timestamp: new Date(),
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-
-      // If the AI suggested navigation, set it as pending
-      if (path) {
-        setPendingNavigation(path);
-      }
-    } catch {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: t("Sorry, I encountered an error. Please try again."),
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    window.addEventListener("open-ai-tutor", onOpenAITutor as EventListener);
+    return () => window.removeEventListener("open-ai-tutor", onOpenAITutor as EventListener);
+  }, [sendText]);
 
   const handleQuickPrompt = (prompt: string) => {
     setInput(prompt);

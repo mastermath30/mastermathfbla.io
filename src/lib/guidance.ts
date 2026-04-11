@@ -1,5 +1,6 @@
 import { allTopics, courses, studyGroupSpotlights, topicByQuizSlug } from "@/data/courses";
 import { LearningProgress } from "@/lib/progress";
+import { resolveCommunityGroupFromCourseId, toLearnActionHref } from "@/lib/learnActions";
 
 export type RecommendationKind =
   | "next-best-action"
@@ -53,7 +54,11 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       reason: nextTopic
         ? "Complete the current topic and move forward in sequence."
         : "You are at the end of your sequence. Lock in mastery before changing courses.",
-      href: `/resources/quiz/${selectedTopic.quizSlugs[0]}`,
+      href: toLearnActionHref({
+        action: "open-quiz",
+        topicId: selectedTopic.id,
+        difficulty: "medium",
+      }),
       ctaLabel: "Open topic quiz",
       priority: 100,
       confidence: 0.94,
@@ -66,7 +71,7 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
         kind: "prerequisite",
         title: `Review prerequisite: ${selectedTopic.prerequisites[0]}`,
         reason: "Prerequisite review improves quiz confidence and retention.",
-        href: "/learn",
+        href: toLearnActionHref({ action: "view", tab: "concept", topicId: selectedTopic.id }),
         ctaLabel: "Review prerequisite",
         priority: 70,
         confidence: 0.86,
@@ -82,7 +87,12 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "practice",
       title: `Targeted practice: ${weakTopic?.title ?? toLabel(lowQuiz.slug)}`,
       reason: `Your recent score was ${Math.round(lowQuiz.accuracy * 100)}%. Focused review can quickly lift this area.`,
-      href: `/resources/quiz/${lowQuiz.slug}?difficulty=easy`,
+      href: toLearnActionHref({
+        action: "open-quiz",
+        topicId: weakTopic?.id,
+        slug: lowQuiz.slug,
+        difficulty: "easy",
+      }),
       ctaLabel: "Start easy recovery set",
       priority: 95,
       confidence: 0.96,
@@ -93,7 +103,10 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "ai-help",
       title: "Ask AI for a step-by-step recovery plan",
       reason: "A guided walkthrough is best right after a low-scoring attempt.",
-      href: "/learn#learn-action-grid",
+      href: toLearnActionHref({
+        action: "open-ai",
+        topicId: weakTopic?.id,
+      }),
       ctaLabel: "Open AI support path",
       priority: 65,
       confidence: 0.89,
@@ -107,7 +120,11 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "quiz",
       title: "Test-prep mode: take an intermediate mixed quiz",
       reason: "You selected test-prep intent. Timed practice is the highest-value next action.",
-      href: "/learn#quizzes",
+      href: toLearnActionHref({
+        action: "open-quiz",
+        topicId: selectedTopic?.id,
+        difficulty: "medium",
+      }),
       ctaLabel: "Start timed prep",
       priority: 80,
       confidence: 0.91,
@@ -122,7 +139,12 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "quiz",
       title: `Level up with a harder set in ${strongerTopic?.courseTitle ?? "your course"}`,
       reason: `You scored ${Math.round(latestQuiz.accuracy * 100)}% recently. You're ready for a challenge.`,
-      href: `/resources/quiz/${latestQuiz.slug}?difficulty=hard`,
+      href: toLearnActionHref({
+        action: "open-quiz",
+        topicId: strongerTopic?.id,
+        slug: latestQuiz.slug,
+        difficulty: "hard",
+      }),
       ctaLabel: "Try harder quiz",
       priority: 64,
       confidence: 0.84,
@@ -136,7 +158,11 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "video",
       title: "Video-first review path",
       reason: "Your preference is set to videos, so we are prioritizing visual lessons.",
-      href: "/learn#learn-workspace",
+      href: toLearnActionHref({
+        action: "view",
+        tab: "video",
+        topicId: selectedTopic?.id,
+      }),
       ctaLabel: "Open video resources",
       priority: 50,
       confidence: 0.8,
@@ -148,7 +174,11 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "practice",
       title: "Worksheet-focused review path",
       reason: "Your preference is worksheets, so we are prioritizing printable drills.",
-      href: "/learn#learn-workspace",
+      href: toLearnActionHref({
+        action: "view",
+        tab: "practice",
+        topicId: selectedTopic?.id,
+      }),
       ctaLabel: "Open worksheet path",
       priority: 50,
       confidence: 0.8,
@@ -157,17 +187,19 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
   }
 
   if (selectedCourseId) {
-    const relevantGroup =
-      studyGroupSpotlights.find((group) =>
-        group.name.toLowerCase().includes(selectedCourseId.split("-")[0] ?? "")
-      ) ?? studyGroupSpotlights[0];
+    const relevantGroupId = resolveCommunityGroupFromCourseId(selectedCourseId);
+    const relevantGroup = studyGroupSpotlights.find((group) => group.id === relevantGroupId) ?? studyGroupSpotlights[0];
 
     recommendations.push({
       id: "community-group",
       kind: "community",
       title: `Join ${relevantGroup.name}`,
       reason: "Peer accountability improves completion and confidence.",
-      href: relevantGroup.href,
+      href: toLearnActionHref({
+        action: "open-community",
+        topicId: selectedTopic?.id,
+        groupId: relevantGroup.id,
+      }),
       ctaLabel: "Join community support",
       priority: 45,
       confidence: 0.78,
@@ -181,7 +213,7 @@ export function buildRecommendations(progress: LearningProgress): Recommendation
       kind: "next-best-action",
       title: "Pick a course to unlock your guided plan",
       reason: "We will build your personalized path once you choose a course.",
-      href: "/learn",
+      href: toLearnActionHref({ action: "view", tab: "concept" }),
       ctaLabel: "Choose your course",
       priority: 30,
       confidence: 0.72,

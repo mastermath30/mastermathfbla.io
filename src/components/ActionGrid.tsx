@@ -1,12 +1,14 @@
 "use client";
 
 import { Button } from "@/components/Button";
+import { useTranslations } from "@/components/LanguageProvider";
 import { LearningProgress } from "@/lib/progress";
 import { BookOpen, Brain, MessageCircle, PlayCircle, Target, Trophy } from "lucide-react";
 
 type ActionGridProps = {
   intent: LearningProgress["intent"];
   onSetIntent: (intent: LearningProgress["intent"]) => void;
+  onQuickAction?: (action: "ask-ai" | "community-help" | "watch-video") => void;
   showHeader?: boolean;
 };
 
@@ -42,14 +44,16 @@ const intentOptions: Array<{
   },
 ];
 
-export function ActionGrid({ intent, onSetIntent, showHeader = true }: ActionGridProps) {
+export function ActionGrid({ intent, onSetIntent, onQuickAction, showHeader = true }: ActionGridProps) {
+  const { t } = useTranslations();
+
   return (
     <section>
       {showHeader && (
         <>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">What do you need right now?</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("What do you need right now?")}</h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-            Pick your immediate goal and we will adjust recommendations.
+            {t("Choose one action and follow through before switching context.")}
           </p>
         </>
       )}
@@ -67,24 +71,24 @@ export function ActionGrid({ intent, onSetIntent, showHeader = true }: ActionGri
             }`}
           >
             <option.icon className="w-5 h-5 text-[var(--theme-primary)] mb-2" />
-            <h3 className="font-semibold text-slate-900 dark:text-white">{option.title}</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{option.description}</p>
+            <h3 className="font-semibold text-slate-900 dark:text-white">{t(option.title)}</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{t(option.description)}</p>
           </button>
         ))}
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">
-        <Button size="sm" onClick={() => window.location.assign("/learn#learn-action-grid")}>
+        <Button size="sm" onClick={() => onQuickAction?.("ask-ai")}>
           <Brain className="w-4 h-4" />
-          Ask AI Tutor
+          {t("Ask AI Tutor")}
         </Button>
-        <Button size="sm" variant="outline" onClick={() => window.location.assign("/community")}>
+        <Button size="sm" variant="outline" onClick={() => onQuickAction?.("community-help")}>
           <MessageCircle className="w-4 h-4" />
-          Get Community Help
+          {t("Get Community Help")}
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => window.location.assign("/learn")}>
+        <Button size="sm" variant="ghost" onClick={() => onQuickAction?.("watch-video")}>
           <PlayCircle className="w-4 h-4" />
-          Watch a Video
+          {t("Watch a Video")}
         </Button>
       </div>
     </section>
