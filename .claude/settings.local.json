@@ -5,7 +5,8 @@
       "Bash(npx next build:*)",
       "Bash(npm run:*)",
       "Bash(grep -E \"^katex$|^@supabase$\")",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(grep -c 'useTranslations\\\\|useLanguage\\\\|{ t }' /Users/malharpawar/mastermathfbla.io/src/components/*.tsx)"
     ]
   }
 }
