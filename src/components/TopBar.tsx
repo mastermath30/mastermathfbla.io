@@ -88,7 +88,7 @@ export function TopBar() {
 		{ name: t("About"), href: "/about" },
 		{ name: t("Schedule"), href: "/schedule" },
 		{ name: t("Dashboard"), href: "/dashboard" },
-		{ name: t("Resources"), href: "/resources" },
+		{ name: t("Learn"), href: "/learn" },
 		{ name: t("Community"), href: "/community" },
 		{ name: t("Support"), href: "/support" },
 	];

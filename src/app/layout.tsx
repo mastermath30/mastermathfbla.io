@@ -25,8 +25,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MathMaster - Master Mathematics Together",
-  description: "An interactive learning platform created by students, for students. Unlock the beauty of numbers through peer tutoring and collaboration.",
+  title: "MathMaster - Guided Math Learning Ecosystem",
+  description:
+    "A course-aware math learning platform with guided pathways, targeted practice, AI tutoring, accessibility tools, and peer community support.",
   keywords: ["math", "tutoring", "learning", "education", "calculus", "algebra"],
 };
 

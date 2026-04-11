@@ -8,6 +8,8 @@ import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { addQuizAttempt } from "@/lib/progress";
+import { topicByQuizSlug } from "@/data/courses";
 
 type QuizQuestion = {
   prompt: string;
@@ -632,6 +634,18 @@ function QuizPageContent() {
 
   const handleNext = () => {
     if (isLastQuestion) {
+      if (slug) {
+        const accuracy = totalQuestions ? score / totalQuestions : 0;
+        addQuizAttempt({
+          slug,
+          topic: topicByQuizSlug[slug]?.id ?? quiz.topic,
+          score,
+          totalQuestions,
+          accuracy,
+          difficulty,
+          completedAt: new Date().toISOString(),
+        });
+      }
       setShowResults(true);
       return;
     }

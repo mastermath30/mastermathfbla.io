@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
@@ -9,8 +9,12 @@ import { Badge } from "@/components/Badge";
 import { StatCard } from "@/components/StatCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SectionLabel } from "@/components/SectionLabel";
+import { RecommendationPanel } from "@/components/RecommendationPanel";
+import { CommunitySpotlight } from "@/components/CommunitySpotlight";
 import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { getLearningProgress, learningProgressEvent } from "@/lib/progress";
+import { buildRecommendations } from "@/lib/guidance";
 import {
   Clock,
   CheckCircle2,
@@ -90,6 +94,8 @@ export default function DashboardPage() {
   const [goalTitle, setGoalTitle] = useState("");
   const [goalTarget, setGoalTarget] = useState("");
   const [isDark, setIsDark] = useState(false);
+  const [learningProgress, setLearningProgress] = useState(getLearningProgress);
+  const recommendations = useMemo(() => buildRecommendations(learningProgress), [learningProgress]);
 
   useEffect(() => {
     setMounted(true);
@@ -135,11 +141,15 @@ export default function DashboardPage() {
       }
     };
 
+    const handleLearningProgress = () => setLearningProgress(getLearningProgress());
+
     window.addEventListener("mm_goals_updated", handleGoalsUpdated);
+    window.addEventListener(learningProgressEvent, handleLearningProgress);
     
     return () => {
       observer.disconnect();
       window.removeEventListener("mm_goals_updated", handleGoalsUpdated);
+      window.removeEventListener(learningProgressEvent, handleLearningProgress);
     };
   }, []);
 
@@ -532,6 +542,16 @@ export default function DashboardPage() {
         </div>
         </FadeIn>
 
+        <FadeIn delay={0.2}>
+          <div className="mt-8 grid xl:grid-cols-[2fr_1fr] gap-6">
+            <RecommendationPanel
+              recommendations={recommendations}
+              title="Your Recommended Next Steps"
+            />
+            <CommunitySpotlight />
+          </div>
+        </FadeIn>
+
         {/* Motivational Banner */}
         <FadeIn delay={0.22}>
           <div className="mt-8 relative overflow-hidden rounded-2xl">
@@ -549,7 +569,7 @@ export default function DashboardPage() {
               <h3 className="text-2xl font-bold mb-2">{t("Keep up the great work!")}</h3>
               <p className="text-slate-700 dark:text-slate-200">{t("You're on track to complete your weekly goals. Just 3 more problems to go!")}</p>
             </div>
-              <Link href="/resources">
+              <Link href="/learn">
                 <Button className="shrink-0">
                   {t("Continue Learning")}
                   <ArrowRight className="w-4 h-4" />

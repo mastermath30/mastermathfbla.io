@@ -57,6 +57,14 @@ SETUP.md                        ← This file
 
 ## Running Locally
 
+### Package Manager Standard
+
+MathMaster is standardized on **npm**. To prevent deployment failures caused by package-manager auto-detection:
+
+- Keep `package-lock.json` committed.
+- Do not commit `pnpm-lock.yaml`.
+- Vercel install/build commands are pinned in `vercel.json` (`npm install`, `npm run build`).
+
 ### Option A — Full stack (you have the API key)
 
 ```bash

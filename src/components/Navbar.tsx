@@ -70,9 +70,9 @@ export function Navbar() {
       href: "/dashboard",
     },
     {
-      title: t("Resources"),
+      title: t("Learn"),
       icon: <IconBook className="h-6 w-6" />,
-      href: "/resources",
+      href: "/learn",
     },
     {
       title: t("Community"),

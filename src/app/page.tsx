@@ -123,8 +123,8 @@ const getFeatures = (t: (key: string) => string) => [
     icon: Brain,
     title: t("Interactive Learning"),
     description: t("Engage with step-by-step lessons and practice problems that adapt to your learning pace."),
-    link: "/resources",
-    linkText: t("Explore Resources"),
+    link: "/learn",
+    linkText: t("Start Guided Learn"),
     image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=400&h=300&fit=crop",
   },
   {
@@ -1387,7 +1387,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Dashboard")}</Link></li>
                 <li><Link href="/schedule" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Schedule")}</Link></li>
-                <li><Link href="/resources" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Resources")}</Link></li>
+                <li><Link href="/learn" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Learn")}</Link></li>
                 <li><Link href="/community" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Community")}</Link></li>
                 </ul>
             </div>
