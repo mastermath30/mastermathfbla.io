@@ -1109,7 +1109,7 @@ export default function SchedulePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8 pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-32">
         {/* Calendar */}
         <FadeIn delay={0.04}>
         <Card className="mb-8 overflow-hidden">

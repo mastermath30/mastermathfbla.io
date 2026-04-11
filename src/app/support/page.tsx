@@ -374,7 +374,7 @@ export default function SupportPage() {
 
       {/* Footer */}
       <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>

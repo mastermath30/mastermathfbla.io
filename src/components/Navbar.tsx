@@ -213,7 +213,7 @@ export function Navbar() {
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                   {t("Quick Actions")}
                 </p>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   {utilities.map((util, idx) => (
                     <motion.div
                       key={util.event}

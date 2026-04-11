@@ -321,7 +321,7 @@ function AuthPageContent() {
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/98 via-slate-950/95 to-black/98" />
           </div>
 
-          <div className="relative max-w-6xl mx-auto px-6 py-16">
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16">
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
                 {(profile.username || profile.firstName).charAt(0).toUpperCase()}
@@ -335,7 +335,7 @@ function AuthPageContent() {
           </div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-6 py-8 pb-32">
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-32">
           <FadeIn delay={0.05}>
           <Card className="mb-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Actions")}</h2>

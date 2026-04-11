@@ -605,7 +605,7 @@ function QuizPageContent() {
   if (!quiz || questions.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-        <main className="max-w-3xl mx-auto px-6 py-12">
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
           <Card className="p-8 text-center">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz not found")}</h1>
             <p className="text-slate-500 dark:text-slate-400 mb-6">
@@ -665,7 +665,7 @@ function QuizPageContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-      <main className="max-w-4xl mx-auto px-6 py-12 pb-24">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 pb-24">
         <FadeIn>
         <div className="flex flex-col gap-4 mb-8">
           <SectionLabel>{`${quiz.topic} Quiz`}</SectionLabel>

@@ -124,7 +124,7 @@ export function TopBar() {
 							</Link>
 
 							{/* Desktop Navigation */}
-							<div className="hidden lg:flex items-center space-x-6">
+							<div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
 								{navigation.map((item) => (
 									<Link
 										key={item.name}

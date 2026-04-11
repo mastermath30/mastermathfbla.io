@@ -150,16 +150,16 @@ export default function AboutPage() {
         <div className="hidden lg:block absolute bottom-32 left-[8%] text-3xl md:text-5xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary-light)' }}>∑</div>
         <div className="hidden lg:block absolute bottom-24 right-[12%] text-3xl md:text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary)' }}>√</div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur border rounded-full text-sm font-medium mb-6" style={{ background: 'rgba(var(--theme-primary-rgb), 0.2)', borderColor: 'rgba(var(--theme-primary-rgb), 0.3)', color: 'var(--theme-primary-light)' }}>
               <Heart className="w-4 h-4" />
               {t("Our Story")}
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6">
               {t("About")} <span className="gradient-text">MathMaster</span>
             </h1>
-            <p className="text-xl text-white leading-relaxed mb-8">
+            <p className="text-base sm:text-xl text-white leading-relaxed mb-8">
               {t("We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you're stuck.")}
             </p>
             <div className="flex flex-wrap gap-4">
@@ -183,7 +183,7 @@ export default function AboutPage() {
       {/* Stats Section */}
       <section className="py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-5xl mx-auto px-6">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {stats.map((stat) => (
               <div 
@@ -253,10 +253,10 @@ export default function AboutPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
-        <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Rocket} className="mb-6">
               {t("Getting Started")}
@@ -300,9 +300,9 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Users} className="mb-6">
               {t("Meet the Team")}
@@ -347,10 +347,10 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Heart} className="mb-6">
               {t("What We Believe")}
@@ -375,12 +375,12 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               {t("Ready to Start Learning?")}
             </h2>
           </FadeIn>
@@ -403,7 +403,7 @@ export default function AboutPage() {
 
       {/* Footer */}
       <footer className="py-12 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>

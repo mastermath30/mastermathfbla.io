@@ -952,17 +952,17 @@ export default function Home() {
 
           {/* How It Works */}
           <FadeIn>
-          <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+          <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
             <GlowingOrbs variant="subtle" />
-            <div className="relative max-w-6xl mx-auto px-6">
-              <div className="text-center mb-16">
+            <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="text-center mb-10 md:mb-16">
                 <SectionLabel icon={Rocket} className="mb-4">
                   {t("Your Learning Journey")}
                 </SectionLabel>
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
                   {t("How MathMaster Works")}
                 </h2>
-                <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
                   {t("Three simple steps to transform your math skills")}
                 </p>
               </div>
@@ -1008,14 +1008,14 @@ export default function Home() {
 
           {/* Testimonials */}
           <FadeIn>
-          <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+          <section className="py-14 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
             <GlowingOrbs variant="section" />
-            <div className="relative max-w-7xl mx-auto px-6">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+              <div className="text-center mb-10 md:mb-12">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
                   {t("What Students Say")}
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
                   {t("See what our students have to say about us.")}
                 </p>
               </div>
@@ -1255,19 +1255,19 @@ export default function Home() {
 
       {/* How It Works */}
       <FadeIn>
-      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
 
-        <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 md:mb-16">
             <SectionLabel icon={Rocket} className="mb-4">
               {t("Your Learning Journey")}
             </SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
               {t("How MathMaster Works")}
             </h2>
-            <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
               {t("Three simple steps to transform your math skills")}
             </p>
           </div>
@@ -1316,17 +1316,17 @@ export default function Home() {
 
       {/* Testimonials */}
       <FadeIn>
-      <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-14 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
-        
-        <div className="relative max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-      
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 md:mb-12">
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
               {t("What Students Say")}
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
               {t("See what our students have to say about us.")}
             </p>
           </div>
@@ -1339,13 +1339,13 @@ export default function Home() {
       )}
 
       {/* CTA Section - shown for everyone */}
-      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
         {/* Subtle gradient background */}
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               {t("Ready to Master Math?")}
             </h2>
           </FadeIn>
@@ -1367,9 +1367,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-16 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <footer className="py-12 md:py-16 pb-28 md:pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-10 md:mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold font-serif text-xl" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>
@@ -1645,7 +1645,7 @@ export default function Home() {
                               setBookingMonth(bookingMonth - 1);
                             }
                           }}
-                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
                           <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         </button>
@@ -1661,7 +1661,7 @@ export default function Home() {
                               setBookingMonth(bookingMonth + 1);
                             }
                           }}
-                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
                           <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         </button>
