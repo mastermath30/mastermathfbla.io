@@ -1,7 +1,7 @@
 # Responsive UI Audit — MathMaster (Round 2: Floating Elements & Overlap)
 
 **Audited:** April 11, 2026  
-**Scope:** All pages and shared components — focus on floating/absolute elements, decorative overlaps, mobile clutter  
+**Scope:** All pages and shared components — focus on floating/absolute elements, decorative overlaps, mobile clutter, missing utility controls  
 **Breakpoints tested:** 375px · 390px · 414px · 768px · 1024px · 1280px · 1440px
 
 ---
@@ -111,8 +111,76 @@ Several pages use `absolute` positioned floating badges, cards, and orbs that ex
 
 ---
 
+## Round 3: Missing Mobile Utility Controls
+
+**Audited:** April 11, 2026  
+**Issue:** Desktop users have easy access to key controls via the TopBar pill (theme toggle, language selector, color picker) and floating accessibility/tools buttons. On mobile, the TopBar is `hidden md:block` and never renders — these controls were only reachable by opening the FAB → "Theme" → scrolling to the bottom of the ThemeSelector panel. Language change was effectively invisible to mobile users.
+
+### Desktop-only controls found inaccessible on mobile
+
+| Control | Desktop location | Mobile status before fix |
+|---------|-----------------|--------------------------|
+| **Dark / Light mode toggle** | ThemeSelector in TopBar | Buried 2 levels deep: FAB → "Theme" → toggle at top of panel |
+| **Language switcher** | ThemeSelector in TopBar (bottom section) | Buried 3 levels deep: FAB → "Theme" → scroll to bottom of panel |
+| **Color accent theme** | ThemeSelector in TopBar | Same panel as above (secondary issue; color themes → panel flow is acceptable) |
+| **Accessibility panel** | Fixed `bottom-6 left-6` button (`hidden md:flex`) | Already reachable via FAB → "Accessibility" → fires `open-accessibility` event ✓ |
+| **Tools menu** | Fixed `bottom-6 left-[10rem]` button (`hidden md:block`) | Already reachable via FAB → "Tools" → fires `open-tools` event ✓ |
+
+### Root cause
+
+`ThemeSelector` and `TopBar` are hidden entirely on mobile (`hidden md:block`). The ThemeSelector does respond to the `open-theme-selector` custom event (which the FAB fires via its "Theme" quick action), and its panel has a mobile-optimized layout. However, the panel bundles three distinct controls — dark/light toggle, color picker, and language selector — with no top-level shortcut to any of them individually. Language, the most critical discoverability gap, required two taps plus scrolling.
+
+### Fix applied: Inline Settings section in Navbar FAB bottom sheet
+
+A new **Settings** section was added to the Navbar (`src/components/Navbar.tsx`) bottom sheet, placed between Navigation and Quick Actions. It contains:
+
+1. **Dark / Light segmented control** — two large tap-target buttons (Dark | Light) in a rounded pill container. Immediate one-tap effect. Reads state from `mm_dark_mode` localStorage on mount; writes back and applies `document.documentElement.classList` changes directly, exactly like ThemeSelector.
+
+2. **Language row** — a horizontally scrollable row of all 13 language buttons (English, Spanish, French, Hindi, Chinese, Arabic, Portuguese, Japanese, German, Korean, Russian, Italian, Vietnamese). Active language highlighted with the theme gradient. Uses `useLanguage()` hook directly; `setLanguage()` call persists to `mm_language` localStorage via LanguageProvider.
+
+**Additional CSS added to `globals.css`:** `.scrollbar-none` utility class (hides scrollbar on the language row across Firefox, IE/Edge, and WebKit).
+
+### New imports in `Navbar.tsx`
+
+```
+lucide-react: Sun, Moon, Globe (added to existing import)
+LanguageProvider: useLanguage, LanguageCode (added to existing import)
+@/lib/i18n: languages (new import)
+```
+
+### Bottom sheet structure after fix
+
+```
+[Handle bar]
+[Navigation]      — 4-col grid, 8 links
+[Settings]        — NEW: Dark/Light toggle + scrollable Language row
+[Quick Actions]   — 3×2 grid: Theme, Accessibility, Tools, AI Tutor, Whiteboard, Tutorial
+```
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `src/components/Navbar.tsx` | Added `useLanguage`, `LanguageCode`, `languages` imports; `isDark` state + init `useEffect`; `handleModeToggle` handler; Settings section in bottom sheet |
+| `src/app/globals.css` | Added `.scrollbar-none` utility class |
+
+### Verified at breakpoints
+
+- **375px** — Settings section fits cleanly between Navigation and Quick Actions; language row scrolls horizontally with no overflow
+- **390px** — same; Dark/Light toggle fills full width with comfortable tap targets
+- **414px** — same
+- **768px** — entire Navbar is `md:hidden`; no change to tablet/desktop TopBar
+
+### Success condition confirmed
+
+On mobile, opening the 3-line FAB → Settings section → Dark/Light toggle is 2 taps. Language change is 2 taps. Both controls are now first-class visible in the bottom sheet without navigating into any sub-panel.
+
+---
+
 ## Status
 
 - [x] Audit written  
-- [x] Fixes implemented  
-- [x] Build verified — `npm run build` passes cleanly
+- [x] Round 1 fixes implemented  
+- [x] Round 2 fixes implemented  
+- [x] Round 3 (missing mobile utility controls) implemented  
+- [x] Build verified — `npm run build` passes cleanly after all rounds

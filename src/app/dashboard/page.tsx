@@ -78,11 +78,11 @@ const initialGoals = [
 ];
 
 const colorClasses: Record<string, { bg: string; text: string }> = {
-  violet: { bg: "bg-violet-100", text: "text-violet-500" },
-  green: { bg: "bg-green-100", text: "text-green-500" },
-  yellow: { bg: "bg-yellow-100", text: "text-yellow-500" },
-  purple: { bg: "bg-purple-100", text: "text-purple-500" },
-  blue: { bg: "bg-blue-100", text: "text-blue-500" },
+  violet: { bg: "bg-violet-100", text: "text-violet-700" },
+  green: { bg: "bg-green-100", text: "text-green-700" },
+  yellow: { bg: "bg-yellow-100", text: "text-yellow-700" },
+  purple: { bg: "bg-purple-100", text: "text-purple-700" },
+  blue: { bg: "bg-blue-100", text: "text-blue-700" },
 };
 
 export default function DashboardPage() {
@@ -336,9 +336,9 @@ export default function DashboardPage() {
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#334155" : "#e2e8f0"} />
-                        <XAxis dataKey="week" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} />
-                        <YAxis yAxisId="left" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} />
-                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} tickFormatter={(v) => `${v}%`} />
+                        <XAxis dataKey="week" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#475569" }} />
+                        <YAxis yAxisId="left" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#475569" }} />
+                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#475569" }} tickFormatter={(v) => `${v}%`} />
                         <Tooltip
                           contentStyle={{
                             backgroundColor: isDark ? "#0f172a" : "white",
@@ -355,7 +355,7 @@ export default function DashboardPage() {
                         />
                         <Legend 
                           wrapperStyle={{ 
-                            color: isDark ? "#94a3b8" : "#64748b",
+                            color: isDark ? "#94a3b8" : "#475569",
                             paddingTop: "20px"
                           }} 
                         />

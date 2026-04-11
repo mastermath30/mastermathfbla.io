@@ -563,7 +563,7 @@ function LearnPageClient() {
                             isSelected
                               ? "border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 dark:bg-[var(--theme-primary)]/20"
                               : "border-slate-200 dark:border-slate-700"
-                          } ${isLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                          } ${isLocked ? "opacity-70 cursor-not-allowed" : ""}`}
                         >
                           <div className="flex items-center justify-between gap-2">
                             <span data-no-auto-translate="true" className="text-slate-800 dark:text-slate-200">{topic.title}</span>

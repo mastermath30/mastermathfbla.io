@@ -288,6 +288,15 @@ body.dark {
   background: #94a3b8;
 }
 
+/* Utility: hide scrollbar while keeping scroll behaviour */
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Safari / Chrome */
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
@@ -550,6 +559,10 @@ html {
 }
 
 :not(.dark) .text-slate-300 {
+  color: #475569 !important;
+}
+
+:not(.dark) .text-slate-500 {
   color: #475569 !important;
 }
 
