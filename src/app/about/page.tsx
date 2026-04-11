@@ -218,9 +218,9 @@ export default function AboutPage() {
                   className="object-cover rounded-3xl"
                 />
               </div>
-              {/* Floating badge */}
-              <div 
-                className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
+              {/* Floating badge — hidden on mobile to avoid overflow collision */}
+              <div
+                className="hidden sm:block absolute -bottom-6 -right-6 bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
                 style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.15)' }}
               >
                 <div className="flex items-center gap-3">
@@ -238,7 +238,7 @@ export default function AboutPage() {
               <SectionLabel icon={Target} className="mb-6">
                 {t("Our Mission")}
               </SectionLabel>
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-6">
                 {t("Making Math Accessible to Everyone")}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
@@ -261,7 +261,7 @@ export default function AboutPage() {
             <SectionLabel icon={Rocket} className="mb-6">
               {t("Getting Started")}
             </SectionLabel>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-6">
               {t("How It Works")}
             </h2>
           </div>
@@ -307,7 +307,7 @@ export default function AboutPage() {
             <SectionLabel icon={Users} className="mb-6">
               {t("Meet the Team")}
             </SectionLabel>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-6">
               {t("Meet the Team")}
             </h2>
           </div>
@@ -355,7 +355,7 @@ export default function AboutPage() {
             <SectionLabel icon={Heart} className="mb-6">
               {t("What We Believe")}
             </SectionLabel>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-6">
               {t("Our Core Values")}
             </h2>
           </div>

@@ -172,7 +172,7 @@ export function StudyStreak() {
 
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="absolute top-4 right-4 p-1 rounded hover:bg-white/20"
+                    className="absolute top-4 right-4 p-2.5 min-w-[44px] min-h-[44px] rounded flex items-center justify-center hover:bg-white/20"
                   >
                     <X className="w-5 h-5" />
                   </button>

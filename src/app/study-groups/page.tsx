@@ -231,14 +231,14 @@ export default function StudyGroupsPage() {
         <GlowingOrbs />
 
         {/* Hero Section */}
-        <section className="relative pt-32 pb-16 px-4 overflow-hidden">
+        <section className="relative pt-20 md:pt-32 pb-16 px-4 overflow-hidden">
           <div className="max-w-6xl mx-auto">
             <FadeIn>
               <SectionLabel icon={Users}>{t("Study Groups")}</SectionLabel>
             </FadeIn>
 
             <HeroText>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
                 {t("Learn Together,")}{" "}
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                   {t("Succeed Together")}
@@ -251,7 +251,7 @@ export default function StudyGroupsPage() {
 
             {/* Stats */}
             <FadeIn delay={0.2}>
-              <div className="flex flex-wrap gap-8 mt-8">
+              <div className="flex flex-wrap gap-4 md:gap-8 mt-8">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/30">
                     <Users className="w-5 h-5 text-violet-600" />
