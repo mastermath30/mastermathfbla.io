@@ -1,7 +1,8 @@
 import { allTopics, studyGroupSpotlights } from "@/data/courses";
+import type { ResourceItem } from "@/data/courses";
 
 export const learnActionKinds = ["view", "open-ai", "open-community", "open-quiz"] as const;
-export const learnTabs = ["concept", "video", "practice", "quiz", "ai", "community"] as const;
+export const learnTabs = ["concept", "video", "practice", "quiz"] as const;
 
 export type LearnActionKind = (typeof learnActionKinds)[number];
 export type LearnTab = (typeof learnTabs)[number];
@@ -14,6 +15,10 @@ export type LearnActionRequest = {
   difficulty?: "easy" | "medium" | "hard";
   groupId?: string;
   thread?: string;
+  result?: "mastered" | "review";
+  score?: number;
+  recommended?: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic";
+  source?: "quiz";
 };
 
 function clean(value?: string | null): string | undefined {
@@ -32,6 +37,17 @@ export function parseLearnActionFromSearchParams(searchParams: URLSearchParams):
   const difficulty = clean(searchParams.get("difficulty")) as "easy" | "medium" | "hard" | undefined;
   const groupId = clean(searchParams.get("group"));
   const thread = clean(searchParams.get("thread"));
+  const result = clean(searchParams.get("result")) as "mastered" | "review" | undefined;
+  const scoreValue = Number(searchParams.get("score"));
+  const score = Number.isFinite(scoreValue) ? Math.max(0, Math.min(100, Math.round(scoreValue))) : undefined;
+  const recommended = clean(searchParams.get("recommended")) as
+    | "retry-easy"
+    | "continue-medium"
+    | "continue-hard"
+    | "ask-ai"
+    | "next-topic"
+    | undefined;
+  const source = clean(searchParams.get("source")) as "quiz" | undefined;
 
   return {
     action,
@@ -41,6 +57,14 @@ export function parseLearnActionFromSearchParams(searchParams: URLSearchParams):
     difficulty: difficulty && ["easy", "medium", "hard"].includes(difficulty) ? difficulty : undefined,
     groupId,
     thread,
+    result: result && ["mastered", "review"].includes(result) ? result : undefined,
+    score,
+    recommended:
+      recommended &&
+      ["retry-easy", "continue-medium", "continue-hard", "ask-ai", "next-topic"].includes(recommended)
+        ? recommended
+        : undefined,
+    source: source === "quiz" ? source : undefined,
   };
 }
 
@@ -53,6 +77,10 @@ export function toLearnActionHref(request: LearnActionRequest): string {
   if (request.difficulty) params.set("difficulty", request.difficulty);
   if (request.groupId) params.set("group", request.groupId);
   if (request.thread) params.set("thread", request.thread);
+  if (request.result) params.set("result", request.result);
+  if (typeof request.score === "number") params.set("score", String(Math.round(request.score)));
+  if (request.recommended) params.set("recommended", request.recommended);
+  if (request.source) params.set("source", request.source);
   return `/learn?${params.toString()}`;
 }
 
@@ -91,4 +119,56 @@ export function resolveCommunityGroupFromCourseId(courseId?: string | null): str
     item.name.toLowerCase().includes(prefix.toLowerCase())
   );
   return group?.id ?? studyGroupSpotlights[0]?.id ?? null;
+}
+
+export type NormalizedPlaybackTarget = {
+  mode: "youtube-embed" | "native-video" | "external";
+  src: string;
+};
+
+function extractYoutubeId(input: string): string | null {
+  try {
+    const url = new URL(input);
+    const host = url.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") {
+      const id = url.pathname.split("/").filter(Boolean)[0];
+      return id || null;
+    }
+    if (host === "youtube.com" || host === "m.youtube.com" || host === "youtube-nocookie.com") {
+      if (url.pathname === "/watch") {
+        return url.searchParams.get("v");
+      }
+      if (url.pathname.startsWith("/shorts/")) {
+        return url.pathname.split("/")[2] || null;
+      }
+      if (url.pathname.startsWith("/embed/")) {
+        return url.pathname.split("/")[2] || null;
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+export function normalizeResourcePlaybackTarget(resource: ResourceItem): NormalizedPlaybackTarget {
+  const directExt = /\.(mp4|webm|ogg)(\?.*)?$/i;
+  const seed = resource.embedUrl || resource.href;
+
+  if (resource.provider === "direct" || directExt.test(seed)) {
+    return { mode: "native-video", src: seed };
+  }
+
+  const youtubeId = extractYoutubeId(seed) || extractYoutubeId(resource.href);
+  if (resource.provider === "youtube" || youtubeId) {
+    const id = youtubeId || "";
+    if (id) {
+      return {
+        mode: "youtube-embed",
+        src: `https://www.youtube-nocookie.com/embed/${id}`,
+      };
+    }
+  }
+
+  return { mode: "external", src: resource.href };
 }

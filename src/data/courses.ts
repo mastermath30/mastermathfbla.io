@@ -2,6 +2,10 @@ export type ResourceItem = {
   title: string;
   kind: "lesson" | "video" | "practice" | "worksheet";
   href: string;
+  label?: string;
+  embedUrl?: string;
+  provider?: "youtube" | "direct" | "external";
+  thumbnailUrl?: string;
 };
 
 export type TopicAction =
@@ -99,9 +103,16 @@ const rawCourses: RawCourseNode[] = [
                 href: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations",
               },
               {
-                title: "3Blue1Brown: Essence of Algebra",
+                title: "Khan Academy: Linear Equations Intro",
                 kind: "video",
-                href: "https://www.3blue1brown.com/topics/linear-algebra",
+                href: "https://www.youtube.com/watch?v=U0Y8Yk3IUT4",
+                provider: "youtube",
+                embedUrl: "https://www.youtube-nocookie.com/embed/U0Y8Yk3IUT4",
+              },
+              {
+                title: "Linear Functions Practice Sheet",
+                kind: "worksheet",
+                href: "/downloads/two-step-inequalities.pdf",
               },
             ],
             recommendedActions: ["learn-concept", "do-practice", "take-quiz", "ask-ai", "get-community-help"],
@@ -130,7 +141,9 @@ const rawCourses: RawCourseNode[] = [
               {
                 title: "Math Antics: Intro to Quadratics",
                 kind: "video",
-                href: "https://www.youtube.com/results?search_query=quadratic+equations+for+beginners",
+                href: "https://www.youtube.com/watch?v=qeByhTF8WEw",
+                provider: "youtube",
+                embedUrl: "https://www.youtube-nocookie.com/embed/qeByhTF8WEw",
               },
             ],
             recommendedActions: ["learn-concept", "watch-video", "do-practice", "take-quiz", "ask-ai"],
@@ -199,7 +212,9 @@ const rawCourses: RawCourseNode[] = [
               {
                 title: "Geometry Proof Walkthroughs",
                 kind: "video",
-                href: "https://www.youtube.com/results?search_query=geometry+proofs+tutorial",
+                href: "https://www.youtube.com/watch?v=n8Q0fY6nQwk",
+                provider: "youtube",
+                embedUrl: "https://www.youtube-nocookie.com/embed/n8Q0fY6nQwk",
               },
             ],
             recommendedActions: ["learn-concept", "watch-video", "do-practice", "take-quiz", "get-community-help"],
@@ -354,7 +369,9 @@ const rawCourses: RawCourseNode[] = [
               {
                 title: "Statistics Walkthrough Video",
                 kind: "video",
-                href: "https://www.youtube.com/results?search_query=statistics+basics+for+students",
+                href: "https://www.youtube.com/watch?v=xxpc-HPKN28",
+                provider: "youtube",
+                embedUrl: "https://www.youtube-nocookie.com/embed/xxpc-HPKN28",
               },
             ],
             recommendedActions: ["learn-concept", "do-practice", "take-quiz", "get-community-help"],
@@ -409,9 +426,122 @@ function defaultEstimatedMinutes(difficulty: TopicNode["difficulty"]) {
   return 70;
 }
 
+function buildPathTopic(input: {
+  id: string;
+  title: string;
+  summary: string;
+  difficulty: TopicNode["difficulty"];
+  quizSlug: string;
+  studyGroupId: string;
+  communityThread: string;
+  lessonHref: string;
+  practiceHref: string;
+  worksheetHref?: string;
+  prerequisites?: string[];
+}): RawTopicNode {
+  return {
+    id: input.id,
+    title: input.title,
+    summary: input.summary,
+    difficulty: input.difficulty,
+    prerequisites: input.prerequisites ?? [],
+    quizSlugs: [input.quizSlug],
+    aiPrompt: `Help me understand ${input.title.toLowerCase()} with a short explanation and two practice problems.`,
+    communityThread: input.communityThread,
+    studyGroupId: input.studyGroupId,
+    resources: [
+      {
+        title: `${input.title} lesson guide`,
+        kind: "lesson",
+        href: input.lessonHref,
+      },
+      {
+        title: `${input.title} practice set`,
+        kind: "practice",
+        href: input.practiceHref,
+      },
+      ...(input.worksheetHref
+        ? [
+            {
+              title: `${input.title} worksheet`,
+              kind: "worksheet" as const,
+              href: input.worksheetHref,
+            },
+          ]
+        : []),
+    ],
+    recommendedActions: ["learn-concept", "do-practice", "take-quiz", "ask-ai", "get-community-help"],
+  };
+}
+
+const extraTopicsByUnitId: Record<string, RawTopicNode[]> = {
+  "a1-linear-relationships": [
+    buildPathTopic({ id: "a1-one-step-equations", title: "One-Step Equations", summary: "Solve one-step equations with inverse operations before moving into multi-step work.", difficulty: "beginner", quizSlug: "a1-one-step-equations", studyGroupId: "algebra-foundations", communityThread: "One-Step Equations Practice", lessonHref: "https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities", practiceHref: "https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities", worksheetHref: "/downloads/two-step-inequalities.pdf" }),
+    buildPathTopic({ id: "a1-two-step-equations", title: "Two-Step Equations", summary: "Combine inverse operations to solve equations with constants and coefficients.", difficulty: "beginner", quizSlug: "a1-two-step-equations", studyGroupId: "algebra-foundations", communityThread: "Two-Step Equation Clinic", lessonHref: "https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities", practiceHref: "https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities", worksheetHref: "/downloads/two-step-inequalities.pdf" }),
+    buildPathTopic({ id: "a1-inequalities", title: "Linear Inequalities", summary: "Graph and solve inequalities, including when to reverse the inequality sign.", difficulty: "beginner", quizSlug: "a1-linear-inequalities", studyGroupId: "algebra-foundations", communityThread: "Inequalities Help Desk", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:inequalities", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:inequalities", worksheetHref: "/downloads/two-step-inequalities.pdf" }),
+    buildPathTopic({ id: "a1-systems-equations", title: "Systems of Equations", summary: "Solve systems by graphing, substitution, and elimination.", difficulty: "intermediate", quizSlug: "a1-systems-equations", studyGroupId: "algebra-problem-lab", communityThread: "Systems Strategy Board", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:systems-of-equations", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:systems-of-equations" }),
+    buildPathTopic({ id: "a1-slope-intercept", title: "Slope-Intercept Form", summary: "Write and interpret equations in y = mx + b form from graphs and situations.", difficulty: "beginner", quizSlug: "a1-slope-intercept", studyGroupId: "algebra-foundations", communityThread: "Slope-Intercept Form Q&A", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations" }),
+  ],
+  "a1-number-systems": [
+    buildPathTopic({ id: "a1-exponents", title: "Exponent Rules", summary: "Use product, quotient, and power rules to simplify expressions.", difficulty: "intermediate", quizSlug: "a1-exponent-rules", studyGroupId: "algebra-problem-lab", communityThread: "Exponent Rules Workshop", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:exponents-radicals", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:exponents-radicals" }),
+    buildPathTopic({ id: "a1-polynomial-basics", title: "Polynomial Basics", summary: "Add, subtract, and identify polynomial terms, coefficients, and degrees.", difficulty: "intermediate", quizSlug: "a1-polynomial-basics", studyGroupId: "algebra-problem-lab", communityThread: "Polynomial Basics Thread", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:polynomial-expressions", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:polynomial-expressions" }),
+    buildPathTopic({ id: "a1-factoring", title: "Factoring Expressions", summary: "Factor common factors, trinomials, and difference of squares expressions.", difficulty: "intermediate", quizSlug: "a1-factoring-expressions", studyGroupId: "algebra-problem-lab", communityThread: "Factoring Practice Room", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics" }),
+    buildPathTopic({ id: "a1-radicals", title: "Radicals and Roots", summary: "Simplify radicals and connect square roots to quadratic equations.", difficulty: "intermediate", quizSlug: "a1-radicals-roots", studyGroupId: "algebra-problem-lab", communityThread: "Radicals and Roots Help", lessonHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:exponents-radicals", practiceHref: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:exponents-radicals" }),
+    buildPathTopic({ id: "a1-data-models", title: "Data and Linear Models", summary: "Use scatter plots, trend lines, and residuals to interpret linear models.", difficulty: "intermediate", quizSlug: "a1-data-linear-models", studyGroupId: "stats-data-lab", communityThread: "Data and Linear Models", lessonHref: "https://www.khanacademy.org/math/statistics-probability", practiceHref: "https://www.khanacademy.org/math/statistics-probability" }),
+  ],
+  "geo-proofs": [
+    buildPathTopic({ id: "geo-foundations", title: "Geometry Foundations", summary: "Use points, lines, planes, and postulates as the language of geometry.", difficulty: "beginner", quizSlug: "geo-foundations", studyGroupId: "geometry-proofs-workshop", communityThread: "Geometry Foundations", lessonHref: "https://www.khanacademy.org/math/geometry", practiceHref: "https://www.khanacademy.org/math/geometry" }),
+    buildPathTopic({ id: "geo-angle-relationships", title: "Angle Relationships", summary: "Identify complementary, supplementary, vertical, and parallel-line angle pairs.", difficulty: "beginner", quizSlug: "geo-angle-relationships", studyGroupId: "geometry-proofs-workshop", communityThread: "Angle Relationships Q&A", lessonHref: "https://www.khanacademy.org/math/geometry/hs-geo-foundations", practiceHref: "https://www.khanacademy.org/math/geometry/hs-geo-foundations", worksheetHref: "/downloads/two-step-inequalities.pdf" }),
+    buildPathTopic({ id: "geo-triangle-congruence", title: "Triangle Congruence", summary: "Apply SSS, SAS, ASA, AAS, and HL congruence shortcuts.", difficulty: "intermediate", quizSlug: "geo-triangle-congruence", studyGroupId: "geometry-proofs-workshop", communityThread: "Triangle Congruence Lab", lessonHref: "https://www.khanacademy.org/math/geometry/hs-geo-congruence", practiceHref: "https://www.khanacademy.org/math/geometry/hs-geo-congruence" }),
+    buildPathTopic({ id: "geo-similarity", title: "Similarity and Scale", summary: "Use proportional reasoning to solve similar triangle and scale problems.", difficulty: "intermediate", quizSlug: "geo-similarity-scale", studyGroupId: "geometry-proofs-workshop", communityThread: "Similarity and Scale Help", lessonHref: "https://www.khanacademy.org/math/geometry/hs-geo-similarity", practiceHref: "https://www.khanacademy.org/math/geometry/hs-geo-similarity" }),
+    buildPathTopic({ id: "geo-polygons", title: "Polygons and Quadrilaterals", summary: "Classify polygons and prove properties of parallelograms and quadrilaterals.", difficulty: "intermediate", quizSlug: "geo-polygons-quadrilaterals", studyGroupId: "geometry-proofs-workshop", communityThread: "Polygon Properties Board", lessonHref: "https://www.khanacademy.org/math/geometry", practiceHref: "https://www.khanacademy.org/math/geometry" }),
+    buildPathTopic({ id: "geo-area-volume", title: "Area and Volume", summary: "Calculate area, surface area, and volume for composite figures and solids.", difficulty: "intermediate", quizSlug: "geo-area-volume", studyGroupId: "geometry-proofs-workshop", communityThread: "Area and Volume Workshop", lessonHref: "https://www.khanacademy.org/math/geometry/hs-geo-solids", practiceHref: "https://www.khanacademy.org/math/geometry/hs-geo-solids" }),
+    buildPathTopic({ id: "geo-coordinate-geometry", title: "Coordinate Geometry", summary: "Use distance, midpoint, and slope formulas to solve geometry on the plane.", difficulty: "intermediate", quizSlug: "geo-coordinate-geometry", studyGroupId: "geometry-proofs-workshop", communityThread: "Coordinate Geometry Help", lessonHref: "https://www.khanacademy.org/math/geometry", practiceHref: "https://www.khanacademy.org/math/geometry" }),
+    buildPathTopic({ id: "geo-right-triangles", title: "Right Triangles", summary: "Use the Pythagorean theorem and special right triangle relationships.", difficulty: "intermediate", quizSlug: "geo-right-triangles", studyGroupId: "geometry-proofs-workshop", communityThread: "Right Triangles Help", lessonHref: "https://www.khanacademy.org/math/geometry/hs-geo-trig", practiceHref: "https://www.khanacademy.org/math/geometry/hs-geo-trig" }),
+  ],
+  "a2-functions-polynomials": [
+    buildPathTopic({ id: "a2-function-transformations", title: "Function Transformations", summary: "Shift, reflect, stretch, and compress parent functions.", difficulty: "intermediate", quizSlug: "a2-function-transformations", studyGroupId: "algebra-problem-lab", communityThread: "Function Transformations", lessonHref: "https://www.khanacademy.org/math/algebra2", practiceHref: "https://www.khanacademy.org/math/algebra2" }),
+    buildPathTopic({ id: "a2-rational-expressions", title: "Rational Expressions", summary: "Simplify, multiply, divide, and solve rational expressions and equations.", difficulty: "advanced", quizSlug: "a2-rational-expressions", studyGroupId: "algebra-problem-lab", communityThread: "Rational Expressions Lab", lessonHref: "https://www.khanacademy.org/math/algebra2", practiceHref: "https://www.khanacademy.org/math/algebra2" }),
+    buildPathTopic({ id: "a2-exponential-functions", title: "Exponential Functions", summary: "Model growth and decay with exponential functions and equations.", difficulty: "intermediate", quizSlug: "a2-exponential-functions", studyGroupId: "algebra-problem-lab", communityThread: "Exponential Functions Help", lessonHref: "https://www.khanacademy.org/math/algebra2", practiceHref: "https://www.khanacademy.org/math/algebra2" }),
+    buildPathTopic({ id: "a2-logarithms", title: "Logarithms", summary: "Understand logs as inverse exponentials and use log rules.", difficulty: "advanced", quizSlug: "a2-logarithms", studyGroupId: "algebra-problem-lab", communityThread: "Logarithms Clinic", lessonHref: "https://www.khanacademy.org/math/algebra2", practiceHref: "https://www.khanacademy.org/math/algebra2" }),
+    buildPathTopic({ id: "a2-matrices", title: "Matrices and Systems", summary: "Use matrices to organize and solve systems of equations.", difficulty: "advanced", quizSlug: "a2-matrices-systems", studyGroupId: "algebra-problem-lab", communityThread: "Matrices and Systems", lessonHref: "https://www.khanacademy.org/math/precalculus", practiceHref: "https://www.khanacademy.org/math/precalculus" }),
+    buildPathTopic({ id: "a2-probability", title: "Probability Models", summary: "Build probability models with compound events and expected value.", difficulty: "intermediate", quizSlug: "a2-probability-models", studyGroupId: "stats-data-lab", communityThread: "Probability Models", lessonHref: "https://www.khanacademy.org/math/statistics-probability", practiceHref: "https://www.khanacademy.org/math/statistics-probability" }),
+    buildPathTopic({ id: "a2-trig-intro", title: "Trigonometry Intro", summary: "Connect right-triangle ratios to sine, cosine, and tangent.", difficulty: "intermediate", quizSlug: "a2-trig-intro", studyGroupId: "precalc-exam-crew", communityThread: "Trig Intro Help", lessonHref: "https://www.khanacademy.org/math/trigonometry", practiceHref: "https://www.khanacademy.org/math/trigonometry" }),
+    buildPathTopic({ id: "a2-complex-numbers", title: "Complex Numbers", summary: "Use imaginary numbers to solve equations without real solutions.", difficulty: "advanced", quizSlug: "a2-complex-numbers", studyGroupId: "algebra-problem-lab", communityThread: "Complex Numbers Q&A", lessonHref: "https://www.khanacademy.org/math/algebra2", practiceHref: "https://www.khanacademy.org/math/algebra2" }),
+  ],
+  "precalc-trig": [
+    buildPathTopic({ id: "precalc-unit-circle", title: "Unit Circle", summary: "Use the unit circle to evaluate trig functions at key angles.", difficulty: "intermediate", quizSlug: "precalc-unit-circle", studyGroupId: "precalc-exam-crew", communityThread: "Unit Circle Practice", lessonHref: "https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func", practiceHref: "https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func", worksheetHref: "/downloads/trig-identities-equations.pdf" }),
+    buildPathTopic({ id: "precalc-trig-identities", title: "Trig Identities", summary: "Use reciprocal, quotient, Pythagorean, and angle identities.", difficulty: "advanced", quizSlug: "precalc-trig-identities", studyGroupId: "precalc-exam-crew", communityThread: "Trig Identities Lab", lessonHref: "https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities", practiceHref: "https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities", worksheetHref: "/downloads/trig-identities-equations.pdf" }),
+    buildPathTopic({ id: "precalc-trig-graphs", title: "Trig Graphs", summary: "Graph sinusoidal functions and interpret amplitude, period, and phase shift.", difficulty: "advanced", quizSlug: "precalc-trig-graphs", studyGroupId: "precalc-exam-crew", communityThread: "Trig Graphs Workshop", lessonHref: "https://www.khanacademy.org/math/trigonometry/trig-function-graphs", practiceHref: "https://www.khanacademy.org/math/trigonometry/trig-function-graphs" }),
+    buildPathTopic({ id: "precalc-inverse-trig", title: "Inverse Trig Functions", summary: "Use inverse trig to solve equations and interpret restricted domains.", difficulty: "advanced", quizSlug: "precalc-inverse-trig", studyGroupId: "precalc-exam-crew", communityThread: "Inverse Trig Help", lessonHref: "https://www.khanacademy.org/math/trigonometry", practiceHref: "https://www.khanacademy.org/math/trigonometry" }),
+    buildPathTopic({ id: "precalc-vectors", title: "Vectors", summary: "Represent magnitude and direction with vector components and operations.", difficulty: "intermediate", quizSlug: "precalc-vectors", studyGroupId: "precalc-exam-crew", communityThread: "Vectors Practice", lessonHref: "https://www.khanacademy.org/math/precalculus", practiceHref: "https://www.khanacademy.org/math/precalculus" }),
+  ],
+  "precalc-statistics-bridge": [
+    buildPathTopic({ id: "precalc-conics", title: "Conic Sections", summary: "Identify and graph circles, ellipses, parabolas, and hyperbolas.", difficulty: "advanced", quizSlug: "precalc-conic-sections", studyGroupId: "precalc-exam-crew", communityThread: "Conic Sections Help", lessonHref: "https://www.khanacademy.org/math/precalculus", practiceHref: "https://www.khanacademy.org/math/precalculus" }),
+    buildPathTopic({ id: "precalc-advanced-functions", title: "Advanced Functions", summary: "Analyze composition, inverses, and behavior of advanced functions.", difficulty: "advanced", quizSlug: "precalc-advanced-functions", studyGroupId: "precalc-exam-crew", communityThread: "Advanced Functions", lessonHref: "https://www.khanacademy.org/math/precalculus", practiceHref: "https://www.khanacademy.org/math/precalculus" }),
+    buildPathTopic({ id: "precalc-limits-preview", title: "Limits Preview", summary: "Build intuition for limits using tables, graphs, and algebraic simplification.", difficulty: "advanced", quizSlug: "precalc-limits-preview", studyGroupId: "ap-calculus-bc", communityThread: "Limits Preview Help", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new" }),
+    buildPathTopic({ id: "precalc-modeling", title: "Function Modeling", summary: "Choose functions to model data and explain parameter meaning.", difficulty: "intermediate", quizSlug: "precalc-function-modeling", studyGroupId: "stats-data-lab", communityThread: "Function Modeling Lab", lessonHref: "https://www.khanacademy.org/math/precalculus", practiceHref: "https://www.khanacademy.org/math/precalculus" }),
+  ],
+  "calc-derivatives": [
+    buildPathTopic({ id: "calc-limits", title: "Limits", summary: "Evaluate limits from graphs, tables, and algebraic forms.", difficulty: "advanced", quizSlug: "calc-limits", studyGroupId: "ap-calculus-bc", communityThread: "Limits Q&A", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new", worksheetHref: "/downloads/limits-calculus.pdf" }),
+    buildPathTopic({ id: "calc-continuity", title: "Continuity", summary: "Determine where functions are continuous and classify discontinuities.", difficulty: "advanced", quizSlug: "calc-continuity", studyGroupId: "ap-calculus-bc", communityThread: "Continuity Practice", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new" }),
+    buildPathTopic({ id: "calc-derivative-definition", title: "Derivative Definition", summary: "Use the limit definition to interpret instantaneous rate of change.", difficulty: "advanced", quizSlug: "calc-derivative-definition", studyGroupId: "ap-calculus-bc", communityThread: "Derivative Definition Help", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new" }),
+    buildPathTopic({ id: "calc-derivative-rules", title: "Derivative Rules", summary: "Apply power, product, quotient, and chain rules efficiently.", difficulty: "advanced", quizSlug: "calc-derivative-rules", studyGroupId: "ap-calculus-bc", communityThread: "Derivative Rules Workshop", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new" }),
+    buildPathTopic({ id: "calc-curve-sketching", title: "Curve Sketching", summary: "Use derivatives to identify increasing intervals, extrema, and concavity.", difficulty: "advanced", quizSlug: "calc-curve-sketching", studyGroupId: "ap-calculus-bc", communityThread: "Curve Sketching Help", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-derivatives-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-derivatives-new" }),
+    buildPathTopic({ id: "calc-optimization", title: "Optimization", summary: "Set up and solve optimization problems with derivative reasoning.", difficulty: "advanced", quizSlug: "calc-optimization", studyGroupId: "ap-calculus-bc", communityThread: "Optimization Practice", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-derivatives-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-derivatives-new" }),
+    buildPathTopic({ id: "calc-related-rates", title: "Related Rates", summary: "Differentiate linked quantities with respect to time.", difficulty: "advanced", quizSlug: "calc-related-rates", studyGroupId: "ap-calculus-bc", communityThread: "Related Rates Room", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-derivatives-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-derivatives-new" }),
+    buildPathTopic({ id: "calc-integration-basics", title: "Integration Basics", summary: "Connect antiderivatives, accumulation, and definite integrals.", difficulty: "advanced", quizSlug: "calc-integration-basics", studyGroupId: "ap-calculus-bc", communityThread: "Integration Basics Help", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new", worksheetHref: "/downloads/integration-definite-substitution.pdf" }),
+    buildPathTopic({ id: "calc-fundamental-theorem", title: "Fundamental Theorem", summary: "Use the Fundamental Theorem of Calculus to connect area and derivatives.", difficulty: "advanced", quizSlug: "calc-fundamental-theorem", studyGroupId: "ap-calculus-bc", communityThread: "Fundamental Theorem Help", lessonHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new", practiceHref: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new" }),
+  ],
+};
+
 function normalizeCourses(source: RawCourseNode[]): CourseNode[] {
   return source.map((course) => {
-    const flattenedTopicIds = course.units.flatMap((unit) => unit.topics.map((topic) => topic.id));
+    const unitsWithExpandedTopics = course.units.map((unit) => ({
+      ...unit,
+      topics: [...unit.topics, ...(extraTopicsByUnitId[unit.id] ?? [])],
+    }));
+    const flattenedTopicIds = unitsWithExpandedTopics.flatMap((unit) => unit.topics.map((topic) => topic.id));
     const recommendedSequence =
       course.recommendedSequence && course.recommendedSequence.length
         ? course.recommendedSequence
@@ -420,7 +550,7 @@ function normalizeCourses(source: RawCourseNode[]): CourseNode[] {
     return {
       ...course,
       recommendedSequence,
-      units: course.units.map((unit, unitIndex) => ({
+      units: unitsWithExpandedTopics.map((unit, unitIndex) => ({
         ...unit,
         milestones:
           unit.milestones && unit.milestones.length
@@ -433,7 +563,7 @@ function normalizeCourses(source: RawCourseNode[]): CourseNode[] {
         topics: unit.topics.map((topic, topicIndex) => {
           const nextTopicId =
             unit.topics[topicIndex + 1]?.id ??
-            course.units[unitIndex + 1]?.topics[0]?.id ??
+            unitsWithExpandedTopics[unitIndex + 1]?.topics[0]?.id ??
             null;
           const reviewTopicId = unit.topics[topicIndex - 1]?.id ?? null;
           return {

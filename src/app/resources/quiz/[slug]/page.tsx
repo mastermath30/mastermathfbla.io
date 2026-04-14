@@ -10,6 +10,7 @@ import { FadeIn } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import { addQuizAttempt, getLearningProgress } from "@/lib/progress";
 import { topicByQuizSlug } from "@/data/courses";
+import { toLearnActionHref } from "@/lib/learnActions";
 
 type QuizQuestion = {
   prompt: string;
@@ -575,6 +576,35 @@ const quizzesBySlug: Record<string, QuizData> = {
   },
 };
 
+function buildTopicFallbackQuiz(topic: (typeof topicByQuizSlug)[string]): QuizData {
+  const title = `${topic.title} Checkpoint`;
+  const basePrompt = topic.title.toLowerCase();
+  return {
+    title,
+    description: `Practice the core ideas for ${topic.title}.`,
+    difficulty: topic.difficulty === "beginner" ? "Beginner" : topic.difficulty === "intermediate" ? "Intermediate" : "Advanced",
+    time: "9 questions • 12 min",
+    topic: topic.courseTitle,
+    questionsByDifficulty: {
+      easy: [
+        { prompt: `What is the first step when studying ${basePrompt}?`, options: ["Identify what is being asked", "Guess a formula", "Skip the givens", "Round every number"], correctIndex: 0 },
+        { prompt: `Which habit helps most with ${basePrompt}?`, options: ["Write each step clearly", "Hide your work", "Ignore units", "Change the question"], correctIndex: 0 },
+        { prompt: `Before solving a ${basePrompt} problem, you should:`, options: ["Check the given information", "Choose a random answer", "Erase the diagram", "Stop after reading"], correctIndex: 0 },
+      ],
+      medium: [
+        { prompt: `A strong solution for ${basePrompt} should include:`, options: ["A method and a reason", "Only the final answer", "Unlabeled numbers", "A copied prompt"], correctIndex: 0 },
+        { prompt: `If you get stuck on ${basePrompt}, what is the best next move?`, options: ["Review a prerequisite and try a simpler example", "Quit the topic", "Pick the longest answer", "Ignore the error"], correctIndex: 0 },
+        { prompt: `How do you verify a ${basePrompt} answer?`, options: ["Substitute or check it against the original situation", "Assume it is correct", "Delete your work", "Use a different topic"], correctIndex: 0 },
+      ],
+      hard: [
+        { prompt: `What shows mastery of ${basePrompt}?`, options: ["Explaining why the method works", "Memorizing one answer", "Skipping review", "Avoiding word problems"], correctIndex: 0 },
+        { prompt: `When a ${basePrompt} problem has multiple steps, you should:`, options: ["Track each transformation carefully", "Combine unrelated steps", "Ignore constraints", "Use no notation"], correctIndex: 0 },
+        { prompt: `A good recovery plan for a missed ${basePrompt} question is:`, options: ["Find the error type, review it, and retry", "Retake without review", "Change topics immediately", "Never check feedback"], correctIndex: 0 },
+      ],
+    },
+  };
+}
+
 function QuizPageContent() {
   const { t } = useTranslations();
   const router = useRouter();
@@ -583,7 +613,11 @@ function QuizPageContent() {
   const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
   const difficulty = (searchParams.get("difficulty") || "medium") as keyof DifficultyQuestions;
   
-  const quiz = useMemo(() => (slug ? quizzesBySlug[slug] : undefined), [slug]);
+  const topicForSlug = slug ? topicByQuizSlug[slug] : undefined;
+  const quiz = useMemo(() => {
+    if (!slug) return undefined;
+    return quizzesBySlug[slug] ?? (topicForSlug ? buildTopicFallbackQuiz(topicForSlug) : undefined);
+  }, [slug, topicForSlug]);
   const questions = useMemo(() => {
     if (!quiz) return [];
     return quiz.questionsByDifficulty[difficulty] || quiz.questionsByDifficulty.medium;
@@ -593,7 +627,9 @@ function QuizPageContent() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
+  const [pendingCorrect, setPendingCorrect] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [finalScore, setFinalScore] = useState<number | null>(null);
   const unlockThreshold = getLearningProgress().unlockThreshold;
 
   const difficultyLabels: Record<string, { label: string; color: string }> = {
@@ -611,7 +647,7 @@ function QuizPageContent() {
             <p className="text-slate-500 dark:text-slate-400 mb-6">
               {t("The quiz you are looking for does not exist yet.")}
             </p>
-            <Button onClick={() => router.push("/resources#quizzes")} type="button">
+            <Button onClick={() => router.push("/learn")} type="button">
               {t("Back to Learn")}
             </Button>
           </Card>
@@ -624,35 +660,77 @@ function QuizPageContent() {
   const totalQuestions = questions.length;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const progress = Math.round(((currentIndex + (showResults ? 1 : 0)) / totalQuestions) * 100);
+  const effectiveScore = showResults ? finalScore ?? score : score;
+  const scorePercent = totalQuestions ? Math.round((effectiveScore / totalQuestions) * 100) : 0;
+  const topicId = slug ? topicByQuizSlug[slug]?.id : undefined;
+  const mastered = scorePercent >= Math.round(unlockThreshold * 100);
+  const recommendedAction: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic" =
+    mastered
+      ? difficulty === "hard"
+        ? "next-topic"
+        : difficulty === "easy"
+        ? "continue-medium"
+        : "continue-hard"
+      : scorePercent < 50
+      ? "ask-ai"
+      : "retry-easy";
+
+  const learnResultHref = toLearnActionHref({
+    action: "view",
+    tab: "quiz",
+    topicId,
+    source: "quiz",
+    result: mastered ? "mastered" : "review",
+    score: scorePercent,
+    recommended: recommendedAction,
+  });
 
   const handleSubmit = () => {
     if (selectedIndex === null || answered) return;
-    if (selectedIndex === question.correctIndex) {
-      setScore((prev) => prev + 1);
-    }
+    setPendingCorrect(selectedIndex === question.correctIndex);
     setAnswered(true);
   };
 
   const handleNext = () => {
+    if (!answered) return;
+    const nextScore = score + (pendingCorrect ? 1 : 0);
+    setScore(nextScore);
+
     if (isLastQuestion) {
       if (slug) {
-        const accuracy = totalQuestions ? score / totalQuestions : 0;
+        const accuracy = totalQuestions ? nextScore / totalQuestions : 0;
+        const finalizedPercent = totalQuestions ? Math.round((nextScore / totalQuestions) * 100) : 0;
+        const finalizedMastered = finalizedPercent >= Math.round(unlockThreshold * 100);
+        const finalizedRecommended: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic" =
+          finalizedMastered
+            ? difficulty === "hard"
+              ? "next-topic"
+              : difficulty === "easy"
+              ? "continue-medium"
+              : "continue-hard"
+            : finalizedPercent < 50
+            ? "ask-ai"
+            : "retry-easy";
         addQuizAttempt({
           slug,
           topic: topicByQuizSlug[slug]?.id ?? quiz.topic,
-          score,
+          score: nextScore,
           totalQuestions,
           accuracy,
           difficulty,
           completedAt: new Date().toISOString(),
+          recommended: finalizedRecommended,
+          result: finalizedMastered ? "mastered" : "review",
         });
       }
+      setFinalScore(nextScore);
       setShowResults(true);
       return;
     }
     setCurrentIndex((prev) => prev + 1);
     setSelectedIndex(null);
     setAnswered(false);
+    setPendingCorrect(false);
   };
 
   const handleRestart = () => {
@@ -660,7 +738,9 @@ function QuizPageContent() {
     setSelectedIndex(null);
     setScore(0);
     setAnswered(false);
+    setPendingCorrect(false);
     setShowResults(false);
+    setFinalScore(null);
   };
 
   return (
@@ -689,19 +769,68 @@ function QuizPageContent() {
             <div className="text-center">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz complete")}</h2>
               <p className="text-slate-500 dark:text-slate-400 mb-6">
-                {t("You scored")} {score} {t("out of")} {totalQuestions}.
+                {t("You scored")} {effectiveScore} {t("out of")} {totalQuestions}.
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-                {Math.round((score / totalQuestions) * 100) >= Math.round(unlockThreshold * 100)
-                  ? `Mastery unlocked. You can continue to the next topic (${Math.round(unlockThreshold * 100)}% threshold).`
-                  : `Mastery not reached. Review support is recommended before retrying (${Math.round(unlockThreshold * 100)}% threshold).`}
+                {mastered
+                  ? t("Mastery unlocked. You can continue to the next topic ({threshold}% threshold).", {
+                      threshold: Math.round(unlockThreshold * 100),
+                    })
+                  : t("Mastery not reached. Review support is recommended before retrying ({threshold}% threshold).", {
+                      threshold: Math.round(unlockThreshold * 100),
+                    })}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                {recommendedAction === "next-topic"
+                  ? t("Recommended next step: move to your next topic.")
+                  : recommendedAction === "continue-medium"
+                  ? t("Recommended next step: continue with medium difficulty.")
+                  : recommendedAction === "continue-hard"
+                  ? t("Recommended next step: continue with hard difficulty.")
+                  : recommendedAction === "ask-ai"
+                  ? t("Recommended next step: ask AI for a guided recovery plan.")
+                  : t("Recommended next step: retry with easy difficulty.")}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button onClick={handleRestart} type="button">
-                  {t("Restart Quiz")}
+                <Button onClick={() => router.push(learnResultHref)} type="button">
+                  {t("Continue Path")}
                 </Button>
-                <Button variant="outline" onClick={() => router.push("/learn")} type="button">
-                  {t("Back to Learn")}
+                {recommendedAction === "retry-easy" && slug && (
+                  <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=easy`)} type="button">
+                    {t("Start easy recovery quiz")}
+                  </Button>
+                )}
+                {recommendedAction === "continue-medium" && slug && (
+                  <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=medium`)} type="button">
+                    {t("Continue with medium")}
+                  </Button>
+                )}
+                {recommendedAction === "continue-hard" && slug && (
+                  <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=hard`)} type="button">
+                    {t("Try hard challenge")}
+                  </Button>
+                )}
+                {recommendedAction === "ask-ai" && (
+                  <Button
+                    onClick={() =>
+                      router.push(
+                        toLearnActionHref({
+                          action: "open-ai",
+                          topicId,
+                          source: "quiz",
+                          result: "review",
+                          score: scorePercent,
+                          recommended: "ask-ai",
+                        })
+                      )
+                    }
+                    type="button"
+                  >
+                    {t("Ask AI recovery help")}
+                  </Button>
+                )}
+                <Button onClick={handleRestart} variant="outline" type="button">
+                  {t("Restart Quiz")}
                 </Button>
               </div>
             </div>
@@ -787,7 +916,7 @@ function QuizPageContent() {
                   {isLastQuestion ? t("Finish Quiz") : t("Next Question")}
                 </Button>
                 <Link
-                  href="/resources#quizzes"
+                  href="/learn"
                   className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
                 >
                   {t("Exit Quiz")}
