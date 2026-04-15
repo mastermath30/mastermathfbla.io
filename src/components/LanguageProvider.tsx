@@ -42,6 +42,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("mm_language", language);
     if (typeof document !== "undefined") {
       document.documentElement.lang = language;
+      document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
     }
   }, [language]);
 
