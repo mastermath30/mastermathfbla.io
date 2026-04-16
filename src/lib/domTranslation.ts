@@ -8,6 +8,9 @@ type Translator = {
   trBatch: BatchTranslator;
 };
 
+// Keyed by DOM text node reference. Only stores the ENGLISH original.
+// We only write to this map during an EN sweep (locale === "en"), ensuring
+// we always have the true source text to translate from.
 const originalTextByNode = new WeakMap<Text, string>();
 const originalAttrsByElement = new WeakMap<Element, Record<string, string>>();
 const translatableAttributes = ["placeholder", "title", "aria-label", "alt", "value"];
@@ -26,11 +29,26 @@ function isTranslatableTextNode(node: Text): boolean {
   return true;
 }
 
-function readOriginalText(node: Text): string {
+/**
+ * Returns the stored English original for this text node.
+ *
+ * @param isEnSweep - true only during an EN sweep. When true, unknown nodes
+ *   get their current nodeValue stored as the English original (safe because
+ *   the DOM is in EN at that point). When false (non-EN sweep), nodes not yet
+ *   in the WeakMap are skipped — this prevents storing non-EN text as
+ *   "original" for nodes that React just created via t().
+ */
+function readOriginalText(node: Text, isEnSweep: boolean): string | null {
   if (!originalTextByNode.has(node)) {
-    originalTextByNode.set(node, node.nodeValue ?? "");
+    if (isEnSweep) {
+      originalTextByNode.set(node, node.nodeValue ?? "");
+    } else {
+      // Node was created while a non-EN language was active (e.g., page navigation).
+      // We don't know the English original, so skip rather than store wrong text.
+      return null;
+    }
   }
-  return originalTextByNode.get(node) ?? "";
+  return originalTextByNode.get(node) ?? null;
 }
 
 function readOriginalAttr(element: Element, attr: string): string | null {
@@ -57,14 +75,27 @@ function preserveWhitespace(originalRaw: string, translatedCore: string): string
   return `${leading}${translatedCore}${trailing}`;
 }
 
+/**
+ * Translates all text and attribute content in the document body.
+ *
+ * @param signal - AbortSignal from an AbortController scoped to the current
+ *   language. When language changes, the caller aborts the controller so that
+ *   stale API responses are never applied to the DOM. Always check this BEFORE
+ *   and AFTER any async work.
+ */
 export async function translateDocumentContent(
   locale: LocaleCode,
   translator: Translator,
-  namespace = "page"
+  namespace = "page",
+  signal?: AbortSignal
 ): Promise<void> {
   if (typeof document === "undefined") return;
+  if (signal?.aborted) return;
+
   const root = document.body;
   if (!root) return;
+
+  const isEnSweep = locale === "en";
 
   const textNodes: Text[] = [];
   const textSources = new Set<string>();
@@ -74,10 +105,13 @@ export async function translateDocumentContent(
   while (node) {
     const textNode = node as Text;
     if (isTranslatableTextNode(textNode)) {
-      const source = readOriginalText(textNode).trim();
-      if (source) {
-        textNodes.push(textNode);
-        textSources.add(source);
+      const original = readOriginalText(textNode, isEnSweep);
+      if (original !== null) {
+        const source = original.trim();
+        if (source) {
+          textNodes.push(textNode);
+          textSources.add(source);
+        }
       }
     }
     node = walker.nextNode();
@@ -97,10 +131,13 @@ export async function translateDocumentContent(
     }
   }
 
-  if (locale === "en") {
+  if (signal?.aborted) return;
+
+  if (isEnSweep) {
+    // Restore all nodes to their English originals (stored in WeakMap).
     textNodes.forEach((textNode) => {
-      const source = readOriginalText(textNode);
-      if ((textNode.nodeValue ?? "") !== source) {
+      const source = readOriginalText(textNode, true);
+      if (source !== null && (textNode.nodeValue ?? "") !== source) {
         textNode.nodeValue = source;
       }
     });
@@ -112,10 +149,17 @@ export async function translateDocumentContent(
     return;
   }
 
+  // Non-EN: fetch translations from the API / cache.
   const translatedMap = await translator.trBatch(Array.from(textSources), { namespace });
 
+  // CRITICAL: check abort AFTER the async call. If language changed while the
+  // API was in flight, this prevents stale translations from being painted.
+  if (signal?.aborted) return;
+
   textNodes.forEach((textNode) => {
-    const originalRaw = readOriginalText(textNode);
+    const original = readOriginalText(textNode, false);
+    if (original === null) return;
+    const originalRaw = original;
     const source = originalRaw.trim();
     const translatedCore = translatedMap.get(source) ?? source;
     const translated = preserveWhitespace(originalRaw, translatedCore);

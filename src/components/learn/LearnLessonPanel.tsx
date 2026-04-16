@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { BookOpen, CirclePlay, Lock, Sparkles, Trophy } from "lucide-react";
 import { Button } from "@/components/Button";
 import { PathNodeVM } from "@/components/learn/types";
+import { useTranslations } from "@/components/LanguageProvider";
 
 type LearnLessonPanelProps = {
   open: boolean;
@@ -26,6 +27,8 @@ export function LearnLessonPanel({
   onAskAi,
   onGoNext,
 }: LearnLessonPanelProps) {
+  const { t } = useTranslations();
+
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -43,10 +46,10 @@ export function LearnLessonPanel({
 
   return (
     <>
-      {open && <button type="button" className="learn-panel-backdrop" onClick={onClose} aria-label="Close lesson panel" />}
+      {open && <button type="button" className="learn-panel-backdrop" onClick={onClose} aria-label={t("Close lesson panel")} />}
       <aside className={`learn-lesson-panel ${open ? "learn-lesson-panel-open" : ""}`} aria-hidden={!open}>
         <div className="learn-lesson-panel-header">
-          <p className="learn-top-strip-label">Lesson Panel</p>
+          <p className="learn-top-strip-label">{t("Lesson Panel")}</p>
           <h3 className="learn-lesson-panel-title">{node.title}</h3>
           <p className="learn-lesson-panel-subtitle">{node.estimatedMinutes} min • {node.unitTitle}</p>
         </div>
@@ -68,14 +71,14 @@ export function LearnLessonPanel({
         {locked && (
           <div className="learn-lesson-lock-note">
             <Lock className="w-4 h-4" />
-            <span>{node.lockedReason ?? "Finish the previous topic to unlock this one."}</span>
+            <span>{node.lockedReason ?? t("Finish the previous topic to unlock this one.")}</span>
           </div>
         )}
 
         <div className="learn-lesson-actions">
           <Button onClick={onLesson} disabled={locked}>
             <BookOpen className="w-4 h-4" />
-            {node.state === "in_progress" ? "Continue Lesson" : "Start Lesson"}
+            {node.state === "in_progress" ? t("Continue Lesson") : t("Start Lesson")}
           </Button>
           <Button onClick={onPractice} variant="outline" disabled={locked}>
             <CirclePlay className="w-4 h-4" />
@@ -83,19 +86,19 @@ export function LearnLessonPanel({
           </Button>
           <Button onClick={onQuiz} variant="secondary" disabled={locked}>
             <Trophy className="w-4 h-4" />
-            {showRecovery ? "Recovery Quiz" : "Take Quiz"}
+            {showRecovery ? t("Recovery Quiz") : t("Take Quiz")}
           </Button>
 
           {showRecovery && (
             <Button onClick={onAskAi} variant="ghost">
               <Sparkles className="w-4 h-4" />
-              Ask AI Recovery Help
+              {t("Ask AI Recovery Help")}
             </Button>
           )}
 
           {showNext && (
             <Button onClick={onGoNext} variant="ghost">
-              Go To Next Topic
+              {t("Go To Next Topic")}
             </Button>
           )}
         </div>

@@ -9,7 +9,9 @@
       "Bash(grep -c 'useTranslations\\\\|useLanguage\\\\|{ t }' /Users/malharpawar/mastermathfbla.io/src/components/*.tsx)",
       "Bash(python3 -c ':*)",
       "Bash(python3 *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(echo \"Dev server started \\(PID $!\\)\")"
     ]
   }
 }

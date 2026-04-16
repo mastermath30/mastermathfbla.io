@@ -2,6 +2,7 @@
 
 import { Check, Flame, Gift, Lock, RotateCcw, Trophy } from "lucide-react";
 import { PathNodeVM } from "@/components/learn/types";
+import { useTranslations } from "@/components/LanguageProvider";
 
 type LearnPathNodeProps = {
   node: PathNodeVM;
@@ -10,55 +11,33 @@ type LearnPathNodeProps = {
   nonInteractive?: boolean;
 };
 
-function getNodeVisual(state: PathNodeVM["state"]) {
-  switch (state) {
-    case "locked":
-      return {
-        label: "Locked",
-        icon: Lock,
-        classes: "dlp-node-locked",
-      };
-    case "mastered":
-      return {
-        label: "Mastered",
-        icon: Check,
-        classes: "dlp-node-mastered",
-      };
-    case "needs_review":
-      return {
-        label: "Review",
-        icon: RotateCcw,
-        classes: "dlp-node-review",
-      };
-    case "quiz_ready":
-      return {
-        label: "Quiz",
-        icon: Trophy,
-        classes: "dlp-node-quiz",
-      };
-    case "in_progress":
-      return {
-        label: "Learning",
-        icon: Flame,
-        classes: "dlp-node-progress",
-      };
-    default:
-      return {
-        label: "Start",
-        icon: Flame,
-        classes: "dlp-node-available",
-      };
-  }
-}
-
-function getNodeTypeLabel(nodeType: PathNodeVM["nodeType"]) {
-  if (nodeType === "checkpoint") return "Checkpoint";
-  if (nodeType === "mastery") return "Mastery";
-  if (nodeType === "milestone") return "Milestone";
-  return "Lesson";
-}
-
 export function LearnPathNode({ node, onOpen, emphasized = false, nonInteractive = false }: LearnPathNodeProps) {
+  const { t } = useTranslations();
+
+  function getNodeVisual(state: PathNodeVM["state"]) {
+    switch (state) {
+      case "locked":
+        return { label: t("Locked"), icon: Lock, classes: "dlp-node-locked" };
+      case "mastered":
+        return { label: t("Mastered"), icon: Check, classes: "dlp-node-mastered" };
+      case "needs_review":
+        return { label: t("Review"), icon: RotateCcw, classes: "dlp-node-review" };
+      case "quiz_ready":
+        return { label: "Quiz", icon: Trophy, classes: "dlp-node-quiz" };
+      case "in_progress":
+        return { label: t("Learning"), icon: Flame, classes: "dlp-node-progress" };
+      default:
+        return { label: t("Start"), icon: Flame, classes: "dlp-node-available" };
+    }
+  }
+
+  function getNodeTypeLabel(nodeType: PathNodeVM["nodeType"]) {
+    if (nodeType === "checkpoint") return t("Checkpoint");
+    if (nodeType === "mastery") return t("Mastered");
+    if (nodeType === "milestone") return t("Milestone");
+    return t("Lesson");
+  }
+
   const visual = getNodeVisual(node.state);
   const Icon = visual.icon;
   const typeLabel = getNodeTypeLabel(node.nodeType);

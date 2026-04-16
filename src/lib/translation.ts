@@ -14,6 +14,8 @@ export type Localized<T> = Record<LanguageCode, T>;
 export type TranslationOptions = {
   namespace?: string;
   htmlSafe?: boolean;
+  /** AbortSignal from the current language's AbortController. */
+  signal?: AbortSignal;
 };
 
 export type TranslationStatus = {
@@ -111,7 +113,8 @@ export function interpolate(template: string, params?: Record<string, string | n
 async function fetchTranslationFromApi(
   locale: LocaleCode,
   sourceText: string,
-  namespace?: string
+  namespace?: string,
+  signal?: AbortSignal
 ): Promise<string> {
   const payload = {
     target: locale,
@@ -123,6 +126,7 @@ async function fetchTranslationFromApi(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
+    signal,
   });
 
   if (!response.ok) {
@@ -209,6 +213,7 @@ export async function trBatch(
         texts: unresolved,
         namespace: options?.namespace ?? "default",
       }),
+      signal: options?.signal,
     });
 
     if (!response.ok) {

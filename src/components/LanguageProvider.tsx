@@ -31,6 +31,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const debounceRef = useRef<number | null>(null);
   const routeRef = useRef<string>("");
 
+  // ─── Read persisted language once on mount ────────────────────────────────
   useEffect(() => {
     const saved = localStorage.getItem("mm_language") as LanguageCode | null;
     if (saved && translations[saved]) {
@@ -38,6 +39,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // ─── Persist language + sync html attrs ──────────────────────────────────
   useEffect(() => {
     localStorage.setItem("mm_language", language);
     if (typeof document !== "undefined") {
@@ -46,36 +48,63 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, [language]);
 
+  // ─── DOM sweep (fallback for non-t() components) ─────────────────────────
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const runTranslation = () => {
-      translateDocumentContent(
-        language as LocaleCode,
-        {
-          tr: async (text, options) => (await trText(language as LocaleCode, text, options)).text,
-          trBatch: (texts, options) => trBatch(language as LocaleCode, texts, options),
-        },
-        routeRef.current || window.location.pathname || "page"
-      ).catch(() => {
-        // Soft-fail: leave English fallback in place.
-      });
+    // One AbortController per language. Aborted in cleanup so any in-flight
+    // API call from the previous language cannot overwrite the new language's DOM.
+    const abortController = new AbortController();
+    const { signal } = abortController;
+
+    const runTranslation = async () => {
+      // Pause observer while the sweep runs to avoid a MutationObserver feedback
+      // loop: the sweep changes characterData, which would trigger the observer,
+      // which would schedule another sweep, ad infinitum.
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+
+      try {
+        await translateDocumentContent(
+          language as LocaleCode,
+          {
+            tr: async (text, options) =>
+              (await trText(language as LocaleCode, text, options)).text,
+            trBatch: (texts, options) =>
+              trBatch(language as LocaleCode, texts, { ...options, signal }),
+          },
+          routeRef.current || window.location.pathname || "page",
+          signal
+        );
+      } catch {
+        // Soft-fail: leave the current DOM text in place.
+        // AbortError is expected on language switch — not a real error.
+      } finally {
+        // Re-attach observer only if we haven't been cleaned up (signal not aborted).
+        if (!signal.aborted && observerRef.current) {
+          observerRef.current.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true,
+          });
+        }
+      }
     };
 
-    runTranslation();
+    // Kick off an immediate sweep for the new language.
+    void runTranslation();
 
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-      observerRef.current = null;
-    }
-
+    // Set up MutationObserver to re-translate when new content appears (e.g., page navigation).
     observerRef.current = new MutationObserver(() => {
       if (debounceRef.current) {
         window.clearTimeout(debounceRef.current);
       }
-      debounceRef.current = window.setTimeout(() => runTranslation(), 120);
+      debounceRef.current = window.setTimeout(() => void runTranslation(), 120);
     });
 
+    // Attach observer (runTranslation disconnects + reconnects around its sweep).
     observerRef.current.observe(document.body, {
       childList: true,
       subtree: true,
@@ -85,24 +114,32 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     const updateRoute = () => {
       routeRef.current = window.location.pathname || "";
-      runTranslation();
+      void runTranslation();
     };
 
     window.addEventListener("popstate", updateRoute);
     window.addEventListener("hashchange", updateRoute);
 
     return () => {
+      // CRITICAL: abort any in-flight translateDocumentContent / trBatch fetch
+      // for this language before the new language's effect runs. This prevents
+      // a stale API response from overwriting the new language's DOM text.
+      abortController.abort();
+
       if (observerRef.current) {
         observerRef.current.disconnect();
+        observerRef.current = null;
       }
       if (debounceRef.current) {
         window.clearTimeout(debounceRef.current);
+        debounceRef.current = null;
       }
       window.removeEventListener("popstate", updateRoute);
       window.removeEventListener("hashchange", updateRoute);
     };
   }, [language]);
 
+  // ─── t() and tr() — always reflect the current language via useMemo ───────
   const value = useMemo<LanguageContextValue>(() => {
     const t = (key: TranslationKey, params?: Record<string, string | number>): string => {
       const template = translations[language]?.[key] ?? key;
@@ -114,7 +151,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     const tr = async (text: string, opts?: TranslationOptions): Promise<string> => {
       if (!text) return text;
-
       const dictionaryDirect = translations[language]?.[text];
       if (dictionaryDirect) {
         return dictionaryDirect;
@@ -123,12 +159,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       return result.text;
     };
 
-    return {
-      language,
-      setLanguage,
-      t,
-      tr,
-    };
+    return { language, setLanguage, t, tr };
   }, [language]);
 
   useEffect(() => {
