@@ -20,5 +20,6 @@ export type PathNodeVM = {
   index: number;
   nodeType: PathNodeType;
   chapterIndex: number;
+  chapterTitle: string;
   lane: PathLane;
 };

@@ -124,13 +124,11 @@ function toPathNodeState(flow: FlowState): PathNodeVM["state"] {
   return "available";
 }
 
-const CHAPTER_SIZE = 5;
 const laneCycle: Array<PathNodeVM["lane"]> = ["left", "center", "right", "center", "left"];
 
-function deriveNodeType(index: number): PathNodeVM["nodeType"] {
-  const step = index % CHAPTER_SIZE;
-  if (step === CHAPTER_SIZE - 1) return "mastery";
-  if (step === CHAPTER_SIZE - 2) return "checkpoint";
+function deriveNodeType(index: number, unitTopicCount: number): PathNodeVM["nodeType"] {
+  if (unitTopicCount > 1 && index === unitTopicCount - 1) return "mastery";
+  if (unitTopicCount > 2 && index === unitTopicCount - 2) return "checkpoint";
   return "lesson";
 }
 
@@ -265,6 +263,9 @@ function LearnPageClient() {
     return selectedSequence.map((topicId, index) => {
       const topic = allTopics.find((item) => item.id === topicId);
       if (!topic) return null;
+      const unitTopics = selectedCourse?.units.find((unit) => unit.id === topic.unitId)?.topics ?? [];
+      const unitTopicIndex = unitTopics.findIndex((entry) => entry.id === topic.id);
+      const unitIndex = selectedCourse?.units.findIndex((unit) => unit.id === topic.unitId) ?? -1;
 
       const rawStatus = progress.topicStatusById[topicId] ?? "locked";
       const topicAttempt = progress.quizAttempts.find((attempt) => topic.quizSlugs.includes(attempt.slug));
@@ -291,12 +292,13 @@ function LearnPageClient() {
         hasQuizAttempt: Boolean(topicAttempt),
         isFocus: false,
         index,
-        nodeType: deriveNodeType(index),
-        chapterIndex: Math.floor(index / CHAPTER_SIZE),
+        nodeType: deriveNodeType(Math.max(0, unitTopicIndex), unitTopics.length),
+        chapterIndex: Math.max(0, unitIndex),
+        chapterTitle: topic.unitTitle,
         lane: laneCycle[index % laneCycle.length],
       } as PathNodeVM;
     }).filter(Boolean) as PathNodeVM[];
-  }, [progress.masteryByTopicId, progress.quizAttempts, progress.topicCheckpointCompletedById, progress.topicStatusById, progress.unlockThreshold, selectedSequence]);
+  }, [progress.masteryByTopicId, progress.quizAttempts, progress.topicCheckpointCompletedById, progress.topicStatusById, progress.unlockThreshold, selectedCourse?.units, selectedSequence]);
 
   const focusNodeId = useMemo(() => {
     const byIdx = nodeViewModels.slice().sort((a, b) => a.index - b.index);
@@ -334,6 +336,8 @@ function LearnPageClient() {
   }, [selectedNode?.id, selectedTopic, selectedTopicId]);
 
   const activeTopicId = activeTopic?.id ?? null;
+  const activeUnitId = activeTopic?.unitId ?? selectedCourse?.units[0]?.id ?? null;
+  const selectedCourseUnits = selectedCourse?.units ?? [];
 
   const selectedCourseTopicIds = selectedCourse
     ? selectedCourse.units.flatMap((unit) => unit.topics.map((topic) => topic.id))
@@ -451,6 +455,13 @@ function LearnPageClient() {
     setHighlightedNodeId(topicId);
     setResultBanner(null);
   }, [progress.topicStatusById, refreshProgress]);
+
+  const changeUnit = useCallback((unitId: string) => {
+    const unit = selectedCourse?.units.find((entry) => entry.id === unitId);
+    const firstTopicId = unit?.topics[0]?.id;
+    if (!firstTopicId) return;
+    changeTopic(firstTopicId);
+  }, [changeTopic, selectedCourse?.units]);
 
   useEffect(() => {
     const local = getLearningProgress();
@@ -591,6 +602,14 @@ function LearnPageClient() {
       target.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [highlightedNodeId]);
+
+  useEffect(() => {
+    if (!activeUnitId) return;
+    const target = document.getElementById(`learn-unit-${activeUnitId}`);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }, [activeUnitId]);
 
   const primaryAction = useMemo(() => {
     if (!selectedNode) {
@@ -750,12 +769,41 @@ function LearnPageClient() {
               })}
             </div>
 
-            <LearnPathMap
-              nodes={mappedNodes}
-              selectedNodeId={activeTopicId}
-              onSelectNode={changeTopic}
-              highlightedNodeId={highlightedNodeId}
-            />
+            <div className="learn-browser-grid">
+              <aside className="learn-chapter-menu" aria-label={t("Chapters")}>
+                <div className="learn-chapter-menu-header">
+                  <p>{t("Chapters")}</p>
+                  <span>{selectedCourseUnits.length}</span>
+                </div>
+                <div className="learn-chapter-menu-list">
+                  {selectedCourseUnits.map((unit, unitIndex) => {
+                    const active = activeUnitId === unit.id;
+                    const mastered = unit.topics.filter((topic) => progress.topicStatusById[topic.id] === "mastered").length;
+                    return (
+                      <button
+                        key={unit.id}
+                        id={`learn-unit-${unit.id}`}
+                        type="button"
+                        onClick={() => changeUnit(unit.id)}
+                        className={`learn-chapter-menu-item ${active ? "learn-chapter-menu-item-active" : ""}`}
+                        aria-current={active ? "true" : undefined}
+                      >
+                        <span className="learn-chapter-menu-kicker">{t("Chapter")} {unitIndex + 1}</span>
+                        <span className="learn-chapter-menu-title">{unit.title}</span>
+                        <span className="learn-chapter-menu-meta">{mastered}/{unit.topics.length} {t("mastered")}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </aside>
+
+              <LearnPathMap
+                nodes={mappedNodes}
+                selectedNodeId={activeTopicId}
+                onSelectNode={changeTopic}
+                highlightedNodeId={highlightedNodeId}
+              />
+            </div>
 
             {selectedUnitComplete && activeTopic && (
               <div className="mt-4 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-3 py-3">
@@ -884,8 +932,9 @@ function LearnPageClient() {
                       <div className="learn-hub-player-ratio">
                         <iframe
                           src={activeVideoPlayback.src}
-                          title={activeVideo.title}
-                          allow="autoplay; encrypted-media; picture-in-picture"
+                          title={`${activeVideo.title} video lesson`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
                           allowFullScreen
                           loading="lazy"
                         />
@@ -909,6 +958,14 @@ function LearnPageClient() {
                         >
                           {t("Open source")}
                         </a>
+                      </div>
+                    )}
+                    {activeVideoPlayback.mode === "unavailable" && (
+                      <div className="learn-hub-video-placeholder">
+                        <p className="font-semibold text-slate-900 dark:text-white">{t("Video unavailable")}</p>
+                        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                          {t("Choose another video or use the lesson resources below.")}
+                        </p>
                       </div>
                     )}
                   </div>

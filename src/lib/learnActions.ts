@@ -97,19 +97,8 @@ export function buildCommunityHref(input: {
   groupId?: string;
   thread?: string;
 }): string {
-  const groupId = input.groupId || input.studyGroupId;
-  const thread = input.thread || input.discussionLabel;
-
-  if (groupId) {
-    const params = new URLSearchParams();
-    params.set("group", groupId);
-    if (thread) params.set("thread", thread);
-    return `/study-groups?${params.toString()}`;
-  }
-
-  const params = new URLSearchParams();
-  if (thread) params.set("thread", thread);
-  return params.toString() ? `/community?${params.toString()}` : "/community";
+  void input;
+  return "/community";
 }
 
 export function resolveCommunityGroupFromCourseId(courseId?: string | null): string | null {
@@ -122,27 +111,38 @@ export function resolveCommunityGroupFromCourseId(courseId?: string | null): str
 }
 
 export type NormalizedPlaybackTarget = {
-  mode: "youtube-embed" | "native-video" | "external";
+  mode: "youtube-embed" | "native-video" | "external" | "unavailable";
   src: string;
 };
 
+const youtubeIdPattern = /^[a-zA-Z0-9_-]{11}$/;
+
+function normalizeYoutubeId(value?: string | null): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  return youtubeIdPattern.test(trimmed) ? trimmed : null;
+}
+
 function extractYoutubeId(input: string): string | null {
+  const rawId = normalizeYoutubeId(input);
+  if (rawId) return rawId;
+
   try {
     const url = new URL(input);
     const host = url.hostname.replace(/^www\./, "");
     if (host === "youtu.be") {
       const id = url.pathname.split("/").filter(Boolean)[0];
-      return id || null;
+      return normalizeYoutubeId(id);
     }
     if (host === "youtube.com" || host === "m.youtube.com" || host === "youtube-nocookie.com") {
       if (url.pathname === "/watch") {
-        return url.searchParams.get("v");
+        return normalizeYoutubeId(url.searchParams.get("v"));
       }
       if (url.pathname.startsWith("/shorts/")) {
-        return url.pathname.split("/")[2] || null;
+        return normalizeYoutubeId(url.pathname.split("/")[2]);
       }
       if (url.pathname.startsWith("/embed/")) {
-        return url.pathname.split("/")[2] || null;
+        return normalizeYoutubeId(url.pathname.split("/")[2]);
       }
     }
   } catch {
@@ -161,13 +161,13 @@ export function normalizeResourcePlaybackTarget(resource: ResourceItem): Normali
 
   const youtubeId = extractYoutubeId(seed) || extractYoutubeId(resource.href);
   if (resource.provider === "youtube" || youtubeId) {
-    const id = youtubeId || "";
-    if (id) {
+    if (youtubeId) {
       return {
         mode: "youtube-embed",
-        src: `https://www.youtube-nocookie.com/embed/${id}`,
+        src: `https://www.youtube-nocookie.com/embed/${youtubeId}`,
       };
     }
+    return { mode: "unavailable", src: "" };
   }
 
   return { mode: "external", src: resource.href };

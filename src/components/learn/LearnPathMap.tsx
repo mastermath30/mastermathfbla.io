@@ -69,7 +69,7 @@ export function LearnPathMap({
               <div className="dlp-chapter-divider" aria-hidden="true">
                 <div className="dlp-chapter-line" />
                 <div className="dlp-chapter-chip">
-                  <span>Chapter {node.chapterIndex + 1}</span>
+                  <span>{node.chapterTitle}</span>
                   <span>•</span>
                   <span>{chapterMastered}/{chapterTotal} mastered</span>
                 </div>
@@ -93,6 +93,7 @@ export function LearnPathMap({
                         index: -1,
                         nodeType: "milestone",
                         chapterIndex: node.chapterIndex,
+                        chapterTitle: node.chapterTitle,
                         lane: "center",
                       }}
                       nonInteractive
