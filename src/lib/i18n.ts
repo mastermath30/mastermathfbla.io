@@ -27,6 +27,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "About",
     "Dashboard": "Dashboard",
+    "Learn": "Learn",
     "Resources": "Resources",
     "Community": "Community",
     "Support": "Support",
@@ -695,6 +696,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "Acerca de",
     "Dashboard": "Panel",
+    "Learn": "Aprender",
     "Resources": "Recursos",
     "Community": "Comunidad",
     "Support": "Soporte",
@@ -1409,6 +1411,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "A Propos",
     "Dashboard": "Tableau de Bord",
+    "Learn": "Apprendre",
     "Resources": "Ressources",
     "Community": "Communaute",
     "Support": "Assistance",
@@ -2123,6 +2126,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "हमारे बारे में",
     "Dashboard": "डैशबोर्ड",
+    "Learn": "सीखना",
     "Resources": "संसाधन",
     "Community": "समुदाय",
     "Support": "सहायता",
@@ -2768,6 +2772,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "关于我们",
     "Dashboard": "仪表板",
+    "Learn": "学习",
     "Resources": "资源",
     "Community": "社区",
     "Support": "支持",
@@ -3413,6 +3418,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "حول",
     "Dashboard": "لوحة التحكم",
+    "Learn": "يتعلم",
     "Resources": "الموارد",
     "Community": "المجتمع",
     "Support": "الدعم",
@@ -4058,6 +4064,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "Sobre",
     "Dashboard": "Painel",
+    "Learn": "Aprender",
     "Resources": "Recursos",
     "Community": "Comunidade",
     "Support": "Suporte",
@@ -4702,6 +4709,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "私たちについて",
     "Dashboard": "ダッシュボード",
+    "Learn": "学ぶ",
     "Resources": "リソース",
     "Community": "コミュニティ",
     "Support": "サポート",
@@ -5346,6 +5354,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "Über uns",
     "Dashboard": "Dashboard",
+    "Learn": "Lernen",
     "Resources": "Ressourcen",
     "Community": "Gemeinschaft",
     "Support": "Unterstützung",
@@ -5989,6 +5998,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "소개",
     "Dashboard": "대시보드",
+    "Learn": "배우다",
     "Resources": "자료",
     "Community": "커뮤니티",
     "Support": "지원",
@@ -6633,6 +6643,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "О нас",
     "Dashboard": "Панель управления",
+    "Learn": "Учиться",
     "Resources": "Ресурсы",
     "Community": "Сообщество",
     "Support": "Поддержка",
@@ -7277,6 +7288,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "Chi siamo",
     "Dashboard": "Pannello",
+    "Learn": "Imparare",
     "Resources": "Risorse",
     "Community": "Comunità",
     "Support": "Supporto",
@@ -7921,6 +7933,7 @@ export const translations: TranslationTable = {
     // Navigation
     "About": "Giới thiệu",
     "Dashboard": "Bảng điều khiển",
+    "Learn": "Học",
     "Resources": "Tài nguyên",
     "Community": "Cộng đồng",
     "Support": "Hỗ trợ",

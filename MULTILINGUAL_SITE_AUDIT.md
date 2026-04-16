@@ -204,6 +204,72 @@ Verified conditions:
 - refresh preserved the selected language and subsequent switches continued working
 - no remaining mixed Hindi/German-style stale UI after the refresh repro
 
+### Remaining Regression Found After the First Fix
+
+After the first round of fixes, one more real regression remained:
+
+- Desktop sequence:
+  `English → French → Hindi → German → Arabic → Chinese → Japanese → English`
+  could leave parts of the UI in Japanese even though `html[lang]`, provider state, and `mm_language` were already back to `en`
+- Desktop sequence:
+  `... → Japanese → Korean`
+  could leave the top-nav `Learn` label stuck in Japanese (`学ぶ`) while the rest of the nav was already Korean
+
+### Final Root Causes
+
+**Root cause 4 — script detection skipped Japanese/Korean letter ranges**
+
+`domTranslation.ts` used a hard-coded regex to decide whether a text node was translatable. That regex covered Latin, Cyrillic, Arabic, Devanagari, and Han characters, but not Hiragana, Katakana, or Hangul. As a result:
+
+- nodes translated into Japanese could disappear from later re-translation passes
+- Korean was vulnerable for the same reason
+- switching away from Japanese/Korean could leave those nodes stuck
+
+**Root cause 5 — `Learn` was still missing from the static dictionaries**
+
+The nav item `Learn` was still falling through to DOM/API fallback instead of coming from the dictionary. That made it susceptible to drift between languages, especially after Japanese.
+
+**Root cause 6 — `ThemeSelector` was still being post-translated even though it already had full `t()` coverage**
+
+The theme/language picker was a poor candidate for DOM fallback:
+
+- all of its labels already came from `t()`
+- DOM post-translation could still touch the panel and introduce low-quality or stale text
+- this made the open desktop panel appear unstable even when the main page had already switched correctly
+
+### Final Fixes Applied
+
+| File | Change |
+|---|---|
+| `src/lib/domTranslation.ts` | Replaced the hand-picked script regex with Unicode letter detection via `\p{L}` so Japanese/Korean and other lettered scripts remain eligible for re-translation |
+| `src/lib/translation.ts` | Kept the source-aware translation path so `auto → en` retranslation works when fallback-managed nodes need to return to English |
+| `src/lib/i18n.ts` | Added the missing `Learn` navigation key to every language dictionary so nav switching no longer depends on DOM fallback |
+| `src/components/ThemeSelector.tsx` | Marked the whole panel `data-no-auto-translate="true"` so the already-dictionary-driven picker cannot be mutated by the DOM fallback sweep |
+
+### Final Verification Sequences
+
+Verified against the live running app after the final fixes:
+
+- Desktop:
+  `English → French → Hindi → German → Arabic → Chinese → Japanese → Korean → English`
+- Desktop:
+  `French → Spanish → French → Japanese`
+- Desktop + refresh:
+  `English → Hindi → refresh → German`
+- Mobile menu:
+  `English → French → Hindi → German → Arabic → Chinese → Japanese → Korean → English`
+- Mobile menu:
+  `French → Spanish → French → Japanese`
+
+Observed after the final fix:
+
+- selected language code matched `mm_language`
+- `document.documentElement.lang` matched the clicked language
+- desktop top nav and desktop picker labels matched the selected language
+- mobile hero/action text matched the selected language
+- Japanese no longer remained stuck after switching back to English
+- Korean no longer inherited Japanese labels after `Japanese → Korean`
+
 ---
 
 ## 8. Build Status

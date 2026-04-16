@@ -18,11 +18,16 @@ type TranslationTarget =
 const originalTextByNode = new WeakMap<Text, string>();
 const originalAttrsByElement = new WeakMap<Element, Record<string, string>>();
 const translatableAttributes = ["placeholder", "title", "aria-label", "alt", "value"];
+const letterPattern = /\p{L}/u;
+
+function containsLetters(value: string): boolean {
+  return letterPattern.test(value);
+}
 
 function isTranslatableTextNode(node: Text): boolean {
   const value = (node.nodeValue ?? "").trim();
   if (!value) return false;
-  if (!/[A-Za-z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u4E00-\u9FFF]/.test(value)) return false;
+  if (!containsLetters(value)) return false;
 
   const parent = node.parentElement;
   if (!parent) return false;
@@ -135,7 +140,7 @@ export async function translateDocumentContent(
       if (attr === "value" && !canTranslateValueAttribute(element)) continue;
       const target = resolveAttrTarget(element, attr, isEnSweep);
       if (!target) continue;
-      if (!/[A-Za-z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u4E00-\u9FFF]/.test(target.trimmed)) continue;
+      if (!containsLetters(target.trimmed)) continue;
       attrTargets.push({ element, attr, target });
       if (target.kind === "stored") {
         storedSources.add(target.trimmed);
@@ -181,6 +186,10 @@ export async function translateDocumentContent(
     if ((textNode.nodeValue ?? "") !== translated) {
       textNode.nodeValue = translated;
     }
+
+    if (isEnSweep && target.kind === "live") {
+      originalTextByNode.set(textNode, translated);
+    }
   });
 
   attrTargets.forEach(({ element, attr, target }) => {
@@ -193,6 +202,12 @@ export async function translateDocumentContent(
 
     if (element.getAttribute(attr) !== translated) {
       element.setAttribute(attr, translated);
+    }
+
+    if (isEnSweep && target.kind === "live") {
+      const existing = originalAttrsByElement.get(element) ?? {};
+      existing[attr] = translated;
+      originalAttrsByElement.set(element, existing);
     }
   });
 }

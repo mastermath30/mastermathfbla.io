@@ -167,11 +167,15 @@ export async function trText(
   sourceText: string,
   options?: TranslationOptions
 ): Promise<TranslationResult> {
-  if (!sourceText || locale === "en") {
+  const sourceLocale = options?.sourceLocale ?? "en";
+
+  if (!sourceText) {
+    return { text: sourceText, source: "fallback" };
+  }
+  if (locale === "en" && sourceLocale === "en") {
     return { text: sourceText, source: "fallback" };
   }
 
-  const sourceLocale = options?.sourceLocale ?? "en";
   const cached = getCachedTranslation(locale, sourceText, options?.namespace, sourceLocale);
   if (cached) {
     return { text: cached, source: "cache" };
@@ -208,7 +212,11 @@ export async function trBatch(
   const unique = Array.from(new Set(sourceTexts.filter(Boolean)));
   const sourceLocale = options?.sourceLocale ?? "en";
 
-  if (locale === "en" || unique.length === 0) {
+  if (unique.length === 0) {
+    unique.forEach((text) => result.set(text, text));
+    return result;
+  }
+  if (locale === "en" && sourceLocale === "en") {
     unique.forEach((text) => result.set(text, text));
     return result;
   }

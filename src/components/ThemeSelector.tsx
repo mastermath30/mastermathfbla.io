@@ -120,6 +120,8 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
           <>
             <div className="fixed inset-0 z-[100]" onClick={() => setIsOpen(false)} />
             <motion.div
+              key={language}
+              data-no-auto-translate="true"
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
