@@ -292,11 +292,12 @@ export function Navbar() {
                   <Globe className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" />
                   <span className="text-xs text-slate-500 dark:text-slate-400">{t("Language")}</span>
                 </div>
-                <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+                <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none" data-no-auto-translate="true">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => setLanguage(lang.code as LanguageCode)}
+                      data-language-code={lang.code}
                       className={`flex-shrink-0 py-2 px-3 rounded-lg text-xs font-medium transition-all touch-manipulation ${
                         language === lang.code
                           ? "text-white shadow-sm"

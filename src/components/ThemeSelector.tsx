@@ -191,7 +191,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                 </div>
 
                 {/* Language Selector */}
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
+                <div className="border-t border-slate-200 dark:border-slate-700 pt-3" data-no-auto-translate="true">
                   <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5 flex items-center gap-1">
                     <Globe className="w-3 h-3" />
                     {t("Language")}
@@ -203,6 +203,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                         <button
                           key={lang.code}
                           onClick={() => setLanguage(lang.code as LanguageCode)}
+                          data-language-code={lang.code}
                           className={`py-2 px-2 rounded-lg text-xs font-medium transition-all ${
                             isSelected
                               ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"

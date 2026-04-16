@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { defaultLanguage, LanguageCode, translations } from "@/lib/i18n";
 import {
   getTranslationStatus,
@@ -26,16 +26,26 @@ type LanguageContextValue = {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<LanguageCode>(defaultLanguage);
+  const [language, setLanguageState] = useState<LanguageCode>(defaultLanguage);
   const observerRef = useRef<MutationObserver | null>(null);
   const debounceRef = useRef<number | null>(null);
   const routeRef = useRef<string>("");
+
+  const setLanguage = useCallback((nextLanguage: LanguageCode) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("mm_language", nextLanguage);
+      document.documentElement.lang = nextLanguage;
+      document.documentElement.dir = nextLanguage === "ar" ? "rtl" : "ltr";
+    }
+
+    setLanguageState(nextLanguage);
+  }, []);
 
   // ─── Read persisted language once on mount ────────────────────────────────
   useEffect(() => {
     const saved = localStorage.getItem("mm_language") as LanguageCode | null;
     if (saved && translations[saved]) {
-      setLanguage(saved);
+      setLanguageState(saved);
     }
   }, []);
 
@@ -160,7 +170,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     };
 
     return { language, setLanguage, t, tr };
-  }, [language]);
+  }, [language, setLanguage]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

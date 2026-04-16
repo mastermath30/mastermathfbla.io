@@ -3,6 +3,7 @@ import { languages, type LanguageCode } from "@/lib/i18n";
 
 type TranslateRequestBody = {
   target?: string;
+  source?: string;
   texts?: string[];
   namespace?: string;
 };
@@ -18,8 +19,14 @@ function decodeHtmlEntities(input: string): string {
     .replace(/&gt;/g, ">");
 }
 
-async function translateWithPublicEndpoint(sourceText: string, target: LanguageCode): Promise<string> {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${encodeURIComponent(
+async function translateWithPublicEndpoint(
+  sourceText: string,
+  target: LanguageCode,
+  source: LanguageCode | "auto"
+): Promise<string> {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(
+    source
+  )}&tl=${encodeURIComponent(
     target
   )}&dt=t&q=${encodeURIComponent(sourceText)}`;
 
@@ -50,6 +57,7 @@ export async function POST(request: Request) {
   }
 
   const target = (body.target ?? "en") as LanguageCode;
+  const source = body.source === "auto" ? "auto" : ((body.source ?? "en") as LanguageCode);
   const texts = Array.isArray(body.texts)
     ? body.texts.filter((item): item is string => typeof item === "string" && item.length > 0)
     : [];
@@ -60,18 +68,18 @@ export async function POST(request: Request) {
   if (texts.length === 0) {
     return NextResponse.json({ translations: [] });
   }
-  if (target === "en") {
+  if (target === "en" && source === "en") {
     return NextResponse.json({ translations: texts });
   }
 
   if (!apiKey) {
     try {
       const output = await Promise.all(
-        texts.map(async (source) => {
+        texts.map(async (sourceText) => {
           try {
-            return await translateWithPublicEndpoint(source, target);
+            return await translateWithPublicEndpoint(sourceText, target, source);
           } catch {
-            return source;
+            return sourceText;
           }
         })
       );
@@ -79,6 +87,7 @@ export async function POST(request: Request) {
         translations: output,
         meta: {
           target,
+          source,
           namespace: body.namespace ?? "default",
           count: output.length,
           provider: "google-public",
@@ -96,17 +105,27 @@ export async function POST(request: Request) {
   }
 
   try {
+    const payload: {
+      q: string[];
+      target: LanguageCode;
+      format: "text";
+      source?: LanguageCode;
+    } = {
+      q: texts,
+      target,
+      format: "text",
+    };
+
+    if (source !== "auto") {
+      payload.source = source;
+    }
+
     const response = await fetch(
       `https://translation.googleapis.com/language/translate/v2?key=${encodeURIComponent(apiKey)}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          q: texts,
-          target,
-          source: "en",
-          format: "text",
-        }),
+        body: JSON.stringify(payload),
       }
     );
 
@@ -125,8 +144,8 @@ export async function POST(request: Request) {
       data?: { translations?: Array<{ translatedText?: string }> };
     };
     const translated = json.data?.translations ?? [];
-    const output = texts.map((source, index) => {
-      const translatedText = translated[index]?.translatedText ?? source;
+    const output = texts.map((sourceText, index) => {
+      const translatedText = translated[index]?.translatedText ?? sourceText;
       return decodeHtmlEntities(translatedText);
     });
 
@@ -134,6 +153,7 @@ export async function POST(request: Request) {
       translations: output,
       meta: {
         target,
+        source,
         namespace: body.namespace ?? "default",
         count: output.length,
       },

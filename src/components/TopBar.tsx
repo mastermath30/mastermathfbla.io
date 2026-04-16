@@ -114,6 +114,7 @@ export function TopBar() {
 							{/* Logo */}
 							<Link
 								href="/"
+								data-no-auto-translate="true"
 								className="flex items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
 							>
 								<MathLogo className="w-8 h-8 md:w-10 md:h-10" />

@@ -1,7 +1,7 @@
 # MathMaster — Multilingual Site Audit
 
 **Last updated:** 2026-04-15  
-**Session:** Phase 1 complete + Phase 2 QA complete + Critical language-switching bug fixed
+**Session:** Phase 1 complete + Phase 2 QA complete + language-switch regression reproduced, root-caused, and fixed
 
 ---
 
@@ -124,61 +124,94 @@ Keys added to hi, zh, ar, pt, ja, de, ko, ru, it, vi:
 
 ---
 
-## 7. Critical Language-Switching Bug — Root Cause & Fix
+## 7. Critical Language-Switching Regression — Actual Root Cause & Fix
 
-### Root Causes (3 bugs, all fixed)
+### Reproduced Failure
 
-**Bug 1 — Async race condition (primary cause of "UI stays in old language")**
+The bug was reproduced in the live app, not just inferred from code.
 
-`translateDocumentContent` calls the Google Translate API via `trBatch` (a `fetch` call). This is async. When the user switched language, the `useEffect` cleanup disconnected the MutationObserver and cleared the debounce timeout, but did NOT abort the in-flight `fetch`. The stale API response would resolve 200–2000 ms later and overwrite the already-correct DOM with the old language's text. Rapid switching (e.g., FR → DE → AR) could leave the UI stuck in any of the intermediate languages.
+Most revealing repro:
 
-**Bug 2 — WeakMap storing non-English "originals" after page navigation**
+`English → Hindi → refresh → German`
 
-`originalTextByNode` is a module-level `WeakMap<Text, string>` that stores the first-seen text of each DOM text node (intended to be the English original). After client-side page navigation in a non-English language, React creates new text nodes pre-populated with `t()` output (non-English). The DOM sweep visited these nodes for the first time and stored the non-English text as "original". Future language switches then sent this wrong-language text to the translate API, getting garbage results that overwrote the correct `t()` text.
+Observed state before the fix:
 
-**Bug 3 — MutationObserver feedback loop**
+- selected language / provider state: `de`
+- `localStorage.mm_language`: `de`
+- `document.documentElement.lang`: `de`
+- rendered UI: mixed Hindi + German
 
-The DOM sweep modifies `characterData` on text nodes (`textNode.nodeValue = translated`). The MutationObserver was watching `characterData: true`. Each sweep modification triggered the observer, which debounced another sweep, which modified nodes again — creating a loop that could interfere with rapid language switching.
+Example: top nav showed German for `Support`, `About`, and `Sign In`, but `Learn` and other fallback-translated nodes stayed in Hindi.
 
-### Affected Files
+### Actual Remaining Root Cause
+
+The instability was still coming from the mixed translation architecture:
+
+- primary UI text uses dictionary-based `t()`
+- missing keys and hardcoded text rely on the DOM/API fallback sweep
+
+The previous fix handled stale async responses, but one important fallback case still broke:
+
+**Nodes first encountered while a non-English language was already active were skipped by the DOM sweep and never got a stable source text.**
+
+That meant:
+
+- dictionary-backed UI updated correctly on language change
+- fallback-only nodes could stay in the previous language forever
+- after refresh or late client rendering, the page could become a mix of old and new languages
+
+This is why the app still drifted even when the selected language code, provider state, and persisted storage were already correct.
+
+### Fix Applied
 
 | File | Change |
 |---|---|
-| `src/components/LanguageProvider.tsx` | Added AbortController per language effect; signal threaded to sweep; abort on cleanup; observer paused during sweep |
-| `src/lib/domTranslation.ts` | Added `signal?: AbortSignal` param; check signal before applying translations; `readOriginalText` now only stores new WeakMap entries during EN sweeps |
-| `src/lib/translation.ts` | Added `signal?: AbortSignal` to `TranslationOptions`; signal forwarded to `fetch` in `trBatch` for true network cancellation |
+| `src/lib/domTranslation.ts` | Fallback translator now handles two source modes: stored English originals when available, and live current-text fallback with source auto-detection when a node was first seen in a non-English UI |
+| `src/lib/translation.ts` | Added `sourceLocale` support to translation requests and cache keys so `en` and `auto` source modes are deterministic and do not collide |
+| `src/app/api/translate/route.ts` | Translation API now accepts `source`, including `auto`, instead of always forcing English as the source language |
+| `src/components/ThemeSelector.tsx` | Marked language selector controls as `data-no-auto-translate` and added `data-language-code` attributes |
+| `src/components/Navbar.tsx` | Marked mobile language selector controls as `data-no-auto-translate` and added `data-language-code` attributes |
+| `src/components/LanguageProvider.tsx` | Kept the immediate `setLanguage` persistence / `html[lang]` update path so the clicked language is applied synchronously at the document level |
+| `src/components/TopBar.tsx` | Marked the brand link `data-no-auto-translate` so the fallback sweep does not mutate the brand label |
 
-### Exact Fixes Applied
+### Why This Fix Works
 
-1. **AbortController per language effect** (`LanguageProvider.tsx`):  
-   Every DOM sweep `useEffect` now creates a fresh `AbortController`. Its signal is passed to `translateDocumentContent` and threaded into the `trBatch` adapter. The effect cleanup calls `abortController.abort()` BEFORE the new language's effect runs. This cancels the network request AND prevents stale results from being applied even if the fetch already completed.
+1. If a node has a known English original, the fallback still translates from English.
+2. If a node first appears while the app is already in French/Hindi/etc., the fallback now translates from the node’s current visible text with source auto-detection instead of skipping it.
+3. Language selector controls are excluded from post-render DOM translation, so the selector itself no longer mutates or becomes a moving target.
+4. The provider, storage, and `html[lang]` update immediately when the user clicks a language, so the selected language state is no longer lagging behind the DOM.
 
-2. **Signal check before DOM write** (`domTranslation.ts`):  
-   After `await translator.trBatch(...)` returns, the function checks `if (signal?.aborted) return` before writing anything to the DOM. This is the critical guard — even if the network layer doesn't cancel in time, stale translations are never painted.
+### Live Verification After Fix
 
-3. **WeakMap guarded by `isEnSweep` flag** (`domTranslation.ts`):  
-   `readOriginalText(node, isEnSweep)` now only stores new entries in the WeakMap when `isEnSweep === true` (i.e., `locale === "en"`). Non-EN sweeps skip nodes not already in the WeakMap instead of storing translated text as "original". This ensures the WeakMap always holds English source text regardless of page navigation order.
+Verified against the running app on 2026-04-15:
 
-4. **MutationObserver paused during sweep** (`LanguageProvider.tsx`):  
-   `runTranslation` disconnects the observer before awaiting `translateDocumentContent`, then reconnects it after (in the `finally` block, only if not aborted). This eliminates the characterData feedback loop.
+- Desktop selector:
+  `English → French → Hindi → German → Arabic → Chinese → English`
+- Desktop selector:
+  `French → Spanish → French → Japanese`
+- Desktop selector + refresh:
+  `English → Hindi → refresh → German`
+- Mobile menu selector:
+  `English → French → Hindi → German → Arabic → Chinese → English`
+- Mobile menu selector:
+  `French → Spanish → French → Japanese`
 
-### Verification
+Verified conditions:
 
-- `npx tsc --noEmit --skipLibCheck` → clean
-- `npm run build` → 17/17 routes, 0 errors
-- Switching EN → FR → HI → DE → AR → ZH → EN: each switch applies immediately via React `t()` (synchronous, no API delay). The DOM sweep for non-`t()` content uses the AbortController to ensure only the most-recently-selected language's API results are applied.
-- Refresh: persisted language read from `mm_language` localStorage key; `t()` immediately renders in correct language on hydration.
-- Desktop selector (ThemeSelector) and mobile selector (Navbar) both call the same `setLanguage` from context → identical behavior.
+- clicked language code persisted to `mm_language`
+- `document.documentElement.lang` matched the clicked language
+- rendered UI text switched to the clicked language and stayed there after repeated changes
+- refresh preserved the selected language and subsequent switches continued working
+- no remaining mixed Hindi/German-style stale UI after the refresh repro
 
 ---
 
 ## 8. Build Status
 
 ```
-✓ Compiled successfully
 ✓ TypeScript clean (npx tsc --noEmit --skipLibCheck)
-✓ 17 routes generated (0 errors)
-✓ npm run build — PASSED
+⚠ `npm run build` blocked in this environment by `next/font` fetching Inter from Google Fonts
+✓ Live dev server verification completed against the running app
 ```
 
 ---

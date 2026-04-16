@@ -16,6 +16,7 @@ export type TranslationOptions = {
   htmlSafe?: boolean;
   /** AbortSignal from the current language's AbortController. */
   signal?: AbortSignal;
+  sourceLocale?: LocaleCode | "auto";
 };
 
 export type TranslationStatus = {
@@ -56,12 +57,22 @@ function safeWriteCache(nextCache: Record<string, string>) {
   }
 }
 
-function makeCacheKey(locale: LocaleCode, sourceText: string, namespace = "default"): string {
-  return `${locale}::${namespace}::${sourceText}`;
+function makeCacheKey(
+  locale: LocaleCode,
+  sourceText: string,
+  namespace = "default",
+  sourceLocale: LocaleCode | "auto" = "en"
+): string {
+  return `${locale}::${namespace}::${sourceLocale}::${sourceText}`;
 }
 
-function getCachedTranslation(locale: LocaleCode, sourceText: string, namespace?: string): string | null {
-  const key = makeCacheKey(locale, sourceText, namespace);
+function getCachedTranslation(
+  locale: LocaleCode,
+  sourceText: string,
+  namespace?: string,
+  sourceLocale: LocaleCode | "auto" = "en"
+): string | null {
+  const key = makeCacheKey(locale, sourceText, namespace, sourceLocale);
   if (IN_MEMORY_CACHE.has(key)) {
     STATUS.cacheHitCount += 1;
     return IN_MEMORY_CACHE.get(key) ?? null;
@@ -77,8 +88,14 @@ function getCachedTranslation(locale: LocaleCode, sourceText: string, namespace?
   return null;
 }
 
-function setCachedTranslation(locale: LocaleCode, sourceText: string, translatedText: string, namespace?: string) {
-  const key = makeCacheKey(locale, sourceText, namespace);
+function setCachedTranslation(
+  locale: LocaleCode,
+  sourceText: string,
+  translatedText: string,
+  namespace?: string,
+  sourceLocale: LocaleCode | "auto" = "en"
+) {
+  const key = makeCacheKey(locale, sourceText, namespace, sourceLocale);
   IN_MEMORY_CACHE.set(key, translatedText);
   const persisted = safeReadCache();
   persisted[key] = translatedText;
@@ -114,12 +131,14 @@ async function fetchTranslationFromApi(
   locale: LocaleCode,
   sourceText: string,
   namespace?: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  sourceLocale: LocaleCode | "auto" = "en"
 ): Promise<string> {
   const payload = {
     target: locale,
     texts: [sourceText],
     namespace: namespace ?? "default",
+    source: sourceLocale,
   };
 
   const response = await fetch("/api/translate", {
@@ -139,7 +158,7 @@ async function fetchTranslationFromApi(
     throw new Error("No translation received");
   }
   STATUS.apiHitCount += 1;
-  setCachedTranslation(locale, sourceText, translated, namespace);
+  setCachedTranslation(locale, sourceText, translated, namespace, sourceLocale);
   return translated;
 }
 
@@ -152,16 +171,17 @@ export async function trText(
     return { text: sourceText, source: "fallback" };
   }
 
-  const cached = getCachedTranslation(locale, sourceText, options?.namespace);
+  const sourceLocale = options?.sourceLocale ?? "en";
+  const cached = getCachedTranslation(locale, sourceText, options?.namespace, sourceLocale);
   if (cached) {
     return { text: cached, source: "cache" };
   }
 
-  const inflightKey = makeCacheKey(locale, sourceText, options?.namespace);
+  const inflightKey = makeCacheKey(locale, sourceText, options?.namespace, sourceLocale);
   if (!IN_FLIGHT.has(inflightKey)) {
     IN_FLIGHT.set(
       inflightKey,
-      fetchTranslationFromApi(locale, sourceText, options?.namespace)
+      fetchTranslationFromApi(locale, sourceText, options?.namespace, options?.signal, sourceLocale)
         .catch(() => {
           STATUS.apiFallbackCount += 1;
           return sourceText;
@@ -186,6 +206,7 @@ export async function trBatch(
 ): Promise<Map<string, string>> {
   const result = new Map<string, string>();
   const unique = Array.from(new Set(sourceTexts.filter(Boolean)));
+  const sourceLocale = options?.sourceLocale ?? "en";
 
   if (locale === "en" || unique.length === 0) {
     unique.forEach((text) => result.set(text, text));
@@ -194,7 +215,7 @@ export async function trBatch(
 
   const unresolved: string[] = [];
   for (const text of unique) {
-    const cached = getCachedTranslation(locale, text, options?.namespace);
+    const cached = getCachedTranslation(locale, text, options?.namespace, sourceLocale);
     if (cached) {
       result.set(text, cached);
     } else {
@@ -212,6 +233,7 @@ export async function trBatch(
         target: locale,
         texts: unresolved,
         namespace: options?.namespace ?? "default",
+        source: sourceLocale,
       }),
       signal: options?.signal,
     });
@@ -228,7 +250,7 @@ export async function trBatch(
       result.set(source, translatedText);
       if (translatedText !== source) {
         STATUS.apiHitCount += 1;
-        setCachedTranslation(locale, source, translatedText, options?.namespace);
+        setCachedTranslation(locale, source, translatedText, options?.namespace, sourceLocale);
       } else {
         STATUS.apiFallbackCount += 1;
       }

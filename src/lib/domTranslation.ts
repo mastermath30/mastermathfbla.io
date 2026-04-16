@@ -8,9 +8,13 @@ type Translator = {
   trBatch: BatchTranslator;
 };
 
-// Keyed by DOM text node reference. Only stores the ENGLISH original.
-// We only write to this map during an EN sweep (locale === "en"), ensuring
-// we always have the true source text to translate from.
+type TranslationTarget =
+  | { kind: "stored"; raw: string; trimmed: string }
+  | { kind: "live"; raw: string; trimmed: string };
+
+// Store English originals only when we are certain the DOM is in English.
+// Nodes first seen in another language fall back to translating their current
+// visible text with source auto-detection instead of staying stuck.
 const originalTextByNode = new WeakMap<Text, string>();
 const originalAttrsByElement = new WeakMap<Element, Record<string, string>>();
 const translatableAttributes = ["placeholder", "title", "aria-label", "alt", "value"];
@@ -18,7 +22,7 @@ const translatableAttributes = ["placeholder", "title", "aria-label", "alt", "va
 function isTranslatableTextNode(node: Text): boolean {
   const value = (node.nodeValue ?? "").trim();
   if (!value) return false;
-  if (!/[A-Za-z]/.test(value)) return false;
+  if (!/[A-Za-z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u4E00-\u9FFF]/.test(value)) return false;
 
   const parent = node.parentElement;
   if (!parent) return false;
@@ -29,38 +33,51 @@ function isTranslatableTextNode(node: Text): boolean {
   return true;
 }
 
-/**
- * Returns the stored English original for this text node.
- *
- * @param isEnSweep - true only during an EN sweep. When true, unknown nodes
- *   get their current nodeValue stored as the English original (safe because
- *   the DOM is in EN at that point). When false (non-EN sweep), nodes not yet
- *   in the WeakMap are skipped — this prevents storing non-EN text as
- *   "original" for nodes that React just created via t().
- */
 function readOriginalText(node: Text, isEnSweep: boolean): string | null {
   if (!originalTextByNode.has(node)) {
     if (isEnSweep) {
       originalTextByNode.set(node, node.nodeValue ?? "");
     } else {
-      // Node was created while a non-EN language was active (e.g., page navigation).
-      // We don't know the English original, so skip rather than store wrong text.
       return null;
     }
   }
   return originalTextByNode.get(node) ?? null;
 }
 
-function readOriginalAttr(element: Element, attr: string): string | null {
+function readOriginalAttr(element: Element, attr: string, isEnSweep: boolean): string | null {
   const existing = originalAttrsByElement.get(element) ?? {};
   if (!(attr in existing)) {
     const current = element.getAttribute(attr);
-    if (current !== null) {
+    if (current !== null && isEnSweep) {
       existing[attr] = current;
       originalAttrsByElement.set(element, existing);
     }
   }
   return originalAttrsByElement.get(element)?.[attr] ?? null;
+}
+
+function resolveTextTarget(node: Text, isEnSweep: boolean): TranslationTarget | null {
+  const stored = readOriginalText(node, isEnSweep);
+  if (stored !== null) {
+    const trimmed = stored.trim();
+    return trimmed ? { kind: "stored", raw: stored, trimmed } : null;
+  }
+
+  const live = node.nodeValue ?? "";
+  const trimmed = live.trim();
+  return trimmed ? { kind: "live", raw: live, trimmed } : null;
+}
+
+function resolveAttrTarget(element: Element, attr: string, isEnSweep: boolean): TranslationTarget | null {
+  const stored = readOriginalAttr(element, attr, isEnSweep);
+  if (stored !== null) {
+    const trimmed = stored.trim();
+    return trimmed ? { kind: "stored", raw: stored, trimmed } : null;
+  }
+
+  const live = element.getAttribute(attr) ?? "";
+  const trimmed = live.trim();
+  return trimmed ? { kind: "live", raw: live, trimmed } : null;
 }
 
 function canTranslateValueAttribute(element: Element): boolean {
@@ -75,14 +92,6 @@ function preserveWhitespace(originalRaw: string, translatedCore: string): string
   return `${leading}${translatedCore}${trailing}`;
 }
 
-/**
- * Translates all text and attribute content in the document body.
- *
- * @param signal - AbortSignal from an AbortController scoped to the current
- *   language. When language changes, the caller aborts the controller so that
- *   stale API responses are never applied to the DOM. Always check this BEFORE
- *   and AFTER any async work.
- */
 export async function translateDocumentContent(
   locale: LocaleCode,
   translator: Translator,
@@ -96,80 +105,92 @@ export async function translateDocumentContent(
   if (!root) return;
 
   const isEnSweep = locale === "en";
+  const textTargets: Array<{ node: Text; target: TranslationTarget }> = [];
+  const attrTargets: Array<{ element: Element; attr: string; target: TranslationTarget }> = [];
+  const storedSources = new Set<string>();
+  const liveSources = new Set<string>();
 
-  const textNodes: Text[] = [];
-  const textSources = new Set<string>();
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-
   let node = walker.nextNode();
   while (node) {
     const textNode = node as Text;
     if (isTranslatableTextNode(textNode)) {
-      const original = readOriginalText(textNode, isEnSweep);
-      if (original !== null) {
-        const source = original.trim();
-        if (source) {
-          textNodes.push(textNode);
-          textSources.add(source);
+      const target = resolveTextTarget(textNode, isEnSweep);
+      if (target) {
+        textTargets.push({ node: textNode, target });
+        if (target.kind === "stored") {
+          storedSources.add(target.trimmed);
+        } else {
+          liveSources.add(target.trimmed);
         }
       }
     }
     node = walker.nextNode();
   }
 
-  const attrTargets: Array<{ element: Element; attr: string; source: string }> = [];
   const elements = Array.from(root.querySelectorAll("*"));
   for (const element of elements) {
     if (element.closest("[data-no-auto-translate='true']")) continue;
     for (const attr of translatableAttributes) {
       if (attr === "value" && !canTranslateValueAttribute(element)) continue;
-      const source = readOriginalAttr(element, attr);
-      if (!source) continue;
-      if (!/[A-Za-z]/.test(source)) continue;
-      attrTargets.push({ element, attr, source });
-      textSources.add(source);
+      const target = resolveAttrTarget(element, attr, isEnSweep);
+      if (!target) continue;
+      if (!/[A-Za-z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u4E00-\u9FFF]/.test(target.trimmed)) continue;
+      attrTargets.push({ element, attr, target });
+      if (target.kind === "stored") {
+        storedSources.add(target.trimmed);
+      } else {
+        liveSources.add(target.trimmed);
+      }
     }
   }
 
   if (signal?.aborted) return;
 
-  if (isEnSweep) {
-    // Restore all nodes to their English originals (stored in WeakMap).
-    textNodes.forEach((textNode) => {
-      const source = readOriginalText(textNode, true);
-      if (source !== null && (textNode.nodeValue ?? "") !== source) {
-        textNode.nodeValue = source;
-      }
-    });
-    attrTargets.forEach(({ element, attr, source }) => {
-      if (element.getAttribute(attr) !== source) {
-        element.setAttribute(attr, source);
-      }
-    });
-    return;
-  }
+  const storedTranslatedMap =
+    !isEnSweep && storedSources.size > 0
+      ? await translator.trBatch(Array.from(storedSources), {
+          namespace,
+          signal,
+          sourceLocale: "en",
+        })
+      : new Map<string, string>();
 
-  // Non-EN: fetch translations from the API / cache.
-  const translatedMap = await translator.trBatch(Array.from(textSources), { namespace });
-
-  // CRITICAL: check abort AFTER the async call. If language changed while the
-  // API was in flight, this prevents stale translations from being painted.
   if (signal?.aborted) return;
 
-  textNodes.forEach((textNode) => {
-    const original = readOriginalText(textNode, false);
-    if (original === null) return;
-    const originalRaw = original;
-    const source = originalRaw.trim();
-    const translatedCore = translatedMap.get(source) ?? source;
-    const translated = preserveWhitespace(originalRaw, translatedCore);
+  const liveTranslatedMap =
+    liveSources.size > 0
+      ? await translator.trBatch(Array.from(liveSources), {
+          namespace,
+          signal,
+          sourceLocale: "auto",
+        })
+      : new Map<string, string>();
+
+  if (signal?.aborted) return;
+
+  textTargets.forEach(({ node: textNode, target }) => {
+    const translatedCore =
+      target.kind === "stored"
+        ? isEnSweep
+          ? target.trimmed
+          : storedTranslatedMap.get(target.trimmed) ?? target.trimmed
+        : liveTranslatedMap.get(target.trimmed) ?? target.trimmed;
+
+    const translated = preserveWhitespace(target.raw, translatedCore);
     if ((textNode.nodeValue ?? "") !== translated) {
       textNode.nodeValue = translated;
     }
   });
 
-  attrTargets.forEach(({ element, attr, source }) => {
-    const translated = translatedMap.get(source) ?? source;
+  attrTargets.forEach(({ element, attr, target }) => {
+    const translated =
+      target.kind === "stored"
+        ? isEnSweep
+          ? target.trimmed
+          : storedTranslatedMap.get(target.trimmed) ?? target.trimmed
+        : liveTranslatedMap.get(target.trimmed) ?? target.trimmed;
+
     if (element.getAttribute(attr) !== translated) {
       element.setAttribute(attr, translated);
     }
