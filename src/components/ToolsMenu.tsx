@@ -38,7 +38,7 @@ const getTools = (t: (key: string) => string): Tool[] => [
   },
   {
     id: "calculator",
-    name: t("Calculator"),
+    name: t("Graphing Calculator"),
     icon: <Calculator className="w-5 h-5" />,
     color: "from-emerald-500 to-teal-600",
     shortcut: "Alt+C",

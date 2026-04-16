@@ -13,6 +13,7 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { languages } from "@/lib/i18n";
 import { setGlobalTutorialCompleted, setGlobalTutorialLastRoute, setGlobalTutorialStep } from "@/lib/progress";
 import { saveLearningProgressToCloud, upsertProfile } from "@/lib/cloud";
+import { emitAuthStateChanged } from "@/lib/auth";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { getLearningProgress } from "@/lib/progress";
 import {
@@ -60,30 +61,21 @@ function AuthPageContent() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
-  const [bookingAction, setBookingAction] = useState(false);
   const [isColorblindMode, setIsColorblindMode] = useState(false);
+  const redirectUrl = searchParams.get("redirect");
+  const bookingAction = searchParams.get("action") === "book";
 
   useEffect(() => {
-    // Check for redirect params
-    const redirect = searchParams.get("redirect");
-    const action = searchParams.get("action");
-    if (redirect) {
-      setRedirectUrl(redirect);
-    }
-    if (action === "book") {
-      setBookingAction(true);
-    }
-    
+    const timer = window.setTimeout(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("mm_profile") || "null");
       const session = JSON.parse(localStorage.getItem("mm_session") || "null");
       if (stored && session && session.email === stored.email) {
         setProfile(stored);
         // If already logged in and there's a redirect, go there
-        if (redirect) {
+        if (redirectUrl) {
           localStorage.setItem("isLoggedIn", "true");
-          router.push(redirect);
+          router.push(redirectUrl);
         }
       }
     } catch {
@@ -99,7 +91,10 @@ function AuthPageContent() {
       document.documentElement.classList.remove("colorblind-mode");
       document.body.classList.remove("colorblind-mode");
     }
-  }, [searchParams, router]);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [redirectUrl, router]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -175,6 +170,7 @@ function AuthPageContent() {
       setGlobalTutorialCompleted(false);
       setGlobalTutorialStep(0);
       setGlobalTutorialLastRoute("/");
+      emitAuthStateChanged();
       setProfile(newProfile);
       router.push(redirectUrl || "/dashboard");
     } else {
@@ -202,6 +198,7 @@ function AuthPageContent() {
       if (storedProfile && storedProfile.email === email) {
         localStorage.setItem("mm_session", JSON.stringify({ email }));
         localStorage.setItem("isLoggedIn", "true");
+        emitAuthStateChanged();
         setProfile(storedProfile);
         router.push(redirectUrl || "/dashboard");
       } else {
@@ -214,6 +211,7 @@ function AuthPageContent() {
         localStorage.setItem("mm_profile", JSON.stringify(fallbackProfile));
         localStorage.setItem("mm_session", JSON.stringify({ email }));
         localStorage.setItem("isLoggedIn", "true");
+        emitAuthStateChanged();
         setProfile(fallbackProfile);
         router.push(redirectUrl || "/dashboard");
       }
@@ -228,6 +226,7 @@ function AuthPageContent() {
     localStorage.removeItem("mm_session");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("mm_user_id");
+    emitAuthStateChanged();
     setProfile(null);
   };
 
@@ -252,6 +251,7 @@ function AuthPageContent() {
     const updatedProfile: Profile = { email, firstName, lastName, username: displayUsername };
     localStorage.setItem("mm_profile", JSON.stringify(updatedProfile));
     localStorage.setItem("mm_session", JSON.stringify({ email }));
+    emitAuthStateChanged();
     setProfile(updatedProfile);
     setIsEditingProfile(false);
     setSuccessMessage(t("Profile updated successfully!"));

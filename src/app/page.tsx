@@ -12,6 +12,7 @@ import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
 import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
 import {
   GraduationCap,
   Rocket,
@@ -234,7 +235,7 @@ export default function Home() {
   const { t, language } = useTranslations();
   const router = useRouter();
   const heroRef = useRef<HTMLElement | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
   const features = getFeatures(t);
@@ -261,10 +262,22 @@ export default function Home() {
   const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
-    // Check if user is logged in
-    const session = localStorage.getItem("mm_session");
-    const isLoggedInFlag = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!session || isLoggedInFlag === "true");
+    const syncAuthState = () => {
+      setIsLoggedIn(getStoredAuthState());
+    };
+
+    syncAuthState();
+    window.addEventListener("storage", syncAuthState);
+    window.addEventListener("focus", syncAuthState);
+    window.addEventListener("pageshow", syncAuthState);
+    window.addEventListener(authStateChangedEvent, syncAuthState);
+
+    return () => {
+      window.removeEventListener("storage", syncAuthState);
+      window.removeEventListener("focus", syncAuthState);
+      window.removeEventListener("pageshow", syncAuthState);
+      window.removeEventListener(authStateChangedEvent, syncAuthState);
+    };
   }, []);
 
   useEffect(() => {
@@ -494,6 +507,13 @@ export default function Home() {
 
     return calendarDays;
   };
+
+  const isAuthResolved = isLoggedIn !== null;
+  const heroSecondaryHref = isLoggedIn ? "/dashboard" : "/auth";
+  const heroSecondaryLabel = isLoggedIn ? t("Go to Dashboard") : t("Create Free Account");
+  const bottomCtaHref = isLoggedIn ? "/learn" : "/auth";
+  const bottomCtaLabel = isLoggedIn ? t("Continue Learning") : t("Get Started Free");
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Section */}
@@ -558,12 +578,16 @@ export default function Home() {
                       {t("Book Your First Session")}
                     </Button>
                   </Link>
-                  <Link href="/auth">
-                    <Button variant="outline" size="lg" className="glass-premium">
-                      <Users className="w-5 h-5" />
-                      {t("Create Free Account")}
-                    </Button>
-                  </Link>
+                  <div className={isAuthResolved ? "" : "min-h-[52px] sm:min-w-[212px]"}>
+                    {isAuthResolved && (
+                      <Link href={heroSecondaryHref}>
+                        <Button variant="outline" size="lg" className="glass-premium">
+                          <Users className="w-5 h-5" />
+                          {heroSecondaryLabel}
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </FadeIn>
 
@@ -1355,12 +1379,16 @@ export default function Home() {
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <Link href="/auth">
-              <Button size="lg" className="shadow-xl" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))", color: "white" }}>
-                <Rocket className="w-5 h-5" />
-                {t("Get Started Free")}
-              </Button>
-            </Link>
+            <div className="flex justify-center min-h-[52px]">
+              {isAuthResolved && (
+                <Link href={bottomCtaHref}>
+                  <Button size="lg" className="shadow-xl" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))", color: "white" }}>
+                    <Rocket className="w-5 h-5" />
+                    {bottomCtaLabel}
+                  </Button>
+                </Link>
+              )}
+            </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">{t("No credit card required • Free forever")}</p>
           </FadeIn>
         </div>
