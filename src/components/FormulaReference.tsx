@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, X, Search, Copy, Check } from "lucide-react";
+import { X, Search, Copy, Check } from "lucide-react";
 import { useTranslations } from "./LanguageProvider";
 
 const getFormulas = (t: (key: string) => string) => ({
@@ -275,71 +275,81 @@ export function FormulaReference() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 28, stiffness: 350 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[301] w-[95%] max-w-2xl max-h-[85vh]"
+              className="fixed left-1/2 top-1/2 z-[301] max-h-[88vh] w-[95%] max-w-4xl -translate-x-1/2 -translate-y-1/2"
             >
-              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col max-h-[85vh]">
+              <div className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,59,0.98)_0%,rgba(15,23,42,0.98)_18%,rgba(2,6,23,0.99)_100%)] shadow-[0_32px_90px_rgba(2,6,23,0.68)]">
                 {/* Header */}
-                <div className={`flex items-center justify-between px-5 py-4 bg-gradient-to-r ${activeData.color}`}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-xl">
+                <div className={`relative flex items-center justify-between border-b border-white/10 bg-gradient-to-r px-6 py-5 ${activeData.color}`}>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-white/12 text-xl shadow-[0_10px_28px_rgba(15,23,42,0.2)]">
                       {activeData.icon}
                     </div>
                     <div>
-                      <h2 className="font-bold text-white text-lg">{t("Formula Reference")}</h2>
-                      <p className="text-white/70 text-xs">{activeData.name} — {activeData.items.length} {t("formulas")}</p>
+                      <h2 className="text-lg font-bold text-white sm:text-xl">{t("Formula Reference")}</h2>
+                      <p className="mt-1 text-sm text-white/72">
+                        {activeData.name} • {activeData.items.length} {t("formulas")}
+                      </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-xl hover:bg-white/20 text-white/80 hover:text-white transition-colors"
+                    className="rounded-2xl border border-transparent p-2.5 text-white/80 transition-colors hover:border-white/15 hover:bg-white/12 hover:text-white"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                {/* Search */}
-                <div className="px-4 pt-3 pb-2">
+                <div className="border-b border-white/8 bg-slate-950/30 px-5 py-4 sm:px-6">
+                  {/* Search */}
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t("Search formulas...")}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] py-3 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                     />
                   </div>
+
+                  {/* Category Tabs */}
+                  {!searchQuery && (
+                    <div className="mt-4 space-y-2.5">
+                      <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        {t("Browse By Category")}
+                      </p>
+                      <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-2">
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(formulas).map(([key, cat]) => (
+                            <button
+                              key={key}
+                              onClick={() => setActiveCategory(key as CategoryKey)}
+                              className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-sm font-medium transition-all ${
+                                activeCategory === key
+                                  ? `border-white/15 bg-gradient-to-r ${cat.color} text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)]`
+                                  : "border-white/8 bg-white/[0.04] text-slate-300 hover:bg-white/[0.07] hover:text-white"
+                              }`}
+                            >
+                              <span className="text-base leading-none">{cat.icon}</span>
+                              <span>{cat.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Category Tabs */}
-                {!searchQuery && (
-                  <div className="flex overflow-x-auto px-4 pb-3 gap-2 scrollbar-hide">
-                    {Object.entries(formulas).map(([key, cat]) => (
-                      <button
-                        key={key}
-                        onClick={() => setActiveCategory(key as CategoryKey)}
-                        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-                          activeCategory === key
-                            ? `bg-gradient-to-r ${cat.color} text-white shadow-md`
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        }`}
-                      >
-                        <span className="text-base">{cat.icon}</span>
-                        <span>{cat.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
                 {/* Formulas Grid */}
-                <div className="flex-1 overflow-y-auto px-4 pb-4">
+                <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
                   {filteredFormulas.length === 0 ? (
-                    <div className="text-center py-12 text-slate-400">
-                      <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <div className="py-14 text-center text-slate-400">
+                      <Search className="mx-auto mb-3 h-8 w-8 opacity-50" />
                       <p className="text-sm">{t("No formulas found")}</p>
                     </div>
                   ) : (
-                    <div className="grid gap-2">
+                    <div className="space-y-3">
                       {filteredFormulas.map((item, i) => {
                         const catData = formulas[item.categoryKey];
                         return (
@@ -348,33 +358,34 @@ export function FormulaReference() {
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: Math.min(i * 0.02, 0.3) }}
-                            className={`group relative rounded-xl border p-3.5 transition-all hover:shadow-md ${catData.accent}`}
+                            className={`group relative overflow-hidden rounded-2xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(2,6,23,0.18)] sm:p-5 ${catData.accent} bg-white/95 dark:bg-slate-900/78`}
                           >
+                            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-70" />
                             <div className="flex items-start justify-between gap-3">
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1.5">
+                              <div className="min-w-0 flex-1">
+                                <div className="mb-3 flex flex-wrap items-center gap-2">
                                   {searchQuery && (
-                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider ${catData.badge}`}>
+                                    <span className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${catData.badge}`}>
                                       {item.categoryIcon} {item.categoryName}
                                     </span>
                                   )}
-                                  <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                                  <h4 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                                     {item.name}
                                   </h4>
                                 </div>
-                                <p className="font-mono text-base sm:text-lg text-slate-800 dark:text-slate-100 leading-relaxed break-all">
+                                <p className="font-mono text-lg leading-relaxed text-slate-900 break-words dark:text-slate-50 sm:text-[1.32rem]">
                                   {item.formula}
                                 </p>
                               </div>
                               <button
                                 onClick={() => handleCopy(item.formula, i)}
-                                className="flex-shrink-0 mt-1 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity bg-white/60 dark:bg-slate-700/60 hover:bg-white dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
+                                className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-black/5 bg-white/70 text-slate-500 opacity-0 transition-all hover:bg-white focus:opacity-100 group-hover:opacity-100 dark:border-white/10 dark:bg-slate-800/85 dark:text-slate-400 dark:hover:bg-slate-800"
                                 title={t("Copy")}
                               >
                                 {copiedIndex === i ? (
-                                  <Check className="w-3.5 h-3.5 text-green-500" />
+                                  <Check className="h-4 w-4 text-green-500" />
                                 ) : (
-                                  <Copy className="w-3.5 h-3.5" />
+                                  <Copy className="h-4 w-4" />
                                 )}
                               </button>
                             </div>
@@ -386,9 +397,14 @@ export function FormulaReference() {
                 </div>
 
                 {/* Footer */}
-                <div className="px-4 py-2.5 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                  <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[10px] font-mono">Alt+R</kbd>
-                  <span className="ml-1.5">{t("Toggle")}</span>
+                <div className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.82)_0%,rgba(2,6,23,0.95)_100%)] px-5 py-3 sm:px-6">
+                  <div className="flex flex-col gap-2 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                    <p>{t("Use search to scan every category, or browse formulas by subject.")}</p>
+                    <div className="inline-flex items-center gap-2 text-slate-500">
+                      <kbd className="rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 font-mono text-[10px] text-slate-300">Alt+R</kbd>
+                      <span>{t("Toggle reference")}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -369,8 +369,8 @@ export function AIMathTutor() {
     // Markdown-like formatting
     out = out
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/`([^`]+)`/g, '<code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-sm">$1</code>')
-      .replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-200 dark:bg-slate-700 p-2 rounded my-2 overflow-x-auto text-sm"><code>$1</code></pre>')
+      .replace(/`([^`]+)`/g, '<code class="rounded-md border border-white/10 bg-white/8 px-1.5 py-0.5 text-sm text-violet-100">$1</code>')
+      .replace(/```([\s\S]*?)```/g, '<pre class="my-2 overflow-x-auto rounded-xl border border-white/10 bg-slate-950/80 p-3 text-sm text-slate-100"><code>$1</code></pre>')
       .replace(/\n/g, "<br />");
 
     // Restore rendered math
@@ -386,7 +386,7 @@ export function AIMathTutor() {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 shadow-[0_16px_32px_rgba(76,29,149,0.38)] hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
         aria-label="Open AI Agent"
         title="AI Agent (Alt+M)"
         whileHover={{ scale: 1.1 }}
@@ -412,37 +412,38 @@ export function AIMathTutor() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[700px] md:h-[600px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl z-[201] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700"
+              className="fixed inset-4 z-[201] flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,59,0.98)_0%,rgba(15,23,42,0.98)_18%,rgba(2,6,23,0.985)_100%)] shadow-[0_32px_90px_rgba(2,6,23,0.65)] md:inset-auto md:left-1/2 md:top-1/2 md:h-[600px] md:w-[700px] md:-translate-x-1/2 md:-translate-y-1/2"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-violet-500 to-purple-600 text-white">
+              <div className="relative flex items-center justify-between border-b border-white/10 bg-[linear-gradient(180deg,rgba(76,29,149,0.28)_0%,rgba(30,41,59,0.86)_58%,rgba(15,23,42,0.96)_100%)] px-4 py-4 text-white">
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-300/35 to-transparent" />
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-white/20 rounded-lg">
+                  <div className="rounded-lg border border-white/10 bg-white/8 p-2 shadow-[0_8px_20px_rgba(15,23,42,0.25)]">
                     <Brain className="w-6 h-6" />
                   </div>
                   <div>
                     <h2 className="font-bold text-lg">{t("AI Agent")}</h2>
-                    <p className="text-xs text-white/80">{t("Powered by MathMaster AI")}</p>
+                    <p className="text-xs text-slate-300">{t("Powered by MathMaster AI")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowHistory(!showHistory)}
-                    className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+                    className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                     title={t("Conversation History")}
                   >
                     <History className="w-5 h-5" />
                   </button>
                   <button
                     onClick={clearChat}
-                    className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+                    className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                     title={t("New Chat")}
                   >
                     <RefreshCw className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+                    className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -456,21 +457,21 @@ export function AIMathTutor() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="border-b border-slate-200 dark:border-slate-700 overflow-hidden"
+                    className="overflow-hidden border-b border-white/10"
                   >
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800 max-h-40 overflow-y-auto">
+                    <div className="max-h-40 overflow-y-auto bg-slate-950/45 px-3 py-3">
                       {conversations.length === 0 ? (
-                        <p className="text-sm text-slate-500 text-center py-2">{t("No conversation history")}</p>
+                        <p className="py-2 text-center text-sm text-slate-400">{t("No conversation history")}</p>
                       ) : (
                         <div className="space-y-2">
                           {conversations.map((conv) => (
                             <button
                               key={conv.id}
                               onClick={() => loadConversation(conv)}
-                              className="w-full text-left p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                              className="w-full rounded-xl border border-white/8 bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07]"
                             >
-                              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{conv.title}</p>
-                              <p className="text-xs text-slate-500 truncate">{conv.preview}</p>
+                              <p className="truncate text-sm font-medium text-slate-100">{conv.title}</p>
+                              <p className="truncate text-xs text-slate-400">{conv.preview}</p>
                             </button>
                           ))}
                         </div>
@@ -481,34 +482,36 @@ export function AIMathTutor() {
               </AnimatePresence>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_top,rgba(124,58,237,0.10),transparent_28%),linear-gradient(180deg,rgba(15,23,42,0.18)_0%,rgba(2,6,23,0)_100%)] p-4">
                 {showTopics && messages.length === 0 && (
                   <div className="space-y-6">
                     {/* Welcome */}
                     <div className="text-center py-4">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600/95 to-indigo-600/90 shadow-[0_14px_30px_rgba(76,29,149,0.35)]">
                         <Sparkles className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                      <h3 className="mb-2 text-xl font-bold text-white">
                         {t("Hi! I'm your MathMaster AI Agent")}
                       </h3>
-                      <p className="text-slate-600 dark:text-slate-400">
+                      <p className="text-slate-300">
                         {t("I can solve math problems, navigate you around the site, and answer questions about MathMaster!")}
                       </p>
                     </div>
 
                     {/* Quick Prompts */}
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">{t("QUICK ACTIONS")}</p>
+                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("QUICK ACTIONS")}</p>
                       <div className="grid grid-cols-2 gap-2">
                         {QUICK_PROMPTS.map((qp) => (
                           <button
                             key={qp.label}
                             onClick={() => handleQuickPrompt(qp.prompt)}
-                            className="flex items-center gap-2 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
+                            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07]"
                           >
-                            <qp.icon className="w-4 h-4 text-violet-500" />
-                            <span className="text-sm text-slate-700 dark:text-slate-300">{t(qp.label)}</span>
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-300/15 bg-violet-500/12 text-violet-200">
+                              <qp.icon className="w-4 h-4" />
+                            </span>
+                            <span className="text-sm text-slate-200">{t(qp.label)}</span>
                           </button>
                         ))}
                       </div>
@@ -516,16 +519,18 @@ export function AIMathTutor() {
 
                     {/* Navigation & Website Actions */}
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">{t("EXPLORE & NAVIGATE")}</p>
+                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("EXPLORE & NAVIGATE")}</p>
                       <div className="grid grid-cols-2 gap-2">
                         {NAVIGATION_PROMPTS.map((np) => (
                           <button
                             key={np.label}
                             onClick={() => handleQuickPrompt(np.prompt)}
-                            className="flex items-center gap-2 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors text-left border border-purple-200 dark:border-purple-800"
+                            className="flex items-center gap-2 rounded-xl border border-violet-400/20 bg-violet-500/10 p-3 text-left transition-colors hover:bg-violet-500/14"
                           >
-                            <np.icon className="w-4 h-4 text-purple-500" />
-                            <span className="text-sm text-slate-700 dark:text-slate-300">{t(np.label)}</span>
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-300/20 bg-violet-500/14 text-violet-100">
+                              <np.icon className="w-4 h-4" />
+                            </span>
+                            <span className="text-sm text-slate-200">{t(np.label)}</span>
                           </button>
                         ))}
                       </div>
@@ -533,23 +538,23 @@ export function AIMathTutor() {
 
                     {/* Topics */}
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-2 px-1">{t("MATH TOPICS")}</p>
+                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("MATH TOPICS")}</p>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                         {MATH_TOPICS.map((topic) => (
                           <div
                             key={topic.label}
-                            className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                            className="rounded-xl border border-white/10 bg-white/[0.04] p-3"
                           >
                             <div className="flex items-center gap-2 mb-2">
                               <span className="text-lg">{topic.icon}</span>
-                              <span className="font-medium text-slate-900 dark:text-white text-sm">{t(topic.label)}</span>
+                              <span className="text-sm font-medium text-slate-100">{t(topic.label)}</span>
                             </div>
                             <div className="space-y-1">
                               {topic.examples.map((ex) => (
                                 <button
                                   key={ex}
                                   onClick={() => handleTopicExample(ex)}
-                                  className="block w-full text-left text-xs text-violet-600 dark:text-violet-400 hover:underline truncate"
+                                  className="block w-full truncate text-left text-xs text-violet-200 transition-colors hover:text-violet-100 hover:underline"
                                 >
                                   &quot;{ex}&quot;
                                 </button>
@@ -571,8 +576,8 @@ export function AIMathTutor() {
                     <div
                       className={`max-w-[85%] rounded-2xl p-4 ${
                         msg.role === "user"
-                          ? "bg-gradient-to-br from-violet-500 to-purple-600 text-white"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          ? "border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 text-white shadow-[0_14px_30px_rgba(76,29,149,0.28)]"
+                          : "border border-white/10 bg-white/[0.05] text-slate-100 backdrop-blur-sm"
                       }`}
                     >
                       <div
@@ -580,10 +585,10 @@ export function AIMathTutor() {
                         dangerouslySetInnerHTML={{ __html: formatContent(msg.content) }}
                       />
                       {msg.role === "assistant" && (
-                        <div className="flex items-center gap-2 mt-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-2">
                           <button
                             onClick={() => copyToClipboard(msg.content, msg.id)}
-                            className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-1"
+                            className="flex items-center gap-1 text-xs text-slate-400 transition-colors hover:text-slate-200"
                           >
                             {copiedId === msg.id ? (
                               <>
@@ -610,7 +615,7 @@ export function AIMathTutor() {
                   >
                     <button
                       onClick={() => navigateToPage(pendingNavigation)}
-                      className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium hover:opacity-90 transition-opacity shadow-lg"
+                      className="flex items-center gap-2 rounded-xl border border-violet-300/20 bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-3 font-medium text-white shadow-[0_14px_28px_rgba(76,29,149,0.28)] transition-opacity hover:opacity-90"
                     >
                       <Navigation className="w-4 h-4" />
                       {t("Go to")} {t(PAGE_LABELS[pendingNavigation] || pendingNavigation)}
@@ -621,11 +626,11 @@ export function AIMathTutor() {
                 {/* Loading indicator */}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl p-4">
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-violet-300" style={{ animationDelay: "0ms" }} />
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-violet-300" style={{ animationDelay: "150ms" }} />
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-violet-300" style={{ animationDelay: "300ms" }} />
                       </div>
                     </div>
                   </div>
@@ -635,8 +640,8 @@ export function AIMathTutor() {
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
-                <div className="flex gap-2">
+              <div className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.86)_0%,rgba(2,6,23,0.96)_100%)] p-4">
+                <div className="flex gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                   <textarea
                     ref={inputRef}
                     value={input}
@@ -648,18 +653,18 @@ export function AIMathTutor() {
                       }
                     }}
                     placeholder={t("Ask me anything...")}
-                    className="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                    className="flex-1 resize-none rounded-xl border border-transparent bg-transparent px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                     rows={1}
                   />
                   <button
                     onClick={handleSend}
                     disabled={!input.trim() || isLoading}
-                    className="px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-xl border border-violet-300/20 bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                   </button>
                 </div>
-                <p className="text-xs text-slate-500 mt-2 text-center">
+                <p className="mt-2 text-center text-xs text-slate-500">
                   {t("Press Enter to send • Shift+Enter for new line")}
                 </p>
               </div>
