@@ -161,7 +161,7 @@ export function AccessibilityPanel() {
       {/* Accessibility Toggle Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex fixed bottom-6 left-6 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed bottom-6 left-4 lg:left-5 z-[90] w-14 h-14 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open accessibility settings")}
         title={t("Accessibility") + " (Alt+A)"}
         style={{ WebkitTapHighlightColor: 'transparent' }}

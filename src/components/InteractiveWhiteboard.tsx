@@ -529,7 +529,7 @@ export function InteractiveWhiteboard() {
       {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex fixed md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed md:bottom-6 right-4 lg:right-5 z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open Interactive Whiteboard")}
         title={t("Interactive Whiteboard (Alt+W)")}
         whileHover={{ scale: 1.1 }}

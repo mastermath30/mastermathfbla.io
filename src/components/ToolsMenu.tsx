@@ -95,7 +95,7 @@ export function ToolsMenu() {
   return (
     <>
       {/* Desktop Tools Menu Button */}
-      <div className="tools-menu-container hidden md:block fixed bottom-6 left-[10rem] z-[89]">
+      <div className="tools-menu-container hidden md:block fixed bottom-6 left-[5.25rem] lg:left-[5.75rem] z-[89]">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className={`flex w-14 h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 touch-manipulation ${
