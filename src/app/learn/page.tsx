@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, BookOpen, CheckCircle2, ExternalLink, ListChecks, Sparkles, Target, Users } from "lucide-react";
+import { BookOpen, CheckCircle2, ExternalLink, ListChecks, Sparkles, Users } from "lucide-react";
 import { PageWrapper } from "@/components/motion";
 import { RecommendationPanel } from "@/components/RecommendationPanel";
 import { CommunitySpotlight } from "@/components/CommunitySpotlight";
@@ -473,10 +473,18 @@ function LearnPageClient() {
     setActiveTopicView("concept");
     setResourceHubTab("lessons");
     setResultBanner(null);
+    const lessonResource = activeTopic?.resources.find((resource) => resource.kind === "lesson");
+    if (lessonResource) {
+      window.open(
+        lessonResource.href,
+        lessonResource.href.startsWith("http") ? "_blank" : "_self",
+        lessonResource.href.startsWith("http") ? "noopener,noreferrer" : undefined
+      );
+    }
     window.setTimeout(() => {
       lessonCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 0);
-  }, [activeTopicId, progress.topicStatusById, t]);
+  }, [activeTopic?.resources, activeTopicId, progress.topicStatusById, t]);
 
   const moveToNextTopic = useCallback(() => {
     if (!nextTopicId) return;
@@ -792,6 +800,7 @@ function LearnPageClient() {
   const activeVideoHref = activeTopicKey ? selectedVideoByTopicId[activeTopicKey] : undefined;
   const activeVideo = videoResources.find((resource) => resource.href === activeVideoHref) ?? videoResources[0] ?? null;
   const activeVideoPlayback = activeVideo ? normalizeResourcePlaybackTarget(activeVideo) : null;
+  const primaryLessonResource = lessonResources[0] ?? null;
 
   const resourceCounts = {
     lessons: lessonResources.length,
@@ -802,42 +811,20 @@ function LearnPageClient() {
   } as const;
   const lessonButtonLabel = getLessonButtonLabel(selectedNode?.state, hasStartedActiveLesson, t);
   const hasLessonVideo = videoResources.length > 0;
-  const lessonKeyIdeas = useMemo(() => {
-    if (!activeTopic) return [];
-    if (activeTopic.readinessSignals.length > 0) return activeTopic.readinessSignals;
-    return [
-      t("Understand the main idea behind {topic}.", { topic: activeTopic.title }),
-      activeTopic.masteryGoal || t("Know what a strong answer should look like."),
-      t("Check your work and explain why your answer makes sense."),
-    ];
+  const lessonKeyIdea = useMemo(() => {
+    if (!activeTopic) return "";
+    return activeTopic.masteryGoal || activeTopic.readinessSignals[0] || t("Focus on the main rule or pattern in this topic.");
   }, [activeTopic, t]);
-  const lessonGuidedSteps = useMemo(() => {
-    if (!activeTopic) return [];
-    return [
-      t("Read the topic summary first so you know what skill you are building."),
-      activeTopic.masteryGoal
-        ? t("Keep this goal in mind while you work: {goal}", { goal: activeTopic.masteryGoal })
-        : t("Focus on the core skill this topic is teaching."),
-      lessonKeyIdeas[0]
-        ? t("Use this key idea as your checkpoint: {idea}", { idea: lessonKeyIdeas[0] })
-        : t("Work through one example slowly before moving on."),
-      t("When you feel confident, move to practice or take the quiz to confirm your understanding."),
-    ];
-  }, [activeTopic, lessonKeyIdeas, t]);
-  const lessonNextSteps = useMemo(() => {
-    if (!activeTopic) return [];
-    const labels: Record<string, string> = {
-      "learn-concept": t("Read the lesson carefully and identify the main rule or pattern."),
-      "do-practice": t("Try a few practice problems before you take the quiz."),
-      "take-quiz": t("Use the quiz to confirm that you can apply the skill on your own."),
-      "ask-ai": t("Ask AI support when you want step-by-step help."),
-      "get-community-help": t("Use the community if you want to compare approaches or ask a question."),
-    };
-    if (hasLessonVideo) {
-      labels["watch-video"] = t("Watch the lesson video for another walkthrough without leaving the page.");
-    }
-    return activeTopic.recommendedActions.map((action) => labels[action]).filter(Boolean);
-  }, [activeTopic, hasLessonVideo, t]);
+  const lessonExample = useMemo(() => {
+    if (!activeTopic) return "";
+    return activeTopic.readinessSignals[0]
+      ? t("Example: {idea}", { idea: activeTopic.readinessSignals[0] })
+      : t("Example: work through one short {topic} problem and explain each step out loud.", { topic: activeTopic.title.toLowerCase() });
+  }, [activeTopic, t]);
+  const lessonTryNext: string[] = [];
+  if (practiceResources.length > 0) lessonTryNext.push(t("Open practice for a few guided problems."));
+  if (availableQuizSlugs.length > 0) lessonTryNext.push(t("Take the quiz when you can solve the skill on your own."));
+  if (hasLessonVideo) lessonTryNext.push(t("Watch the lesson video if you want another explanation."));
   const showLessonWorkspace =
     hasStartedActiveLesson ||
     (activeFlowState !== "not_started" && activeFlowState !== "locked");
@@ -1174,33 +1161,19 @@ function LearnPageClient() {
                     {t("What you will learn")}
                   </div>
                   <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
-                  <div className="mt-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                      {t("Mastery goal")}
-                    </p>
-                    <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{activeTopic.masteryGoal}</p>
-                  </div>
+                  <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">{lessonKeyIdea}</p>
                 </div>
 
                 <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
                     <ListChecks className="h-4 w-4" />
-                    {t("Before you start")}
+                    {t("Start here")}
                   </div>
-                  {activeTopic.prerequisites.length > 0 ? (
-                    <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                      {activeTopic.prerequisites.map((item) => (
-                        <li key={`${activeTopic.id}-prereq-${item}`} className="flex items-start gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
-                      {t("You can start this lesson right away. Use the key ideas below as your guide.")}
-                    </p>
-                  )}
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                    {primaryLessonResource
+                      ? t("Open the main lesson in a new tab, then come back here for practice and the quiz.")
+                      : t("Use the guide below, then move into practice or the quiz.")}
+                  </p>
                   <Button className="mt-5 w-full" onClick={openLesson} disabled={selectedNode?.state === "locked"}>
                     {lessonButtonLabel}
                   </Button>
@@ -1208,53 +1181,63 @@ function LearnPageClient() {
               </div>
             ) : (
               <div className="mt-5 space-y-4">
-                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                   <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
-                      <BookOpen className="h-4 w-4" />
-                      {t("Lesson explanation")}
-                    </div>
-                    <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
-                    <div className="mt-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/50 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                        {t("Mastery goal")}
-                      </p>
-                      <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{activeTopic.masteryGoal}</p>
-                    </div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      {t("What you'll learn")}
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
-                      <Target className="h-4 w-4" />
-                      {t("Lesson status")}
-                    </div>
-                    <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
-                      {activeTopicCheckpointComplete
-                        ? t("This lesson is complete. Review the key ideas, then move to the quiz or practice.")
-                        : t("Work through the explanation and key ideas, then mark the lesson complete to unlock the next step.")}
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      {t("Key idea")}
                     </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <span className="learn-hub-chip">{activeTopic.estimatedMinutes} {t("min lesson")}</span>
-                      <span className="learn-hub-chip">{t(activeTopic.difficulty)}</span>
-                      <span className="learn-hub-chip">{flowLabelByState[activeFlowState]}</span>
-                    </div>
+                    <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-300">{lessonKeyIdea}</p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      {t("Example")}
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-300">{lessonExample}</p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      {t("Try this next")}
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {lessonTryNext.map((item) => (
+                        <li key={`${activeTopic.id}-try-next-${item}`} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
 
-                {activeTopic.prerequisites.length > 0 && (
+                {primaryLessonResource && (
                   <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
-                      {t("Before you start")}
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {activeTopic.prerequisites.map((item) => (
-                        <span
-                          key={`${activeTopic.id}-lesson-prereq-${item}`}
-                          className="rounded-full border border-slate-200/80 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-950/40 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300"
-                        >
-                          {item}
-                        </span>
-                      ))}
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                          {t("Main lesson")}
+                        </p>
+                        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                          {t("Open the full lesson in a new tab, then come back here for practice and the quiz.")}
+                        </p>
+                      </div>
+                      <a
+                        href={primaryLessonResource.href}
+                        target={primaryLessonResource.href.startsWith("http") ? "_blank" : "_self"}
+                        rel={primaryLessonResource.href.startsWith("http") ? "noreferrer" : undefined}
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:border-[var(--theme-primary)]"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        {t("Open lesson resource")}
+                      </a>
                     </div>
                   </div>
                 )}
@@ -1355,61 +1338,13 @@ function LearnPageClient() {
                   </div>
                 )}
 
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
-                      <ListChecks className="h-4 w-4" />
-                      {t("Key ideas")}
-                    </div>
-                    <ul className="mt-4 space-y-3">
-                      {lessonKeyIdeas.map((item) => (
-                        <li key={`${activeTopic.id}-key-idea-${item}`} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-[var(--theme-primary)]" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
-                      <ArrowRight className="h-4 w-4" />
-                      {t("How to work through this lesson")}
-                    </div>
-                    <ol className="mt-4 space-y-3">
-                      {lessonGuidedSteps.map((item, index) => (
-                        <li key={`${activeTopic.id}-guided-step-${index}`} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
-                          <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--theme-primary)]/12 text-[var(--theme-primary)] text-xs font-semibold">
-                            {index + 1}
-                          </span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
-                    {t("Next steps")}
-                  </p>
-                  <ul className="mt-4 space-y-3">
-                    {lessonNextSteps.map((item) => (
-                      <li key={`${activeTopic.id}-next-step-${item}`} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-[var(--theme-primary)]" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {lessonResources.length > 0 && (
+                {lessonResources.length > 1 && (
                   <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
                       {t("Supporting lesson links")}
                     </p>
                     <div className="mt-4 grid gap-3 md:grid-cols-2">
-                      {lessonResources.map((resource) => (
+                      {lessonResources.slice(1).map((resource) => (
                         <a
                           key={`${activeTopic.id}-supporting-lesson-${resource.title}`}
                           href={resource.href}
@@ -1422,6 +1357,11 @@ function LearnPageClient() {
                             <p className="learn-hub-card-title">{t(resource.title)}</p>
                             <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-slate-400" />
                           </div>
+                          {resource.label ? (
+                            <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                              {t(resource.label)}
+                            </p>
+                          ) : null}
                         </a>
                       ))}
                     </div>

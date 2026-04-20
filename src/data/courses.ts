@@ -84,6 +84,11 @@ type TopicResourceFamily =
   | "calculus-integrals"
   | "advanced-functions";
 
+type TopicLessonLinkSet = {
+  primaryLessonUrl: string;
+  backupLessonUrls?: string[];
+};
+
 function buildGeneratedUnit(input: {
   id: string;
   title: string;
@@ -711,6 +716,171 @@ function resolveTopicResourceFamily(topic: Pick<RawTopicNode, "title" | "summary
   return courseTitle.toLowerCase().includes("pre-algebra") ? "arithmetic-number" : "advanced-functions";
 }
 
+const topicLessonLinkMap: Record<string, TopicLessonLinkSet> = {
+  "pa-place-value": {
+    primaryLessonUrl: "https://www.mathsisfun.com/place-value.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-integer-operations": {
+    primaryLessonUrl: "https://www.mathsisfun.com/whole-numbers.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-fractions-decimals": {
+    primaryLessonUrl: "https://www.mathsisfun.com/fractions.html",
+    backupLessonUrls: ["https://www.mathsisfun.com/decimals.html", "https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-order-operations": {
+    primaryLessonUrl: "https://www.mathsisfun.com/operation-order-pemdas",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-ratios-rates": {
+    primaryLessonUrl: "https://www.mathsisfun.com/numbers/ratio.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-percents": {
+    primaryLessonUrl: "https://www.mathsisfun.com/percentage.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-coordinate-plane": {
+    primaryLessonUrl: "https://www.mathsisfun.com/definitions/coordinate-plane.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-prime-factorization": {
+    primaryLessonUrl: "https://www.mathsisfun.com/prime-factorization.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "pa-gcf-lcm": {
+    primaryLessonUrl: "https://www.mathsisfun.com/greatest-common-factor.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+  "a1-linear-functions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-linear-eq-func",
+    backupLessonUrls: ["https://www.mathsisfun.com/algebra/line-equation-2points.html"],
+  },
+  "a1-quadratics": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-quadratics",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics"],
+  },
+  "a1-number-systems-topic": {
+    primaryLessonUrl: "https://www.mathsisfun.com/rational-numbers.html",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra"],
+  },
+  "geo-proof-logic": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/geometry/hs-geo-congruence",
+    backupLessonUrls: ["https://www.khanacademy.org/math/geometry/hs-geo-foundations"],
+  },
+  "geo-circles-area": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/geometry/hs-geo-circles",
+    backupLessonUrls: ["https://www.khanacademy.org/math/geometry"],
+  },
+  "a2-polynomials": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:polynomial-expressions",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+  },
+  "a2-sequences-series": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus"],
+  },
+  "precalc-statistics": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/statistics-probability",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus"],
+  },
+  "calc-derivatives-fundamentals": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new",
+    backupLessonUrls: ["https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new"],
+  },
+  "prep-linear-equations": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-linear-eq-func",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities"],
+  },
+  "prep-quadratics-functions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-quadratics",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+  },
+  "prep-geometry-trig": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/geometry/hs-geo-trig",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "prep-data-probability": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/statistics-probability",
+    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+  },
+};
+
+const topicLessonFamilyFallbacks: Record<TopicResourceFamily, TopicLessonLinkSet> = {
+  "arithmetic-number": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/pre-algebra",
+    backupLessonUrls: ["https://www.mathsisfun.com/place-value.html"],
+  },
+  "fractions-percents": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/pre-algebra",
+    backupLessonUrls: ["https://www.mathsisfun.com/fractions_menu.html", "https://www.mathsisfun.com/percentage.html"],
+  },
+  "expressions-equations": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities"],
+  },
+  "linear-functions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-linear-eq-func",
+    backupLessonUrls: ["https://www.mathsisfun.com/algebra/line-equation-2points.html"],
+  },
+  "quadratics-polynomials": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-quadratics",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+  },
+  "geometry-core": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/geometry/hs-geo-foundations",
+    backupLessonUrls: ["https://www.khanacademy.org/math/geometry/hs-geo-congruence"],
+  },
+  "circles-measurement": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/geometry/hs-geo-circles",
+    backupLessonUrls: ["https://www.khanacademy.org/math/geometry/hs-geo-solids"],
+  },
+  "statistics-probability": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/statistics-probability",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  trigonometry: {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func"],
+  },
+  "calculus-derivatives": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new",
+    backupLessonUrls: ["https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new"],
+  },
+  "calculus-integrals": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new",
+    backupLessonUrls: ["https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-integrals-new"],
+  },
+  "advanced-functions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.mathsisfun.com/algebra/index.html"],
+  },
+};
+
+function getLessonSourceName(url: string) {
+  if (url.includes("khanacademy.org")) return "Khan Academy";
+  if (url.includes("mathsisfun.com")) return "Math is Fun";
+  if (url.includes("ck12.org")) return "CK-12";
+  if (url.includes("purplemath.com")) return "Purplemath";
+  if (url.includes("openstax.org")) return "OpenStax";
+  return "External";
+}
+
+function resolveTopicLessonLinks(topic: RawTopicNode, courseTitle: string): TopicLessonLinkSet {
+  const exact = topicLessonLinkMap[topic.id];
+  const familyFallback = topicLessonFamilyFallbacks[resolveTopicResourceFamily(topic, courseTitle)];
+
+  if (exact) {
+    return {
+      primaryLessonUrl: exact.primaryLessonUrl,
+      backupLessonUrls: [...(exact.backupLessonUrls ?? []), ...(familyFallback.backupLessonUrls ?? []), familyFallback.primaryLessonUrl],
+    };
+  }
+
+  return familyFallback;
+}
+
 function getFallbackPracticeResources(topic: RawTopicNode, courseTitle: string): ResourceItem[] {
   const family = resolveTopicResourceFamily(topic, courseTitle);
   const sharedByFamily: Record<TopicResourceFamily, ResourceItem[]> = {
@@ -858,6 +1028,35 @@ function appendUniqueResources(resources: ResourceItem[], additions: ResourceIte
     next.push(resource);
   });
   return next;
+}
+
+function ensureTopicLessonResource(topic: RawTopicNode, courseTitle: string): RawTopicNode {
+  const lessonLinks = resolveTopicLessonLinks(topic, courseTitle);
+  const primaryLesson: ResourceItem = {
+    title: `${getLessonSourceName(lessonLinks.primaryLessonUrl)}: ${topic.title}`,
+    kind: "lesson",
+    href: lessonLinks.primaryLessonUrl,
+    label: "Primary lesson",
+  };
+
+  const backupLessons = (lessonLinks.backupLessonUrls ?? [])
+    .filter((href) => href !== lessonLinks.primaryLessonUrl)
+    .map((href, index) => ({
+      title: `${getLessonSourceName(href)}: ${topic.title} backup ${index + 1}`,
+      kind: "lesson" as const,
+      href,
+      label: "Backup lesson",
+    }));
+
+  const otherResources = topic.resources.filter((resource) => resource.kind !== "lesson");
+  const dedupedLessons = [primaryLesson, ...backupLessons].filter((resource, index, all) =>
+    all.findIndex((entry) => entry.href === resource.href && entry.kind === resource.kind) === index
+  );
+
+  return {
+    ...topic,
+    resources: [...dedupedLessons, ...otherResources],
+  };
 }
 
 function ensureTopicVideoResource(topic: RawTopicNode, courseTitle: string): RawTopicNode {
@@ -1168,9 +1367,10 @@ function normalizeCourses(source: RawCourseNode[]): CourseNode[] {
     const courseUnits = [...course.units, ...(extraUnitsByCourseId[course.id] ?? [])];
     const unitsWithExpandedTopics = courseUnits.map((unit) => ({
       ...unit,
-      topics: [...unit.topics, ...(extraTopicsByUnitId[unit.id] ?? [])].map((topic) =>
-        ensureTopicVideoResource(topic, course.title)
-      ),
+      topics: [...unit.topics, ...(extraTopicsByUnitId[unit.id] ?? [])].map((topic) => {
+        const withLesson = ensureTopicLessonResource(topic, course.title);
+        return ensureTopicVideoResource(withLesson, course.title);
+      }),
     }));
     const flattenedTopicIds = unitsWithExpandedTopics.flatMap((unit) => unit.topics.map((topic) => topic.id));
     const recommendedSequence =

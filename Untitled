@@ -1,33 +1,66 @@
-Also fix the learning path layout clipping issue:
+The Start Lesson flow still needs to be improved.
 
-Problem:
-The learning path (node graph) is being cut off on the right side
-Users cannot fully see the path
-This breaks usability and looks unpolished
-Required fix:
-Ensure the entire learning path is fully visible
-The path should:
-NOT be clipped
-NOT overflow hidden incorrectly
-NOT extend beyond its container
-Acceptable solutions (choose best one):
-Expand container properly
-Allow the learning path section to use more horizontal space
-Adjust layout so it fits within the viewport cleanly
-Enable horizontal scrolling (if needed)
-If the path is intentionally wide:
-allow smooth horizontal scroll
-add proper padding so nothing is cut off
-Responsive scaling
-Scale or reposition nodes on smaller screens so everything fits
+1. Start Lesson should open a real outside lesson resource
+
+Right now, when the user clicks Start Lesson, it should take them to a clear lesson resource from an outside educational source for that exact topic.
+
 Requirements:
-Must work on:
-desktop
-tablet
-mobile
-No elements should be cut off at any screen size
-Maintain visual balance with the left sidebar and right panel
-Do NOT break the existing design system
+Each topic must have a real lesson link
+The link should go to a high-quality outside learning resource
+It must be specific to the exact topic
+Open in a new tab unless there is a better clean embedded experience
+Acceptable sources:
+Khan Academy
+CK-12
+Purplemath
+Math Is Fun
+other reputable educational sites
+Important:
+No broken or placeholder links
+Do NOT send users to a generic homepage
+The link must match the lesson topic directly
+2. Simplify the lesson plan/workspace shown under it
+
+The current lesson content/plan is too complex and hard to read.
+
+Fix it so it feels more straightforward:
+shorter sections
+clearer headings
+simpler wording
+less dense text
+easier step-by-step flow
+Better structure:
+
+Use something like:
+
+What you’ll learn
+Key idea
+Example
+Try this next
+
+Instead of long, overly detailed blocks.
+
+Goal:
+
+The lesson area should feel:
+
+easy to scan
+easy to understand
+student-friendly
+not overwhelming
+3. Keep the learning flow clear
+
+The user should experience:
+
+Start Lesson → real lesson resource → come back for quiz/practice
+
+And the lesson workspace on the page should act like a simple guide, not a complicated wall of content.
+
+Rules:
+Do NOT redesign the whole page
+Keep the current design system
+Only improve functionality and readability
+Make sure this works across all device sizes
 Final instruction:
 
-Fix the layout so the entire learning path is always visible and usable, with no clipping or hidden content.
+Make the Start Lesson action actually useful by linking each topic to a strong outside lesson source, and simplify the on-page lesson workspace so it is much more direct, readable, and student-friendly.
