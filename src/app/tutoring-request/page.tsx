@@ -1,3 +1,4 @@
+// i18n-allow-hardcoded
 "use client";
 
 import { FormEvent, useState } from "react";

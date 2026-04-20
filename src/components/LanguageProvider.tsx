@@ -127,8 +127,24 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       void runTranslation();
     };
 
+    const patchHistoryMethod = (method: "pushState" | "replaceState") => {
+      const original = window.history[method];
+      window.history[method] = (...args: Parameters<History["pushState"]>) => {
+        const result = original.apply(window.history, args);
+        window.dispatchEvent(new Event("mm-route-change"));
+        return result;
+      };
+      return () => {
+        window.history[method] = original;
+      };
+    };
+
+    const restorePushState = patchHistoryMethod("pushState");
+    const restoreReplaceState = patchHistoryMethod("replaceState");
+
     window.addEventListener("popstate", updateRoute);
     window.addEventListener("hashchange", updateRoute);
+    window.addEventListener("mm-route-change", updateRoute);
 
     return () => {
       // CRITICAL: abort any in-flight translateDocumentContent / trBatch fetch
@@ -146,6 +162,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       }
       window.removeEventListener("popstate", updateRoute);
       window.removeEventListener("hashchange", updateRoute);
+      window.removeEventListener("mm-route-change", updateRoute);
+      restorePushState();
+      restoreReplaceState();
     };
   }, [language]);
 

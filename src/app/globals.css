@@ -2701,72 +2701,55 @@ button, a, .card, .interactive {
   position: absolute;
   top: 14px;
   bottom: 12px;
-  left: calc(var(--dlp-current-x) - 86px);
   width: 172px;
   border-radius: 16px;
   background: color-mix(in srgb, var(--theme-primary) 8%, transparent);
   border: 1px dashed color-mix(in srgb, var(--theme-primary) 30%, transparent);
   pointer-events: none;
-}
-
-.dlp-connector {
-  position: absolute;
-  top: -43px;
-  left: 0;
-  width: 100%;
-  height: 74px;
-  pointer-events: none;
   z-index: 0;
 }
 
-.dlp-connector::before {
-  content: "";
+.dlp-lane-left.dlp-row-selected::before { left: calc(16.666% - 86px); }
+.dlp-lane-center.dlp-row-selected::before { left: calc(50% - 86px); }
+.dlp-lane-right.dlp-row-selected::before { left: calc(83.333% - 86px); }
+
+.dlp-connector {
   position: absolute;
-  left: var(--dlp-prev-x);
-  top: 0;
-  width: max(6px, calc(var(--dlp-current-x) - var(--dlp-prev-x)));
-  min-width: 6px;
-  height: 8px;
-  transform-origin: center;
-  border-radius: 999px;
-  opacity: 0.92;
+  top: -88px;
+  left: 0;
+  width: 100%;
+  height: 124px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
 }
 
-.dlp-connector-straight::before {
-  width: 6px;
-  height: 74px;
-  left: calc(var(--dlp-current-x) - 3px);
+.dlp-connector path {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
-.dlp-connector-left::before {
-  width: calc(var(--dlp-prev-x) - var(--dlp-current-x));
-  left: var(--dlp-current-x);
-  transform: translateY(30px) rotate(-22deg);
+.dlp-connector-completed path {
+  stroke: #16a34a;
+  filter: drop-shadow(0 6px 10px rgba(22, 163, 74, 0.2));
 }
 
-.dlp-connector-right::before {
-  width: calc(var(--dlp-current-x) - var(--dlp-prev-x));
-  transform: translateY(30px) rotate(22deg);
+.dlp-connector-available path {
+  stroke: color-mix(in srgb, var(--theme-primary) 72%, #38bdf8);
+  filter: drop-shadow(0 6px 10px rgba(var(--theme-primary-rgb), 0.18));
 }
 
-.dlp-connector-completed::before {
-  background: linear-gradient(90deg, #16a34a, var(--theme-primary));
-  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.25), 0 8px 18px rgba(22, 163, 74, 0.22);
+.dlp-connector-locked path {
+  stroke: rgb(148 163 184);
+  stroke-dasharray: 8 9;
+  opacity: 0.7;
 }
 
-.dlp-connector-available::before {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 70%, #38bdf8), color-mix(in srgb, var(--theme-primary) 40%, white));
-  box-shadow: 0 8px 18px rgba(var(--theme-primary-rgb), 0.2);
-}
-
-.dlp-connector-locked::before {
-  background-image: linear-gradient(to right, rgb(148 163 184) 50%, transparent 0);
-  background-size: 12px 100%;
-  opacity: 0.65;
-}
-
-.dark .dlp-connector-locked::before {
-  background-image: linear-gradient(to right, rgb(71 85 105) 50%, transparent 0);
+.dark .dlp-connector-locked path {
+  stroke: rgb(71 85 105);
 }
 
 .dlp-node-wrap {
@@ -2912,6 +2895,10 @@ button, a, .card, .interactive {
   }
 
   .dlp-row { min-height: 116px; }
+  .dlp-connector {
+    top: -80px;
+    height: 116px;
+  }
   .dlp-node-wrap { min-width: 142px; }
 }
 

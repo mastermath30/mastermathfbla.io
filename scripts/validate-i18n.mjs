@@ -27,21 +27,22 @@ function extractEnKeys(i18nText) {
   }
 
   const keys = new Set();
-  const keyRegex = /\n\s*["']([^"']+)["']\s*:/g;
+  const keyRegex = /\n\s*(["'])((?:\\.|(?!\1).)*)\1\s*:/g;
   let match;
   while ((match = keyRegex.exec(enMatch[1]))) {
-    keys.add(match[1]);
+    keys.add(match[2].replace(/\\(['"`\\])/g, "$1"));
   }
   return keys;
 }
 
 function extractUsedTKeys(text) {
   const keys = [];
-  const regex = /\bt\(\s*(["'`])([\s\S]*?)\1/g;
+  const regex = /\bt\(\s*(["'`])((?:\\.|(?!\1)[\s\S])*)\1/g;
   let match;
   while ((match = regex.exec(text))) {
-    if (match[2].includes("${")) continue;
-    keys.push(match[2]);
+    const raw = match[2];
+    if (raw.includes("${")) continue;
+    keys.push(raw.replace(/\\(['"`\\])/g, "$1"));
   }
   return keys;
 }

@@ -30,7 +30,7 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
 
       {discussionLabel && (
         <div className="mt-3 rounded-lg border border-violet-200 dark:border-violet-800 bg-violet-50/70 dark:bg-violet-900/20 px-3 py-2 text-xs text-violet-700 dark:text-violet-300">
-          {t("Topic thread:")} <span data-no-auto-translate="true">{discussionLabel}</span>
+          {t("Topic thread:")} <span>{discussionLabel}</span>
         </div>
       )}
 
@@ -51,11 +51,11 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
           >
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-[var(--theme-primary)]" />
-              <h3 data-no-auto-translate="true" className="font-semibold text-slate-900 dark:text-white">{group.name}</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white">{group.name}</h3>
             </div>
-            <p data-no-auto-translate="true" className="text-sm text-slate-600 dark:text-slate-400 mt-1">{group.focus}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{group.focus}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-              {t("Next:")} <span data-no-auto-translate="true">{group.nextSession}</span> | {group.members} {t("members")}
+              {t("Next:")} <span>{group.nextSession}</span> | {group.members} {t("members")}
             </p>
           </Link>
         ))}
@@ -70,9 +70,9 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
           >
             <div className="flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-[var(--theme-primary)]" />
-              <span data-no-auto-translate="true" className="text-sm text-slate-800 dark:text-slate-200">{event.title}</span>
+              <span className="text-sm text-slate-800 dark:text-slate-200">{event.title}</span>
             </div>
-            <span data-no-auto-translate="true" className="text-xs text-slate-500 dark:text-slate-400">{event.startsAt}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">{event.startsAt}</span>
           </Link>
         ))}
       </div>

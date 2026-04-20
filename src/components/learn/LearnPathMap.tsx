@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useMemo } from "react";
+import { useMemo } from "react";
 import { LearnPathNode } from "@/components/learn/LearnPathNode";
 import { PathNodeVM } from "@/components/learn/types";
 
@@ -17,23 +17,17 @@ function getConnectorKind(prev: PathNodeVM, current: PathNodeVM) {
   return "available";
 }
 
-function laneToIdx(lane: PathNodeVM["lane"]) {
-  if (lane === "left") return 0;
-  if (lane === "center") return 1;
-  return 2;
+function laneToSvgX(lane: PathNodeVM["lane"]) {
+  if (lane === "left") return 16.666;
+  if (lane === "center") return 50;
+  return 83.333;
 }
 
-function laneToPercent(lane: PathNodeVM["lane"]) {
-  if (lane === "left") return "16.666%";
-  if (lane === "center") return "50%";
-  return "83.333%";
-}
+function getConnectorPath(prev: PathNodeVM, current: PathNodeVM) {
+  const startX = laneToSvgX(prev.lane);
+  const endX = laneToSvgX(current.lane);
 
-function getDirectionClass(prev: PathNodeVM, current: PathNodeVM) {
-  const diff = laneToIdx(current.lane) - laneToIdx(prev.lane);
-  if (diff > 0) return "dlp-connector-right";
-  if (diff < 0) return "dlp-connector-left";
-  return "dlp-connector-straight";
+  return `M ${startX} 0 C ${startX} 42, ${endX} 58, ${endX} 100`;
 }
 
 export function LearnPathMap({
@@ -58,6 +52,8 @@ export function LearnPathMap({
     <section className="dlp-map" aria-label="Learning path">
       {ordered.map((node, idx) => {
         const prevNode = idx > 0 ? ordered[idx - 1] : null;
+        const connectorKind =
+          prevNode && prevNode.chapterIndex === node.chapterIndex ? getConnectorKind(prevNode, node) : null;
         const chapterNodes = chapters.get(node.chapterIndex) ?? [];
         const chapterMastered = chapterNodes.filter((entry) => entry.state === "mastered").length;
         const chapterTotal = chapterNodes.length;
@@ -106,16 +102,17 @@ export function LearnPathMap({
             <div
               id={`path-node-${node.id}`}
               className={`dlp-row dlp-lane-${node.lane} ${selectedNodeId === node.id ? "dlp-row-selected" : ""}`}
-              style={{
-                "--dlp-prev-x": prevNode ? laneToPercent(prevNode.lane) : laneToPercent(node.lane),
-                "--dlp-current-x": laneToPercent(node.lane),
-              } as CSSProperties}
             >
-              {prevNode && (
-                <div
-                  className={`dlp-connector dlp-connector-${getConnectorKind(prevNode, node)} ${getDirectionClass(prevNode, node)}`}
+              {prevNode && connectorKind && (
+                <svg
+                  className={`dlp-connector dlp-connector-${connectorKind}`}
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
                   aria-hidden="true"
-                />
+                  focusable="false"
+                >
+                  <path d={getConnectorPath(prevNode, node)} />
+                </svg>
               )}
 
               <LearnPathNode
