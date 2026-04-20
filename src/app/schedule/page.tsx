@@ -12,6 +12,7 @@ import { Avatar } from "@/components/Avatar";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { getStoredAuthState } from "@/lib/auth";
 import {
   CalendarCheck,
   Plus,
@@ -319,7 +320,7 @@ export default function SchedulePage() {
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn] = useState(() => getStoredAuthState());
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedTutor, setSelectedTutor] = useState<typeof tutors[0] | null>(null);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
@@ -417,11 +418,6 @@ export default function SchedulePage() {
   };
 
   useEffect(() => {
-    // Check if user is logged in - check both methods for compatibility
-    const session = localStorage.getItem("mm_session");
-    const isLoggedInFlag = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!session || isLoggedInFlag === "true");
-    
     const loadBookings = () => {
       const savedBookings = localStorage.getItem("mm_booked_sessions");
       if (savedBookings) {
@@ -1271,7 +1267,9 @@ export default function SchedulePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tutors.map((tutor, index) => (
+            {tutors.map((tutor, index) => {
+              const specialties = "specialties" in tutor && Array.isArray(tutor.specialties) ? tutor.specialties : [];
+              return (
               <Card key={tutor.name} className="overflow-hidden group/tutor" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="relative h-56 bg-slate-950 overflow-hidden">
                   <Image
@@ -1313,10 +1311,10 @@ export default function SchedulePage() {
                   </div>
                   
                   {/* Specialties */}
-                  {(tutor as any).specialties && (
+                  {specialties.length > 0 && (
                     <div className="mb-4">
                       <div className="flex flex-wrap gap-1.5">
-                        {(expandedSpecialties[tutor.name] ? (tutor as any).specialties : (tutor as any).specialties.slice(0, 2)).map((specialty: string) => (
+                        {(expandedSpecialties[tutor.name] ? specialties : specialties.slice(0, 2)).map((specialty) => (
                           <span 
                             key={specialty}
                             className="text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
@@ -1324,7 +1322,7 @@ export default function SchedulePage() {
                             {specialty}
                           </span>
                         ))}
-                        {(tutor as any).specialties.length > 2 && (
+                        {specialties.length > 2 && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1339,7 +1337,7 @@ export default function SchedulePage() {
                               color: 'white'
                             }}
                           >
-                            {expandedSpecialties[tutor.name] ? t('Show less') : `+${(tutor as any).specialties.length - 2}`}
+                            {expandedSpecialties[tutor.name] ? t('Show less') : `+${specialties.length - 2}`}
                           </button>
                         )}
                       </div>
@@ -1367,7 +1365,7 @@ export default function SchedulePage() {
                   </Button>
                 </div>
               </Card>
-            ))}
+            )})}
           </div>
         </div>
         </FadeIn>
@@ -1616,7 +1614,7 @@ export default function SchedulePage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                           {t("Expiry Date")}
@@ -1774,7 +1772,7 @@ export default function SchedulePage() {
                     
                     {bookingDate ? (
                       <div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                           {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
                             <button
                               key={slot}
@@ -1822,7 +1820,7 @@ export default function SchedulePage() {
                     </div>
                     
                     {selectedTime ? (
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                         {["1 hour", "1.5 hours", "2 hours"].map((duration) => (
                           <button
                             key={duration}

@@ -52,6 +52,79 @@ interface Post {
   moderationState?: PostModerationState;
 }
 
+interface Reply {
+  id: string;
+  postId: string;
+  body: string;
+  author: string;
+  createdAt: string;
+}
+
+function getStoredCommunityPosts(): Post[] {
+  if (typeof window === "undefined") return seedPosts;
+  const savedPosts = localStorage.getItem("mm_forum_posts");
+  if (!savedPosts) {
+    localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
+    return seedPosts;
+  }
+
+  try {
+    const parsed = JSON.parse(savedPosts);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed;
+    }
+  } catch {
+    // Ignore parse errors and restore seed content below.
+  }
+
+  localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
+  return seedPosts;
+}
+
+function getStoredReplies(): Record<string, Reply[]> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem("mm_forum_replies");
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function getStoredCommunityReports() {
+  if (typeof window === "undefined") return [] as { postId: string; reason: string; createdAt: string }[];
+  try {
+    const savedReports = JSON.parse(localStorage.getItem("mm_forum_reports") || "[]");
+    return Array.isArray(savedReports) ? savedReports : [];
+  } catch {
+    return [];
+  }
+}
+
+function getStoredCommunityAuthState() {
+  if (typeof window === "undefined") {
+    return { isSignedIn: false, userName: "Guest" };
+  }
+
+  try {
+    const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
+    const session = JSON.parse(localStorage.getItem("mm_session") || "null");
+    if (profile && session && session.email === profile.email) {
+      if (profile.username) {
+        return { isSignedIn: true, userName: profile.username };
+      }
+      const fullName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
+      return { isSignedIn: true, userName: fullName || "User" };
+    }
+  } catch {
+    // Ignore malformed local state.
+  }
+
+  return { isSignedIn: false, userName: "Guest" };
+}
+
 const tagOptions = [
   { value: "Algebra", label: "Algebra" },
   { value: "Geometry", label: "Geometry" },
@@ -173,11 +246,14 @@ function formatTimeAgo(iso: string, locale: string = "en") {
 }
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [reports, setReports] = useState<{ postId: string; reason: string; createdAt: string }[]>([]);
+  const [posts, setPosts] = useState<Post[]>(() => getStoredCommunityPosts());
+  const [reports, setReports] = useState<{ postId: string; reason: string; createdAt: string }[]>(() => getStoredCommunityReports());
+  const [repliesByPost, setRepliesByPost] = useState<Record<string, Reply[]>>(() => getStoredReplies());
+  const [openReplyBoxId, setOpenReplyBoxId] = useState<string | null>(null);
+  const [replyDraftByPost, setReplyDraftByPost] = useState<Record<string, string>>({});
+  const [replyErrorByPost, setReplyErrorByPost] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [userName, setUserName] = useState("Guest");
+  const [{ isSignedIn, userName }] = useState(() => getStoredCommunityAuthState());
   const { t, language } = useTranslations();
 
   const translatedTagOptions = tagOptions.map((opt) => ({
@@ -186,53 +262,6 @@ export default function CommunityPage() {
   }));
 
   useEffect(() => {
-    // Load posts from localStorage
-    const savedPosts = localStorage.getItem("mm_forum_posts");
-    if (savedPosts) {
-      try {
-        const parsed = JSON.parse(savedPosts);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setPosts(parsed);
-        } else {
-          setPosts(seedPosts);
-          localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
-        }
-      } catch {
-        setPosts(seedPosts);
-        localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
-      }
-    } else {
-      setPosts(seedPosts);
-      localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
-    }
-
-    // Check auth
-    try {
-      const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
-      const session = JSON.parse(localStorage.getItem("mm_session") || "null");
-      if (profile && session && session.email === profile.email) {
-        setIsSignedIn(true);
-        // Use username if available, otherwise use full name
-        if (profile.username) {
-          setUserName(profile.username);
-        } else {
-          const fullName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
-          setUserName(fullName || "User");
-        }
-      }
-    } catch {
-      // Ignore
-    }
-
-    try {
-      const savedReports = JSON.parse(localStorage.getItem("mm_forum_reports") || "[]");
-      if (Array.isArray(savedReports)) {
-        setReports(savedReports);
-      }
-    } catch {
-      // Ignore
-    }
-
     const handlePostsUpdated = () => {
       const updatedPosts = localStorage.getItem("mm_forum_posts");
       if (updatedPosts) {
@@ -301,6 +330,30 @@ export default function CommunityPage() {
     });
   };
 
+  const handleReply = (postId: string) => {
+    const draft = (replyDraftByPost[postId] ?? "").trim();
+    if (!draft) {
+      setReplyErrorByPost((prev) => ({ ...prev, [postId]: t("Reply cannot be empty.") }));
+      return;
+    }
+    const reply: Reply = {
+      id: `r_${Date.now()}`,
+      postId,
+      body: sanitizeText(draft),
+      author: isSignedIn ? userName : "Guest",
+      createdAt: new Date().toISOString(),
+    };
+    const updated = {
+      ...repliesByPost,
+      [postId]: [...(repliesByPost[postId] ?? []), reply],
+    };
+    setRepliesByPost(updated);
+    localStorage.setItem("mm_forum_replies", JSON.stringify(updated));
+    setReplyDraftByPost((prev) => ({ ...prev, [postId]: "" }));
+    setReplyErrorByPost((prev) => ({ ...prev, [postId]: "" }));
+    setOpenReplyBoxId(null);
+  };
+
   const sortedPosts = [...posts].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
@@ -345,13 +398,13 @@ export default function CommunityPage() {
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
           {/* Forum Section */}
           <div className="lg:col-span-2">
             <FadeIn>
             <Card padding="none" className="overflow-hidden">
               <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-                <div className="flex items-center justify-between mb-6">
+                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                       <Sparkles className="w-5 h-5" />
@@ -361,14 +414,14 @@ export default function CommunityPage() {
                       <CardDescription>{t("Ask questions, share explanations, help others learn")}</CardDescription>
                     </div>
                   </div>
-                  <Button size="sm" onClick={() => document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' })}>
+                  <Button size="sm" onClick={() => document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' })} className="self-start sm:self-auto">
                     <Plus className="w-4 h-4" />
                     {t("New Post")}
                   </Button>
                 </div>
 
                 {/* Post Form */}
-                <div id="ask" className="p-5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div id="ask" className="rounded-2xl border border-slate-200 bg-slate-100/80 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-950/90">
                   <h3 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                     {t("Ask a Question")}
@@ -385,7 +438,7 @@ export default function CommunityPage() {
                       rows={4}
                       placeholder={t("Include the problem, what you've tried, and where you're stuck.")}
                     />
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-4">
                       {error && <p className="text-red-500 text-sm">{error}</p>}
                       <Button type="submit" className="ml-auto">
                         {t("Post Question")}
@@ -412,42 +465,131 @@ export default function CommunityPage() {
                       <p className="text-slate-400">{t("No posts yet. Be the first to ask a question!")}</p>
                     </div>
                   ) : (
-                    sortedPosts.map((post) => (
-                      <div key={post.id} className="p-5 hover:bg-slate-900/50 transition-colors">
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
-                            <HelpCircle className="w-5 h-5" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
-                                {post.moderationState === "flagged" && (
-                                  <Badge variant="warning">Flagged</Badge>
-                                )}
+                    sortedPosts.map((post) => {
+                      const postReplies = repliesByPost[post.id] ?? [];
+                      const replyCount = postReplies.length;
+                      const isReplyOpen = openReplyBoxId === post.id;
+
+                      return (
+                        <div key={post.id} className="p-5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
+                              <HelpCircle className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
+                                  {post.moderationState === "flagged" && (
+                                    <Badge variant="warning">Flagged</Badge>
+                                  )}
+                                </div>
+                                <span className="text-slate-400 text-xs shrink-0">
+                                  {formatTimeAgo(post.createdAt, language)}
+                                </span>
                               </div>
-                              <span className="text-slate-400 text-xs shrink-0">
-                                {formatTimeAgo(post.createdAt, language)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <Badge variant={tagColors[post.tag] || "default"}>{post.tag}</Badge>
-                              <span className="text-slate-400 text-xs">{t("by")} {post.author}</span>
-                            </div>
-                            <p className="text-slate-500 text-sm mt-2 line-clamp-2">{post.body}</p>
-                            <div className="mt-2">
-                              <button
-                                type="button"
-                                onClick={() => handleReportPost(post.id)}
-                                className="text-xs text-rose-500 hover:text-rose-400"
-                              >
-                                Report post
-                              </button>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <Badge variant={tagColors[post.tag] || "default"}>{post.tag}</Badge>
+                                <span className="text-slate-400 text-xs">{t("by")} {post.author}</span>
+                              </div>
+                              <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">{post.body}</p>
+
+                              {/* Action row */}
+                              <div className="mt-3 flex items-center gap-4">
+                                <button
+                                  type="button"
+                                  onClick={() => setOpenReplyBoxId(isReplyOpen ? null : post.id)}
+                                  className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] transition-colors"
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5" />
+                                  {replyCount > 0
+                                    ? replyCount === 1
+                                      ? t("1 reply")
+                                      : t("{count} replies", { count: replyCount })
+                                    : t("Reply")}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleReportPost(post.id)}
+                                  className="text-xs text-rose-500 hover:text-rose-400 transition-colors"
+                                >
+                                  {t("Report Post")}
+                                </button>
+                              </div>
+
+                              {/* Threaded replies */}
+                              {replyCount > 0 && (
+                                <div
+                                  className="mt-4 space-y-3 pl-4 border-l-2"
+                                  style={{ borderColor: "rgba(var(--theme-primary-rgb), 0.22)" }}
+                                >
+                                  {postReplies.map((reply) => (
+                                    <div key={reply.id} className="text-sm">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <div
+                                          className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                                          style={{ background: "var(--theme-primary)" }}
+                                        >
+                                          {reply.author.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="font-semibold text-xs text-slate-700 dark:text-slate-300">
+                                          {reply.author}
+                                        </span>
+                                        <span className="text-slate-400 dark:text-slate-500 text-xs">
+                                          {formatTimeAgo(reply.createdAt, language)}
+                                        </span>
+                                      </div>
+                                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed pl-7">
+                                        {reply.body}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Inline reply box */}
+                              {isReplyOpen && (
+                                <div className="mt-4 pl-4 border-l-2" style={{ borderColor: "rgba(var(--theme-primary-rgb), 0.22)" }}>
+                                  <Textarea
+                                    rows={3}
+                                    placeholder={t("Write a reply...")}
+                                    value={replyDraftByPost[post.id] ?? ""}
+                                    onChange={(e) =>
+                                      setReplyDraftByPost((prev) => ({ ...prev, [post.id]: e.target.value }))
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleReply(post.id);
+                                    }}
+                                    autoFocus
+                                  />
+                                  {replyErrorByPost[post.id] && (
+                                    <p className="text-red-500 text-xs mt-1">{replyErrorByPost[post.id]}</p>
+                                  )}
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <Button size="sm" onClick={() => handleReply(post.id)}>
+                                      {t("Post Reply")}
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => {
+                                        setOpenReplyBoxId(null);
+                                        setReplyErrorByPost((prev) => ({ ...prev, [post.id]: "" }));
+                                      }}
+                                    >
+                                      {t("Cancel")}
+                                    </Button>
+                                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto hidden sm:inline">
+                                      {t("Ctrl+Enter to submit")}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>
@@ -456,12 +598,14 @@ export default function CommunityPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-28 lg:self-start">
             <FadeIn delay={0.03}>
             <Card>
               <h3 className="font-semibold text-slate-900 dark:text-white">{t("Moderation Queue")}</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                {reports.length} reported posts in review.
+                {reports.length === 1
+                  ? t("1 post under review.")
+                  : t("{count} posts under review.", { count: reports.length })}
               </p>
             </Card>
             </FadeIn>
@@ -481,7 +625,7 @@ export default function CommunityPage() {
                 {featuredStudyGroups.map((group) => (
                   <Link
                     key={group.id}
-                    href="/study-groups"
+                    href={`/study-groups?group=${group.id}`}
                     className="block p-3 rounded-xl bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-center gap-3">
@@ -501,7 +645,7 @@ export default function CommunityPage() {
                   </Link>
                 ))}
                 <Link
-                  href="/study-groups"
+                  href="/study-groups?create=1"
                   className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-500 hover:text-violet-600 hover:border-violet-300 transition-colors"
                 >
                   <Plus className="w-4 h-4" />

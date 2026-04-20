@@ -4,7 +4,6 @@ import Link from "next/link";
 import { communityEvents, studyGroupSpotlights } from "@/data/courses";
 import { Card } from "@/components/Card";
 import { useTranslations } from "@/components/LanguageProvider";
-import { buildCommunityHref } from "@/lib/learnActions";
 import { CalendarClock, Users } from "lucide-react";
 
 type CommunitySpotlightProps = {
@@ -38,11 +37,7 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
         {orderedGroups.slice(0, 2).map((group) => (
           <Link
             key={group.id}
-            href={
-              group.id === studyGroupId
-                ? buildCommunityHref({ groupId: group.id, thread: discussionLabel })
-                : buildCommunityHref({ groupId: group.id })
-            }
+            href={group.href}
             className={`rounded-xl border p-4 hover:border-[var(--theme-primary)] transition-colors ${
               group.id === studyGroupId
                 ? "border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 dark:bg-[var(--theme-primary)]/20"
@@ -66,7 +61,7 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
           <Link
             key={event.id}
             href={event.href}
-            className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 px-3 py-2"
+            className="flex flex-col gap-2 rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-[var(--theme-primary)]" />

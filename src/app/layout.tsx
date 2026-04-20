@@ -1,5 +1,5 @@
 // i18n-allow-hardcoded
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
@@ -30,6 +30,12 @@ export const metadata: Metadata = {
   description:
     "A course-aware math learning platform with guided pathways, targeted practice, AI tutoring, accessibility tools, and peer community support.",
   keywords: ["math", "tutoring", "learning", "education", "calculus", "algebra"],
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 // Script to apply theme and accessibility before React hydrates (prevents flash)

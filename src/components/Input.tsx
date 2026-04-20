@@ -12,7 +12,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <label className="mb-2 block text-[13px] font-semibold tracking-[0.01em] text-slate-700 dark:text-slate-300">
             {label}
           </label>
         )}
@@ -26,8 +26,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             className={clsx(
               "w-full px-4 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300",
-              "focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.3)] focus:border-[var(--theme-primary)]",
-              "hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm",
+              "min-h-12 rounded-2xl bg-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/90 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]",
+              "focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.22)] focus:border-[rgba(var(--theme-primary-rgb),0.55)]",
+              "hover:border-slate-300/90 dark:hover:border-slate-600/90 hover:shadow-md",
               icon && "pl-11",
               error && "border-red-500 focus:ring-red-500/20 focus:border-red-500",
               className
@@ -53,16 +54,16 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <label className="mb-2 block text-[13px] font-semibold tracking-[0.01em] text-slate-700 dark:text-slate-300">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
           className={clsx(
-            "w-full px-4 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-300 resize-none",
-            "focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.3)] focus:border-[var(--theme-primary)]",
-            "hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm",
+            "w-full resize-none rounded-2xl border border-slate-200 bg-white/95 px-4 py-3 text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] dark:placeholder:text-slate-500",
+            "focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.22)] focus:border-[rgba(var(--theme-primary-rgb),0.55)]",
+            "hover:border-slate-300/90 dark:hover:border-slate-600/90 hover:shadow-md",
             error && "border-red-500 focus:ring-red-500/20 focus:border-red-500",
             className
           )}
@@ -87,7 +88,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <label className="mb-2 block text-[13px] font-semibold tracking-[0.01em] text-slate-700 dark:text-slate-300">
             {label}
           </label>
         )}
@@ -95,9 +96,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             ref={ref}
             className={clsx(
-              "w-full px-4 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 transition-all duration-300 appearance-none cursor-pointer pr-10",
-              "focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.3)] focus:border-[var(--theme-primary)]",
-              "hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm",
+              "min-h-12 w-full appearance-none rounded-2xl border border-slate-200 bg-white/95 px-4 py-3 pr-10 text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 cursor-pointer dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]",
+              "focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.22)] focus:border-[rgba(var(--theme-primary-rgb),0.55)]",
+              "hover:border-slate-300/90 dark:hover:border-slate-600/90 hover:shadow-md",
               error && "border-red-500 focus:ring-red-500/20 focus:border-red-500",
               className
             )}

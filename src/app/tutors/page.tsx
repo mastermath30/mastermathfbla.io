@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
@@ -300,15 +301,46 @@ const allTutors = [
   },
 ];
 
+function getStoredApprovedTutors() {
+  if (typeof window === "undefined") return [] as typeof allTutors;
+  const applications = JSON.parse(localStorage.getItem("mm_tutor_applications") || "[]");
+  return applications
+    .filter((app: { status: string }) => app.status === "approved")
+    .map((app: { name: string; subjects: string; price: number; image: string; education: string; specialties: string[]; languages: string[]; experience: string }) => ({
+      name: app.name,
+      initials: app.name.split(" ").map((n: string) => n[0]).join("").toUpperCase(),
+      subjects: app.subjects,
+      rating: 5.0,
+      reviews: 0,
+      price: app.price,
+      image: app.image,
+      available: true,
+      experience: app.experience,
+      education: app.education,
+      specialties: app.specialties,
+      languages: app.languages,
+      responseTime: "< 1 hour",
+      completedSessions: 0,
+    }));
+}
+
+function getStoredTutorAuthState() {
+  if (typeof window === "undefined") return false;
+  const session = localStorage.getItem("mm_session");
+  const isLoggedInFlag = localStorage.getItem("isLoggedIn");
+  return !!session || isLoggedInFlag === "true";
+}
+
 export default function TutorsPage() {
   const { t, language } = useTranslations();
+  const router = useRouter();
   const localizedDays = Array.from({ length: 7 }, (_, i) =>
     new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'narrow' })
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [sortBy, setSortBy] = useState("rating");
-  const [userTutors, setUserTutors] = useState<typeof allTutors>([]);
+  const [userTutors] = useState<typeof allTutors>(() => getStoredApprovedTutors());
   
   // Expanded specialties state
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
@@ -322,7 +354,7 @@ export default function TutorsPage() {
   const [selectedDuration, setSelectedDuration] = useState("1 hour");
   const [bookingMonth, setBookingMonth] = useState(currentDate.getMonth());
   const [bookingYear, setBookingYear] = useState(currentDate.getFullYear());
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn] = useState(() => getStoredTutorAuthState());
   
   // Checkout state
   const [showCheckout, setShowCheckout] = useState(false);
@@ -333,36 +365,6 @@ export default function TutorsPage() {
   const [billingZip, setBillingZip] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState("");
-
-  // Load user-submitted tutors from localStorage
-  useEffect(() => {
-    const applications = JSON.parse(localStorage.getItem("mm_tutor_applications") || "[]");
-    const approvedTutors = applications
-      .filter((app: { status: string }) => app.status === "approved")
-      .map((app: { name: string; subjects: string; price: number; image: string; education: string; specialties: string[]; languages: string[]; experience: string }) => ({
-        name: app.name,
-        initials: app.name.split(" ").map((n: string) => n[0]).join("").toUpperCase(),
-        subjects: app.subjects,
-        rating: 5.0,
-        reviews: 0,
-        price: app.price,
-        image: app.image,
-        available: true,
-        experience: app.experience,
-        education: app.education,
-        specialties: app.specialties,
-        languages: app.languages,
-        responseTime: "< 1 hour",
-        completedSessions: 0,
-      }));
-    setUserTutors(approvedTutors);
-  }, []);
-
-  useEffect(() => {
-    const session = localStorage.getItem("mm_session");
-    const isLoggedInFlag = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!session || isLoggedInFlag === "true");
-  }, []);
 
   // Combine built-in tutors with user-submitted tutors
   const combinedTutors = [...allTutors, ...userTutors];
@@ -452,7 +454,7 @@ export default function TutorsPage() {
 
   const handleBookNow = (tutor: typeof allTutors[0]) => {
     if (!isLoggedIn) {
-      window.location.href = "/auth?redirect=/tutors&action=book";
+      router.push("/auth?redirect=/tutors&action=book");
       return;
     }
     setSelectedTutor(tutor);
@@ -973,7 +975,7 @@ export default function TutorsPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                           {t("Expiry Date")}
@@ -1153,7 +1155,7 @@ export default function TutorsPage() {
                     
                     {bookingDate ? (
                       <div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                           {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
                             <button
                               key={slot}

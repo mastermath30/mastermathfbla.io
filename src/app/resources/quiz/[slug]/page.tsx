@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, Suspense } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/Card";
@@ -11,27 +11,7 @@ import { useTranslations } from "@/components/LanguageProvider";
 import { addQuizAttempt, getLearningProgress } from "@/lib/progress";
 import { topicByQuizSlug } from "@/data/courses";
 import { toLearnActionHref } from "@/lib/learnActions";
-
-type QuizQuestion = {
-  prompt: string;
-  options: string[];
-  correctIndex: number;
-};
-
-type DifficultyQuestions = {
-  easy: QuizQuestion[];
-  medium: QuizQuestion[];
-  hard: QuizQuestion[];
-};
-
-type QuizData = {
-  title: string;
-  description: string;
-  difficulty: string;
-  time: string;
-  topic: string;
-  questionsByDifficulty: DifficultyQuestions;
-};
+import { buildTopicGeneratedQuiz, type DifficultyQuestions, type QuizData } from "@/lib/quizBank";
 
 const quizzesBySlug: Record<string, QuizData> = {
   "algebra-basics": {
@@ -576,35 +556,6 @@ const quizzesBySlug: Record<string, QuizData> = {
   },
 };
 
-function buildTopicFallbackQuiz(topic: (typeof topicByQuizSlug)[string]): QuizData {
-  const title = `${topic.title} Checkpoint`;
-  const basePrompt = topic.title.toLowerCase();
-  return {
-    title,
-    description: `Practice the core ideas for ${topic.title}.`,
-    difficulty: topic.difficulty === "beginner" ? "Beginner" : topic.difficulty === "intermediate" ? "Intermediate" : "Advanced",
-    time: "9 questions • 12 min",
-    topic: topic.courseTitle,
-    questionsByDifficulty: {
-      easy: [
-        { prompt: `What is the first step when studying ${basePrompt}?`, options: ["Identify what is being asked", "Guess a formula", "Skip the givens", "Round every number"], correctIndex: 0 },
-        { prompt: `Which habit helps most with ${basePrompt}?`, options: ["Write each step clearly", "Hide your work", "Ignore units", "Change the question"], correctIndex: 0 },
-        { prompt: `Before solving a ${basePrompt} problem, you should:`, options: ["Check the given information", "Choose a random answer", "Erase the diagram", "Stop after reading"], correctIndex: 0 },
-      ],
-      medium: [
-        { prompt: `A strong solution for ${basePrompt} should include:`, options: ["A method and a reason", "Only the final answer", "Unlabeled numbers", "A copied prompt"], correctIndex: 0 },
-        { prompt: `If you get stuck on ${basePrompt}, what is the best next move?`, options: ["Review a prerequisite and try a simpler example", "Quit the topic", "Pick the longest answer", "Ignore the error"], correctIndex: 0 },
-        { prompt: `How do you verify a ${basePrompt} answer?`, options: ["Substitute or check it against the original situation", "Assume it is correct", "Delete your work", "Use a different topic"], correctIndex: 0 },
-      ],
-      hard: [
-        { prompt: `What shows mastery of ${basePrompt}?`, options: ["Explaining why the method works", "Memorizing one answer", "Skipping review", "Avoiding word problems"], correctIndex: 0 },
-        { prompt: `When a ${basePrompt} problem has multiple steps, you should:`, options: ["Track each transformation carefully", "Combine unrelated steps", "Ignore constraints", "Use no notation"], correctIndex: 0 },
-        { prompt: `A good recovery plan for a missed ${basePrompt} question is:`, options: ["Find the error type, review it, and retry", "Retake without review", "Change topics immediately", "Never check feedback"], correctIndex: 0 },
-      ],
-    },
-  };
-}
-
 function QuizPageContent() {
   const { t } = useTranslations();
   const router = useRouter();
@@ -612,12 +563,15 @@ function QuizPageContent() {
   const searchParams = useSearchParams();
   const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
   const difficulty = (searchParams.get("difficulty") || "medium") as keyof DifficultyQuestions;
+  const [attemptVersion, setAttemptVersion] = useState(0);
   
   const topicForSlug = slug ? topicByQuizSlug[slug] : undefined;
   const quiz = useMemo(() => {
     if (!slug) return undefined;
-    return quizzesBySlug[slug] ?? (topicForSlug ? buildTopicFallbackQuiz(topicForSlug) : undefined);
-  }, [slug, topicForSlug]);
+    return topicForSlug
+      ? buildTopicGeneratedQuiz(topicForSlug, `${slug}:${difficulty}:${attemptVersion}`)
+      : quizzesBySlug[slug];
+  }, [attemptVersion, difficulty, slug, topicForSlug]);
   const questions = useMemo(() => {
     if (!quiz) return [];
     return quiz.questionsByDifficulty[difficulty] || quiz.questionsByDifficulty.medium;
@@ -632,10 +586,27 @@ function QuizPageContent() {
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const unlockThreshold = getLearningProgress().unlockThreshold;
 
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    setCurrentIndex(0);
+    setSelectedIndex(null);
+    setScore(0);
+    setAnswered(false);
+    setPendingCorrect(false);
+    setShowResults(false);
+    setFinalScore(null);
+  }, [attemptVersion, difficulty, slug]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
   const difficultyLabels: Record<string, { label: string; color: string }> = {
     easy: { label: t("Easy"), color: "text-green-500" },
     medium: { label: t("Medium"), color: "text-yellow-500" },
     hard: { label: t("Hard"), color: "text-red-500" },
+  };
+  const difficultyDescriptions: Record<string, string> = {
+    easy: t("Easy focuses on core ideas, simpler calculations, and direct wording."),
+    medium: t("Medium uses standard topic questions with moderate multi-step thinking."),
+    hard: t("Hard emphasizes deeper application, richer reasoning, and more demanding scenarios."),
   };
 
   if (!quiz || questions.length === 0) {
@@ -734,13 +705,7 @@ function QuizPageContent() {
   };
 
   const handleRestart = () => {
-    setCurrentIndex(0);
-    setSelectedIndex(null);
-    setScore(0);
-    setAnswered(false);
-    setPendingCorrect(false);
-    setShowResults(false);
-    setFinalScore(null);
+    setAttemptVersion((current) => current + 1);
   };
 
   return (
@@ -752,6 +717,7 @@ function QuizPageContent() {
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{quiz.title}</h1>
             <p className="text-slate-500 dark:text-slate-400">{quiz.description}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{difficultyDescriptions[difficulty] || difficultyDescriptions.medium}</p>
             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <span className={`px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-medium ${difficultyLabels[difficulty]?.color || ''}`}>
                 {difficultyLabels[difficulty]?.label || t('Medium')} {t("Mode")}
