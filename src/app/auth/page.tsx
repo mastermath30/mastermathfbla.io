@@ -568,7 +568,7 @@ function AuthPageContent() {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <div className="min-h-screen flex bg-slate-50 pt-20 dark:bg-slate-950 md:pt-24">
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
@@ -616,7 +616,7 @@ function AuthPageContent() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <div className="relative flex w-full items-start justify-center overflow-hidden bg-slate-50 px-4 py-8 dark:bg-slate-950 sm:px-6 sm:py-10 lg:w-1/2 lg:items-center lg:p-8">
         <GlowingOrbs variant="hero" />
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 dark:from-slate-950 via-transparent to-slate-50 dark:to-slate-950" />
         <FadeIn className="relative w-full max-w-md">
@@ -632,12 +632,12 @@ function AuthPageContent() {
             </div>
           )}
           
-          <div className="text-center mb-8">
+          <div className="mb-6 text-center sm:mb-8">
             <Link href="/" className="inline-flex items-center gap-2 mb-6">
               <MathLogo className="w-10 h-10" />
               <span className="text-xl font-bold text-slate-900 dark:text-white">MathMaster</span>
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-[2rem]">
               {mode === "signin" ? t("Welcome back") : t("Create your account")}
             </h1>
             <p className="text-slate-600 dark:text-slate-400 mt-2">
@@ -648,28 +648,28 @@ function AuthPageContent() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
+          <div className="mb-8 flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-900 sm:gap-2">
             <button
               onClick={() => { setMode("signin"); setError(""); }}
-              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
+              className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 mode === "signin"
                   ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
-              <LogIn className="w-4 h-4 inline mr-2" />
-              {t("Sign In")}
+              <LogIn className="hidden h-4 w-4 shrink-0 sm:block" />
+              <span className="truncate">{t("Sign In")}</span>
             </button>
             <button
               onClick={() => { setMode("signup"); setError(""); }}
-              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
+              className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 mode === "signup"
                   ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
-              <UserPlus className="w-4 h-4 inline mr-2" />
-              {t("Sign Up")}
+              <UserPlus className="hidden h-4 w-4 shrink-0 sm:block" />
+              <span className="truncate">{t("Sign Up")}</span>
             </button>
           </div>
 
@@ -682,7 +682,7 @@ function AuthPageContent() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === "signup" && (
               <>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Input name="firstName" label={t("First Name")} placeholder={t("Malhar")} required />
                   <Input name="lastName" label={t("Last Name")} placeholder={t("Pawar")} required />
                 </div>

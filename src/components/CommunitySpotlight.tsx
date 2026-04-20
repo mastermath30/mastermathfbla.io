@@ -66,7 +66,7 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
           <Link
             key={event.id}
             href={event.href}
-            className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 px-3 py-2"
+            className="flex flex-col gap-2 rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-[var(--theme-primary)]" />

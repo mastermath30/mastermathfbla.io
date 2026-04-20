@@ -6,11 +6,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage, LanguageCode, useTranslations } from "./LanguageProvider";
 import { languages } from "@/lib/i18n";
 
+function getStoredColorTheme() {
+  if (typeof window === "undefined") return "violet";
+  return localStorage.getItem("mm_color_theme") || "violet";
+}
+
+function getStoredDarkMode() {
+  if (typeof window === "undefined") return true;
+  const savedMode = localStorage.getItem("mm_dark_mode");
+  return savedMode === null ? true : savedMode === "true";
+}
+
 export function ThemeSelector({ className = "" }: { className?: string }) {
   const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [colorTheme, setColorTheme] = useState("violet");
-  const [isDark, setIsDark] = useState(true);
+  const [colorTheme, setColorTheme] = useState(() => getStoredColorTheme());
+  const [isDark, setIsDark] = useState(() => getStoredDarkMode());
   const containerRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage } = useLanguage();
   
@@ -56,13 +67,9 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
   };
 
   useEffect(() => {
-    const savedColor = localStorage.getItem("mm_color_theme") || "violet";
-    const savedMode = localStorage.getItem("mm_dark_mode");
+    const savedColor = getStoredColorTheme();
+    const dark = getStoredDarkMode();
     const colorblindEnabled = localStorage.getItem("mm_colorblind_mode") === "true";
-    const dark = savedMode === null ? true : savedMode === "true";
-    
-    setColorTheme(savedColor);
-    setIsDark(dark);
     applyColorTheme(savedColor);
     applyDarkMode(dark);
     applyColorblindMode(colorblindEnabled);
@@ -160,18 +167,18 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                 {/* Color Theme */}
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
                   <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">{t("Accent Color")}</div>
-                  <div className="grid grid-cols-5 gap-2 px-1">
+                  <div className="grid grid-cols-3 gap-2 px-1 sm:grid-cols-5">
                     {COLOR_THEMES.map((c) => {
                       const isSelected = colorTheme === c.value;
                       return (
                         <button
                           key={c.value}
                           onClick={() => handleColorChange(c.value)}
-                          className="group relative flex flex-col items-center"
+                          className="group relative flex min-h-[44px] flex-col items-center justify-start rounded-xl px-1 py-1"
                           title={c.name}
                         >
                           <div
-                            className={`w-8 h-8 rounded-full transition-all ${
+                            className={`h-8 w-8 rounded-full transition-all ${
                               isSelected ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-800 scale-110' : 'hover:scale-110'
                             }`}
                             style={{ 
@@ -185,7 +192,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                               </div>
                             )}
                           </div>
-                          <span className="text-[10px] mt-1 text-slate-600 dark:text-slate-400">{c.name}</span>
+                          <span className="mt-1 text-center text-[10px] leading-tight text-slate-600 dark:text-slate-400">{c.name}</span>
                         </button>
                       );
                     })}
@@ -198,7 +205,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                     <Globe className="w-3 h-3" />
                     {t("Language")}
                   </div>
-                  <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                  <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800 sm:grid-cols-3">
                     {languages.map((lang) => {
                       const isSelected = language === lang.code;
                       return (
@@ -206,7 +213,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
                           key={lang.code}
                           onClick={() => setLanguage(lang.code as LanguageCode)}
                           data-language-code={lang.code}
-                          className={`py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+                          className={`min-h-[40px] rounded-lg px-2 py-2 text-xs font-medium transition-all ${
                             isSelected
                               ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                               : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"

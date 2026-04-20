@@ -19,6 +19,7 @@ import { Palette, Accessibility, Wrench, Brain, Pencil, HelpCircle, Sun, Moon, G
 import Link from "next/link";
 import { useTranslations, useLanguage, LanguageCode } from "./LanguageProvider";
 import { languages } from "@/lib/i18n";
+import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
 
 export function Navbar() {
   const { t } = useTranslations();
@@ -29,36 +30,48 @@ export function Navbar() {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    const session = localStorage.getItem("mm_session");
-    const loggedInFlag = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!session || loggedInFlag === "true");
+    const syncAuth = () => {
+      const nextLoggedIn = getStoredAuthState();
+      setIsLoggedIn(nextLoggedIn);
 
-    if (session || loggedInFlag === "true") {
+      if (!nextLoggedIn) {
+        setUserName("");
+        return;
+      }
+
       try {
-        const profile = JSON.parse(
-          localStorage.getItem("mm_profile") || "null"
-        );
-        if (profile) {
-          if (profile.username) {
-            setUserName(profile.username);
-          } else if (profile.firstName) {
-            setUserName(profile.firstName);
-          } else {
-            setUserName("");
-          }
+        const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
+        if (profile?.username) {
+          setUserName(profile.username);
+        } else if (profile?.firstName) {
+          setUserName(profile.firstName);
         } else {
           setUserName("");
         }
-      } catch (e) {
+      } catch {
         setUserName("");
       }
-    }
+    };
+
+    const timer = window.setTimeout(syncAuth, 0);
+    window.addEventListener("focus", syncAuth);
+    window.addEventListener(authStateChangedEvent, syncAuth);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", syncAuth);
+      window.removeEventListener(authStateChangedEvent, syncAuth);
+    };
   }, []);
 
   useEffect(() => {
-    const savedMode = localStorage.getItem("mm_dark_mode");
-    const dark = savedMode === null ? true : savedMode === "true";
-    setIsDark(dark);
+    const timer = window.setTimeout(() => {
+      const savedMode = localStorage.getItem("mm_dark_mode");
+      const dark = savedMode === null ? true : savedMode === "true";
+      setIsDark(dark);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const handleModeToggle = (dark: boolean) => {
@@ -225,7 +238,7 @@ export function Navbar() {
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                   {t("Navigation")}
                 </p>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                   {links.map((link, idx) => (
                     <motion.div
                       key={link.title}
@@ -324,7 +337,7 @@ export function Navbar() {
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
                   {t("Quick Actions")}
                 </p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {utilities.map((util, idx) => (
                     <motion.div
                       key={util.event}

@@ -673,7 +673,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Subject")}</label>
               <select
@@ -833,7 +833,7 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
           </div>
 
           {/* Details */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Calendar className="w-5 h-5 text-violet-500" />
               <div>

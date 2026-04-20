@@ -359,10 +359,9 @@ function LearnPageClient() {
   const selectedTopicCommunityHref = useMemo(
     () =>
       buildCommunityHref({
-        studyGroupId: activeTopic?.studyGroupId,
-        discussionLabel: activeTopic?.communityThread,
+        thread: activeTopic?.communityThread,
       }),
-    [activeTopic?.communityThread, activeTopic?.studyGroupId]
+    [activeTopic?.communityThread]
   );
 
   const openAiTutor = useCallback((opts?: { prompt?: string; autoSend?: boolean }) => {

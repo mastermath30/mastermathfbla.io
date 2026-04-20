@@ -379,7 +379,7 @@ export function FormulaReference() {
                               </div>
                               <button
                                 onClick={() => handleCopy(item.formula, i)}
-                                className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-black/5 bg-white/70 text-slate-500 opacity-0 transition-all hover:bg-white focus:opacity-100 group-hover:opacity-100 dark:border-white/10 dark:bg-slate-800/85 dark:text-slate-400 dark:hover:bg-slate-800"
+                                className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-black/5 bg-white/70 text-slate-500 opacity-100 transition-all hover:bg-white md:opacity-0 md:focus:opacity-100 md:group-hover:opacity-100 dark:border-white/10 dark:bg-slate-800/85 dark:text-slate-400 dark:hover:bg-slate-800"
                                 title={t("Copy")}
                               >
                                 {copiedIndex === i ? (

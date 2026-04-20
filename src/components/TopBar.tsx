@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { ThemeSelector } from "./ThemeSelector";
 import { MathLogo } from "./MathLogo";
 import { useTranslations } from "./LanguageProvider";
+import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
 
 export function TopBar() {
 	const pathname = usePathname();
@@ -19,17 +20,23 @@ export function TopBar() {
 	const lastScrollY = useRef(0);
 
 	useEffect(() => {
-		// Check if user is logged in
-		const session = localStorage.getItem("mm_session");
-		const loggedInFlag = localStorage.getItem("isLoggedIn");
-		setIsLoggedIn(!!session || loggedInFlag === "true");
-		
-		// Get user's name from profile
-		const profileData = localStorage.getItem("mm_profile");
-		if (profileData) {
+		const syncAuth = () => {
+			const nextLoggedIn = getStoredAuthState();
+			setIsLoggedIn(nextLoggedIn);
+
+			if (!nextLoggedIn) {
+				setUserName("");
+				return;
+			}
+
+			const profileData = localStorage.getItem("mm_profile");
+			if (!profileData) {
+				setUserName("");
+				return;
+			}
+
 			try {
 				const profile = JSON.parse(profileData);
-				// Use username if available, otherwise use first name
 				if (profile.username) {
 					setUserName(profile.username);
 				} else if (profile.firstName) {
@@ -37,11 +44,21 @@ export function TopBar() {
 				} else {
 					setUserName("");
 				}
-			} catch (e) {
+			} catch {
 				setUserName("");
 			}
-		}
-	}, [pathname]); // Re-check on route change
+		};
+
+		const timer = window.setTimeout(syncAuth, 0);
+		window.addEventListener("focus", syncAuth);
+		window.addEventListener(authStateChangedEvent, syncAuth);
+
+		return () => {
+			window.clearTimeout(timer);
+			window.removeEventListener("focus", syncAuth);
+			window.removeEventListener(authStateChangedEvent, syncAuth);
+		};
+	}, [pathname]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -108,7 +125,7 @@ export function TopBar() {
 				}}
 			>
 				{/* Main Navigation */}
-				<div className="w-[90vw] max-w-xs md:max-w-5xl mx-auto">
+				<div className="w-[92vw] max-w-sm md:max-w-5xl mx-auto">
 					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
 						<div className="flex items-center justify-between gap-4">
 							{/* Logo */}
@@ -174,7 +191,7 @@ export function TopBar() {
 							{/* Mobile Menu Button */}
 							<button
 								onClick={() => setIsOpen(!isOpen)}
-								className="lg:hidden text-slate-900 dark:text-white hover:scale-110 transition-transform duration-200 cursor-pointer"
+								className="lg:hidden -mr-1 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-900 transition-transform duration-200 hover:scale-110 dark:text-white"
 							>
 								<div className="relative w-6 h-6">
 									<Menu
@@ -217,7 +234,7 @@ export function TopBar() {
 
 					{/* Menu container */}
 					<div
-						className={`mt-2 w-[90vw] max-w-xs mx-auto transition-all duration-500 ease-out transform-gpu ${
+						className={`mt-2 w-[92vw] max-w-sm sm:max-w-md mx-auto transition-all duration-500 ease-out transform-gpu ${
 							isOpen
 								? "opacity-100 translate-y-0 scale-100"
 								: "opacity-0 -translate-y-8 scale-95 pointer-events-none"

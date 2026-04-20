@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRightLeft, X, ChevronDown } from "lucide-react";
 import { useTranslations } from "./LanguageProvider";
@@ -83,7 +83,6 @@ export function UnitConverter() {
   const [fromUnit, setFromUnit] = useState("meters");
   const [toUnit, setToUnit] = useState("feet");
   const [fromValue, setFromValue] = useState("1");
-  const [result, setResult] = useState("");
   
   const categories = getCategories(t);
 
@@ -101,38 +100,31 @@ export function UnitConverter() {
     else return celsius + 273.15; // kelvin
   };
 
-  const convert = () => {
+  const result = useMemo(() => {
     const value = parseFloat(fromValue);
-    if (isNaN(value)) {
-      setResult("");
-      return;
-    }
+    if (isNaN(value)) return "";
 
     if (category === "temperature") {
       const converted = convertTemperature(value, fromUnit, toUnit);
-      setResult(converted.toFixed(4).replace(/\.?0+$/, ""));
-    } else {
-      const units = categories[category].units as Record<string, number>;
-      const baseValue = value / units[fromUnit];
-      const converted = baseValue * units[toUnit];
-      setResult(converted.toFixed(6).replace(/\.?0+$/, ""));
+      return converted.toFixed(4).replace(/\.?0+$/, "");
     }
-  };
-
-  useEffect(() => {
-    convert();
-  }, [fromValue, fromUnit, toUnit, category]);
-
-  useEffect(() => {
-    const units = Object.keys(categories[category].units);
-    setFromUnit(units[0]);
-    setToUnit(units[1] || units[0]);
-  }, [category]);
+    const units = categories[category].units as Record<string, number>;
+    const baseValue = value / units[fromUnit];
+    const converted = baseValue * units[toUnit];
+    return converted.toFixed(6).replace(/\.?0+$/, "");
+  }, [categories, category, fromUnit, fromValue, toUnit]);
 
   const swapUnits = () => {
     setFromUnit(toUnit);
     setToUnit(fromUnit);
     setFromValue(result);
+  };
+
+  const handleCategoryChange = (nextCategory: CategoryKey) => {
+    const units = Object.keys(categories[nextCategory].units);
+    setCategory(nextCategory);
+    setFromUnit(units[0]);
+    setToUnit(units[1] || units[0]);
   };
 
   // Keyboard shortcut: Alt + U
@@ -182,7 +174,7 @@ export function UnitConverter() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[301] w-[90%] max-w-md"
+              className="fixed left-1/2 top-1/2 z-[301] w-[95%] max-w-md -translate-x-1/2 -translate-y-1/2"
             >
               <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
                 {/* Header */}
@@ -206,7 +198,7 @@ export function UnitConverter() {
                     <div className="relative">
                       <select
                         value={category}
-                        onChange={(e) => setCategory(e.target.value as CategoryKey)}
+                        onChange={(e) => handleCategoryChange(e.target.value as CategoryKey)}
                         className="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 appearance-none cursor-pointer text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                       >
                         {Object.entries(categories).map(([key, cat]) => (
@@ -220,7 +212,7 @@ export function UnitConverter() {
                   {/* From */}
                   <div>
                     <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("From")}</label>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row">
                       <input
                         type="number"
                         value={fromValue}
@@ -231,7 +223,7 @@ export function UnitConverter() {
                       <select
                         value={fromUnit}
                         onChange={(e) => setFromUnit(e.target.value)}
-                        className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 min-w-[120px]"
+                        className="w-full min-w-0 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 sm:w-auto sm:min-w-[120px]"
                       >
                         {currentUnits.map((unit) => (
                           <option key={unit} value={unit}>{unit}</option>
@@ -253,14 +245,14 @@ export function UnitConverter() {
                   {/* To */}
                   <div>
                     <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("To")}</label>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row">
                       <div className="flex-1 p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 font-mono text-lg font-semibold">
                         {result || "0"}
                       </div>
                       <select
                         value={toUnit}
                         onChange={(e) => setToUnit(e.target.value)}
-                        className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 min-w-[120px]"
+                        className="w-full min-w-0 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 sm:w-auto sm:min-w-[120px]"
                       >
                         {currentUnits.map((unit) => (
                           <option key={unit} value={unit}>{unit}</option>

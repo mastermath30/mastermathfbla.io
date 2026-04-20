@@ -167,8 +167,7 @@ export default function SupportPage() {
               <input
                 type="text"
                 placeholder={t("Search help articles...")}
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-2xl text-white placeholder:text-slate-300 shadow-xl focus:outline-none focus:ring-4"
-                style={{ boxShadow: '0 0 0 4px rgba(var(--theme-primary-rgb), 0.2)' }}
+                className="w-full rounded-2xl border border-white/20 bg-white/10 py-4 pl-12 pr-4 text-white shadow-xl backdrop-blur placeholder:text-slate-300 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.28)] focus:border-[rgba(var(--theme-primary-rgb),0.5)]"
               />
             </div>
           </div>
@@ -179,16 +178,16 @@ export default function SupportPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Contact Methods */}
         <FadeIn delay={0.04}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 -mt-8 mb-12">
+        <div className="-mt-8 mb-14 grid grid-cols-1 gap-5 md:grid-cols-3">
           {contactMethods.map((method) => (
-            <Card key={method.title} className="text-center">
+            <Card key={method.title} className="flex h-full flex-col items-center text-center">
               <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4" style={{ color: "var(--theme-primary)" }}>
                 <method.icon className="w-7 h-7" />
               </div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{method.title}</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{method.description}</p>
+              <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">{method.description}</p>
               <a href={method.href}>
-                <Button variant="outline" size="sm" className="mx-auto">
+                <Button variant="outline" size="sm" className="mx-auto mt-auto">
                   {method.action}
                 </Button>
               </a>
@@ -199,10 +198,10 @@ export default function SupportPage() {
 
         {/* Help Categories */}
         <FadeIn delay={0.08}>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">{t("Browse by Category")}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+        <h2 className="mb-7 text-2xl font-bold text-slate-900 dark:text-white">{t("Browse by Category")}</h2>
+        <div className="mb-16 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {helpCategories.map((cat) => (
-            <Card key={cat.title} className="group">
+            <Card key={cat.title} className="group flex h-full flex-col">
               <div className="flex items-start gap-4 mb-4">
                 <Image
                   src={cat.image}
@@ -216,7 +215,7 @@ export default function SupportPage() {
                   <p className="text-slate-500 dark:text-slate-400 text-sm">{cat.description}</p>
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="mt-auto space-y-2 pt-2">
                 {cat.links.map((link) => (
                   <a
                     key={link.text}
@@ -233,7 +232,7 @@ export default function SupportPage() {
 
           {/* CTA Card */}
           <Card
-            className="border-0 text-white"
+            className="flex h-full flex-col justify-between border-0 text-white"
             style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
           >
             <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-4">
@@ -244,7 +243,7 @@ export default function SupportPage() {
               {t("Our support team is ready to help you with any questions.")}
             </p>
             <a href="#contact">
-              <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 w-full">
+              <Button variant="outline" className="w-full border-white/40 text-white hover:bg-white/10">
                 {t("Contact Support")}
                 <ArrowRight className="w-4 h-4" />
               </Button>

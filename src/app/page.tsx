@@ -517,7 +517,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 px-safe">
+      <section ref={heroRef} className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-slate-50 px-safe dark:bg-slate-950">
         <div className="hero-depth-backdrop" aria-hidden="true">
           <div className="hero-depth-glow" />
           <div className="hero-mesh-plane" />
@@ -536,22 +536,22 @@ export default function Home() {
           />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 md:py-20">
+          <div className="grid grid-cols-1 items-center gap-8 md:gap-12 lg:grid-cols-2">
             {/* Left content */}
-            <div className="text-center lg:text-left">
+            <div className="w-full max-w-full overflow-hidden text-center lg:text-left">
               <FadeIn delay={0.02}>
-                <SectionLabel icon={Sparkles} className="mb-4">
+                <SectionLabel icon={Sparkles} className="mx-auto mb-4 max-w-[calc(100vw-2rem)] px-3 py-1.5 text-xs sm:max-w-full sm:px-4 sm:py-2 sm:text-sm lg:mx-0">
                   {t("Trusted peer tutoring for ambitious students")}
                 </SectionLabel>
               </FadeIn>
               <FadeIn delay={0.08}>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight break-words">
+                <h1 className="mx-auto mb-4 max-w-[11ch] text-[2.3rem] leading-[1.02] font-bold text-slate-900 sm:text-5xl md:mb-6 md:max-w-[12ch] md:text-6xl md:leading-tight lg:mx-0 lg:max-w-[11ch] lg:text-7xl dark:text-white">
                   {t("Boost Your Math Grades")}
                   <br />
-                  <span className="gradient-text relative inline-block">
+                  <span className="gradient-text relative inline-block max-w-full">
                     {t("With 1-on-1 Expert Tutors")}
-                    <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
+                    <svg className="absolute -bottom-2 left-0 hidden w-full sm:block" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
                       <path d="M2 10C50 4 150 4 298 10" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
                       <defs>
                         <linearGradient id="gradient" x1="0" y1="0" x2="300" y2="0">
@@ -565,23 +565,23 @@ export default function Home() {
               </FadeIn>
 
               <FadeIn delay={0.14}>
-                <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-xl leading-relaxed">
+                <p className="mx-auto mb-6 max-w-md text-base leading-relaxed text-slate-600 sm:text-lg md:mb-8 md:max-w-xl md:text-xl lg:mx-0 dark:text-slate-300">
                   {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
                 </p>
               </FadeIn>
 
               <FadeIn delay={0.2}>
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
-                  <Link href="/tutors">
-                    <Button size="lg" className="shadow-xl group glow-premium" style={{ boxShadow: '0 14px 48px rgba(var(--theme-primary-rgb), 0.32)' }}>
+                <div className="mb-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center md:mb-8 md:gap-4 lg:justify-start">
+                  <Link href="/tutors" className="block w-full sm:w-auto">
+                    <Button size="lg" className="group w-full shadow-xl glow-premium sm:w-auto" style={{ boxShadow: '0 14px 48px rgba(var(--theme-primary-rgb), 0.32)' }}>
                       <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                       {t("Book Your First Session")}
                     </Button>
                   </Link>
-                  <div className={isAuthResolved ? "" : "min-h-[52px] sm:min-w-[212px]"}>
+                  <div className={isAuthResolved ? "w-full sm:w-auto" : "min-h-[52px] w-full sm:min-w-[212px] sm:w-auto"}>
                     {isAuthResolved && (
-                      <Link href={heroSecondaryHref}>
-                        <Button variant="outline" size="lg" className="glass-premium">
+                      <Link href={heroSecondaryHref} className="block w-full sm:w-auto">
+                        <Button variant="outline" size="lg" className="glass-premium w-full sm:w-auto">
                           <Users className="w-5 h-5" />
                           {heroSecondaryLabel}
                         </Button>
@@ -592,9 +592,9 @@ export default function Home() {
               </FadeIn>
 
               {/* Stats inline */}
-              <FadeInStagger className="flex flex-wrap gap-4 md:gap-8 justify-center lg:justify-start" staggerDelay={0.08}>
-                {stats.map((stat) => (
-                  <FadeInStaggerItem key={stat.label} className="text-center group cursor-default">
+              <FadeInStagger className="grid grid-cols-2 justify-center gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:justify-center md:gap-x-8 lg:justify-start" staggerDelay={0.08}>
+                {stats.map((stat, index) => (
+                  <FadeInStaggerItem key={stat.label} className={`text-center group cursor-default ${index === stats.length - 1 ? "col-span-2 justify-self-center sm:col-span-1" : ""}`}>
                     <div className="text-2xl md:text-3xl font-bold gradient-text font-mono group-hover:scale-110 transition-transform duration-300">
                       <AnimatedNumberClient value={stat.value} duration={900} label={stat.label} />
                     </div>
@@ -1572,7 +1572,7 @@ export default function Home() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                           {t("Expiry Date")}
@@ -1725,7 +1725,7 @@ export default function Home() {
                     
                     {bookingDate ? (
                       <div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                           {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
                             <button
                               key={slot}
@@ -1773,7 +1773,7 @@ export default function Home() {
                     </div>
                     
                     {selectedTime ? (
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                         {["1 hour", "1.5 hours", "2 hours"].map((duration) => (
                           <button
                             key={duration}

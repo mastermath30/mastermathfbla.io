@@ -51,6 +51,59 @@ interface Post {
   moderationState?: PostModerationState;
 }
 
+function getStoredCommunityPosts(): Post[] {
+  if (typeof window === "undefined") return seedPosts;
+  const savedPosts = localStorage.getItem("mm_forum_posts");
+  if (!savedPosts) {
+    localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
+    return seedPosts;
+  }
+
+  try {
+    const parsed = JSON.parse(savedPosts);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed;
+    }
+  } catch {
+    // Ignore parse errors and restore seed content below.
+  }
+
+  localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
+  return seedPosts;
+}
+
+function getStoredCommunityReports() {
+  if (typeof window === "undefined") return [] as { postId: string; reason: string; createdAt: string }[];
+  try {
+    const savedReports = JSON.parse(localStorage.getItem("mm_forum_reports") || "[]");
+    return Array.isArray(savedReports) ? savedReports : [];
+  } catch {
+    return [];
+  }
+}
+
+function getStoredCommunityAuthState() {
+  if (typeof window === "undefined") {
+    return { isSignedIn: false, userName: "Guest" };
+  }
+
+  try {
+    const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
+    const session = JSON.parse(localStorage.getItem("mm_session") || "null");
+    if (profile && session && session.email === profile.email) {
+      if (profile.username) {
+        return { isSignedIn: true, userName: profile.username };
+      }
+      const fullName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
+      return { isSignedIn: true, userName: fullName || "User" };
+    }
+  } catch {
+    // Ignore malformed local state.
+  }
+
+  return { isSignedIn: false, userName: "Guest" };
+}
+
 const tagOptions = [
   { value: "Algebra", label: "Algebra" },
   { value: "Geometry", label: "Geometry" },
@@ -172,11 +225,10 @@ function formatTimeAgo(iso: string, locale: string = "en") {
 }
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [reports, setReports] = useState<{ postId: string; reason: string; createdAt: string }[]>([]);
+  const [posts, setPosts] = useState<Post[]>(() => getStoredCommunityPosts());
+  const [reports, setReports] = useState<{ postId: string; reason: string; createdAt: string }[]>(() => getStoredCommunityReports());
   const [error, setError] = useState("");
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [userName, setUserName] = useState("Guest");
+  const [{ isSignedIn, userName }] = useState(() => getStoredCommunityAuthState());
   const { t, language } = useTranslations();
 
   const translatedTagOptions = tagOptions.map((opt) => ({
@@ -185,53 +237,6 @@ export default function CommunityPage() {
   }));
 
   useEffect(() => {
-    // Load posts from localStorage
-    const savedPosts = localStorage.getItem("mm_forum_posts");
-    if (savedPosts) {
-      try {
-        const parsed = JSON.parse(savedPosts);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setPosts(parsed);
-        } else {
-          setPosts(seedPosts);
-          localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
-        }
-      } catch {
-        setPosts(seedPosts);
-        localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
-      }
-    } else {
-      setPosts(seedPosts);
-      localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
-    }
-
-    // Check auth
-    try {
-      const profile = JSON.parse(localStorage.getItem("mm_profile") || "null");
-      const session = JSON.parse(localStorage.getItem("mm_session") || "null");
-      if (profile && session && session.email === profile.email) {
-        setIsSignedIn(true);
-        // Use username if available, otherwise use full name
-        if (profile.username) {
-          setUserName(profile.username);
-        } else {
-          const fullName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim();
-          setUserName(fullName || "User");
-        }
-      }
-    } catch {
-      // Ignore
-    }
-
-    try {
-      const savedReports = JSON.parse(localStorage.getItem("mm_forum_reports") || "[]");
-      if (Array.isArray(savedReports)) {
-        setReports(savedReports);
-      }
-    } catch {
-      // Ignore
-    }
-
     const handlePostsUpdated = () => {
       const updatedPosts = localStorage.getItem("mm_forum_posts");
       if (updatedPosts) {
@@ -344,13 +349,13 @@ export default function CommunityPage() {
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <GlowingOrbs variant="subtle" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
           {/* Forum Section */}
           <div className="lg:col-span-2">
             <FadeIn>
             <Card padding="none" className="overflow-hidden">
               <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-                <div className="flex items-center justify-between mb-6">
+                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
                       <Sparkles className="w-5 h-5" />
@@ -360,14 +365,14 @@ export default function CommunityPage() {
                       <CardDescription>{t("Ask questions, share explanations, help others learn")}</CardDescription>
                     </div>
                   </div>
-                  <Button size="sm" onClick={() => document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' })}>
+                  <Button size="sm" onClick={() => document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' })} className="self-start sm:self-auto">
                     <Plus className="w-4 h-4" />
                     {t("New Post")}
                   </Button>
                 </div>
 
                 {/* Post Form */}
-                <div id="ask" className="p-5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div id="ask" className="rounded-2xl border border-slate-200 bg-slate-100/80 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-950/90">
                   <h3 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                     {t("Ask a Question")}
@@ -384,7 +389,7 @@ export default function CommunityPage() {
                       rows={4}
                       placeholder={t("Include the problem, what you've tried, and where you're stuck.")}
                     />
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-4">
                       {error && <p className="text-red-500 text-sm">{error}</p>}
                       <Button type="submit" className="ml-auto">
                         {t("Post Question")}
@@ -412,7 +417,7 @@ export default function CommunityPage() {
                     </div>
                   ) : (
                     sortedPosts.map((post) => (
-                      <div key={post.id} className="p-5 hover:bg-slate-900/50 transition-colors">
+                      <div key={post.id} className="p-5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50">
                         <div className="flex items-start gap-4">
                           <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
                             <HelpCircle className="w-5 h-5" />
@@ -455,7 +460,7 @@ export default function CommunityPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-28 lg:self-start">
             <FadeIn delay={0.03}>
             <Card>
               <h3 className="font-semibold text-slate-900 dark:text-white">{t("Moderation Queue")}</h3>

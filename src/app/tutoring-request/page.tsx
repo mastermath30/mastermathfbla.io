@@ -78,8 +78,8 @@ export default function TutoringRequestPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-24">
-        <Card>
+      <main className="mx-auto flex w-full max-w-4xl px-4 py-8 pb-24 sm:px-6 md:min-h-[calc(100vh-15rem)] md:items-center">
+        <Card className="w-full">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <Input name="studentName" placeholder="Student name" />

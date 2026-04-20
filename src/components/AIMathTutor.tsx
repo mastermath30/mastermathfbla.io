@@ -501,7 +501,7 @@ export function AIMathTutor() {
                     {/* Quick Prompts */}
                     <div>
                       <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("QUICK ACTIONS")}</p>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {QUICK_PROMPTS.map((qp) => (
                           <button
                             key={qp.label}
@@ -520,7 +520,7 @@ export function AIMathTutor() {
                     {/* Navigation & Website Actions */}
                     <div>
                       <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("EXPLORE & NAVIGATE")}</p>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {NAVIGATION_PROMPTS.map((np) => (
                           <button
                             key={np.label}
