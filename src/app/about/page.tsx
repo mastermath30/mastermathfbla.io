@@ -45,8 +45,8 @@ const getTeam = (t: (key: string) => string) => [
     name: "Malhar Pawar", 
     role: t("Founder"), 
     initials: "MP", 
-    bio: t("Leads the vision for MathMaster with a focus on accessible, high-quality math learning."), 
-    fullBio: t("Malhar Pawar founded MathMaster to build a cleaner, more supportive way for students to learn math. He focuses on product direction, learning experience quality, and making the platform feel approachable without sacrificing rigor."),
+    bio: t("Leads MathMaster with a focus on accessible, high-quality math learning."), 
+    fullBio: t("Malhar Pawar founded MathMaster to give students a clearer, more supportive way to learn math. He leads product direction and learning experience quality, with a focus on making the platform approachable without losing rigor."),
     image: malharPawarImage,
   },
   { 
@@ -54,8 +54,8 @@ const getTeam = (t: (key: string) => string) => [
     name: "Ayaan Oberoi", 
     role: t("Head of Technology"), 
     initials: "AO", 
-    bio: t("Shapes the technical foundation of MathMaster and turns product ideas into reliable software."), 
-    fullBio: t("Ayaan Oberoi leads technology at MathMaster, focusing on performance, scalability, and the engineering systems behind the learning experience. He works across the stack to keep the platform fast, dependable, and easy to build on."),
+    bio: t("Leads the technical foundation of MathMaster and turns ideas into reliable software."), 
+    fullBio: t("Ayaan Oberoi leads technology at MathMaster, with a focus on performance, scalability, and the systems behind the learning experience. He works across the stack to keep the platform fast, reliable, and easy to extend."),
     image: ayaanOberoiImage,
   },
   { 
@@ -63,8 +63,8 @@ const getTeam = (t: (key: string) => string) => [
     name: "Khush Kothari", 
     role: t("Community Manager"), 
     initials: "KK", 
-    bio: t("Builds the community experience so students can connect, collaborate, and keep learning together."), 
-    fullBio: t("Khush Kothari manages the MathMaster community experience, helping shape how students interact, ask questions, and support each other. He focuses on creating a welcoming environment that makes peer learning feel active and useful every day."),
+    bio: t("Shapes the community experience so students can connect, collaborate, and keep learning together."), 
+    fullBio: t("Khush Kothari leads the MathMaster community experience, shaping how students connect, ask questions, and support one another. He focuses on creating a welcoming environment where peer learning stays active and useful every day."),
     image: khushKothariImage,
   },
 ];

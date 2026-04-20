@@ -1,0 +1,33 @@
+Also fix the learning path layout clipping issue:
+
+Problem:
+The learning path (node graph) is being cut off on the right side
+Users cannot fully see the path
+This breaks usability and looks unpolished
+Required fix:
+Ensure the entire learning path is fully visible
+The path should:
+NOT be clipped
+NOT overflow hidden incorrectly
+NOT extend beyond its container
+Acceptable solutions (choose best one):
+Expand container properly
+Allow the learning path section to use more horizontal space
+Adjust layout so it fits within the viewport cleanly
+Enable horizontal scrolling (if needed)
+If the path is intentionally wide:
+allow smooth horizontal scroll
+add proper padding so nothing is cut off
+Responsive scaling
+Scale or reposition nodes on smaller screens so everything fits
+Requirements:
+Must work on:
+desktop
+tablet
+mobile
+No elements should be cut off at any screen size
+Maintain visual balance with the left sidebar and right panel
+Do NOT break the existing design system
+Final instruction:
+
+Fix the layout so the entire learning path is always visible and usable, with no clipping or hidden content.

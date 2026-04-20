@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CheckCircle2, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, ExternalLink, ListChecks, Sparkles, Target, Users } from "lucide-react";
 import { PageWrapper } from "@/components/motion";
 import { RecommendationPanel } from "@/components/RecommendationPanel";
 import { CommunitySpotlight } from "@/components/CommunitySpotlight";
@@ -14,7 +14,7 @@ import { LearnTopStrip } from "@/components/learn/LearnTopStrip";
 import { PathNodeVM } from "@/components/learn/types";
 import { triggerConfetti } from "@/components/Confetti";
 import { useTranslations } from "@/components/LanguageProvider";
-import { allTopics, courses, type ResourceItem } from "@/data/courses";
+import { allTopics, courses } from "@/data/courses";
 import {
   buildCommunityHref,
   normalizeResourcePlaybackTarget,
@@ -66,6 +66,11 @@ type ResultBanner = {
   topicId?: string;
   recommendation?: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic";
 };
+
+type QuizDifficultyPickerState = {
+  topicId?: string;
+  slug?: string;
+} | null;
 
 function getCourseSequence(courseId: string) {
   const course = courses.find((item) => item.id === courseId);
@@ -132,12 +137,18 @@ function deriveNodeType(index: number, unitTopicCount: number): PathNodeVM["node
   return "lesson";
 }
 
-function getPreferredLessonResource(resources: ResourceItem[]) {
-  return (
-    resources.find((resource) => resource.kind === "lesson" && resource.href.includes("khanacademy.org")) ??
-    resources.find((resource) => resource.kind === "lesson") ??
-    null
-  );
+function getLessonButtonLabel(
+  state: PathNodeVM["state"] | undefined,
+  hasStartedLesson: boolean,
+  t: (key: string, params?: Record<string, string | number>) => string
+) {
+  if (state === "quiz_ready" || state === "needs_review" || state === "mastered") {
+    return t("Review Lesson");
+  }
+  if (state === "locked") {
+    return t("Lesson locked");
+  }
+  return hasStartedLesson ? t("Continue Lesson") : t("Start Lesson");
 }
 
 function LearnPageClient() {
@@ -158,10 +169,14 @@ function LearnPageClient() {
   const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null);
   const [resourceHubTab, setResourceHubTab] = useState<ResourceHubTab>("lessons");
   const [selectedVideoByTopicId, setSelectedVideoByTopicId] = useState<Record<string, string>>({});
+  const [startedLessonByTopicId, setStartedLessonByTopicId] = useState<Record<string, boolean>>({});
+  const [quizDifficultyPicker, setQuizDifficultyPicker] = useState<QuizDifficultyPickerState>(null);
 
   const previousXpRef = useRef<number>(progress.xpTotal ?? 0);
   const lastHandledQueryRef = useRef<string>("");
   const resourceHubRef = useRef<HTMLDivElement | null>(null);
+  const lessonCardRef = useRef<HTMLDivElement | null>(null);
+  const lessonVideoRef = useRef<HTMLDivElement | null>(null);
 
   const refreshProgress = useCallback(() => {
     const next = getLearningProgress();
@@ -193,7 +208,6 @@ function LearnPageClient() {
     return () => window.clearTimeout(timer);
   }, [hasHydrated]);
 
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const before = previousXpRef.current;
     const now = progress.xpTotal ?? 0;
@@ -338,6 +352,27 @@ function LearnPageClient() {
   const activeTopicId = activeTopic?.id ?? null;
   const activeUnitId = activeTopic?.unitId ?? selectedCourse?.units[0]?.id ?? null;
   const selectedCourseUnits = selectedCourse?.units ?? [];
+  const activeQuizCount = activeTopic?.quizSlugs?.length ?? 0;
+  const activeTopicAttempt = useMemo(() => {
+    if (!activeTopic?.quizSlugs?.length) return null;
+    return (
+      progress.quizAttempts
+        .filter((attempt) => activeTopic.quizSlugs.includes(attempt.slug))
+        .sort((left, right) => Date.parse(right.completedAt) - Date.parse(left.completedAt))[0] ?? null
+    );
+  }, [activeTopic, progress.quizAttempts]);
+  const activeTopicCheckpointComplete = activeTopicId ? Boolean(progress.topicCheckpointCompletedById[activeTopicId]) : false;
+  const activeTopicStatus = activeTopicId ? progress.topicStatusById[activeTopicId] ?? "locked" : "locked";
+  const activeFlowState: FlowState = useMemo(
+    () => deriveTopicFlowState(
+      activeTopicStatus,
+      activeTopicCheckpointComplete,
+      Boolean(activeTopicAttempt),
+      activeTopicId ? progress.masteryByTopicId[activeTopicId] ?? 0 : 0
+    ),
+    [activeTopicAttempt, activeTopicCheckpointComplete, activeTopicId, activeTopicStatus, progress.masteryByTopicId]
+  );
+  const hasStartedActiveLesson = activeTopicId ? Boolean(startedLessonByTopicId[activeTopicId]) : false;
 
   const selectedCourseTopicIds = selectedCourse
     ? selectedCourse.units.flatMap((unit) => unit.topics.map((topic) => topic.id))
@@ -379,15 +414,67 @@ function LearnPageClient() {
     const slug = resolveQuizSlug(opts?.topicId ?? activeTopicId ?? selectedTopicId ?? undefined, opts?.slug);
     if (!slug) return;
     const difficulty = opts?.difficulty ?? "medium";
+    setActiveTopicView("quiz");
     router.push(`/resources/quiz/${slug}?difficulty=${difficulty}`);
   }, [activeTopicId, router, selectedTopicId]);
 
+  const openQuizDifficultyPicker = useCallback((opts?: { topicId?: string; slug?: string }) => {
+    const resolvedTopicId = opts?.topicId ?? activeTopicId ?? selectedTopicId ?? undefined;
+    const resolvedSlug = resolveQuizSlug(resolvedTopicId, opts?.slug);
+    if (!resolvedSlug) return;
+    setQuizDifficultyPicker({
+      topicId: resolvedTopicId,
+      slug: resolvedSlug,
+    });
+  }, [activeTopicId, selectedTopicId]);
+
   const jumpToResourceHub = useCallback((tab: ResourceHubTab) => {
     setResourceHubTab(tab);
+    if (tab === "lessons") setActiveTopicView("concept");
+    if (tab === "videos") setActiveTopicView("video");
+    if (tab === "practice" || tab === "worksheets") setActiveTopicView("practice");
+    if (tab === "quizzes") setActiveTopicView("quiz");
     window.setTimeout(() => {
       resourceHubRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 0);
   }, []);
+
+  const openLessonVideo = useCallback(() => {
+    if (!activeTopicId) return;
+    setStartedLessonByTopicId((current) => ({
+      ...current,
+      [activeTopicId]: true,
+    }));
+    setActiveTopicView("video");
+    setResourceHubTab("videos");
+    window.setTimeout(() => {
+      lessonVideoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+  }, [activeTopicId]);
+
+  const openLesson = useCallback(() => {
+    if (!activeTopicId) return;
+    const locked = (progress.topicStatusById[activeTopicId] ?? "locked") === "locked";
+    if (locked) {
+      setResultBanner({
+        tone: "warning",
+        title: t("Topic locked"),
+        description: t("Master the previous topic first, then this lesson will unlock."),
+        topicId: activeTopicId,
+      });
+      return;
+    }
+    setStartedLessonByTopicId((current) => ({
+      ...current,
+      [activeTopicId]: true,
+    }));
+    setActiveTopicView("concept");
+    setResourceHubTab("lessons");
+    setResultBanner(null);
+    window.setTimeout(() => {
+      lessonCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+  }, [activeTopicId, progress.topicStatusById, t]);
 
   const moveToNextTopic = useCallback(() => {
     if (!nextTopicId) return;
@@ -406,7 +493,7 @@ function LearnPageClient() {
     setHighlightedNodeId(nextTopicId);
   }, [nextTopicId, refreshProgress, t]);
 
-  const completeCheckpoint = useCallback(() => {
+  const completeLesson = useCallback(() => {
     if (!activeTopicId) return;
     const locked = (progress.topicStatusById[activeTopicId] ?? "locked") === "locked";
     if (locked) {
@@ -418,16 +505,24 @@ function LearnPageClient() {
       });
       return;
     }
+    setStartedLessonByTopicId((current) => ({
+      ...current,
+      [activeTopicId]: true,
+    }));
     completeTopicCheckpoint(activeTopicId);
     const latest = refreshProgress();
     setResultBanner({
       tone: "success",
-      title: t("Checkpoint complete"),
-      description: t("Great work. You earned XP and your mastery quiz is ready."),
+      title: t("Lesson complete"),
+      description:
+        activeQuizCount > 0
+          ? t("Great work. Your lesson is complete and the quiz is ready when you are.")
+          : t("Great work. Your lesson is complete. Use practice, videos, or AI support for the next step."),
       topicId: activeTopicId,
       recommendation: latest.lastQuizReturnContext?.recommended,
     });
-  }, [activeTopicId, progress.topicStatusById, refreshProgress, t]);
+    setResourceHubTab(activeQuizCount > 0 ? "quizzes" : "practice");
+  }, [activeQuizCount, activeTopicId, progress.topicStatusById, refreshProgress, t]);
 
   const changeCourse = useCallback((courseId: string) => {
     const nextSequence = getCourseSequence(courseId);
@@ -526,6 +621,7 @@ function LearnPageClient() {
     };
   }, []);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const query = searchParams.toString();
     if (query === lastHandledQueryRef.current) return;
@@ -575,10 +671,12 @@ function LearnPageClient() {
     }
 
     if (parsed?.action === "open-ai") {
+      setActiveTopicView("ai");
       openAiTutor({ prompt: activeTopic?.aiPrompt, autoSend: false });
     }
 
     if (parsed?.action === "open-community") {
+      setActiveTopicView("community");
       router.push(selectedTopicCommunityHref);
     }
 
@@ -590,7 +688,6 @@ function LearnPageClient() {
       const cleanPath = pathname || "/learn";
       router.replace(cleanPath, { scroll: false });
     }
-
   }, [activeTopic?.aiPrompt, openAiTutor, openQuiz, pathname, router, searchParams, selectedSequence, selectedTopicCommunityHref, t]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
@@ -635,15 +732,15 @@ function LearnPageClient() {
 
     if (selectedNode.state === "in_progress" || selectedNode.state === "available") {
       return {
-        label: t("Continue"),
-        onClick: completeCheckpoint,
+        label: getLessonButtonLabel(selectedNode.state, Boolean(startedLessonByTopicId[selectedNode.id]), t),
+        onClick: openLesson,
       };
     }
 
     if (selectedNode.state === "quiz_ready") {
       return {
         label: t("Take quiz"),
-        onClick: () => openQuiz({ topicId: selectedNode.id, difficulty: "medium" }),
+        onClick: () => openQuizDifficultyPicker({ topicId: selectedNode.id }),
       };
     }
 
@@ -667,7 +764,7 @@ function LearnPageClient() {
         if (focusNodeId) setPanelNodeId(focusNodeId);
       },
     };
-  }, [completeCheckpoint, focusNodeId, moveToNextTopic, nextTopicId, openQuiz, selectedNode, t]);
+  }, [focusNodeId, moveToNextTopic, nextTopicId, openLesson, openQuiz, openQuizDifficultyPicker, selectedNode, startedLessonByTopicId, t]);
 
   const level = progress.level ?? 1;
   const xpToday = progress.xpToday ?? 0;
@@ -675,7 +772,6 @@ function LearnPageClient() {
 
   const selectedResources = activeTopic?.resources ?? [];
   const lessonResources = selectedResources.filter((resource) => resource.kind === "lesson");
-  const preferredLessonResource = getPreferredLessonResource(selectedResources);
   const videoResources = selectedResources.filter((resource) => resource.kind === "video");
   const worksheetResources = selectedResources.filter((resource) => resource.kind === "worksheet");
   const practiceResources = selectedResources.filter((resource) => resource.kind === "practice");
@@ -693,18 +789,164 @@ function LearnPageClient() {
     practice: practiceResources.length,
     quizzes: availableQuizSlugs.length,
   } as const;
+  const lessonButtonLabel = getLessonButtonLabel(selectedNode?.state, hasStartedActiveLesson, t);
+  const hasLessonVideo = videoResources.length > 0;
+  const lessonKeyIdeas = useMemo(() => {
+    if (!activeTopic) return [];
+    if (activeTopic.readinessSignals.length > 0) return activeTopic.readinessSignals;
+    return [
+      t("Understand the main idea behind {topic}.", { topic: activeTopic.title }),
+      activeTopic.masteryGoal || t("Know what a strong answer should look like."),
+      t("Check your work and explain why your answer makes sense."),
+    ];
+  }, [activeTopic, t]);
+  const lessonGuidedSteps = useMemo(() => {
+    if (!activeTopic) return [];
+    return [
+      t("Read the topic summary first so you know what skill you are building."),
+      activeTopic.masteryGoal
+        ? t("Keep this goal in mind while you work: {goal}", { goal: activeTopic.masteryGoal })
+        : t("Focus on the core skill this topic is teaching."),
+      lessonKeyIdeas[0]
+        ? t("Use this key idea as your checkpoint: {idea}", { idea: lessonKeyIdeas[0] })
+        : t("Work through one example slowly before moving on."),
+      t("When you feel confident, move to practice or take the quiz to confirm your understanding."),
+    ];
+  }, [activeTopic, lessonKeyIdeas, t]);
+  const lessonNextSteps = useMemo(() => {
+    if (!activeTopic) return [];
+    const labels: Record<string, string> = {
+      "learn-concept": t("Read the lesson carefully and identify the main rule or pattern."),
+      "do-practice": t("Try a few practice problems before you take the quiz."),
+      "take-quiz": t("Use the quiz to confirm that you can apply the skill on your own."),
+      "ask-ai": t("Ask AI support when you want step-by-step help."),
+      "get-community-help": t("Use the community if you want to compare approaches or ask a question."),
+    };
+    if (hasLessonVideo) {
+      labels["watch-video"] = t("Watch the lesson video for another walkthrough without leaving the page.");
+    }
+    return activeTopic.recommendedActions.map((action) => labels[action]).filter(Boolean);
+  }, [activeTopic, hasLessonVideo, t]);
+  const showLessonWorkspace = hasStartedActiveLesson;
 
   if (!isReady || !hasHydrated) {
     return (
-      <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">{t("Loading learning path...")}</main>
+      <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 md:pt-28">
+        <main className="max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 md:pt-4">{t("Loading learning path...")}</main>
       </PageWrapper>
     );
   }
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24 learn-page-bg">
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-8 md:pb-10 space-y-5">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 md:pt-28 learn-page-bg">
+      <main className="max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 md:pt-4 md:pb-10 space-y-6">
+        {quizDifficultyPicker && (
+          <div className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/60 p-4 sm:items-center">
+            <Card className="w-full max-w-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-[0_28px_90px_-44px_rgba(15,23,42,0.55)] backdrop-blur">
+              <div className="border-b border-slate-200/70 bg-gradient-to-br from-white via-slate-50 to-[var(--theme-primary)]/5 p-5 dark:border-slate-800/90 dark:from-slate-900 dark:via-slate-900 dark:to-[var(--theme-primary)]/10 sm:p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--theme-primary)]/20 bg-[var(--theme-primary)]/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" />
+                      {t("Choose quiz difficulty")}
+                    </div>
+                    <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-[2rem]">
+                      {activeTopic?.title ? t("Quiz for {topic}", { topic: activeTopic.title }) : t("Built-in quiz")}
+                    </h2>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+                      {t("Pick the challenge level that matches how ready you feel. The quiz will stay focused on this topic, but the depth, reasoning, and question style will change with the level you choose.")}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setQuizDifficultyPicker(null)}
+                    className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-[var(--theme-primary)]/35 bg-[var(--theme-primary)] px-3 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(var(--theme-primary-rgb),0.9)] transition hover:brightness-105 hover:shadow-[0_18px_36px_-20px_rgba(var(--theme-primary-rgb),0.95)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--theme-primary)]"
+                    aria-label={t("Close")}
+                  >
+                    <span className="hidden sm:inline">{t("Close")}</span>
+                    <span className="sm:hidden">×</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-5 sm:p-6">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("Pick a level to begin")}</p>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                      {t("Start with fundamentals, stay with the standard path, or push into deeper application.")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {[
+                    {
+                      id: "easy" as const,
+                      title: t("Easy"),
+                      eyebrow: t("Foundations"),
+                      description: t("Start with more direct questions and simpler examples."),
+                      detail: t("Best for first attempts, review, and building confidence."),
+                    },
+                    {
+                      id: "medium" as const,
+                      title: t("Medium"),
+                      eyebrow: t("Standard"),
+                      description: t("Use the standard quiz path for topic understanding."),
+                      detail: t("Balanced challenge with multi-step thinking and familiar problem types."),
+                    },
+                    {
+                      id: "hard" as const,
+                      title: t("Hard"),
+                      eyebrow: t("Challenge"),
+                      description: t("Take on more demanding reasoning and deeper application."),
+                      detail: t("Best for stronger recall, word problems, and tougher distractors."),
+                    },
+                  ].map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => {
+                        openQuiz({
+                          topicId: quizDifficultyPicker.topicId,
+                          slug: quizDifficultyPicker.slug,
+                          difficulty: option.id,
+                        });
+                        setQuizDifficultyPicker(null);
+                      }}
+                      className="group flex h-full min-h-[220px] flex-col rounded-3xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/70 p-5 text-left shadow-[0_20px_60px_-42px_rgba(15,23,42,0.45)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--theme-primary)]/60 hover:shadow-[0_28px_70px_-36px_rgba(99,102,241,0.28)] dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70 dark:shadow-[0_18px_48px_-36px_rgba(2,6,23,0.8)] dark:hover:border-[var(--theme-primary)]/50 dark:hover:shadow-[0_28px_70px_-36px_rgba(79,70,229,0.24)]"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]/90">
+                            {option.eyebrow}
+                          </p>
+                          <p className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                            {option.title}
+                          </p>
+                        </div>
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--theme-primary)]/15 bg-[var(--theme-primary)]/8 text-sm font-semibold text-[var(--theme-primary)] transition group-hover:bg-[var(--theme-primary)]/12">
+                          {option.title.charAt(0)}
+                        </div>
+                      </div>
+                      <p className="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-300">{option.description}</p>
+                      <p className="mt-3 flex-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{option.detail}</p>
+                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--theme-primary)]">
+                        <span>{t("Start {level}", { level: option.title })}</span>
+                        <span aria-hidden="true" className="transition group-hover:translate-x-0.5">→</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-5 rounded-2xl border border-slate-200/70 bg-slate-50/80 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
+                  {t("You can retake the quiz at a different level anytime to review fundamentals or push for a harder challenge.")}
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
         <LearnTopStrip
           topicTitle={activeTopic?.title ?? t("Choose a topic")}
           xpToday={xpToday}
@@ -827,33 +1069,33 @@ function LearnPageClient() {
                   {selectedNode.lockedReason}
                 </div>
               )}
-              <Button
-                onClick={() => {
-                  if (selectedNode?.state === "quiz_ready" && preferredLessonResource) {
-                    window.open(preferredLessonResource.href, "_blank", "noopener,noreferrer");
-                    return;
-                  }
-                  completeCheckpoint();
-                }}
-                disabled={selectedNode?.state === "locked"}
-              >
-                {selectedNode?.state === "quiz_ready" ? t("Review lesson") : t("Start Lesson")}
+              <Button onClick={openLesson} disabled={selectedNode?.state === "locked"}>
+                {lessonButtonLabel}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => openQuiz({ topicId: activeTopic?.id ?? undefined, difficulty: "medium" })}
+                onClick={() => openQuizDifficultyPicker({ topicId: activeTopic?.id ?? undefined })}
                 disabled={!activeTopic || selectedNode?.state === "locked" || availableQuizSlugs.length === 0}
               >
                 {t("Start built-in quiz")}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => openAiTutor({ prompt: activeTopic?.aiPrompt || `Help me with ${activeTopic?.title ?? "this topic"}` })}
+                onClick={() => {
+                  setActiveTopicView("ai");
+                  openAiTutor({ prompt: activeTopic?.aiPrompt || `Help me with ${activeTopic?.title ?? "this topic"}` });
+                }}
               >
                 <Sparkles className="w-4 h-4" />
                 {t("Ask AI support")}
               </Button>
-              <Button variant="ghost" onClick={() => router.push(selectedTopicCommunityHref)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setActiveTopicView("community");
+                  router.push(selectedTopicCommunityHref);
+                }}
+              >
                 <Users className="w-4 h-4" />
                 {t("Ask community")}
               </Button>
@@ -873,6 +1115,335 @@ function LearnPageClient() {
         </div>
 
         <div className="grid gap-6">
+          <Card className="learn-hub-shell" glow={false} ref={lessonCardRef}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Lesson Workspace")}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                  {activeTopic?.title
+                    ? t("Study {topic} inside the page before moving on to practice or the quiz.", { topic: activeTopic.title })
+                    : t("Select a topic to open its lesson workspace.")}
+                </p>
+              </div>
+              {activeTopic && (
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <span className="learn-hub-chip">{activeTopic.estimatedMinutes} {t("min lesson")}</span>
+                  <span className="learn-hub-chip">{t(activeTopic.difficulty)}</span>
+                  <span className="learn-hub-chip">{flowLabelByState[activeFlowState]}</span>
+                </div>
+              )}
+            </div>
+
+            {!activeTopic ? (
+              <div className="learn-hub-empty mt-4">{t("Choose a topic from your learning path to load the lesson.")}</div>
+            ) : !showLessonWorkspace ? (
+              <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                    <BookOpen className="h-4 w-4" />
+                    {t("What you will learn")}
+                  </div>
+                  <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
+                  <div className="mt-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                      {t("Mastery goal")}
+                    </p>
+                    <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{activeTopic.masteryGoal}</p>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                    <ListChecks className="h-4 w-4" />
+                    {t("Before you start")}
+                  </div>
+                  {activeTopic.prerequisites.length > 0 ? (
+                    <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                      {activeTopic.prerequisites.map((item) => (
+                        <li key={`${activeTopic.id}-prereq-${item}`} className="flex items-start gap-2">
+                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                      {t("You can start this lesson right away. Use the key ideas below as your guide.")}
+                    </p>
+                  )}
+                  <Button className="mt-5 w-full" onClick={openLesson} disabled={selectedNode?.state === "locked"}>
+                    {lessonButtonLabel}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 space-y-4">
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      <BookOpen className="h-4 w-4" />
+                      {t("Lesson explanation")}
+                    </div>
+                    <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
+                    <div className="mt-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/50 p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                        {t("Mastery goal")}
+                      </p>
+                      <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{activeTopic.masteryGoal}</p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      <Target className="h-4 w-4" />
+                      {t("Lesson status")}
+                    </div>
+                    <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
+                      {activeTopicCheckpointComplete
+                        ? t("This lesson is complete. Review the key ideas, then move to the quiz or practice.")
+                        : t("Work through the explanation and key ideas, then mark the lesson complete to unlock the next step.")}
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <span className="learn-hub-chip">{activeTopic.estimatedMinutes} {t("min lesson")}</span>
+                      <span className="learn-hub-chip">{t(activeTopic.difficulty)}</span>
+                      <span className="learn-hub-chip">{flowLabelByState[activeFlowState]}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {activeTopic.prerequisites.length > 0 && (
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      {t("Before you start")}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {activeTopic.prerequisites.map((item) => (
+                        <span
+                          key={`${activeTopic.id}-lesson-prereq-${item}`}
+                          className="rounded-full border border-slate-200/80 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-950/40 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {hasLessonVideo && activeVideo && activeVideoPlayback && (
+                  <div
+                    ref={lessonVideoRef}
+                    className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                          {t("Lesson video")}
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">{activeVideo.title}</p>
+                        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                          {activeVideoPlayback.mode === "youtube-embed" || activeVideoPlayback.mode === "native-video"
+                            ? t("Play the video here without leaving your lesson.")
+                            : t("Watch this lesson on YouTube in a new tab.")}
+                        </p>
+                      </div>
+                      {activeVideoPlayback.mode === "external" && (
+                        <a
+                          href={activeVideoPlayback.src}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:border-[var(--theme-primary)]"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          {t("Watch on YouTube")}
+                        </a>
+                      )}
+                    </div>
+
+                    <div className="mt-4">
+                      {activeVideoPlayback.mode === "youtube-embed" && (
+                        <div className="learn-hub-player-ratio overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-950">
+                          <iframe
+                            src={activeVideoPlayback.src}
+                            title={`${activeVideo.title} lesson video`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      {activeVideoPlayback.mode === "native-video" && (
+                        <div className="learn-hub-player-ratio overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-950">
+                          <video controls preload="metadata" src={activeVideoPlayback.src} className="h-full w-full" />
+                        </div>
+                      )}
+                      {activeVideoPlayback.mode === "external" && (
+                        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/50 p-4">
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
+                            {t("Use the button above to watch the full walkthrough on YouTube.")}
+                          </p>
+                        </div>
+                      )}
+                      {activeVideoPlayback.mode === "unavailable" && (
+                        <div className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-4">
+                          <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">{t("Video unavailable")}</p>
+                          <p className="mt-1 text-sm text-amber-700 dark:text-amber-200">
+                            {t("This video link is not usable right now. Try another video or continue with the lesson resources below.")}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {videoResources.length > 1 && (
+                      <div className="mt-4 grid gap-2 md:grid-cols-2">
+                        {videoResources.map((resource) => (
+                          <button
+                            key={`${activeTopic.id}-lesson-video-${resource.title}`}
+                            type="button"
+                            onClick={() => {
+                              if (!activeTopic?.id) return;
+                              setSelectedVideoByTopicId((current) => ({
+                                ...current,
+                                [activeTopic.id]: resource.href,
+                              }));
+                            }}
+                            className={`learn-hub-card text-left ${
+                              activeVideo?.href === resource.href ? "learn-hub-card-active" : ""
+                            }`}
+                          >
+                            <p className="learn-hub-card-kind">{t("Video")}</p>
+                            <div className="flex items-start justify-between gap-3">
+                              <p className="learn-hub-card-title">{t(resource.title)}</p>
+                              {normalizeResourcePlaybackTarget(resource).mode === "external" && (
+                                <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-slate-400" />
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      <ListChecks className="h-4 w-4" />
+                      {t("Key ideas")}
+                    </div>
+                    <ul className="mt-4 space-y-3">
+                      {lessonKeyIdeas.map((item) => (
+                        <li key={`${activeTopic.id}-key-idea-${item}`} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-[var(--theme-primary)]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      <ArrowRight className="h-4 w-4" />
+                      {t("How to work through this lesson")}
+                    </div>
+                    <ol className="mt-4 space-y-3">
+                      {lessonGuidedSteps.map((item, index) => (
+                        <li key={`${activeTopic.id}-guided-step-${index}`} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                          <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--theme-primary)]/12 text-[var(--theme-primary)] text-xs font-semibold">
+                            {index + 1}
+                          </span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                    {t("Next steps")}
+                  </p>
+                  <ul className="mt-4 space-y-3">
+                    {lessonNextSteps.map((item) => (
+                      <li key={`${activeTopic.id}-next-step-${item}`} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-[var(--theme-primary)]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {lessonResources.length > 0 && (
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
+                      {t("Supporting lesson links")}
+                    </p>
+                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                      {lessonResources.map((resource) => (
+                        <a
+                          key={`${activeTopic.id}-supporting-lesson-${resource.title}`}
+                          href={resource.href}
+                          target={resource.href.startsWith("http") ? "_blank" : "_self"}
+                          rel={resource.href.startsWith("http") ? "noreferrer" : undefined}
+                          className="learn-hub-card"
+                        >
+                          <p className="learn-hub-card-kind">{t("Lesson")}</p>
+                          <div className="flex items-start justify-between gap-3">
+                            <p className="learn-hub-card-title">{t(resource.title)}</p>
+                            <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-slate-400" />
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-2">
+                  {!activeTopicCheckpointComplete ? (
+                    <Button onClick={completeLesson} disabled={selectedNode?.state === "locked"}>
+                      {t("Mark Lesson Complete")}
+                    </Button>
+                  ) : availableQuizSlugs.length > 0 ? (
+                    <Button onClick={() => openQuizDifficultyPicker({ topicId: activeTopic.id })}>
+                      {t("Start Quiz")}
+                    </Button>
+                  ) : (
+                    <Button onClick={() => jumpToResourceHub("practice")}>
+                      {t("Open Practice")}
+                    </Button>
+                  )}
+
+                  <Button variant="outline" onClick={() => jumpToResourceHub("practice")}>
+                    {t("Practice")}
+                  </Button>
+                  {hasLessonVideo && (
+                    <Button variant="outline" onClick={openLessonVideo}>
+                      {t("Watch video")}
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setActiveTopicView("ai");
+                      openAiTutor({ prompt: activeTopic.aiPrompt || `Help me with ${activeTopic.title}` });
+                    }}
+                  >
+                    {t("Ask AI support")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setActiveTopicView("community");
+                      router.push(selectedTopicCommunityHref);
+                    }}
+                  >
+                    {t("Ask community")}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Card>
+
           <Card className="learn-hub-shell" ref={resourceHubRef}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -889,7 +1460,7 @@ function LearnPageClient() {
                 )}
                 <Button
                   size="sm"
-                  onClick={() => openQuiz({ topicId: activeTopic?.id ?? undefined, difficulty: "medium" })}
+                  onClick={() => openQuizDifficultyPicker({ topicId: activeTopic?.id ?? undefined })}
                   disabled={!activeTopic || selectedNode?.state === "locked" || availableQuizSlugs.length === 0}
                 >
                   {t("Start Quiz")}
@@ -912,7 +1483,7 @@ function LearnPageClient() {
                   role="tab"
                   type="button"
                   aria-selected={resourceHubTab === tab.id}
-                  onClick={() => setResourceHubTab(tab.id)}
+                  onClick={() => jumpToResourceHub(tab.id)}
                   className={`learn-hub-tab ${resourceHubTab === tab.id ? "learn-hub-tab-active" : ""}`}
                 >
                   {t(tab.label)}
@@ -947,7 +1518,7 @@ function LearnPageClient() {
                     {activeVideoPlayback.mode === "external" && (
                       <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4">
                         <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
-                          {t("This video cannot be embedded inline.")}
+                          {t("Watch this lesson video on YouTube.")}
                         </p>
                         <a
                           href={activeVideoPlayback.src}
@@ -955,7 +1526,7 @@ function LearnPageClient() {
                           rel="noreferrer"
                           className="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm hover:border-[var(--theme-primary)]"
                         >
-                          {t("Open source")}
+                          {t("Watch on YouTube")}
                         </a>
                       </div>
                     )}
@@ -976,7 +1547,7 @@ function LearnPageClient() {
 
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
               {resourceHubTab === "lessons" && lessonResources.length === 0 && (
-                <div className="learn-hub-empty">{t("No lesson links for this topic yet. Use Start Lesson or ask AI support.")}</div>
+                <div className="learn-hub-empty">{t("No external lesson links for this topic yet. Use the lesson workspace above or ask AI support.")}</div>
               )}
               {resourceHubTab === "lessons" && lessonResources.map((resource) => (
                 <a
@@ -1027,6 +1598,11 @@ function LearnPageClient() {
                 >
                   <p className="learn-hub-card-kind">{t("Worksheet")}</p>
                   <p className="learn-hub-card-title">{t(resource.title)}</p>
+                  {resource.label ? (
+                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                      {t(resource.label)}
+                    </p>
+                  ) : null}
                 </a>
               ))}
 
@@ -1043,6 +1619,11 @@ function LearnPageClient() {
                 >
                   <p className="learn-hub-card-kind">{t("Practice")}</p>
                   <p className="learn-hub-card-title">{t(resource.title)}</p>
+                  {resource.label ? (
+                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                      {t(resource.label)}
+                    </p>
+                  ) : null}
                 </a>
               ))}
 

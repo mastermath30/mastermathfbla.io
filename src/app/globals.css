@@ -2527,21 +2527,32 @@ button, a, .card, .interactive {
 
 .dlp-map {
   display: grid;
-  padding: 4px 0 16px;
+  padding: 4px 18px 18px 8px;
   max-height: min(980px, calc(100vh - 220px));
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+  min-width: 640px;
+}
+
+.dlp-map-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-inline: 4px 18px;
+  margin-inline: -4px -18px;
+  scrollbar-gutter: stable both-edges;
+  scroll-padding-inline: 12px 24px;
 }
 
 .dlp-group { display: grid; }
 
 .learn-browser-grid {
   display: grid;
-  grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(200px, 236px) minmax(0, 1fr);
+  gap: 18px;
   align-items: start;
   margin-top: 16px;
+  min-width: 0;
 }
 
 .learn-chapter-menu {
@@ -2690,6 +2701,7 @@ button, a, .card, .interactive {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: start;
+  min-width: 640px;
 }
 
 .dlp-lane-left .dlp-node-wrap { grid-column: 1; justify-self: center; }
@@ -2908,10 +2920,19 @@ button, a, .card, .interactive {
 
   .dlp-map {
     max-height: 72vh;
-    padding-right: 2px;
+    padding: 4px 12px 18px 6px;
+    min-width: 540px;
   }
 
-  .dlp-row { min-height: 116px; }
+  .dlp-map-scroll {
+    padding-inline: 0 12px;
+    margin-inline: 0 -12px;
+  }
+
+  .dlp-row {
+    min-height: 116px;
+    min-width: 540px;
+  }
   .dlp-node-wrap { min-width: 142px; }
 }
 

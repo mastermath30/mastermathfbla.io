@@ -445,7 +445,7 @@ export default function CommunityPage() {
                                 onClick={() => handleReportPost(post.id)}
                                 className="text-xs text-rose-500 hover:text-rose-400"
                               >
-                                Report post
+                                {t("Report Post")}
                               </button>
                             </div>
                           </div>
@@ -465,7 +465,9 @@ export default function CommunityPage() {
             <Card>
               <h3 className="font-semibold text-slate-900 dark:text-white">{t("Moderation Queue")}</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                {reports.length} reported posts in review.
+                {reports.length === 1
+                  ? t("1 post under review.")
+                  : t("{count} posts under review.", { count: reports.length })}
               </p>
             </Card>
             </FadeIn>

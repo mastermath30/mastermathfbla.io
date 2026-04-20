@@ -55,78 +55,80 @@ export function LearnPathMap({
   }, [ordered]);
 
   return (
-    <section className="dlp-map" aria-label="Learning path">
-      {ordered.map((node, idx) => {
-        const prevNode = idx > 0 ? ordered[idx - 1] : null;
-        const chapterNodes = chapters.get(node.chapterIndex) ?? [];
-        const chapterMastered = chapterNodes.filter((entry) => entry.state === "mastered").length;
-        const chapterTotal = chapterNodes.length;
-        const showChapterDivider = idx === 0 || (prevNode && prevNode.chapterIndex !== node.chapterIndex);
+    <div className="dlp-map-scroll">
+      <section className="dlp-map" aria-label="Learning path">
+        {ordered.map((node, idx) => {
+          const prevNode = idx > 0 ? ordered[idx - 1] : null;
+          const chapterNodes = chapters.get(node.chapterIndex) ?? [];
+          const chapterMastered = chapterNodes.filter((entry) => entry.state === "mastered").length;
+          const chapterTotal = chapterNodes.length;
+          const showChapterDivider = idx === 0 || (prevNode && prevNode.chapterIndex !== node.chapterIndex);
 
-        return (
-          <div key={node.id} className="dlp-group">
-            {showChapterDivider && (
-              <div className="dlp-chapter-divider" aria-hidden="true">
-                <div className="dlp-chapter-line" />
-                <div className="dlp-chapter-chip">
-                  <span>{node.chapterTitle}</span>
-                  <span>•</span>
-                  <span>{chapterMastered}/{chapterTotal} mastered</span>
-                </div>
-                {idx > 0 && (
-                  <div className="dlp-milestone-row">
-                    <LearnPathNode
-                      node={{
-                        id: `milestone-${node.chapterIndex}`,
-                        title: `Chest ${node.chapterIndex + 1}`,
-                        unitTitle: node.unitTitle,
-                        estimatedMinutes: 0,
-                        difficulty: "beginner",
-                        summary: "",
-                        masteryGoal: "",
-                        readinessSignals: [],
-                        state: chapterMastered === chapterTotal ? "mastered" : "available",
-                        masteryPercent: chapterTotal ? Math.round((chapterMastered / chapterTotal) * 100) : 0,
-                        checkpointComplete: false,
-                        hasQuizAttempt: false,
-                        isFocus: false,
-                        index: -1,
-                        nodeType: "milestone",
-                        chapterIndex: node.chapterIndex,
-                        chapterTitle: node.chapterTitle,
-                        lane: "center",
-                      }}
-                      nonInteractive
-                    />
+          return (
+            <div key={node.id} className="dlp-group">
+              {showChapterDivider && (
+                <div className="dlp-chapter-divider" aria-hidden="true">
+                  <div className="dlp-chapter-line" />
+                  <div className="dlp-chapter-chip">
+                    <span>{node.chapterTitle}</span>
+                    <span>•</span>
+                    <span>{chapterMastered}/{chapterTotal} mastered</span>
                   </div>
-                )}
-              </div>
-            )}
-
-            <div
-              id={`path-node-${node.id}`}
-              className={`dlp-row dlp-lane-${node.lane} ${selectedNodeId === node.id ? "dlp-row-selected" : ""}`}
-              style={{
-                "--dlp-prev-x": prevNode ? laneToPercent(prevNode.lane) : laneToPercent(node.lane),
-                "--dlp-current-x": laneToPercent(node.lane),
-              } as CSSProperties}
-            >
-              {prevNode && (
-                <div
-                  className={`dlp-connector dlp-connector-${getConnectorKind(prevNode, node)} ${getDirectionClass(prevNode, node)}`}
-                  aria-hidden="true"
-                />
+                  {idx > 0 && (
+                    <div className="dlp-milestone-row">
+                      <LearnPathNode
+                        node={{
+                          id: `milestone-${node.chapterIndex}`,
+                          title: `Chest ${node.chapterIndex + 1}`,
+                          unitTitle: node.unitTitle,
+                          estimatedMinutes: 0,
+                          difficulty: "beginner",
+                          summary: "",
+                          masteryGoal: "",
+                          readinessSignals: [],
+                          state: chapterMastered === chapterTotal ? "mastered" : "available",
+                          masteryPercent: chapterTotal ? Math.round((chapterMastered / chapterTotal) * 100) : 0,
+                          checkpointComplete: false,
+                          hasQuizAttempt: false,
+                          isFocus: false,
+                          index: -1,
+                          nodeType: "milestone",
+                          chapterIndex: node.chapterIndex,
+                          chapterTitle: node.chapterTitle,
+                          lane: "center",
+                        }}
+                        nonInteractive
+                      />
+                    </div>
+                  )}
+                </div>
               )}
 
-              <LearnPathNode
-                node={node}
-                onOpen={onSelectNode}
-                emphasized={highlightedNodeId === node.id}
-              />
+              <div
+                id={`path-node-${node.id}`}
+                className={`dlp-row dlp-lane-${node.lane} ${selectedNodeId === node.id ? "dlp-row-selected" : ""}`}
+                style={{
+                  "--dlp-prev-x": prevNode ? laneToPercent(prevNode.lane) : laneToPercent(node.lane),
+                  "--dlp-current-x": laneToPercent(node.lane),
+                } as CSSProperties}
+              >
+                {prevNode && (
+                  <div
+                    className={`dlp-connector dlp-connector-${getConnectorKind(prevNode, node)} ${getDirectionClass(prevNode, node)}`}
+                    aria-hidden="true"
+                  />
+                )}
+
+                <LearnPathNode
+                  node={node}
+                  onOpen={onSelectNode}
+                  emphasized={highlightedNodeId === node.id}
+                />
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </section>
+          );
+        })}
+      </section>
+    </div>
   );
 }

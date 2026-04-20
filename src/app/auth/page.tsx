@@ -705,8 +705,15 @@ function AuthPageContent() {
             )}
 
             {mode === "signin" && (
-              <div className="flex justify-end">
-                <button type="button" onClick={() => alert(t("Password reset functionality coming soon!"))} className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>{t("Forgot password?")}</button>
+              <div className="flex justify-start">
+                <button
+                  type="button"
+                  onClick={() => alert(t("Password reset functionality coming soon!"))}
+                  className="max-w-full text-left text-xs leading-tight hover:underline sm:text-sm"
+                  style={{ color: "var(--theme-primary)" }}
+                >
+                  {t("Forgot password?")}
+                </button>
               </div>
             )}
 

@@ -70,6 +70,20 @@ type RawCourseNode = Omit<CourseNode, "units" | "recommendedSequence"> & {
   recommendedSequence?: string[];
 };
 
+type TopicResourceFamily =
+  | "arithmetic-number"
+  | "fractions-percents"
+  | "expressions-equations"
+  | "linear-functions"
+  | "quadratics-polynomials"
+  | "geometry-core"
+  | "circles-measurement"
+  | "statistics-probability"
+  | "trigonometry"
+  | "calculus-derivatives"
+  | "calculus-integrals"
+  | "advanced-functions";
+
 function buildGeneratedUnit(input: {
   id: string;
   title: string;
@@ -674,6 +688,205 @@ function defaultEstimatedMinutes(difficulty: TopicNode["difficulty"]) {
   return 70;
 }
 
+function buildTopicVideoSearchUrl(input: { title: string; courseTitle: string; summary: string }) {
+  const query = [input.title, input.courseTitle, input.summary, "math walkthrough"]
+    .filter(Boolean)
+    .join(" ");
+  return `https://www.youtube.com/results?${new URLSearchParams({ search_query: query }).toString()}`;
+}
+
+function resolveTopicResourceFamily(topic: Pick<RawTopicNode, "title" | "summary">, courseTitle: string): TopicResourceFamily {
+  const haystack = `${topic.title} ${topic.summary} ${courseTitle}`.toLowerCase();
+  if (/(fraction|decimal|percent|ratio|rate|proportion)/.test(haystack)) return "fractions-percents";
+  if (/(expression|variable|equation|inequalit|literal)/.test(haystack)) return "expressions-equations";
+  if (/(linear|slope|intercept|coordinate|domain|range|scatter|system)/.test(haystack)) return "linear-functions";
+  if (/(quadratic|polynomial|factoring|factor|radical|sequence|series|logarithm|complex|matrix)/.test(haystack)) return "quadratics-polynomials";
+  if (/(circle|circumference|sector|arc|radius|diameter)/.test(haystack)) return "circles-measurement";
+  if (/(proof|angle|triangle|transformation|congruence|similarity|polygon|volume|surface area|geometry)/.test(haystack)) return "geometry-core";
+  if (/(statistic|data|distribution|regression|sampling|probability|random variable|confidence|inference)/.test(haystack)) return "statistics-probability";
+  if (/(trig|sine|cosine|tangent|radian|unit circle|periodic|law of sines|law of cosines)/.test(haystack)) return "trigonometry";
+  if (/(derivative|limit|continuity|l'hopital|motion analysis)/.test(haystack)) return "calculus-derivatives";
+  if (/(integral|series|parametric calculus|polar calculus|differential equation|area between curves|volume by integration)/.test(haystack)) return "calculus-integrals";
+  if (/(vector|parametric|polar|conic|function notation|inverse|composition|exponential|logarithmic|precalculus|modeling)/.test(haystack)) return "advanced-functions";
+  return courseTitle.toLowerCase().includes("pre-algebra") ? "arithmetic-number" : "advanced-functions";
+}
+
+function getFallbackPracticeResources(topic: RawTopicNode, courseTitle: string): ResourceItem[] {
+  const family = resolveTopicResourceFamily(topic, courseTitle);
+  const sharedByFamily: Record<TopicResourceFamily, ResourceItem[]> = {
+    "arithmetic-number": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/pre-algebra", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} skill builder`, kind: "practice", href: "https://www.math-aids.com/Place_Value/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} mixed review`, kind: "practice", href: "https://www.math-aids.com/Rounding/", label: "Printable review" },
+    ],
+    "fractions-percents": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/pre-algebra", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} skill builder`, kind: "practice", href: "https://www.math-aids.com/Fractions/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} percent and fraction review`, kind: "practice", href: "https://www.math-aids.com/Percent/", label: "Printable review" },
+    ],
+    "expressions-equations": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} equation practice`, kind: "practice", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Equations/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} expression review`, kind: "practice", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Expressions/", label: "Printable review" },
+    ],
+    "linear-functions": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} skill builder`, kind: "practice", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Functions/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} graph and slope review`, kind: "practice", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Functions/Points_Slope.html", label: "Printable review" },
+    ],
+    "quadratics-polynomials": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/algebra2", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} algebra practice`, kind: "practice", href: "https://www.math-aids.com/Algebra/Algebra_2/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} quadratic review`, kind: "practice", href: "https://www.math-aids.com/Algebra/Algebra_1/Quadratic_Functions/", label: "Printable review" },
+    ],
+    "geometry-core": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/geometry", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} geometry practice`, kind: "practice", href: "https://www.math-aids.com/Geometry/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} angle and figure review`, kind: "practice", href: "https://www.math-aids.com/Geometry/Angles/", label: "Printable review" },
+    ],
+    "circles-measurement": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/geometry", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} circle practice`, kind: "practice", href: "https://www.math-aids.com/Geometry/Circles/Identify_Circle_Parts.html", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} measurement review`, kind: "practice", href: "https://www.math-aids.com/Geometry/", label: "Printable review" },
+    ],
+    "statistics-probability": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/statistics-probability", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} probability practice`, kind: "practice", href: "https://www.math-aids.com/Probability/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} data review`, kind: "practice", href: "https://www.math-aids.com/Probability/Probability_Numbers.html", label: "Printable review" },
+    ],
+    trigonometry: [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/trigonometry", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} trig practice`, kind: "practice", href: "https://www.math-aids.com/Geometry/Trigonometry/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} angle review`, kind: "practice", href: "https://www.math-aids.com/Algebra/Algebra_1/Trigonometry/", label: "Printable review" },
+    ],
+    "calculus-derivatives": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} derivative practice`, kind: "practice", href: "https://www.math-aids.com/Calculus/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} rule review`, kind: "practice", href: "https://www.math-aids.com/Calculus/Differentiation_Rules/", label: "Printable review" },
+    ],
+    "calculus-integrals": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} integration practice`, kind: "practice", href: "https://www.math-aids.com/Calculus/Integration_Applications/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} antiderivative review`, kind: "practice", href: "https://www.math-aids.com/Calculus/Indefinite_Integration/", label: "Printable review" },
+    ],
+    "advanced-functions": [
+      { title: `Khan Academy: ${topic.title}`, kind: "practice", href: "https://www.khanacademy.org/math/precalculus", label: "Core practice" },
+      { title: `Math-Aids: ${topic.title} advanced algebra practice`, kind: "practice", href: "https://www.math-aids.com/Algebra/Algebra_2/", label: "Extra practice" },
+      { title: `Math-Aids: ${topic.title} function review`, kind: "practice", href: "https://www.math-aids.com/Algebra/Algebra_2/Radical_Functions/", label: "Printable review" },
+    ],
+  };
+
+  return sharedByFamily[family];
+}
+
+function getFallbackWorksheetResources(topic: RawTopicNode, courseTitle: string): ResourceItem[] {
+  const family = resolveTopicResourceFamily(topic, courseTitle);
+  const worksheetsByFamily: Record<TopicResourceFamily, ResourceItem[]> = {
+    "arithmetic-number": [
+      { title: `Math-Aids: ${topic.title} worksheet generator`, kind: "worksheet", href: "https://www.math-aids.com/Place_Value/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} rounding worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Rounding/", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} order of operations worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Order_of_Operations/", label: "Mixed review" },
+    ],
+    "fractions-percents": [
+      { title: `Math-Aids: ${topic.title} worksheet generator`, kind: "worksheet", href: "https://www.math-aids.com/Fractions/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} fraction operations worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Fractions/Dividing_Fractions.html", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} percent worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Percent/", label: "Mixed review" },
+    ],
+    "expressions-equations": [
+      { title: `Math-Aids: ${topic.title} equation worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Equations/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} expression worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Expressions/Evaluating_One_Variable.html", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} inequalities worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Inequalities/", label: "Mixed review" },
+    ],
+    "linear-functions": [
+      { title: `Math-Aids: ${topic.title} line-writing worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Functions/Writing_Linear_Equations.html", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} slope worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Functions/Points_Slope.html", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} functions worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Functions/", label: "Mixed review" },
+    ],
+    "quadratics-polynomials": [
+      { title: `Math-Aids: ${topic.title} quadratics worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Algebra_1/Quadratic_Functions/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} algebra 2 worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Algebra_2/", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} polynomial worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Algebra_1/Polynomials/", label: "Mixed review" },
+    ],
+    "geometry-core": [
+      { title: `Math-Aids: ${topic.title} geometry worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} angle worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/Angles/", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} geometry review`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/Trigonometry/", label: "Mixed review" },
+    ],
+    "circles-measurement": [
+      { title: `Math-Aids: ${topic.title} circle worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/Circles/Identify_Circle_Parts.html", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} geometry worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} measurement review`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/Angles/", label: "Mixed review" },
+    ],
+    "statistics-probability": [
+      { title: `Math-Aids: ${topic.title} probability worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Probability/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} number-probability worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Probability/Probability_Numbers.html", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} data worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Graphing/", label: "Mixed review" },
+    ],
+    trigonometry: [
+      { title: `Math-Aids: ${topic.title} trigonometry worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/Trigonometry/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} trig practice worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Algebra_1/Trigonometry/", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} unit circle and angle worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Geometry/Angles/", label: "Mixed review" },
+    ],
+    "calculus-derivatives": [
+      { title: `Math-Aids: ${topic.title} derivative worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Calculus/Differentiation_Rules/Definition_Derivative.html", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} chain rule worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Calculus/Differentiation_Rules/Chain_Rule.html", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} differentiation review`, kind: "worksheet", href: "https://www.math-aids.com/Calculus/Differentiation_Rules/", label: "Mixed review" },
+    ],
+    "calculus-integrals": [
+      { title: `Math-Aids: ${topic.title} integration worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Calculus/Integration_Applications/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} integration by parts worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Calculus/Indefinite_Integration/Integration_by_Parts.html", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} antiderivative worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Calculus/Indefinite_Integration/", label: "Mixed review" },
+    ],
+    "advanced-functions": [
+      { title: `Math-Aids: ${topic.title} algebra 2 worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Algebra_2/", label: "Printable worksheet" },
+      { title: `Math-Aids: ${topic.title} radical/functions worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Algebra_2/Radical_Functions/", label: "Extra worksheet" },
+      { title: `Math-Aids: ${topic.title} function skills worksheet`, kind: "worksheet", href: "https://www.math-aids.com/Algebra/Pre-Algebra/Functions/", label: "Mixed review" },
+    ],
+  };
+
+  return worksheetsByFamily[family];
+}
+
+function appendUniqueResources(resources: ResourceItem[], additions: ResourceItem[], kind: ResourceItem["kind"], targetCount: number) {
+  const seen = new Set(resources.map((resource) => `${resource.kind}:${resource.href}`));
+  const next = [...resources];
+  additions.forEach((resource) => {
+    if (next.filter((entry) => entry.kind === kind).length >= targetCount) return;
+    const key = `${resource.kind}:${resource.href}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    next.push(resource);
+  });
+  return next;
+}
+
+function ensureTopicVideoResource(topic: RawTopicNode, courseTitle: string): RawTopicNode {
+  const hasVideo = topic.resources.some((resource) => resource.kind === "video");
+  const withVideo = hasVideo
+    ? topic.resources
+    : [
+        ...topic.resources,
+        {
+          title: `${topic.title} YouTube walkthrough`,
+          kind: "video",
+          href: buildTopicVideoSearchUrl({
+            title: topic.title,
+            courseTitle,
+            summary: topic.summary,
+          }),
+          provider: "external",
+        },
+      ];
+
+  const withPractice = appendUniqueResources(withVideo, getFallbackPracticeResources(topic, courseTitle), "practice", 3);
+  const withWorksheets = appendUniqueResources(withPractice, getFallbackWorksheetResources(topic, courseTitle), "worksheet", 3);
+
+  return {
+    ...topic,
+    resources: withWorksheets,
+  };
+}
+
 function buildPathTopic(input: {
   id: string;
   title: string;
@@ -955,7 +1168,9 @@ function normalizeCourses(source: RawCourseNode[]): CourseNode[] {
     const courseUnits = [...course.units, ...(extraUnitsByCourseId[course.id] ?? [])];
     const unitsWithExpandedTopics = courseUnits.map((unit) => ({
       ...unit,
-      topics: [...unit.topics, ...(extraTopicsByUnitId[unit.id] ?? [])],
+      topics: [...unit.topics, ...(extraTopicsByUnitId[unit.id] ?? [])].map((topic) =>
+        ensureTopicVideoResource(topic, course.title)
+      ),
     }));
     const flattenedTopicIds = unitsWithExpandedTopics.flatMap((unit) => unit.topics.map((topic) => topic.id));
     const recommendedSequence =
