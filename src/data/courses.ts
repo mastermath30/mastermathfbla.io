@@ -774,8 +774,10 @@ const topicLessonLinkMap: Record<string, TopicLessonLinkSet> = {
     backupLessonUrls: ["https://www.khanacademy.org/math/geometry"],
   },
   "a2-polynomials": {
-    primaryLessonUrl: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:polynomial-expressions",
-    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:poly-arithmetic/x2ec2f6f830c9fb89:special-products/a/polynomial-arithmetic-faq",
+    ],
   },
   "a2-sequences-series": {
     primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
@@ -790,20 +792,243 @@ const topicLessonLinkMap: Record<string, TopicLessonLinkSet> = {
     backupLessonUrls: ["https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new"],
   },
   "prep-linear-equations": {
-    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-linear-eq-func",
-    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-basics/alg-basics-linear-equations-and-inequalities"],
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:algebra-easier/x0fcc98a58ba3bea7:linear-equations-in-one-variable-easier/a/v2-sat-lesson-linear-equations-in-one-variable",
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:algebra-easier/x0fcc98a58ba3bea7:linear-functions-easier/a/v2-sat-lesson-linear-functions",
+    ],
   },
   "prep-quadratics-functions": {
-    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-quadratics",
-    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:advanced-math-easier/x0fcc98a58ba3bea7:equivalent-forms-easier/a/v2-sat-lesson-equivalent-forms",
+    ],
   },
   "prep-geometry-trig": {
-    primaryLessonUrl: "https://www.khanacademy.org/math/geometry/hs-geo-trig",
-    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:geometry-and-trigonometry-easier",
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:geometry-and-trigonometry-medium",
+    ],
   },
   "prep-data-probability": {
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:problem-solving-and-data-analysis-easier/x0fcc98a58ba3bea7:scatterplots-easier/a/v2-sat-lesson-scatterplots",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:problem-solving-and-data-analysis-medium/x0fcc98a58ba3bea7:probability-and-relative-frequency-medium/e/v2-probability-and-relative-frequency-2",
+      "https://www.khanacademy.org/test-prep/v2-sat-math",
+    ],
+  },
+  "stats-displays": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/analyzing-categorical-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  "stats-center-spread": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/density-curves-normal-distribution-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  "stats-normal-distributions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/density-curves-normal-distribution-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  "stats-correlation-regression": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/bivariate-data-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  "stats-probability-rules": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/probability-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability/probability-library"],
+  },
+  "stats-random-variables": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/probability-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  "stats-sampling-design": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/gathering-data-ap",
+    backupLessonUrls: ["https://www.khanacademy.org/math/statistics-probability"],
+  },
+  "stats-confidence-tests": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-statistics/xfb5d8e68:inference-categorical-proportions/introduction-confidence-intervals",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/ap-statistics/sampling-distribution-ap",
+      "https://www.khanacademy.org/math/statistics-probability",
+    ],
+  },
+  "prep-word-problems": {
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:algebra-easier/x0fcc98a58ba3bea7:linear-relationship-word-problems-easier/a/v2-sat-lesson-understanding-linear-relationships",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:algebra-easier/x0fcc98a58ba3bea7:systems-of-linear-equations-word-problems-easier/a/v2-sat-lesson-systems-of-linear-equations-word-problems",
+      "https://www.khanacademy.org/test-prep/v2-sat-math",
+    ],
+  },
+  "prep-grid-ins": {
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:preparing-for-the-sat/a/reference-information-on-the-digital-sat-math-test",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:preparing-for-the-sat/a/time-management-on-the-sat-math-test",
+      "https://www.khanacademy.org/test-prep/v2-sat-math",
+    ],
+  },
+  "prep-timing": {
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:preparing-for-the-sat/a/time-management-on-the-sat-math-test",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:what-is-the-new-digital-sat/a/about-the-digital-sat-math-test",
+      "https://www.khanacademy.org/test-prep/v2-sat-math",
+    ],
+  },
+  "prep-mixed-review": {
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:what-is-the-new-digital-sat/a/about-the-digital-sat-math-test",
+    ],
+  },
+  "trig-right-triangle-ratios": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/trigonometry-right-triangles",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry/trigonometry-right-triangles/trig-solve-for-a-side/v/example-trig-to-solve-the-sides-and-angles-of-a-right-triangle"],
+  },
+  "trig-radians-degrees": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "trig-unit-circle-values": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "trig-law-sines-cosines": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/trig-with-general-triangles",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/trigonometry/trig-with-general-triangles/law-of-sines/e/law_of_sines",
+      "https://www.khanacademy.org/math/trigonometry/trig-with-general-triangles/law-of-cosines/v/law-of-cosines-example",
+    ],
+  },
+  "trig-basic-identities": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "trig-sum-difference": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "trig-equations": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "trig-periodic-models": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry"],
+  },
+  "precalc-parent-functions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:composite",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus"],
+  },
+  "precalc-composition-inverses": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:composite",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus"],
+  },
+  "precalc-polynomial-analysis": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:rational-functions"],
+  },
+  "precalc-rational-analysis": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:rational-functions",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus"],
+  },
+  "precalc-log-properties": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-home/alg-exp-and-log"],
+  },
+  "precalc-exponential-models": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-home/alg-exp-and-log"],
+  },
+  "precalc-trig-equations": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities"],
+  },
+  "precalc-sinusoidal-modeling": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func"],
+  },
+  "precalc-average-rate-change": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: ["https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new"],
+  },
+  "precalc-continuity-preview": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus"],
+  },
+  "a2-function-transformations": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-home/alg-functions"],
+  },
+  "a2-rational-expressions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:eq/x2ec2f6f830c9fb89:rational-eq/e/rational-equations-3",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+  },
+  "a2-exponential-functions": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra-home/alg-exp-and-log",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra2"],
+  },
+  "a2-logarithms": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:logs/x2ec2f6f830c9fb89:exp-models/a/logarithms-faq",
+    backupLessonUrls: ["https://www.khanacademy.org/math/algebra-home/alg-exp-and-log"],
+  },
+  "a2-matrices": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:vectors"],
+  },
+  "a2-probability": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: ["https://www.khanacademy.org/math/ap-statistics/probability-ap"],
+  },
+  "a2-trig-intro": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: ["https://www.khanacademy.org/math/trigonometry/trigonometry-right-triangles"],
+  },
+  "a2-complex-numbers": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: ["https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:complex"],
+  },
+};
+
+const courseLessonLinkMap: Record<string, TopicLessonLinkSet> = {
+  "Algebra 2": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/algebra2",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:poly-arithmetic/x2ec2f6f830c9fb89:special-products/a/polynomial-arithmetic-faq",
+      "https://www.khanacademy.org/math/algebra-home/alg-exp-and-log",
+    ],
+  },
+  "Trigonometry": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/trigonometry/trigonometry-right-triangles",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/trigonometry/unit-circle-trig-func",
+      "https://www.khanacademy.org/math/trigonometry/trig-with-general-triangles",
+      "https://www.khanacademy.org/math/trigonometry/trig-equations-and-identities",
+    ],
+  },
+  "Precalculus": {
+    primaryLessonUrl: "https://www.khanacademy.org/math/precalculus",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:composite",
+      "https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:rational-functions",
+      "https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:vectors",
+    ],
+  },
+  "Statistics / Probability": {
     primaryLessonUrl: "https://www.khanacademy.org/math/statistics-probability",
-    backupLessonUrls: ["https://www.khanacademy.org/math/pre-algebra"],
+    backupLessonUrls: [
+      "https://www.khanacademy.org/math/ap-statistics/analyzing-categorical-ap",
+      "https://www.khanacademy.org/math/ap-statistics/density-curves-normal-distribution-ap",
+      "https://www.khanacademy.org/math/ap-statistics/bivariate-data-ap",
+      "https://www.khanacademy.org/math/ap-statistics/gathering-data-ap",
+      "https://www.khanacademy.org/math/ap-statistics/probability-ap",
+    ],
+  },
+  "SAT/ACT Math Prep": {
+    primaryLessonUrl: "https://www.khanacademy.org/test-prep/v2-sat-math",
+    backupLessonUrls: [
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:what-is-the-new-digital-sat/a/about-the-digital-sat-math-test",
+      "https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7:about-the-digital-sat/x0fcc98a58ba3bea7:preparing-for-the-sat/a/time-management-on-the-sat-math-test",
+    ],
   },
 };
 
@@ -869,12 +1094,30 @@ function getLessonSourceName(url: string) {
 
 function resolveTopicLessonLinks(topic: RawTopicNode, courseTitle: string): TopicLessonLinkSet {
   const exact = topicLessonLinkMap[topic.id];
+  const courseSpecific = courseLessonLinkMap[courseTitle];
   const familyFallback = topicLessonFamilyFallbacks[resolveTopicResourceFamily(topic, courseTitle)];
 
   if (exact) {
     return {
       primaryLessonUrl: exact.primaryLessonUrl,
-      backupLessonUrls: [...(exact.backupLessonUrls ?? []), ...(familyFallback.backupLessonUrls ?? []), familyFallback.primaryLessonUrl],
+      backupLessonUrls: [
+        ...(exact.backupLessonUrls ?? []),
+        ...(courseSpecific?.backupLessonUrls ?? []),
+        ...(familyFallback.backupLessonUrls ?? []),
+        ...(courseSpecific ? [courseSpecific.primaryLessonUrl] : []),
+        familyFallback.primaryLessonUrl,
+      ],
+    };
+  }
+
+  if (courseSpecific) {
+    return {
+      primaryLessonUrl: courseSpecific.primaryLessonUrl,
+      backupLessonUrls: [
+        ...(courseSpecific.backupLessonUrls ?? []),
+        ...(familyFallback.backupLessonUrls ?? []),
+        familyFallback.primaryLessonUrl,
+      ],
     };
   }
 

@@ -1107,7 +1107,7 @@ function LearnPageClient() {
                 {t("Ask AI support")}
               </Button>
               <Button
-                variant="ghost"
+                variant="outline"
                 onClick={() => {
                   setActiveTopicView("community");
                   router.push(selectedTopicCommunityHref);
@@ -1401,7 +1401,7 @@ function LearnPageClient() {
                     {t("Ask AI support")}
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     onClick={() => {
                       setActiveTopicView("community");
                       router.push(selectedTopicCommunityHref);
