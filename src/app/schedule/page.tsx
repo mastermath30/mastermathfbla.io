@@ -934,7 +934,7 @@ export default function SchedulePage() {
               <Link href="/tutoring-request">
                 <Button className="press-effect">
                   <Plus className="w-4 h-4" />
-                  {t("Request Tutoring")}
+                  {t("Book Now")}
                 </Button>
               </Link>
               <Button 
