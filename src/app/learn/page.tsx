@@ -19,6 +19,7 @@ import {
   buildCommunityHref,
   normalizeResourcePlaybackTarget,
   parseLearnActionFromSearchParams,
+  resolveQuizDisplayTitle,
   resolveQuizSlug,
 } from "@/lib/learnActions";
 import {
@@ -171,6 +172,7 @@ function LearnPageClient() {
   const [selectedVideoByTopicId, setSelectedVideoByTopicId] = useState<Record<string, string>>({});
   const [startedLessonByTopicId, setStartedLessonByTopicId] = useState<Record<string, boolean>>({});
   const [quizDifficultyPicker, setQuizDifficultyPicker] = useState<QuizDifficultyPickerState>(null);
+  const [pickedDifficultyBySlug, setPickedDifficultyBySlug] = useState<Record<string, "easy" | "medium" | "hard">>({});
 
   const previousXpRef = useRef<number>(progress.xpTotal ?? 0);
   const lastHandledQueryRef = useRef<string>("");
@@ -700,6 +702,15 @@ function LearnPageClient() {
   }, [highlightedNodeId]);
 
   useEffect(() => {
+    if (!quizDifficultyPicker) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setQuizDifficultyPicker(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [quizDifficultyPicker]);
+
+  useEffect(() => {
     if (!activeUnitId) return;
     const target = document.getElementById(`learn-unit-${activeUnitId}`);
     if (target) {
@@ -827,7 +838,9 @@ function LearnPageClient() {
     }
     return activeTopic.recommendedActions.map((action) => labels[action]).filter(Boolean);
   }, [activeTopic, hasLessonVideo, t]);
-  const showLessonWorkspace = hasStartedActiveLesson;
+  const showLessonWorkspace =
+    hasStartedActiveLesson ||
+    (activeFlowState !== "not_started" && activeFlowState !== "locked");
 
   if (!isReady || !hasHydrated) {
     return (
@@ -841,8 +854,14 @@ function LearnPageClient() {
     <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 md:pt-28 learn-page-bg">
       <main className="max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 md:pt-4 md:pb-10 space-y-6">
         {quizDifficultyPicker && (
-          <div className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/60 p-4 sm:items-center">
-            <Card className="w-full max-w-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-[0_28px_90px_-44px_rgba(15,23,42,0.55)] backdrop-blur">
+          <div
+            className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/60 p-4 sm:items-center"
+            onClick={() => setQuizDifficultyPicker(null)}
+          >
+            <Card
+              className="w-full max-w-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-[0_28px_90px_-44px_rgba(15,23,42,0.55)] backdrop-blur"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="border-b border-slate-200/70 bg-gradient-to-br from-white via-slate-50 to-[var(--theme-primary)]/5 p-5 dark:border-slate-800/90 dark:from-slate-900 dark:via-slate-900 dark:to-[var(--theme-primary)]/10 sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -851,7 +870,11 @@ function LearnPageClient() {
                       {t("Choose quiz difficulty")}
                     </div>
                     <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-[2rem]">
-                      {activeTopic?.title ? t("Quiz for {topic}", { topic: activeTopic.title }) : t("Built-in quiz")}
+                      {quizDifficultyPicker?.slug
+                        ? resolveQuizDisplayTitle(quizDifficultyPicker.slug, activeTopic)
+                        : activeTopic?.title
+                        ? `${activeTopic.title} Quiz`
+                        : t("Built-in quiz")}
                     </h2>
                     <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
                       {t("Pick the challenge level that matches how ready you feel. The quiz will stay focused on this topic, but the depth, reasoning, and question style will change with the level you choose.")}
@@ -906,7 +929,14 @@ function LearnPageClient() {
                     <button
                       key={option.id}
                       type="button"
+                      aria-label={`${t("Start {level}", { level: option.title })} — ${option.description}`}
                       onClick={() => {
+                        if (quizDifficultyPicker.slug) {
+                          setPickedDifficultyBySlug((prev) => ({
+                            ...prev,
+                            [quizDifficultyPicker.slug!]: option.id,
+                          }));
+                        }
                         openQuiz({
                           topicId: quizDifficultyPicker.topicId,
                           slug: quizDifficultyPicker.slug,
@@ -914,7 +944,7 @@ function LearnPageClient() {
                         });
                         setQuizDifficultyPicker(null);
                       }}
-                      className="group flex h-full min-h-[220px] flex-col rounded-3xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/70 p-5 text-left shadow-[0_20px_60px_-42px_rgba(15,23,42,0.45)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--theme-primary)]/60 hover:shadow-[0_28px_70px_-36px_rgba(99,102,241,0.28)] dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70 dark:shadow-[0_18px_48px_-36px_rgba(2,6,23,0.8)] dark:hover:border-[var(--theme-primary)]/50 dark:hover:shadow-[0_28px_70px_-36px_rgba(79,70,229,0.24)]"
+                      className="group relative flex h-full min-h-[220px] flex-col rounded-3xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/70 p-5 text-left shadow-[0_20px_60px_-42px_rgba(15,23,42,0.45)] transition-all duration-200 hover:-translate-y-1 hover:border-[var(--theme-primary)]/70 hover:shadow-[0_28px_70px_-36px_rgba(var(--theme-primary-rgb),0.30)] hover:bg-gradient-to-br hover:from-white hover:to-[color-mix(in_srgb,var(--theme-primary)_4%,white)] active:scale-[0.98] active:shadow-[0_12px_40px_-20px_rgba(var(--theme-primary-rgb),0.42)] dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70 dark:shadow-[0_18px_48px_-36px_rgba(2,6,23,0.8)] dark:hover:border-[var(--theme-primary)]/55 dark:hover:shadow-[0_28px_70px_-36px_rgba(var(--theme-primary-rgb),0.26)] dark:hover:from-slate-900 dark:hover:to-[color-mix(in_srgb,var(--theme-primary)_6%,rgb(15_23_42))] focus-visible:outline-2 focus-visible:outline-[var(--theme-primary)] focus-visible:outline-offset-2"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -925,15 +955,15 @@ function LearnPageClient() {
                             {option.title}
                           </p>
                         </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--theme-primary)]/15 bg-[var(--theme-primary)]/8 text-sm font-semibold text-[var(--theme-primary)] transition group-hover:bg-[var(--theme-primary)]/12">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--theme-primary)]/20 bg-[var(--theme-primary)]/9 text-sm font-bold text-[var(--theme-primary)] transition-all duration-200 group-hover:border-transparent group-hover:bg-gradient-to-br group-hover:from-[var(--theme-primary)] group-hover:to-[var(--theme-primary-light)] group-hover:text-white group-hover:shadow-[0_4px_12px_rgba(var(--theme-primary-rgb),0.32)]">
                           {option.title.charAt(0)}
                         </div>
                       </div>
                       <p className="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-300">{option.description}</p>
                       <p className="mt-3 flex-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{option.detail}</p>
-                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--theme-primary)]">
+                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--theme-primary)] group-hover:text-[var(--theme-primary)]">
                         <span>{t("Start {level}", { level: option.title })}</span>
-                        <span aria-hidden="true" className="transition group-hover:translate-x-0.5">→</span>
+                        <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                       </div>
                     </button>
                   ))}
@@ -1547,7 +1577,25 @@ function LearnPageClient() {
 
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
               {resourceHubTab === "lessons" && lessonResources.length === 0 && (
-                <div className="learn-hub-empty">{t("No external lesson links for this topic yet. Use the lesson workspace above or ask AI support.")}</div>
+                <div className="learn-hub-empty md:col-span-2">
+                  <p>{t("No external lesson links for this topic yet.")}</p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => lessonCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                    >
+                      {t("Go to Lesson Workspace")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => openAiTutor({ prompt: activeTopic?.aiPrompt || `Help me with ${activeTopic?.title ?? "this topic"}` })}
+                    >
+                      {t("Ask AI support")}
+                    </Button>
+                  </div>
+                </div>
               )}
               {resourceHubTab === "lessons" && lessonResources.map((resource) => (
                 <a
@@ -1562,9 +1610,6 @@ function LearnPageClient() {
                 </a>
               ))}
 
-              {resourceHubTab === "videos" && videoResources.length === 0 && (
-                <div className="learn-hub-empty">{t("No videos for this topic yet.")}</div>
-              )}
               {resourceHubTab === "videos" && videoResources.map((resource) => (
                 <button
                   key={`${activeTopic?.id}-video-${resource.title}`}
@@ -1633,17 +1678,26 @@ function LearnPageClient() {
               {resourceHubTab === "quizzes" && availableQuizSlugs.map((slug) => (
                 <div key={`${activeTopic?.id}-quiz-${slug}`} className="learn-hub-card">
                   <p className="learn-hub-card-kind">{t("Quiz")}</p>
-                  <p className="learn-hub-card-title">{slug}</p>
-                  <div className="mt-3 flex gap-2">
-                    <Button size="sm" variant="outline" disabled={selectedNode?.state === "locked"} onClick={() => openQuiz({ topicId: activeTopic?.id ?? undefined, slug, difficulty: "easy" })}>
-                      {t("Easy")}
-                    </Button>
-                    <Button size="sm" variant="outline" disabled={selectedNode?.state === "locked"} onClick={() => openQuiz({ topicId: activeTopic?.id ?? undefined, slug, difficulty: "medium" })}>
-                      {t("Medium")}
-                    </Button>
-                    <Button size="sm" variant="outline" disabled={selectedNode?.state === "locked"} onClick={() => openQuiz({ topicId: activeTopic?.id ?? undefined, slug, difficulty: "hard" })}>
-                      {t("Hard")}
-                    </Button>
+                  <p className="learn-hub-card-title">
+                    {resolveQuizDisplayTitle(slug, activeTopic)}
+                  </p>
+                  <div className="mt-4 flex gap-2" role="group" aria-label={t("Choose difficulty")}>
+                    {(["easy", "medium", "hard"] as const).map((diff) => (
+                      <button
+                        key={diff}
+                        type="button"
+                        disabled={selectedNode?.state === "locked"}
+                        aria-label={`${resolveQuizDisplayTitle(slug, activeTopic)} — ${t(diff.charAt(0).toUpperCase() + diff.slice(1))}`}
+                        aria-pressed={pickedDifficultyBySlug[slug] === diff}
+                        className={`quiz-diff-btn${pickedDifficultyBySlug[slug] === diff ? " quiz-diff-btn-selected" : ""}`}
+                        onClick={() => {
+                          setPickedDifficultyBySlug((prev) => ({ ...prev, [slug]: diff }));
+                          openQuiz({ topicId: activeTopic?.id ?? undefined, slug, difficulty: diff });
+                        }}
+                      >
+                        {t(diff.charAt(0).toUpperCase() + diff.slice(1))}
+                      </button>
+                    ))}
                   </div>
                 </div>
               ))}

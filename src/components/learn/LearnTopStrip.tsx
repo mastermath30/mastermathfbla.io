@@ -24,7 +24,7 @@ export function LearnTopStrip({
   onPrimaryAction,
 }: LearnTopStripProps) {
   const { t } = useTranslations();
-  const progressPct = Math.max(0, Math.min(100, Math.round((xpToday / 100) * 100)));
+  const progressPct = Math.max(0, Math.min(100, xpToday % 100 === 0 && xpToday > 0 ? 100 : xpToday % 100));
 
   return (
     <div className="learn-top-strip sticky top-20 md:top-24 z-30">

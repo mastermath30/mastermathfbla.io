@@ -862,19 +862,19 @@ function appendUniqueResources(resources: ResourceItem[], additions: ResourceIte
 
 function ensureTopicVideoResource(topic: RawTopicNode, courseTitle: string): RawTopicNode {
   const hasVideo = topic.resources.some((resource) => resource.kind === "video");
-  const withVideo = hasVideo
+  const withVideo: ResourceItem[] = hasVideo
     ? topic.resources
     : [
         ...topic.resources,
         {
           title: `${topic.title} YouTube walkthrough`,
-          kind: "video",
+          kind: "video" as const,
           href: buildTopicVideoSearchUrl({
             title: topic.title,
             courseTitle,
             summary: topic.summary,
           }),
-          provider: "external",
+          provider: "external" as const,
         },
       ];
 
@@ -1252,7 +1252,7 @@ export const studyGroupSpotlights: StudyGroupSpotlight[] = [
     focus: "Derivatives, integrals, and AP review drills",
     nextSession: "Saturday 10:00 AM",
     members: 24,
-    href: "/study-groups",
+    href: "/study-groups?group=1",
   },
   {
     id: "algebra-foundations",
@@ -1260,7 +1260,7 @@ export const studyGroupSpotlights: StudyGroupSpotlight[] = [
     focus: "Linear equations, number systems, and confidence building",
     nextSession: "Monday 6:00 PM",
     members: 28,
-    href: "/study-groups",
+    href: "/study-groups?group=5",
   },
   {
     id: "stats-data-lab",
@@ -1268,7 +1268,7 @@ export const studyGroupSpotlights: StudyGroupSpotlight[] = [
     focus: "Statistics basics and data interpretation practice",
     nextSession: "Friday 3:00 PM",
     members: 15,
-    href: "/study-groups",
+    href: "/study-groups?group=4",
   },
 ];
 

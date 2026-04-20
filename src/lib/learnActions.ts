@@ -97,8 +97,64 @@ export function buildCommunityHref(input: {
   groupId?: string;
   thread?: string;
 }): string {
-  void input;
-  return "/community";
+  const thread = input.thread ?? input.discussionLabel;
+  const groupId = input.groupId ?? input.studyGroupId;
+  const params = new URLSearchParams();
+  if (groupId) params.set("group", groupId);
+  if (thread) params.set("thread", thread);
+  const qs = params.toString();
+  return qs ? `/community?${qs}` : "/community";
+}
+
+/**
+ * Maps quiz slugs whose display title cannot be derived from the owning topic's title.
+ * Covers: (1) predefined quizzes not linked to a course topic, and (2) slugs inside
+ * multi-quiz topics where the slug subject differs from the topic name.
+ */
+const QUIZ_SLUG_TITLE_OVERRIDES: Record<string, string> = {
+  "algebra-basics": "Algebra Basics",
+  "geometry-proofs": "Geometry Proofs",
+  "calculus-derivatives": "Calculus: Derivatives",
+  "trigonometry-fundamentals": "Trigonometry Fundamentals",
+  "circles-area": "Circles & Area",
+  "sequences-series": "Sequences & Series",
+  "statistics-basics": "Statistics Basics",
+  "polynomial-operations": "Polynomial Operations",
+  // "fractions-percentages" lives inside the Number Systems topic but is its own subject
+  "fractions-percentages": "Fractions & Percentages",
+};
+
+/**
+ * Returns a clean, user-facing quiz title for any slug.
+ * Priority: explicit override → single-quiz topic title → topic lookup → formatted slug.
+ */
+export function resolveQuizDisplayTitle(
+  slug: string,
+  contextTopic?: { title: string; quizSlugs?: string[] } | null
+): string {
+  const override = QUIZ_SLUG_TITLE_OVERRIDES[slug];
+  if (override) return `${override} Quiz`;
+
+  // Single-quiz topic: the topic title IS the quiz subject
+  if (contextTopic && (contextTopic.quizSlugs?.length ?? 0) === 1) {
+    return `${contextTopic.title} Quiz`;
+  }
+
+  // Multi-quiz topic or no context: look up via allTopics
+  const owner = allTopics.find((t) => t.quizSlugs?.includes(slug));
+  if (owner) {
+    if (owner.quizSlugs.length === 1) return `${owner.title} Quiz`;
+    // Multiple slugs on this topic — fall through to slug formatting
+  }
+
+  // Last resort: clean up the slug into title-case
+  return (
+    slug
+      .replace(/^(pa|a1|a2|geo|calc|precalc|trig|alg2)-/, "")
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ") + " Quiz"
+  );
 }
 
 export function resolveCommunityGroupFromCourseId(courseId?: string | null): string | null {

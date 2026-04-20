@@ -51,6 +51,14 @@ interface Post {
   moderationState?: PostModerationState;
 }
 
+interface Reply {
+  id: string;
+  postId: string;
+  body: string;
+  author: string;
+  createdAt: string;
+}
+
 function getStoredCommunityPosts(): Post[] {
   if (typeof window === "undefined") return seedPosts;
   const savedPosts = localStorage.getItem("mm_forum_posts");
@@ -70,6 +78,18 @@ function getStoredCommunityPosts(): Post[] {
 
   localStorage.setItem("mm_forum_posts", JSON.stringify(seedPosts));
   return seedPosts;
+}
+
+function getStoredReplies(): Record<string, Reply[]> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem("mm_forum_replies");
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
 }
 
 function getStoredCommunityReports() {
@@ -227,6 +247,10 @@ function formatTimeAgo(iso: string, locale: string = "en") {
 export default function CommunityPage() {
   const [posts, setPosts] = useState<Post[]>(() => getStoredCommunityPosts());
   const [reports, setReports] = useState<{ postId: string; reason: string; createdAt: string }[]>(() => getStoredCommunityReports());
+  const [repliesByPost, setRepliesByPost] = useState<Record<string, Reply[]>>(() => getStoredReplies());
+  const [openReplyBoxId, setOpenReplyBoxId] = useState<string | null>(null);
+  const [replyDraftByPost, setReplyDraftByPost] = useState<Record<string, string>>({});
+  const [replyErrorByPost, setReplyErrorByPost] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [{ isSignedIn, userName }] = useState(() => getStoredCommunityAuthState());
   const { t, language } = useTranslations();
@@ -303,6 +327,30 @@ export default function CommunityPage() {
       reason,
       createdAt: new Date().toISOString(),
     });
+  };
+
+  const handleReply = (postId: string) => {
+    const draft = (replyDraftByPost[postId] ?? "").trim();
+    if (!draft) {
+      setReplyErrorByPost((prev) => ({ ...prev, [postId]: t("Reply cannot be empty.") }));
+      return;
+    }
+    const reply: Reply = {
+      id: `r_${Date.now()}`,
+      postId,
+      body: sanitizeText(draft),
+      author: isSignedIn ? userName : "Guest",
+      createdAt: new Date().toISOString(),
+    };
+    const updated = {
+      ...repliesByPost,
+      [postId]: [...(repliesByPost[postId] ?? []), reply],
+    };
+    setRepliesByPost(updated);
+    localStorage.setItem("mm_forum_replies", JSON.stringify(updated));
+    setReplyDraftByPost((prev) => ({ ...prev, [postId]: "" }));
+    setReplyErrorByPost((prev) => ({ ...prev, [postId]: "" }));
+    setOpenReplyBoxId(null);
   };
 
   const sortedPosts = [...posts].sort(
@@ -416,42 +464,131 @@ export default function CommunityPage() {
                       <p className="text-slate-400">{t("No posts yet. Be the first to ask a question!")}</p>
                     </div>
                   ) : (
-                    sortedPosts.map((post) => (
-                      <div key={post.id} className="p-5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
-                            <HelpCircle className="w-5 h-5" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
-                                {post.moderationState === "flagged" && (
-                                  <Badge variant="warning">Flagged</Badge>
-                                )}
+                    sortedPosts.map((post) => {
+                      const postReplies = repliesByPost[post.id] ?? [];
+                      const replyCount = postReplies.length;
+                      const isReplyOpen = openReplyBoxId === post.id;
+
+                      return (
+                        <div key={post.id} className="p-5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0" style={{ color: "var(--theme-primary)" }}>
+                              <HelpCircle className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h4 className="font-semibold text-slate-900 dark:text-white">{post.title}</h4>
+                                  {post.moderationState === "flagged" && (
+                                    <Badge variant="warning">Flagged</Badge>
+                                  )}
+                                </div>
+                                <span className="text-slate-400 text-xs shrink-0">
+                                  {formatTimeAgo(post.createdAt, language)}
+                                </span>
                               </div>
-                              <span className="text-slate-400 text-xs shrink-0">
-                                {formatTimeAgo(post.createdAt, language)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <Badge variant={tagColors[post.tag] || "default"}>{post.tag}</Badge>
-                              <span className="text-slate-400 text-xs">{t("by")} {post.author}</span>
-                            </div>
-                            <p className="text-slate-500 text-sm mt-2 line-clamp-2">{post.body}</p>
-                            <div className="mt-2">
-                              <button
-                                type="button"
-                                onClick={() => handleReportPost(post.id)}
-                                className="text-xs text-rose-500 hover:text-rose-400"
-                              >
-                                {t("Report Post")}
-                              </button>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <Badge variant={tagColors[post.tag] || "default"}>{post.tag}</Badge>
+                                <span className="text-slate-400 text-xs">{t("by")} {post.author}</span>
+                              </div>
+                              <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">{post.body}</p>
+
+                              {/* Action row */}
+                              <div className="mt-3 flex items-center gap-4">
+                                <button
+                                  type="button"
+                                  onClick={() => setOpenReplyBoxId(isReplyOpen ? null : post.id)}
+                                  className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] transition-colors"
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5" />
+                                  {replyCount > 0
+                                    ? replyCount === 1
+                                      ? t("1 reply")
+                                      : t("{count} replies", { count: replyCount })
+                                    : t("Reply")}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleReportPost(post.id)}
+                                  className="text-xs text-rose-500 hover:text-rose-400 transition-colors"
+                                >
+                                  {t("Report Post")}
+                                </button>
+                              </div>
+
+                              {/* Threaded replies */}
+                              {replyCount > 0 && (
+                                <div
+                                  className="mt-4 space-y-3 pl-4 border-l-2"
+                                  style={{ borderColor: "rgba(var(--theme-primary-rgb), 0.22)" }}
+                                >
+                                  {postReplies.map((reply) => (
+                                    <div key={reply.id} className="text-sm">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <div
+                                          className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                                          style={{ background: "var(--theme-primary)" }}
+                                        >
+                                          {reply.author.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="font-semibold text-xs text-slate-700 dark:text-slate-300">
+                                          {reply.author}
+                                        </span>
+                                        <span className="text-slate-400 dark:text-slate-500 text-xs">
+                                          {formatTimeAgo(reply.createdAt, language)}
+                                        </span>
+                                      </div>
+                                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed pl-7">
+                                        {reply.body}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Inline reply box */}
+                              {isReplyOpen && (
+                                <div className="mt-4 pl-4 border-l-2" style={{ borderColor: "rgba(var(--theme-primary-rgb), 0.22)" }}>
+                                  <Textarea
+                                    rows={3}
+                                    placeholder={t("Write a reply...")}
+                                    value={replyDraftByPost[post.id] ?? ""}
+                                    onChange={(e) =>
+                                      setReplyDraftByPost((prev) => ({ ...prev, [post.id]: e.target.value }))
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleReply(post.id);
+                                    }}
+                                    autoFocus
+                                  />
+                                  {replyErrorByPost[post.id] && (
+                                    <p className="text-red-500 text-xs mt-1">{replyErrorByPost[post.id]}</p>
+                                  )}
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <Button size="sm" onClick={() => handleReply(post.id)}>
+                                      {t("Post Reply")}
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => {
+                                        setOpenReplyBoxId(null);
+                                        setReplyErrorByPost((prev) => ({ ...prev, [post.id]: "" }));
+                                      }}
+                                    >
+                                      {t("Cancel")}
+                                    </Button>
+                                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto hidden sm:inline">
+                                      {t("Ctrl+Enter to submit")}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>
@@ -487,7 +624,7 @@ export default function CommunityPage() {
                 {featuredStudyGroups.map((group) => (
                   <Link
                     key={group.id}
-                    href="/study-groups"
+                    href={`/study-groups?group=${group.id}`}
                     className="block p-3 rounded-xl bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-center gap-3">
@@ -507,7 +644,7 @@ export default function CommunityPage() {
                   </Link>
                 ))}
                 <Link
-                  href="/study-groups"
+                  href="/study-groups?create=1"
                   className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-500 hover:text-violet-600 hover:border-violet-300 transition-colors"
                 >
                   <Plus className="w-4 h-4" />

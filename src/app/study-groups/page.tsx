@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
@@ -194,8 +195,9 @@ const levelColors: Record<string, "success" | "info" | "purple"> = {
   Advanced: "purple",
 };
 
-export default function StudyGroupsPage() {
+function StudyGroupsPageInner() {
   const { t } = useTranslations();
+  const searchParams = useSearchParams();
   const [groups, setGroups] = useState<StudyGroup[]>(SAMPLE_GROUPS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All Subjects");
@@ -204,6 +206,18 @@ export default function StudyGroupsPage() {
   const [showGroupDetail, setShowGroupDetail] = useState<StudyGroup | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<string[]>(["1"]);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const groupParam = searchParams.get("group");
+    const createParam = searchParams.get("create");
+    if (groupParam) {
+      const match = SAMPLE_GROUPS.find((g) => g.id === groupParam);
+      if (match) setShowGroupDetail(match);
+    }
+    if (createParam === "1") {
+      setShowCreateModal(true);
+    }
+  }, [searchParams]);
 
   // Filter groups
   const filteredGroups = groups.filter((group) => {
@@ -578,8 +592,8 @@ export default function StudyGroupsPage() {
         {/* Group Detail Modal */}
         <AnimatePresence>
           {showGroupDetail && (
-            <GroupDetailModal 
-              group={showGroupDetail} 
+            <GroupDetailModal
+              group={showGroupDetail}
               onClose={() => setShowGroupDetail(null)}
               isJoined={joinedGroups.includes(showGroupDetail.id)}
               onJoin={() => handleJoinGroup(showGroupDetail.id)}
@@ -588,6 +602,14 @@ export default function StudyGroupsPage() {
         </AnimatePresence>
       </main>
     </PageWrapper>
+  );
+}
+
+export default function StudyGroupsPage() {
+  return (
+    <Suspense fallback={null}>
+      <StudyGroupsPageInner />
+    </Suspense>
   );
 }
 
