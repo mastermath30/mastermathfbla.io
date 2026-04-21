@@ -70,12 +70,28 @@ const getTeam = (t: (key: string) => string) => [
   },
 ];
 
+const teamImageStyle = {
+  objectPosition: "center 20%",
+} as const;
+
 const getValues = (t: (key: string) => string) => [
   { icon: Accessibility, title: t("Accessibility"), description: t("Quality education should be available to everyone, regardless of background or location."), color: "violet" },
   { icon: HandHelping, title: t("Community"), description: t("Learning is better together. We foster collaboration and peer support."), color: "green" },
   { icon: Lightbulb, title: t("Clarity"), description: t("Complex concepts deserve clear explanations. No jargon, just understanding."), color: "blue" },
   { icon: TrendingUp, title: t("Growth"), description: t("Every student can improve. We celebrate progress, not perfection."), color: "purple" },
 ];
+
+function getTeamImageStyle(memberId: string) {
+  if (memberId === "ayaan-oberoi") {
+    return { objectPosition: "center 34%" } as const;
+  }
+
+  if (memberId === "khush-kothari") {
+    return { objectPosition: "center 36%" } as const;
+  }
+
+  return teamImageStyle;
+}
 
 export default function AboutPage() {
   const { t } = useTranslations();
@@ -113,7 +129,7 @@ export default function AboutPage() {
                   alt={selectedMember.name}
                   fill
                   className="object-cover"
-                  style={{ objectPosition: "center 18%" }}
+                  style={getTeamImageStyle(selectedMember.id)}
                 />
                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 via-black/5 to-transparent" />
               </div>
@@ -338,8 +354,8 @@ export default function AboutPage() {
                       src={member.image}
                       alt={member.name}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      style={{ objectPosition: "center top" }}
+                      className="object-cover transition-transform duration-500"
+                      style={getTeamImageStyle(member.id)}
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors md:bg-black/0 md:group-hover:bg-black/20">
                       <span className="rounded-full bg-black/50 px-4 py-2 text-sm font-medium text-white opacity-100 transition-opacity backdrop-blur-sm md:opacity-0 md:group-hover:opacity-100">
