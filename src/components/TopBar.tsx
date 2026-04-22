@@ -114,7 +114,7 @@ export function TopBar() {
 	return (
 		<>
 			<nav
-				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
+				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl transition-all duration-500 ${
 					isVisible
 						? "translate-y-0 opacity-100 pointer-events-auto"
 						: "-translate-y-20 md:-translate-y-24 opacity-0 pointer-events-none"
