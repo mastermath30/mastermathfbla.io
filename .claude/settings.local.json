@@ -11,7 +11,8 @@
       "Bash(python3 *)",
       "Bash(npx tsc *)",
       "Bash(npm run *)",
-      "Bash(echo \"Dev server started \\(PID $!\\)\")"
+      "Bash(echo \"Dev server started \\(PID $!\\)\")",
+      "Bash(git *)"
     ]
   }
 }
