@@ -114,7 +114,7 @@ export function TopBar() {
 	return (
 		<>
 			<nav
-				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-0 right-0 mx-auto z-50 w-[min(calc(100vw-2rem),72rem)] transition-all duration-500 ${
+				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-0 right-0 mx-auto z-50 w-[min(calc(100vw-2rem),64rem)] transition-all duration-500 ${
 					isVisible
 						? "translate-y-0 opacity-100 pointer-events-auto"
 						: "-translate-y-20 md:-translate-y-24 opacity-0 pointer-events-none"
@@ -128,22 +128,22 @@ export function TopBar() {
 				{/* Main Navigation */}
 				<div className="w-full">
 					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-lg">
-						<div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+						<div className="flex items-center justify-center gap-6 lg:gap-7 xl:gap-8">
 							{/* Logo */}
 							<Link
 								href="/"
 								data-no-auto-translate="true"
-								className="justify-self-start flex min-w-0 items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
+								className="flex shrink-0 items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
 							>
 								<MathLogo className="w-8 h-8 md:w-10 md:h-10" />
-								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden xl:block whitespace-nowrap">
+								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden lg:block whitespace-nowrap">
 									Math
 									<span className="gradient-text">Master</span>
 								</span>
 							</Link>
 
 							{/* Desktop Navigation */}
-							<div className="hidden lg:flex justify-self-center items-center justify-center gap-3 xl:gap-5 whitespace-nowrap">
+							<div className="hidden lg:flex items-center justify-center gap-4 whitespace-nowrap">
 								{navigation.map((item) => (
 									<Link
 										key={item.name}
@@ -159,7 +159,7 @@ export function TopBar() {
 								))}
 							</div>
 
-							<div className="justify-self-end flex items-center justify-end gap-3">
+							<div className="flex shrink-0 items-center justify-end gap-4">
 								{/* Theme Selector */}
 								<div className="hidden md:block">
 									<ThemeSelector />
