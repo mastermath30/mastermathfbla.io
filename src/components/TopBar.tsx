@@ -126,7 +126,7 @@ export function TopBar() {
 				}}
 			>
 				{/* Main Navigation */}
-				<div className="w-[92vw] max-w-sm md:max-w-5xl mx-auto">
+				<div className="w-full max-w-7xl mx-auto">
 					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
 						<div className="flex items-center justify-between gap-4">
 							{/* Logo */}
