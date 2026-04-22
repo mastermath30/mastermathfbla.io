@@ -114,7 +114,7 @@ export function TopBar() {
 	return (
 		<>
 			<nav
-				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl transition-all duration-500 ${
+				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-0 right-0 z-50 w-full mx-auto transition-all duration-500 ${
 					isVisible
 						? "translate-y-0 opacity-100 pointer-events-auto"
 						: "-translate-y-20 md:-translate-y-24 opacity-0 pointer-events-none"
@@ -126,8 +126,8 @@ export function TopBar() {
 				}}
 			>
 				{/* Main Navigation */}
-				<div className="w-full max-w-7xl mx-auto">
-					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
+				<div className="w-full mx-auto">
+					<div className="mx-auto w-[calc(100%-2rem)] max-w-6xl bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
 						<div className="flex items-center justify-between gap-4">
 							{/* Logo */}
 							<Link
