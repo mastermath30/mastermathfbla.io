@@ -132,53 +132,53 @@ export default function CommunityPage() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
           onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
         >
-          <div className="w-full max-w-md rounded-2xl bg-slate-800 border border-slate-700 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-700 px-6 py-4">
-              <h2 className="text-lg font-semibold text-white">Create a Study Group</h2>
+          <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-slate-600 dark:bg-slate-800">
+            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-600">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Create a Study Group</h2>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-gray-400 transition-colors hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
               >
                 <X size={20} />
               </button>
             </div>
             <form onSubmit={handleCreateGroupSubmit} className="space-y-4 px-6 py-5">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-200">Study Group Name</label>
+                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Study Group Name</label>
                 <input
                   type="text"
                   required
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="e.g. AP Calculus Study Circle"
-                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 dark:border-slate-500 dark:bg-slate-700 dark:text-white dark:placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-200">Subject / Topic</label>
+                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Subject / Topic</label>
                 <input
                   type="text"
                   required
                   value={groupSubject}
                   onChange={(e) => setGroupSubject(e.target.value)}
                   placeholder="e.g. Calculus, SAT Math"
-                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 dark:border-slate-500 dark:bg-slate-700 dark:text-white dark:placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-200">Description</label>
+                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Description</label>
                 <textarea
                   required
                   rows={3}
                   value={groupDescription}
                   onChange={(e) => setGroupDescription(e.target.value)}
                   placeholder="What will your group focus on?"
-                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)] resize-none"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 dark:border-slate-500 dark:bg-slate-700 dark:text-white dark:placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)] resize-none"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-200">Max Members</label>
+                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Max Members</label>
                 <input
                   type="number"
                   required
@@ -187,7 +187,7 @@ export default function CommunityPage() {
                   value={groupMaxMembers}
                   onChange={(e) => setGroupMaxMembers(e.target.value)}
                   placeholder="e.g. 10"
-                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 dark:border-slate-500 dark:bg-slate-700 dark:text-white dark:placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
                 />
               </div>
               <button
