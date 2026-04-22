@@ -114,7 +114,7 @@ export function TopBar() {
 	return (
 		<>
 			<nav
-				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-0 right-0 mx-auto z-50 w-[calc(100%-2rem)] max-w-6xl transition-all duration-500 ${
+				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-0 right-0 mx-auto z-50 w-[min(calc(100vw-2rem),72rem)] transition-all duration-500 ${
 					isVisible
 						? "translate-y-0 opacity-100 pointer-events-auto"
 						: "-translate-y-20 md:-translate-y-24 opacity-0 pointer-events-none"
@@ -126,29 +126,29 @@ export function TopBar() {
 				}}
 			>
 				{/* Main Navigation */}
-				<div className="w-full max-w-7xl mx-auto">
-					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
-						<div className="flex items-center justify-between gap-4">
+				<div className="w-full">
+					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-lg">
+						<div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
 							{/* Logo */}
 							<Link
 								href="/"
 								data-no-auto-translate="true"
-								className="flex items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
+								className="justify-self-start flex min-w-0 items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
 							>
 								<MathLogo className="w-8 h-8 md:w-10 md:h-10" />
-								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden sm:block">
+								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden xl:block whitespace-nowrap">
 									Math
 									<span className="gradient-text">Master</span>
 								</span>
 							</Link>
 
 							{/* Desktop Navigation */}
-							<div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+							<div className="hidden lg:flex justify-self-center items-center justify-center gap-3 xl:gap-5 whitespace-nowrap">
 								{navigation.map((item) => (
 									<Link
 										key={item.name}
 										href={item.href}
-										className={`text-sm font-medium transition-all duration-200 cursor-pointer ${
+										className={`inline-flex items-center text-[13px] xl:text-sm font-medium leading-none transition-all duration-200 cursor-pointer ${
 											pathname === item.href
 												? "text-[var(--theme-primary)]"
 												: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)] hover:scale-105"
@@ -159,60 +159,62 @@ export function TopBar() {
 								))}
 							</div>
 
-							{/* Theme Selector */}
-							<div className="hidden md:block ml-2">
-								<ThemeSelector />
-							</div>
-
-							{/* Desktop Auth Button */}
-							<div className="hidden md:block">
-								<Link
-									href="/auth"
-									className={`relative font-medium px-6 py-2 rounded-full flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
-										pathname === "/auth"
-											? "text-white shadow-lg"
-											: "text-white"
-									}`}
-									style={{
-										background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
-										boxShadow: pathname === "/auth" ? "0 10px 25px -5px rgba(var(--theme-primary-rgb), 0.3)" : undefined
-									}}
-								>
-									{isLoggedIn ? (
-										<>
-											<User className="w-4 h-4" />
-											<span>{userName || t("Account")}</span>
-										</>
-									) : (
-										<span>{t("Sign In")}</span>
-									)}
-								</Link>
-							</div>
-
-							{/* Mobile Menu Button */}
-							<button
-								onClick={() => setIsOpen(!isOpen)}
-								className="lg:hidden -mr-1 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-900 transition-transform duration-200 hover:scale-110 dark:text-white"
-							>
-								<div className="relative w-6 h-6">
-									<Menu
-										size={24}
-										className={`absolute inset-0 transition-all duration-300 ${
-											isOpen
-												? "opacity-0 rotate-180 scale-75"
-												: "opacity-100 rotate-0 scale-100"
-										}`}
-									/>
-									<X
-										size={24}
-										className={`absolute inset-0 transition-all duration-300 ${
-											isOpen
-												? "opacity-100 rotate-0 scale-100"
-												: "opacity-0 -rotate-180 scale-75"
-										}`}
-									/>
+							<div className="justify-self-end flex items-center justify-end gap-3">
+								{/* Theme Selector */}
+								<div className="hidden md:block">
+									<ThemeSelector />
 								</div>
-							</button>
+
+								{/* Desktop Auth Button */}
+								<div className="hidden md:block">
+									<Link
+										href="/auth"
+										className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
+											pathname === "/auth"
+												? "text-white shadow-lg"
+												: "text-white"
+										}`}
+										style={{
+											background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
+											boxShadow: pathname === "/auth" ? "0 10px 25px -5px rgba(var(--theme-primary-rgb), 0.3)" : undefined
+										}}
+									>
+										{isLoggedIn ? (
+											<>
+												<User className="w-4 h-4" />
+												<span>{userName || t("Account")}</span>
+											</>
+										) : (
+											<span>{t("Sign In")}</span>
+										)}
+									</Link>
+								</div>
+
+								{/* Mobile Menu Button */}
+								<button
+									onClick={() => setIsOpen(!isOpen)}
+									className="lg:hidden -mr-1 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-900 transition-transform duration-200 hover:scale-110 dark:text-white"
+								>
+									<div className="relative w-6 h-6">
+										<Menu
+											size={24}
+											className={`absolute inset-0 transition-all duration-300 ${
+												isOpen
+													? "opacity-0 rotate-180 scale-75"
+													: "opacity-100 rotate-0 scale-100"
+											}`}
+										/>
+										<X
+											size={24}
+											className={`absolute inset-0 transition-all duration-300 ${
+												isOpen
+													? "opacity-100 rotate-0 scale-100"
+													: "opacity-0 -rotate-180 scale-75"
+											}`}
+										/>
+									</div>
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
