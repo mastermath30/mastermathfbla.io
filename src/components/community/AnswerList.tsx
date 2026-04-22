@@ -24,6 +24,9 @@ export function AnswerList({ answers }: AnswerListProps) {
             Answer {index + 1}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200">{answer.text}</p>
+          {answer.author && (
+            <p className="mt-2 text-sm text-slate-400 dark:text-slate-500">Answered by {answer.author}</p>
+          )}
         </div>
       ))}
     </div>

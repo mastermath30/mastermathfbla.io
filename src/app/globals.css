@@ -201,7 +201,10 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   /* Prevent horizontal scroll at html level too */
-  overflow-x: hidden;
+  /* overflow-x: clip instead of hidden — clip stops scrollbar bleed without
+     creating a new containing block, which would break position:fixed centering
+     in Safari/iPad (overflow:hidden on html/body is the known root cause). */
+  overflow-x: clip;
 }
 
 body {
@@ -209,7 +212,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   /* Prevent horizontal scroll on mobile */
-  overflow-x: hidden;
+  overflow-x: clip;
   /* iOS safe area support */
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);

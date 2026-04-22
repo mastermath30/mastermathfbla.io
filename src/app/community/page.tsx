@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
+import { X } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/Card";
+import { Button } from "@/components/Button";
 import { PageWrapper } from "@/components/motion";
 import { AskQuestionForm } from "@/components/community/AskQuestionForm";
 import { QuestionList } from "@/components/community/QuestionList";
@@ -11,51 +13,56 @@ import type { Question } from "@/components/community/types";
 const initialQuestions: Question[] = [
   {
     id: "q1",
+    author: "James Carter",
     title: "How do you solve quadratic equations using factoring?",
     body: "I understand the quadratic formula, but I want to solve x^2 + 7x + 12 = 0 by factoring. How do I reliably find the two numbers?",
     answers: [
-      { id: "a1", text: "Find two numbers that multiply to 12 and add to 7: 3 and 4. So x^2 + 7x + 12 = (x + 3)(x + 4) = 0, giving x = -3 or x = -4." },
-      { id: "a2", text: "A good pattern: for x^2 + bx + c, look for factors of c that sum to b. Then set each factor equal to zero after factoring." },
-      { id: "a3", text: "If no integer pair works, factoring over integers may not be possible. Then switch to completing the square or the quadratic formula." },
+      { id: "a1", author: "Noah Kim", text: "Find two numbers that multiply to 12 and add to 7: 3 and 4. So x^2 + 7x + 12 = (x + 3)(x + 4) = 0, giving x = -3 or x = -4." },
+      { id: "a2", author: "Sara Ahmed", text: "A good pattern: for x^2 + bx + c, look for factors of c that sum to b. Then set each factor equal to zero after factoring." },
+      { id: "a3", author: "Liam Chen", text: "If no integer pair works, factoring over integers may not be possible. Then switch to completing the square or the quadratic formula." },
     ],
   },
   {
     id: "q2",
+    author: "Noah Kim",
     title: "What is the difference between permutation and combination?",
     body: "I keep mixing these up in probability. When should I use nPr versus nCr?",
     answers: [
-      { id: "a4", text: "Use permutations when order matters (arrangements), and combinations when order does not matter (groups)." },
-      { id: "a5", text: "Example: choosing president and vice president from 5 students is a permutation. Choosing any 2 students for a team is a combination." },
-      { id: "a6", text: "Formulas: nPr = n!/(n-r)! and nCr = n!/(r!(n-r)!). Notice combinations divide by r! because order is ignored." },
+      { id: "a4", author: "James Carter", text: "Use permutations when order matters (arrangements), and combinations when order does not matter (groups)." },
+      { id: "a5", author: "Ethan Park", text: "Example: choosing president and vice president from 5 students is a permutation. Choosing any 2 students for a team is a combination." },
+      { id: "a6", author: "Maya Ross", text: "Formulas: nPr = n!/(n-r)! and nCr = n!/(r!(n-r)!). Notice combinations divide by r! because order is ignored." },
     ],
   },
   {
     id: "q3",
+    author: "Sara Ahmed",
     title: "How does the unit circle work in trigonometry?",
     body: "I can memorize points but I do not understand why cosine is x and sine is y on the unit circle.",
     answers: [
-      { id: "a7", text: "On the unit circle, radius = 1. A point at angle theta has coordinates (cos theta, sin theta), so x is cosine and y is sine by definition." },
-      { id: "a8", text: "Think right triangle: cos = adjacent/hypotenuse and sin = opposite/hypotenuse. Hypotenuse is 1, so adjacent = cos and opposite = sin." },
+      { id: "a7", author: "Liam Chen", text: "On the unit circle, radius = 1. A point at angle theta has coordinates (cos theta, sin theta), so x is cosine and y is sine by definition." },
+      { id: "a8", author: "Ethan Park", text: "Think right triangle: cos = adjacent/hypotenuse and sin = opposite/hypotenuse. Hypotenuse is 1, so adjacent = cos and opposite = sin." },
     ],
   },
   {
     id: "q4",
+    author: "Liam Chen",
     title: "Why do we need a common denominator when adding fractions?",
     body: "I know the process mechanically, but why can’t we do 1/2 + 1/3 = 2/5?",
     answers: [
-      { id: "a9", text: "Denominators define the size of each part. Halves and thirds are different-sized parts, so you must convert them to equal-sized parts first." },
-      { id: "a10", text: "For 1/2 + 1/3, use denominator 6: 1/2 = 3/6 and 1/3 = 2/6, so total is 5/6." },
-      { id: "a11", text: "Adding numerators and denominators separately changes both quantity and unit size, which is why 2/5 is incorrect." },
+      { id: "a9", author: "James Carter", text: "Denominators define the size of each part. Halves and thirds are different-sized parts, so you must convert them to equal-sized parts first." },
+      { id: "a10", author: "Noah Kim", text: "For 1/2 + 1/3, use denominator 6: 1/2 = 3/6 and 1/3 = 2/6, so total is 5/6." },
+      { id: "a11", author: "Sara Ahmed", text: "Adding numerators and denominators separately changes both quantity and unit size, which is why 2/5 is incorrect." },
     ],
   },
   {
     id: "q5",
+    author: "Maya Ross",
     title: "What does a derivative mean conceptually?",
-    body: "I can take derivatives with rules, but I want intuition for what f'(x) represents.",
+    body: "I can take derivatives with rules, but I want intuition for what f’(x) represents.",
     answers: [
-      { id: "a12", text: "The derivative is the instantaneous rate of change. It tells how fast f(x) changes at a specific x." },
-      { id: "a13", text: "Geometrically, f'(x) is the slope of the tangent line to the graph at that point." },
-      { id: "a14", text: "In physics, if position is s(t), then s'(t) is velocity. That real-world link often makes the concept click." },
+      { id: "a12", author: "Ethan Park", text: "The derivative is the instantaneous rate of change. It tells how fast f(x) changes at a specific x." },
+      { id: "a13", author: "Sara Ahmed", text: "Geometrically, f’(x) is the slope of the tangent line to the graph at that point." },
+      { id: "a14", author: "Noah Kim", text: "In physics, if position is s(t), then s’(t) is velocity. That real-world link often makes the concept click." },
     ],
   },
 ];
@@ -67,6 +74,23 @@ function createId(prefix: string) {
 export default function CommunityPage() {
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(initialQuestions[0]?.id ?? null);
+  const [showModal, setShowModal] = useState(false);
+  const [successToast, setSuccessToast] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [groupSubject, setGroupSubject] = useState("");
+  const [groupDescription, setGroupDescription] = useState("");
+  const [groupMaxMembers, setGroupMaxMembers] = useState("");
+
+  const handleCreateGroupSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setShowModal(false);
+    setGroupName("");
+    setGroupSubject("");
+    setGroupDescription("");
+    setGroupMaxMembers("");
+    setSuccessToast(true);
+    setTimeout(() => setSuccessToast(false), 3000);
+  };
 
   const selectedQuestion = useMemo(
     () => questions.find((question) => question.id === selectedQuestionId) ?? null,
@@ -102,14 +126,106 @@ export default function CommunityPage() {
 
   return (
     <PageWrapper className="min-h-screen bg-slate-50 px-4 pb-20 pt-24 dark:bg-slate-950 sm:px-6">
+      {/* Create Study Group Modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
+        >
+          <div className="w-full max-w-md rounded-2xl bg-slate-800 border border-slate-700 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-700 px-6 py-4">
+              <h2 className="text-lg font-semibold text-white">Create a Study Group</h2>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleCreateGroupSubmit} className="space-y-4 px-6 py-5">
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-slate-200">Study Group Name</label>
+                <input
+                  type="text"
+                  required
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="e.g. AP Calculus Study Circle"
+                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-slate-200">Subject / Topic</label>
+                <input
+                  type="text"
+                  required
+                  value={groupSubject}
+                  onChange={(e) => setGroupSubject(e.target.value)}
+                  placeholder="e.g. Calculus, SAT Math"
+                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-slate-200">Description</label>
+                <textarea
+                  required
+                  rows={3}
+                  value={groupDescription}
+                  onChange={(e) => setGroupDescription(e.target.value)}
+                  placeholder="What will your group focus on?"
+                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)] resize-none"
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-slate-200">Max Members</label>
+                <input
+                  type="number"
+                  required
+                  min={2}
+                  max={100}
+                  value={groupMaxMembers}
+                  onChange={(e) => setGroupMaxMembers(e.target.value)}
+                  placeholder="e.g. 10"
+                  className="w-full rounded-xl border border-slate-500 bg-slate-600 px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:border-[var(--theme-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
+              >
+                Create Group
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Success toast */}
+      {successToast && (
+        <div className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full bg-[var(--theme-primary)] px-6 py-3 text-sm font-semibold text-white shadow-lg">
+          Study group created!
+        </div>
+      )}
+
       <main className="mx-auto w-full max-w-7xl space-y-6">
         <Card variant="glass" className="p-6 md:p-8">
-          <CardHeader>
-            <CardTitle className="text-3xl">Community Q&A</CardTitle>
-            <CardDescription>
-              Ask math questions, explore existing threads, and help others with clear explanations.
-            </CardDescription>
-          </CardHeader>
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <CardHeader className="p-0">
+              <CardTitle className="text-3xl">Community Q&A</CardTitle>
+              <CardDescription>
+                Ask math questions, explore existing threads, and help others with clear explanations.
+              </CardDescription>
+            </CardHeader>
+            <Button
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="shrink-0 rounded-full"
+            >
+              Create Study Group
+            </Button>
+          </div>
           <AskQuestionForm onSubmitQuestion={handleAskQuestion} />
         </Card>
 
