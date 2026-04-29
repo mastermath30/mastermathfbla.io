@@ -12,7 +12,8 @@
       "Bash(npx tsc *)",
       "Bash(npm run *)",
       "Bash(echo \"Dev server started \\(PID $!\\)\")",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(npx vercel *)"
     ]
   }
 }
