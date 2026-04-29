@@ -788,7 +788,6 @@ export const translations: TranslationTable = {
     "Last 3 Months": "Last 3 Months",
     "Last Month": "Last Month",
     "Last Name": "Last Name",
-    "Learn": "Learn",
     "Learn path panel": "Learn path panel",
     "Learning Progress": "Learning Progress",
     "Loading Desmos graphing calculator...": "Loading Desmos graphing calculator...",
