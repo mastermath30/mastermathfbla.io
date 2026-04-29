@@ -47,7 +47,36 @@ import {
   Users,
   Info,
   HelpCircle,
+  Mic,
 } from "lucide-react";
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
+  onerror: ((event: Event) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+interface SpeechRecognitionResultEvent extends Event {
+  readonly resultIndex: number;
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionConstructor {
+  new(): SpeechRecognitionInstance;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
 
 // ── Backend URL ───────────────────────────────────────────────────────────
 // NEXT_PUBLIC_* vars are inlined into the client bundle at build time.
@@ -100,6 +129,39 @@ const NAVIGATION_PROMPTS = [
 // Valid navigation paths the AI can direct users to
 const VALID_PATHS = ["/", "/about", "/learn", "/resources", "/dashboard", "/schedule", "/tutors", "/community", "/study-groups", "/support", "/auth"];
 
+// Voice command → route map
+const VOICE_COMMAND_ROUTES: Record<string, string> = {
+  home: "/",
+  about: "/about",
+  learn: "/learn",
+  resources: "/resources",
+  dashboard: "/dashboard",
+  schedule: "/schedule",
+  tutors: "/tutors",
+  community: "/community",
+  "study groups": "/study-groups",
+  support: "/support",
+  settings: "/support",
+  "sign in": "/auth",
+  login: "/auth",
+  analytics: "/dashboard",
+};
+
+function matchVoiceCommand(transcript: string): string | null {
+  const lower = transcript.toLowerCase().trim();
+  const navTriggers = ["take me to", "go to", "navigate to", "open", "show me", "go home", "take me home"];
+
+  for (const trigger of navTriggers) {
+    if (lower.includes(trigger)) {
+      for (const [key, path] of Object.entries(VOICE_COMMAND_ROUTES)) {
+        if (lower.includes(key)) return path;
+      }
+    }
+  }
+  if (lower === "home" || lower === "go home" || lower === "take me home") return "/";
+  return null;
+}
+
 const PAGE_LABELS: Record<string, string> = {
   "/": "Home",
   "/about": "About Us",
@@ -126,8 +188,16 @@ export function AIMathTutor() {
   const [conversations, setConversations] = useState<ConversationHistory[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transcriptRef = useRef<string>("");
+  // Kept in sync via effects below so toggleListening never captures stale callbacks
+  const sendTextRef = useRef<(text: string) => Promise<void>>(async () => {});
+  const navigatePageRef = useRef<(path: string) => void>(() => {});
 
   // Extract [NAVIGATE:/path] commands from AI response
   const extractNavigation = useCallback((content: string): { cleanContent: string; path: string | null } => {
@@ -145,6 +215,19 @@ export function AIMathTutor() {
     setPendingNavigation(null);
     router.push(path);
   }, [router]);
+
+  // Detect speech recognition support (client-side only)
+  useEffect(() => {
+    setIsSpeechSupported("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
+  }, []);
+
+  // Stop recognition and clear timers on unmount
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop();
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+    };
+  }, []);
 
   // Load conversation history from localStorage
   useEffect(() => {
@@ -251,12 +334,96 @@ export function AIMathTutor() {
     [extractNavigation, isLoading, messages, t]
   );
 
+  // Keep stable refs in sync so toggleListening never closes over stale callbacks
+  useEffect(() => { sendTextRef.current = sendText; }, [sendText]);
+  useEffect(() => { navigatePageRef.current = navigateToPage; }, [navigateToPage]);
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     const messageText = input.trim();
     setInput("");
     await sendText(messageText);
   };
+
+  const toggleListening = useCallback(() => {
+    // Stop if already listening
+    if (isListening) {
+      recognitionRef.current?.stop();
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognitionCtor =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognitionCtor) return;
+
+    transcriptRef.current = "";
+    const recognition = new SpeechRecognitionCtor();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (event: SpeechRecognitionResultEvent) => {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+
+      let newFinal = "";
+      let newInterim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) newFinal += event.results[i][0].transcript;
+        else newInterim += event.results[i][0].transcript;
+      }
+
+      if (newFinal) transcriptRef.current += newFinal + " ";
+      setInput((transcriptRef.current + newInterim).trim());
+
+      if (newFinal) {
+        const full = transcriptRef.current.trim();
+        const navPath = matchVoiceCommand(full);
+        if (navPath) {
+          recognition.stop();
+          setIsListening(false);
+          setInput("");
+          transcriptRef.current = "";
+          if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+          navigatePageRef.current(navPath);
+          return;
+        }
+
+        silenceTimerRef.current = setTimeout(() => {
+          silenceTimerRef.current = null;
+          const text = transcriptRef.current.trim();
+          transcriptRef.current = "";
+          recognition.stop();
+          setIsListening(false);
+          setInput("");
+          if (text) void sendTextRef.current(text);
+        }, 2000);
+      }
+    };
+
+    recognition.onerror = () => {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      const text = transcriptRef.current.trim();
+      if (text && !silenceTimerRef.current) {
+        transcriptRef.current = "";
+        setIsListening(false);
+        setInput("");
+        void sendTextRef.current(text);
+      } else {
+        setIsListening(false);
+      }
+    };
+
+    recognition.start();
+  }, [isListening]);
 
   useEffect(() => {
     const onOpenAITutor = (event: Event) => {
@@ -641,7 +808,11 @@ export function AIMathTutor() {
 
               {/* Input */}
               <div className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.86)_0%,rgba(2,6,23,0.96)_100%)] p-4">
-                <div className="flex gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                <div className={`flex gap-2 rounded-2xl border p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 ${
+                  isListening
+                    ? "border-violet-400/40 bg-violet-500/[0.06] shadow-[0_0_24px_rgba(139,92,246,0.15)]"
+                    : "border-white/10 bg-white/[0.04]"
+                }`}>
                   <textarea
                     ref={inputRef}
                     value={input}
@@ -652,10 +823,40 @@ export function AIMathTutor() {
                         handleSend();
                       }
                     }}
-                    placeholder={t("Ask me anything...")}
+                    placeholder={isListening ? t("Listening...") : t("Ask me anything...")}
                     className="flex-1 resize-none rounded-xl border border-transparent bg-transparent px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                     rows={1}
                   />
+
+                  {/* Mic button */}
+                  {isSpeechSupported && (
+                    <button
+                      onClick={toggleListening}
+                      aria-label={isListening ? "Stop voice input" : "Start voice input"}
+                      title={isListening ? "Stop listening" : "Voice input"}
+                      className={`relative flex items-center justify-center rounded-xl border px-3 py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-400/60 ${
+                        isListening
+                          ? "border-violet-400/50 bg-violet-500/[0.18] text-violet-300 shadow-[0_0_18px_rgba(139,92,246,0.40)]"
+                          : "border-white/10 bg-white/[0.04] text-slate-400 hover:border-violet-300/30 hover:bg-violet-500/[0.08] hover:text-violet-300 active:scale-95"
+                      }`}
+                    >
+                      {isListening && (
+                        <motion.span
+                          className="absolute inset-[-3px] rounded-xl border border-violet-400/50"
+                          animate={{ scale: [1, 1.22, 1], opacity: [0.6, 0, 0.6] }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      )}
+                      <motion.span
+                        animate={isListening ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+                        transition={{ duration: 0.9, repeat: isListening ? Infinity : 0, ease: "easeInOut" }}
+                        className="relative z-10 flex items-center justify-center"
+                      >
+                        <Mic className="w-4 h-4" />
+                      </motion.span>
+                    </button>
+                  )}
+
                   <button
                     onClick={handleSend}
                     disabled={!input.trim() || isLoading}
@@ -664,8 +865,16 @@ export function AIMathTutor() {
                     <Send className="w-4 h-4" />
                   </button>
                 </div>
-                <p className="mt-2 text-center text-xs text-slate-500">
-                  {t("Press Enter to send • Shift+Enter for new line")}
+                <p className="mt-2 text-center text-xs transition-colors duration-200">
+                  {isListening ? (
+                    <span className="font-medium text-violet-400 animate-pulse">
+                      {t("Listening")}... &bull; {t("Tap mic to stop or wait to auto-send")}
+                    </span>
+                  ) : (
+                    <span className="text-slate-500">
+                      {t("Press Enter to send • Shift+Enter for new line")}
+                    </span>
+                  )}
                 </p>
               </div>
             </motion.div>
