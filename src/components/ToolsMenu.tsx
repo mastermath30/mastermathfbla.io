@@ -38,7 +38,7 @@ const getTools = (t: (key: string) => string): Tool[] => [
   },
   {
     id: "calculator",
-    name: t("Calculator"),
+    name: t("Graphing Calculator"),
     icon: <Calculator className="w-5 h-5" />,
     color: "from-emerald-500 to-teal-600",
     shortcut: "Alt+C",
@@ -95,7 +95,7 @@ export function ToolsMenu() {
   return (
     <>
       {/* Desktop Tools Menu Button */}
-      <div className="tools-menu-container hidden md:block fixed bottom-6 left-[5.75rem] z-[89]">
+      <div className="tools-menu-container hidden md:block fixed bottom-6 left-[5.25rem] lg:left-[5.75rem] z-[89]">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className={`flex w-14 h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 touch-manipulation ${
@@ -179,7 +179,7 @@ export function ToolsMenu() {
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label={t("Close tools")}
                 >
                   <X className="w-4 h-4 text-slate-500" />

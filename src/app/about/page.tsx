@@ -1,12 +1,16 @@
+// i18n-allow-hardcoded
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import malharPawarImage from "../../../Images/Malhar Pawar.png";
+import ayaanOberoiImage from "../../../Images/Ayaan Oberoi.png";
+import khushKothariImage from "../../../Images/Khush Kothari.png";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal, ParallaxSection, TypingText } from "@/components/motion";
+import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Heart,
@@ -38,30 +42,37 @@ const getSteps = (t: (key: string) => string) => [
 
 const getTeam = (t: (key: string) => string) => [
   { 
-    name: "Sarah Johnson", 
-    role: t("Founder & Lead Educator"), 
-    initials: "SJ", 
-    bio: t("PhD in Mathematics with 10+ years of teaching experience at top universities."), 
-    fullBio: "Dr. Sarah Johnson earned her PhD in Applied Mathematics from MIT and has dedicated her career to making math accessible to everyone. With over 10 years of teaching experience at Stanford and Berkeley, she noticed that many students struggled not because they lacked ability, but because they lacked the right resources and support. This inspired her to create MathMaster. Sarah believes that every student can excel in mathematics with the right guidance and community support. When she's not teaching, she enjoys hiking, playing chess, and mentoring young educators.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" 
+    id: "malhar-pawar",
+    name: "Malhar Pawar", 
+    role: t("Founder"), 
+    initials: "MP", 
+    bio: t("Leads MathMaster with a focus on accessible, high-quality math learning."), 
+    fullBio: t("Malhar Pawar founded MathMaster to give students a clearer, more supportive way to learn math. He leads product direction and learning experience quality, with a focus on making the platform approachable without losing rigor."),
+    image: malharPawarImage,
   },
   { 
-    name: "Michael Chen", 
+    id: "ayaan-oberoi",
+    name: "Ayaan Oberoi", 
     role: t("Head of Technology"), 
-    initials: "MC", 
-    bio: t("Software Engineer & Education Technology Specialist. Built platforms for millions of users."), 
-    fullBio: "Michael Chen brings 15 years of experience in software engineering and education technology to MathMaster. Previously, he led engineering teams at Google and Coursera, where he built learning platforms used by millions of students worldwide. Michael is passionate about creating intuitive, accessible technology that removes barriers to education. He holds a Master's degree in Computer Science from Carnegie Mellon and is a strong advocate for open-source education tools. In his free time, Michael contributes to coding education nonprofits and enjoys building robots with his two kids.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" 
+    initials: "AO", 
+    bio: t("Leads the technical foundation of MathMaster and turns ideas into reliable software."), 
+    fullBio: t("Ayaan Oberoi leads technology at MathMaster, with a focus on performance, scalability, and the systems behind the learning experience. He works across the stack to keep the platform fast, reliable, and easy to extend."),
+    image: ayaanOberoiImage,
   },
   { 
-    name: "Priya Patel", 
+    id: "khush-kothari",
+    name: "Khush Kothari", 
     role: t("Community Manager"), 
-    initials: "PP", 
-    bio: t("Expert in building and nurturing learning communities. Passionate about student success."), 
-    fullBio: "Priya Patel has spent her career fostering supportive learning environments where students thrive. With a background in Educational Psychology from Columbia University, she understands the importance of community in the learning process. Before joining MathMaster, Priya managed student success programs at Khan Academy and built volunteer tutor networks serving underrepresented students. She believes that peer support and mentorship are just as important as great content. Priya is fluent in four languages and loves connecting with students from diverse backgrounds around the world.",
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" 
+    initials: "KK", 
+    bio: t("Shapes the community experience so students can connect, collaborate, and keep learning together."), 
+    fullBio: t("Khush Kothari leads the MathMaster community experience, shaping how students connect, ask questions, and support one another. He focuses on creating a welcoming environment where peer learning stays active and useful every day."),
+    image: khushKothariImage,
   },
 ];
+
+const teamImageStyle = {
+  objectPosition: "center 20%",
+} as const;
 
 const getValues = (t: (key: string) => string) => [
   { icon: Accessibility, title: t("Accessibility"), description: t("Quality education should be available to everyone, regardless of background or location."), color: "violet" },
@@ -70,57 +81,71 @@ const getValues = (t: (key: string) => string) => [
   { icon: TrendingUp, title: t("Growth"), description: t("Every student can improve. We celebrate progress, not perfection."), color: "purple" },
 ];
 
+function getTeamImageStyle(memberId: string) {
+  if (memberId === "ayaan-oberoi") {
+    return { objectPosition: "center 34%" } as const;
+  }
+
+  if (memberId === "khush-kothari") {
+    return { objectPosition: "center 36%" } as const;
+  }
+
+  return teamImageStyle;
+}
+
 export default function AboutPage() {
   const { t } = useTranslations();
-  const [selectedMember, setSelectedMember] = useState<ReturnType<typeof getTeam>[0] | null>(null);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const stats = getStats(t);
   const steps = getSteps(t);
   const team = getTeam(t);
   const values = getValues(t);
-  const aboutWord = t("About");
-  const aboutWordSpeed = 74;
-  const brandWordDelay = aboutWord.length * aboutWordSpeed + 420;
+  const selectedMember = team.find((member) => member.id === selectedMemberId) ?? null;
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Team Member Modal */}
       {selectedMember && (
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-          onClick={() => setSelectedMember(null)}
+          onClick={() => setSelectedMemberId(null)}
         >
           <div 
-            className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-scale-pop"
+            className="animate-scale-pop flex max-h-[92vh] w-full max-w-3xl flex-col overflow-y-auto rounded-[28px] border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header with image */}
-            <div className="relative h-48 sm:h-64 bg-slate-200 dark:bg-slate-800">
-              <Image
-                src={selectedMember.image}
-                alt={selectedMember.name}
-                fill
-                className="object-cover object-[center_20%]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <button 
-                onClick={() => setSelectedMember(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors"
+            <div className="relative bg-slate-200/70 px-4 pb-4 pt-14 dark:bg-slate-800/70 sm:px-6 sm:pb-6 sm:pt-16">
+              <button
+                onClick={() => setSelectedMemberId(null)}
+                className="absolute right-4 top-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-black/50 sm:right-5 sm:top-5"
+                aria-label={t("Close")}
               >
                 <X className="w-5 h-5 text-white" />
               </button>
-              <div className="absolute bottom-4 left-6 right-6">
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1">{selectedMember.name}</h3>
-                <p className="text-sm sm:text-base font-medium" style={{ color: 'var(--theme-primary-light)' }}>{selectedMember.role}</p>
+              <div className="relative mx-auto aspect-[3/4] w-full max-w-[240px] overflow-hidden rounded-[28px] bg-slate-100 shadow-[0_20px_50px_rgba(15,23,42,0.14)] dark:bg-slate-950/70 dark:shadow-[0_24px_60px_rgba(2,6,23,0.45)] sm:max-w-[280px] md:max-w-[320px]">
+                <Image
+                  src={selectedMember.image}
+                  alt={selectedMember.name}
+                  fill
+                  className="object-cover"
+                  style={getTeamImageStyle(selectedMember.id)}
+                />
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 via-black/5 to-transparent" />
+              </div>
+              <div className="px-2 pb-0 pt-4 text-center sm:px-4 sm:pt-5">
+                <h3 className="mb-1 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">{selectedMember.name}</h3>
+                <p className="text-sm font-medium sm:text-base" style={{ color: 'var(--theme-primary)' }}>{selectedMember.role}</p>
               </div>
             </div>
             
             {/* Content */}
-            <div className="p-6 sm:p-8">
+            <div className="p-5 pt-5 sm:p-8 sm:pt-6">
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
                 {selectedMember.fullBio}
               </p>
               <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
-                <Button className="w-full sm:w-auto" onClick={() => setSelectedMember(null)}>
+                <Button className="w-full sm:w-auto" onClick={() => setSelectedMemberId(null)}>
                   {t("Close")}
                 </Button>
               </div>
@@ -132,7 +157,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <header className="relative min-h-[70vh] flex items-center overflow-hidden">
         {/* Background */}
-        <ParallaxSection className="absolute inset-0" speed={0.12}>
+        <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&h=1080&fit=crop"
             alt="Students collaborating"
@@ -141,9 +166,7 @@ export default function AboutPage() {
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/60" />
-          <div className="hero-vignette-layer" />
-          <div className="hero-grain-layer" />
-        </ParallaxSection>
+        </div>
 
         {/* Decorative elements */}
         <div className="absolute top-20 right-10 md:right-20 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl opacity-30" style={{ background: 'var(--theme-primary)' }} />
@@ -155,19 +178,16 @@ export default function AboutPage() {
         <div className="hidden lg:block absolute bottom-32 left-[8%] text-3xl md:text-5xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary-light)' }}>∑</div>
         <div className="hidden lg:block absolute bottom-24 right-[12%] text-3xl md:text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary)' }}>√</div>
 
-        <div className="relative max-w-7xl mx-auto px-6 pt-28 pb-20 md:pt-36">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur border rounded-full text-sm font-medium mb-6" style={{ background: 'rgba(var(--theme-primary-rgb), 0.2)', borderColor: 'rgba(var(--theme-primary-rgb), 0.3)', color: 'var(--theme-primary-light)' }}>
               <Heart className="w-4 h-4" />
               {t("Our Story")}
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              <TypingText text={aboutWord} speedMs={aboutWordSpeed} />{" "}
-              <span className="gradient-text">
-                <TypingText text="MathMaster" speedMs={70} delayMs={brandWordDelay} />
-              </span>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6">
+              {t("About")} <span className="gradient-text">MathMaster</span>
             </h1>
-            <p className="text-xl text-white leading-relaxed mb-8">
+            <p className="text-base sm:text-xl text-white leading-relaxed mb-8">
               {t("We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you're stuck.")}
             </p>
             <div className="flex flex-wrap gap-4">
@@ -178,7 +198,7 @@ export default function AboutPage() {
                 </Button>
               </Link>
               <Link href="/community">
-                <Button size="lg" style={{ backgroundColor: 'var(--theme-primary)', color: 'white', borderColor: 'var(--theme-primary)' }}>
+                <Button size="lg" variant="outline" className="border-white/25 bg-white/10 text-white backdrop-blur hover:bg-white/15 hover:text-white">
                   <MessageCircle className="w-5 h-5" />
                   {t("Visit the Forum")}
                 </Button>
@@ -191,7 +211,7 @@ export default function AboutPage() {
       {/* Stats Section */}
       <section className="py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-5xl mx-auto px-6">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {stats.map((stat) => (
               <div 
@@ -226,9 +246,9 @@ export default function AboutPage() {
                   className="object-cover rounded-3xl"
                 />
               </div>
-              {/* Floating badge */}
-              <div 
-                className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
+              {/* Floating badge — hidden on mobile to avoid overflow collision */}
+              <div
+                className="hidden sm:block absolute -bottom-6 -right-6 bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
                 style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.15)' }}
               >
                 <div className="flex items-center gap-3">
@@ -246,7 +266,7 @@ export default function AboutPage() {
               <SectionLabel icon={Target} className="mb-6">
                 {t("Our Mission")}
               </SectionLabel>
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-6">
                 {t("Making Math Accessible to Everyone")}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
@@ -261,15 +281,15 @@ export default function AboutPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
-        <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Rocket} className="mb-6">
               {t("Getting Started")}
             </SectionLabel>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-6">
               {t("How It Works")}
             </h2>
           </div>
@@ -308,44 +328,45 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Users} className="mb-6">
               {t("Meet the Team")}
             </SectionLabel>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-6">
               {t("Meet the Team")}
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {team.map((member) => (
               <button
                 key={member.name}
                 type="button"
-                onClick={() => setSelectedMember(member)}
-                className="text-left"
+                onClick={() => setSelectedMemberId(member.id)}
+                className="h-full text-left"
               >
-                <Card className="text-center overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1" padding="none">
-                  <div className="relative h-72 bg-slate-200 dark:bg-slate-950">
+                <Card className="group flex h-full flex-col overflow-hidden text-center cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1" padding="none">
+                  <div className="relative aspect-[4/5] bg-slate-200 dark:bg-slate-950">
                     <Image
                       src={member.image}
                       alt={member.name}
                       fill
-                      className="object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover transition-transform duration-500"
+                      style={getTeamImageStyle(member.id)}
                     />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-sm font-medium bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors md:bg-black/0 md:group-hover:bg-black/20">
+                      <span className="rounded-full bg-black/50 px-4 py-2 text-sm font-medium text-white opacity-100 transition-opacity backdrop-blur-sm md:opacity-0 md:group-hover:opacity-100">
                         {t("Click to learn more")}
                       </span>
                     </div>
                   </div>
-                  <div className="p-6">
+                  <div className="flex flex-1 flex-col p-6">
                     <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{member.name}</h3>
                     <p className="text-sm font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>{member.role}</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{member.bio}</p>
+                    <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{member.bio}</p>
                   </div>
                 </Card>
               </button>
@@ -355,15 +376,15 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <SectionLabel icon={Heart} className="mb-6">
               {t("What We Believe")}
             </SectionLabel>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-6">
               {t("Our Core Values")}
             </h2>
           </div>
@@ -383,12 +404,12 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               {t("Ready to Start Learning?")}
             </h2>
           </FadeIn>
@@ -411,7 +432,7 @@ export default function AboutPage() {
 
       {/* Footer */}
       <footer className="py-12 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>

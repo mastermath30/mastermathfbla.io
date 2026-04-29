@@ -40,3 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+# Keep npm as the single package manager in this repo.
+pnpm-lock.yaml

@@ -1,3 +1,4 @@
+// i18n-allow-hardcoded
 "use client";
 
 import { useState, useEffect, FormEvent, Suspense } from "react";
@@ -11,6 +12,11 @@ import { MathLogo } from "@/components/MathLogo";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
 import { useLanguage } from "@/components/LanguageProvider";
 import { languages } from "@/lib/i18n";
+import { setGlobalTutorialCompleted, setGlobalTutorialLastRoute, setGlobalTutorialStep } from "@/lib/progress";
+import { saveLearningProgressToCloud, upsertProfile } from "@/lib/cloud";
+import { emitAuthStateChanged } from "@/lib/auth";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { getLearningProgress } from "@/lib/progress";
 import {
   User,
   Lock,
@@ -56,30 +62,21 @@ function AuthPageContent() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
-  const [bookingAction, setBookingAction] = useState(false);
   const [isColorblindMode, setIsColorblindMode] = useState(false);
+  const redirectUrl = searchParams.get("redirect");
+  const bookingAction = searchParams.get("action") === "book";
 
   useEffect(() => {
-    // Check for redirect params
-    const redirect = searchParams.get("redirect");
-    const action = searchParams.get("action");
-    if (redirect) {
-      setRedirectUrl(redirect);
-    }
-    if (action === "book") {
-      setBookingAction(true);
-    }
-    
+    const timer = window.setTimeout(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("mm_profile") || "null");
       const session = JSON.parse(localStorage.getItem("mm_session") || "null");
       if (stored && session && session.email === stored.email) {
         setProfile(stored);
         // If already logged in and there's a redirect, go there
-        if (redirect) {
+        if (redirectUrl) {
           localStorage.setItem("isLoggedIn", "true");
-          router.push(redirect);
+          router.push(redirectUrl);
         }
       }
     } catch {
@@ -95,9 +92,12 @@ function AuthPageContent() {
       document.documentElement.classList.remove("colorblind-mode");
       document.body.classList.remove("colorblind-mode");
     }
-  }, [searchParams, router]);
+    }, 0);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    return () => window.clearTimeout(timer);
+  }, [redirectUrl, router]);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     const form = e.currentTarget;
@@ -125,30 +125,109 @@ function AuthPageContent() {
         return;
       }
 
+      const supabase = getSupabaseBrowserClient();
+      let supabaseUserId: string | null = null;
+      if (supabase) {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              first_name: firstName,
+              last_name: lastName,
+              username: username || `${firstName} ${lastName}`,
+            },
+          },
+        });
+        if (signUpError) {
+          setError(signUpError.message);
+          return;
+        }
+        supabaseUserId = data.user?.id ?? null;
+      }
+
       // Use username if provided, otherwise default to FirstName LastName
       const displayUsername = username || `${firstName} ${lastName}`;
       const newProfile: Profile = { email, firstName, lastName, username: displayUsername };
       localStorage.setItem("mm_profile", JSON.stringify(newProfile));
       localStorage.setItem("mm_session", JSON.stringify({ email }));
       localStorage.setItem("isLoggedIn", "true");
+      if (supabaseUserId) {
+        localStorage.setItem("mm_user_id", supabaseUserId);
+        await upsertProfile({
+          userId: supabaseUserId,
+          email,
+          firstName,
+          lastName,
+          username: displayUsername,
+        });
+        const migratedKey = `mm_cloud_progress_migrated_${supabaseUserId}`;
+        if (localStorage.getItem(migratedKey) !== "true") {
+          await saveLearningProgressToCloud(supabaseUserId, getLearningProgress());
+          localStorage.setItem(migratedKey, "true");
+        }
+      }
+      localStorage.setItem("mm_global_tutorial_pending_v1", "true");
+      setGlobalTutorialCompleted(false);
+      setGlobalTutorialStep(0);
+      setGlobalTutorialLastRoute("/");
+      emitAuthStateChanged();
       setProfile(newProfile);
       router.push(redirectUrl || "/dashboard");
     } else {
+      const supabase = getSupabaseBrowserClient();
+      if (supabase) {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (signInError) {
+          setError(signInError.message);
+          return;
+        }
+        if (data.user?.id) {
+          localStorage.setItem("mm_user_id", data.user.id);
+          const migratedKey = `mm_cloud_progress_migrated_${data.user.id}`;
+          if (localStorage.getItem(migratedKey) !== "true") {
+            await saveLearningProgressToCloud(data.user.id, getLearningProgress());
+            localStorage.setItem(migratedKey, "true");
+          }
+        }
+      }
+
       const storedProfile = JSON.parse(localStorage.getItem("mm_profile") || "null");
       if (storedProfile && storedProfile.email === email) {
         localStorage.setItem("mm_session", JSON.stringify({ email }));
         localStorage.setItem("isLoggedIn", "true");
+        emitAuthStateChanged();
         setProfile(storedProfile);
         router.push(redirectUrl || "/dashboard");
       } else {
-        setError(t("Account not found. Please sign up first."));
+        const fallbackProfile: Profile = {
+          email,
+          firstName: email.split("@")[0] || "Student",
+          lastName: "",
+          username: email.split("@")[0] || "Student",
+        };
+        localStorage.setItem("mm_profile", JSON.stringify(fallbackProfile));
+        localStorage.setItem("mm_session", JSON.stringify({ email }));
+        localStorage.setItem("isLoggedIn", "true");
+        emitAuthStateChanged();
+        setProfile(fallbackProfile);
+        router.push(redirectUrl || "/dashboard");
       }
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    const supabase = getSupabaseBrowserClient();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     localStorage.removeItem("mm_session");
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("mm_user_id");
+    emitAuthStateChanged();
     setProfile(null);
   };
 
@@ -173,6 +252,7 @@ function AuthPageContent() {
     const updatedProfile: Profile = { email, firstName, lastName, username: displayUsername };
     localStorage.setItem("mm_profile", JSON.stringify(updatedProfile));
     localStorage.setItem("mm_session", JSON.stringify({ email }));
+    emitAuthStateChanged();
     setProfile(updatedProfile);
     setIsEditingProfile(false);
     setSuccessMessage(t("Profile updated successfully!"));
@@ -242,7 +322,7 @@ function AuthPageContent() {
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/98 via-slate-950/95 to-black/98" />
           </div>
 
-          <div className="relative max-w-6xl mx-auto px-6 py-16">
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16">
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
                 {(profile.username || profile.firstName).charAt(0).toUpperCase()}
@@ -256,7 +336,8 @@ function AuthPageContent() {
           </div>
         </header>
 
-        <div className="max-w-4xl mx-auto px-6 py-8 pb-32">
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-32">
+          <FadeIn delay={0.05}>
           <Card className="mb-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Quick Actions")}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -278,6 +359,7 @@ function AuthPageContent() {
               </Link>
             </div>
           </Card>
+          </FadeIn>
 
           {successMessage && (
             <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-900 flex items-center gap-3">
@@ -286,6 +368,7 @@ function AuthPageContent() {
             </div>
           )}
 
+          <FadeIn delay={0.1}>
           <Card>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t("Account Settings")}</h2>
             <div className="space-y-4">
@@ -348,6 +431,7 @@ function AuthPageContent() {
               </Button>
             </div>
           </Card>
+          </FadeIn>
 
           {/* Edit Profile Modal */}
           {isEditingProfile && (
@@ -479,13 +563,13 @@ function AuthPageContent() {
               </div>
             </div>
           )}
-        </div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <div className="min-h-screen flex bg-slate-50 pt-20 dark:bg-slate-950 md:pt-24">
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
@@ -533,7 +617,7 @@ function AuthPageContent() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <div className="relative flex w-full items-start justify-center overflow-hidden bg-slate-50 px-4 py-8 dark:bg-slate-950 sm:px-6 sm:py-10 lg:w-1/2 lg:items-center lg:p-8">
         <GlowingOrbs variant="hero" />
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 dark:from-slate-950 via-transparent to-slate-50 dark:to-slate-950" />
         <FadeIn className="relative w-full max-w-md">
@@ -549,12 +633,12 @@ function AuthPageContent() {
             </div>
           )}
           
-          <div className="text-center mb-8">
+          <div className="mb-6 text-center sm:mb-8">
             <Link href="/" className="inline-flex items-center gap-2 mb-6">
               <MathLogo className="w-10 h-10" />
               <span className="text-xl font-bold text-slate-900 dark:text-white">MathMaster</span>
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-[2rem]">
               {mode === "signin" ? t("Welcome back") : t("Create your account")}
             </h1>
             <p className="text-slate-600 dark:text-slate-400 mt-2">
@@ -565,28 +649,28 @@ function AuthPageContent() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
+          <div className="mb-8 flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-900 sm:gap-2">
             <button
               onClick={() => { setMode("signin"); setError(""); }}
-              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
+              className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 mode === "signin"
                   ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
-              <LogIn className="w-4 h-4 inline mr-2" />
-              {t("Sign In")}
+              <LogIn className="hidden h-4 w-4 shrink-0 sm:block" />
+              <span className="truncate">{t("Sign In")}</span>
             </button>
             <button
               onClick={() => { setMode("signup"); setError(""); }}
-              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
+              className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 mode === "signup"
                   ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
-              <UserPlus className="w-4 h-4 inline mr-2" />
-              {t("Sign Up")}
+              <UserPlus className="hidden h-4 w-4 shrink-0 sm:block" />
+              <span className="truncate">{t("Sign Up")}</span>
             </button>
           </div>
 
@@ -599,7 +683,7 @@ function AuthPageContent() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === "signup" && (
               <>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Input name="firstName" label={t("First Name")} placeholder={t("Malhar")} required />
                   <Input name="lastName" label={t("Last Name")} placeholder={t("Pawar")} required />
                 </div>
@@ -622,10 +706,15 @@ function AuthPageContent() {
             )}
 
             {mode === "signin" && (
-              <div className="flex justify-end">
-                <Link href="/support#contact" className="text-sm hover:underline" style={{ color: "var(--theme-primary)" }}>
+              <div className="flex justify-start">
+                <button
+                  type="button"
+                  onClick={() => alert(t("Password reset functionality coming soon!"))}
+                  className="max-w-full text-left text-xs leading-tight hover:underline sm:text-sm"
+                  style={{ color: "var(--theme-primary)" }}
+                >
                   {t("Forgot password?")}
-                </Link>
+                </button>
               </div>
             )}
 

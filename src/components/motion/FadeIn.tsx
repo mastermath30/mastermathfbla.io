@@ -15,17 +15,17 @@ interface FadeInProps {
 export function FadeIn({ 
   children, 
   delay = 0, 
-  duration = 0.5, 
+  duration = 0.6, 
   direction = "up",
   className = "" 
 }: FadeInProps) {
   const reducedMotion = useReducedMotion();
   
   const directions = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { y: 0, x: 40 },
-    right: { y: 0, x: -40 },
+    up: { y: 28, x: 0 },
+    down: { y: -28, x: 0 },
+    left: { y: 0, x: 28 },
+    right: { y: 0, x: -28 },
     none: { y: 0, x: 0 },
   };
 
@@ -46,7 +46,7 @@ export function FadeIn({
         y: 0, 
         x: 0 
       }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-70px" }}
       transition={{ 
         duration, 
         delay,
@@ -115,7 +115,7 @@ export function FadeInStaggerItem({
           opacity: 1, 
           y: 0,
           transition: {
-            duration: 0.5,
+            duration: 0.55,
             ease: [0.25, 0.4, 0.25, 1]
           }
         },

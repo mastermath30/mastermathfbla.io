@@ -100,7 +100,7 @@ export function StudyStreak() {
       {/* Streak Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed top-20 right-4 z-[89] flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+        className="hidden md:flex fixed top-20 right-4 z-[89] items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         title={t("Study Streak")}
@@ -125,7 +125,7 @@ export function StudyStreak() {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed top-32 right-4 z-[400] bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-xl shadow-2xl"
+            className="hidden md:block fixed top-32 right-4 z-[400] bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-xl shadow-2xl"
           >
             <div className="flex items-center gap-2">
               <Trophy className="w-6 h-6" />
@@ -172,7 +172,7 @@ export function StudyStreak() {
 
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="absolute top-4 right-4 p-1 rounded hover:bg-white/20"
+                    className="absolute top-4 right-4 p-2.5 min-w-[44px] min-h-[44px] rounded flex items-center justify-center hover:bg-white/20"
                   >
                     <X className="w-5 h-5" />
                   </button>

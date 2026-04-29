@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/Button";
 import { Input, Textarea } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, ParallaxSection, TypingText } from "@/components/motion";
+import { FadeIn, GlowingOrbs } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Search,
@@ -69,9 +69,9 @@ const getHelpCategories = (t: (key: string) => string) => [
     description: t("Find tutorials and guides to enhance your learning."),
     color: "green",
     links: [
-      { text: t("Video tutorials"), href: "/learn" },
-      { text: t("Practice problems"), href: "/learn" },
-      { text: t("Study guides"), href: "/learn" }
+      { text: t("Video tutorials"), href: "/resources" },
+      { text: t("Practice problems"), href: "/resources" },
+      { text: t("Study guides"), href: "/resources" }
     ],
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=100&h=100&fit=crop",
   },
@@ -83,7 +83,7 @@ const getHelpCategories = (t: (key: string) => string) => [
     links: [
       { text: t("Community guidelines"), href: "/community" },
       { text: t("Discussion forums"), href: "/community" },
-      { text: t("Study groups"), href: "/study-groups" }
+      { text: t("Study groups"), href: "/community" }
     ],
     image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&h=100&fit=crop",
   },
@@ -130,13 +130,13 @@ export default function SupportPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <ParallaxSection className="absolute inset-0" speed={0.1}>
+        <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=500&fit=crop"
             alt="Support team"
@@ -148,67 +148,60 @@ export default function SupportPage() {
             className="absolute inset-0"
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
           />
-          <div className="hero-vignette-layer" />
-          <div className="hero-grain-layer" />
-        </ParallaxSection>
+        </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-36 md:pb-20 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4 md:mb-6">
             <Headphones className="w-4 h-4" />
             {t("We're here to help")}
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            <TypingText text={t("Support Center")} speedMs={74} />
-          </h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">{t("Support Center")}</h1>
           <p className="text-base sm:text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-6 md:mb-8 px-4">
             {t("Find answers to common questions or get in touch with our friendly team")}
           </p>
 
-          {/* Quick links */}
+          {/* Search */}
           <div className="max-w-xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-3">
-              <a href="#faq">
-                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
-                  <Search className="w-4 h-4" />
-                  {t("Browse FAQs")}
-                </Button>
-              </a>
-              <a href="#contact">
-                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
-                  <MessageCircle className="w-4 h-4" />
-                  {t("Contact Support")}
-                </Button>
-              </a>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+              <input
+                type="text"
+                placeholder={t("Search help articles...")}
+                className="w-full rounded-2xl border border-white/20 bg-white/10 py-4 pl-12 pr-4 text-white shadow-xl backdrop-blur placeholder:text-slate-300 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.28)] focus:border-[rgba(var(--theme-primary-rgb),0.5)]"
+              />
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Contact Methods */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 -mt-8 mb-12">
+        <FadeIn delay={0.04}>
+        <div className="-mt-8 mb-14 grid grid-cols-1 gap-5 md:grid-cols-3">
           {contactMethods.map((method) => (
-            <Card key={method.title} className="text-center">
+            <Card key={method.title} className="flex h-full flex-col items-center text-center">
               <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4" style={{ color: "var(--theme-primary)" }}>
                 <method.icon className="w-7 h-7" />
               </div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{method.title}</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{method.description}</p>
+              <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">{method.description}</p>
               <a href={method.href}>
-                <Button variant="outline" size="sm" className="mx-auto">
+                <Button variant="outline" size="sm" className="mx-auto mt-auto">
                   {method.action}
                 </Button>
               </a>
             </Card>
           ))}
         </div>
+        </FadeIn>
 
         {/* Help Categories */}
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">{t("Browse by Category")}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+        <FadeIn delay={0.08}>
+        <h2 className="mb-7 text-2xl font-bold text-slate-900 dark:text-white">{t("Browse by Category")}</h2>
+        <div className="mb-16 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {helpCategories.map((cat) => (
-            <Card key={cat.title} className="group">
+            <Card key={cat.title} className="group flex h-full flex-col">
               <div className="flex items-start gap-4 mb-4">
                 <Image
                   src={cat.image}
@@ -222,7 +215,7 @@ export default function SupportPage() {
                   <p className="text-slate-500 dark:text-slate-400 text-sm">{cat.description}</p>
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="mt-auto space-y-2 pt-2">
                 {cat.links.map((link) => (
                   <a
                     key={link.text}
@@ -239,7 +232,7 @@ export default function SupportPage() {
 
           {/* CTA Card */}
           <Card
-            className="border-0 text-white"
+            className="flex h-full flex-col justify-between border-0 text-white"
             style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}
           >
             <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-4">
@@ -250,15 +243,17 @@ export default function SupportPage() {
               {t("Our support team is ready to help you with any questions.")}
             </p>
             <a href="#contact">
-              <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 w-full">
+              <Button variant="outline" className="w-full border-white/40 text-white hover:bg-white/10">
                 {t("Contact Support")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </a>
           </Card>
         </div>
+        </FadeIn>
 
         {/* FAQ Section */}
+        <FadeIn delay={0.12}>
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white text-center mb-8">{t("Frequently Asked Questions")}</h2>
 
@@ -289,6 +284,7 @@ export default function SupportPage() {
             ))}
           </div>
         </div>
+        </FadeIn>
 
         {/* Contact Form */}
         <div className="max-w-4xl mx-auto">
@@ -373,16 +369,16 @@ export default function SupportPage() {
             </Card>
           </FadeIn>
         </div>
-      </div>
+      </main>
 
       {/* Footer */}
       <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>
         </div>
       </footer>
-    </PageWrapper>
+    </div>
   );
 }

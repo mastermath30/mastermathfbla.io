@@ -100,6 +100,40 @@ export function InteractiveWhiteboard() {
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const returnContextRef = useRef<{ url: string; scrollY: number } | null>(null);
+  const pushedHistoryRef = useRef(false);
+
+  const restoreReturnContext = useCallback(() => {
+    const context = returnContextRef.current;
+    if (!context) return;
+
+    if (context.url.startsWith("/learn") && window.location.pathname === "/learn") {
+      window.setTimeout(() => window.scrollTo({ top: context.scrollY, behavior: "auto" }), 0);
+    }
+  }, []);
+
+  const openWhiteboard = useCallback(() => {
+    returnContextRef.current = {
+      url: `${window.location.pathname}${window.location.search}${window.location.hash}`,
+      scrollY: window.scrollY,
+    };
+    if (!pushedHistoryRef.current) {
+      window.history.pushState({ mathMasterWhiteboard: true }, "", window.location.href);
+      pushedHistoryRef.current = true;
+    }
+    setIsOpen(true);
+  }, []);
+
+  const closeWhiteboard = useCallback(() => {
+    setIsOpen(false);
+    restoreReturnContext();
+    if (pushedHistoryRef.current && window.history.state?.mathMasterWhiteboard) {
+      pushedHistoryRef.current = false;
+      window.history.back();
+      return;
+    }
+    pushedHistoryRef.current = false;
+  }, [restoreReturnContext]);
 
   // Load saved boards
   useEffect(() => {
@@ -122,7 +156,11 @@ export function InteractiveWhiteboard() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.altKey && e.key.toLowerCase() === "w") {
         e.preventDefault();
-        setIsOpen(prev => !prev);
+        if (isOpen) {
+          closeWhiteboard();
+        } else {
+          openWhiteboard();
+        }
       }
       if (!isOpen) return;
       
@@ -131,7 +169,7 @@ export function InteractiveWhiteboard() {
           setTextPosition(null);
           setTextInput("");
         } else {
-          setIsOpen(false);
+          closeWhiteboard();
         }
       }
       if ((e.ctrlKey || e.metaKey) && e.key === "z") {
@@ -145,7 +183,25 @@ export function InteractiveWhiteboard() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, textPosition]);
+  }, [closeWhiteboard, isOpen, openWhiteboard, textPosition]);
+
+  // Allow external components (e.g. Navbar mobile menu) to open whiteboard
+  useEffect(() => {
+    const handler = () => openWhiteboard();
+    window.addEventListener("open-whiteboard", handler);
+    return () => window.removeEventListener("open-whiteboard", handler);
+  }, [openWhiteboard]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!pushedHistoryRef.current) return;
+      pushedHistoryRef.current = false;
+      setIsOpen(false);
+      restoreReturnContext();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [restoreReturnContext]);
 
   // Redraw canvas
   const redrawCanvas = useCallback(() => {
@@ -309,9 +365,29 @@ export function InteractiveWhiteboard() {
     };
   };
 
+  const getTouchPos = (e: React.TouchEvent<HTMLCanvasElement>): Point => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    };
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const pos = getMousePos(e);
+    startDrawing(pos);
+  };
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const pos = getTouchPos(e);
+    startDrawing(pos);
+  };
+
+  const startDrawing = (pos: Point) => {
     if (currentTool === "text") {
       setTextPosition(pos);
       return;
@@ -341,8 +417,19 @@ export function InteractiveWhiteboard() {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !currentElement) return;
-    
     const pos = getMousePos(e);
+    continueDrawing(pos);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!isDrawing || !currentElement) return;
+    const pos = getTouchPos(e);
+    continueDrawing(pos);
+  };
+
+  const continueDrawing = (pos: Point) => {
+    if (!currentElement) return;
 
     if (currentElement.type === "path") {
       setCurrentElement({
@@ -374,6 +461,15 @@ export function InteractiveWhiteboard() {
   };
 
   const handleMouseUp = () => {
+    finishDrawing();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    finishDrawing();
+  };
+
+  const finishDrawing = () => {
     if (!isDrawing || !currentElement) return;
     
     setIsDrawing(false);
@@ -479,10 +575,10 @@ export function InteractiveWhiteboard() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
       <motion.button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 right-[156px] z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
+        onClick={openWhiteboard}
+        className="hidden md:flex fixed md:bottom-6 right-4 lg:right-5 z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open Interactive Whiteboard")}
         title={t("Interactive Whiteboard (Alt+W)")}
         whileHover={{ scale: 1.1 }}
@@ -501,10 +597,10 @@ export function InteractiveWhiteboard() {
             className="fixed inset-0 bg-slate-100 dark:bg-slate-900 z-[300] flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
-                  <Pencil className="w-5 h-5 text-white" />
+            <div className="whiteboard-header border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="p-1.5 md:p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
+                  <Pencil className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
                 <div>
                   <h2 className="font-bold text-slate-900 dark:text-white">{t("Interactive Whiteboard")}</h2>
@@ -512,7 +608,15 @@ export function InteractiveWhiteboard() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={closeWhiteboard}
+                className="whiteboard-back-button"
+              >
+                {t("Back to Learn")}
+              </button>
+
+              <div className="whiteboard-actions">
                 {/* Grid Toggle */}
                 <button
                   onClick={() => setShowGrid(!showGrid)}
@@ -580,8 +684,9 @@ export function InteractiveWhiteboard() {
 
                 {/* Close */}
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeWhiteboard}
                   className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  aria-label={t("Exit Whiteboard")}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -668,14 +773,18 @@ export function InteractiveWhiteboard() {
               </div>
 
               {/* Canvas */}
-              <div ref={containerRef} className="flex-1 relative overflow-hidden">
+              <div ref={containerRef} className="flex-1 relative overflow-hidden touch-none">
                 <canvas
                   ref={canvasRef}
-                  className="absolute inset-0 cursor-crosshair"
+                  className="absolute inset-0 cursor-crosshair touch-none"
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchEnd}
                 />
 
                 {/* Text Input Overlay */}

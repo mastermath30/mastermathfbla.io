@@ -15,22 +15,22 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={clsx(
-          "rounded-2xl transition-all duration-300 ease-out group/card",
+          "group/card rounded-[26px] transition-all duration-300 ease-out",
           {
-            "glass-subtle shadow-sm": variant === "default",
-            "bg-transparent border border-slate-300 dark:border-slate-700": variant === "outline",
-            "glass-medium shadow-lg": variant === "glass",
-            "bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-700/50": variant === "gradient",
-            "glass-strong shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50": variant === "elevated",
+            "bg-white/95 dark:bg-slate-900/95 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_16px_44px_rgba(2,6,23,0.35)]": variant === "default",
+            "bg-transparent border border-slate-300/80 dark:border-slate-700/80": variant === "outline",
+            "bg-white/75 dark:bg-slate-900/75 backdrop-blur-xl border border-white/30 dark:border-slate-800/70 shadow-[0_18px_48px_rgba(15,23,42,0.08)] dark:shadow-[0_20px_52px_rgba(2,6,23,0.38)]": variant === "glass",
+            "bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_14px_42px_rgba(15,23,42,0.06)] dark:shadow-[0_18px_46px_rgba(2,6,23,0.35)]": variant === "gradient",
+            "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_18px_48px_rgba(15,23,42,0.08)] dark:shadow-[0_22px_54px_rgba(2,6,23,0.4)]": variant === "elevated",
           },
-          hover && "hover:-translate-y-0.5 hover:shadow-xl hover:shadow-slate-200/45 dark:hover:shadow-slate-900/45",
-          glow && "shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.08)] dark:shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.12)] hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.15)] dark:hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.2)]",
+          hover && "hover:-translate-y-0.5 hover:shadow-[0_24px_64px_rgba(15,23,42,0.1)] dark:hover:shadow-[0_26px_70px_rgba(2,6,23,0.45)]",
+          glow && "shadow-[0_0_24px_rgba(var(--theme-primary-rgb),0.06)] dark:shadow-[0_0_28px_rgba(var(--theme-primary-rgb),0.1)] hover:shadow-[0_0_38px_rgba(var(--theme-primary-rgb),0.12)] dark:hover:shadow-[0_0_42px_rgba(var(--theme-primary-rgb),0.16)]",
           interactive && "cursor-pointer active:scale-[0.98] hover:border-[var(--theme-primary)]/30",
           {
             "p-0": padding === "none",
-            "p-4": padding === "sm",
-            "p-6": padding === "md",
-            "p-8": padding === "lg",
+            "p-5": padding === "sm",
+            "p-6 md:p-7": padding === "md",
+            "p-8 md:p-10": padding === "lg",
           },
           className
         )}

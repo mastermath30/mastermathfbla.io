@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
@@ -9,7 +10,7 @@ import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { Input, Textarea, Select } from "@/components/Input";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Users,
@@ -94,7 +95,7 @@ const SAMPLE_GROUPS: StudyGroup[] = [
   {
     id: "2",
     name: "SAT Math Prep",
-    description: "Prepare for the SAT Math section with practice tests, strategy sessions, and targeted review. Score 750+ guaranteed with consistent attendance!",
+    description: "Prepare for the SAT Math section with practice tests, strategy sessions, and targeted review.",
     subject: "SAT Prep",
     level: "Intermediate",
     memberCount: 18,
@@ -194,12 +195,9 @@ const levelColors: Record<string, "success" | "info" | "purple"> = {
   Advanced: "purple",
 };
 
-export default function StudyGroupsPage() {
+function StudyGroupsPageInner() {
   const { t } = useTranslations();
-  const heroTitleMain = t("Learn Together,");
-  const heroTitleAccent = t("Succeed Together");
-  const heroTitleMainSpeed = 72;
-  const heroTitleAccentDelay = heroTitleMain.length * heroTitleMainSpeed + 420;
+  const searchParams = useSearchParams();
   const [groups, setGroups] = useState<StudyGroup[]>(SAMPLE_GROUPS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All Subjects");
@@ -208,6 +206,18 @@ export default function StudyGroupsPage() {
   const [showGroupDetail, setShowGroupDetail] = useState<StudyGroup | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<string[]>(["1"]);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const groupParam = searchParams.get("group");
+    const createParam = searchParams.get("create");
+    if (groupParam) {
+      const match = SAMPLE_GROUPS.find((g) => g.id === groupParam);
+      if (match) setShowGroupDetail(match);
+    }
+    if (createParam === "1") {
+      setShowCreateModal(true);
+    }
+  }, [searchParams]);
 
   // Filter groups
   const filteredGroups = groups.filter((group) => {
@@ -230,24 +240,22 @@ export default function StudyGroupsPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 pt-20 md:pt-24">
-      <div className="min-h-screen relative">
-        <ParallaxSection className="absolute inset-0" speed={0.07}>
-          <GlowingOrbs />
-        </ParallaxSection>
+    <PageWrapper>
+      <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+        <GlowingOrbs />
 
         {/* Hero Section */}
-        <section className="relative pt-24 md:pt-28 pb-16 px-4 overflow-hidden">
-          <ParallaxSection className="max-w-6xl mx-auto" speed={0.05}>
+        <section className="relative pt-20 md:pt-32 pb-16 px-4 overflow-hidden">
+          <div className="max-w-6xl mx-auto">
             <FadeIn>
               <SectionLabel icon={Users}>{t("Study Groups")}</SectionLabel>
             </FadeIn>
 
             <HeroText>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
-                <TypingText text={heroTitleMain} speedMs={heroTitleMainSpeed} />{" "}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
+                {t("Learn Together,")}{" "}
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  <TypingText text={heroTitleAccent} speedMs={68} delayMs={heroTitleAccentDelay} />
+                  {t("Succeed Together")}
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl">
@@ -257,7 +265,7 @@ export default function StudyGroupsPage() {
 
             {/* Stats */}
             <FadeIn delay={0.2}>
-              <div className="flex flex-wrap gap-8 mt-8">
+              <div className="flex flex-wrap gap-4 md:gap-8 mt-8">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/30">
                     <Users className="w-5 h-5 text-violet-600" />
@@ -287,7 +295,7 @@ export default function StudyGroupsPage() {
                 </div>
               </div>
             </FadeIn>
-          </ParallaxSection>
+          </div>
         </section>
 
         {/* My Groups Section */}
@@ -584,16 +592,24 @@ export default function StudyGroupsPage() {
         {/* Group Detail Modal */}
         <AnimatePresence>
           {showGroupDetail && (
-            <GroupDetailModal 
-              group={showGroupDetail} 
+            <GroupDetailModal
+              group={showGroupDetail}
               onClose={() => setShowGroupDetail(null)}
               isJoined={joinedGroups.includes(showGroupDetail.id)}
               onJoin={() => handleJoinGroup(showGroupDetail.id)}
             />
           )}
         </AnimatePresence>
-      </div>
+      </main>
     </PageWrapper>
+  );
+}
+
+export default function StudyGroupsPage() {
+  return (
+    <Suspense fallback={null}>
+      <StudyGroupsPageInner />
+    </Suspense>
   );
 }
 
@@ -679,7 +695,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t("Subject")}</label>
               <select
@@ -839,7 +855,7 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
           </div>
 
           {/* Details */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Calendar className="w-5 h-5 text-violet-500" />
               <div>

@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MathMaster
 
-## Getting Started
+MathMaster is a student-built math learning ecosystem that combines guided course pathways, quizzes, AI support, accessibility tools, and peer community support.
 
-First, run the development server:
+## Package Manager Policy
+
+This repository is standardized on `npm`.
+
+- Use `npm install` to install dependencies.
+- Use `npm run dev` for local development.
+- Do not commit `pnpm-lock.yaml` in this repo.
+- Vercel is pinned to npm through `vercel.json` to avoid package-manager autodetect conflicts.
+
+## Local Development
 
 ```bash
+npm install
+npm run verify:learning
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Core Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/learn` - guided course-aware learning hub (also aliased by `/resources`)
+- `/dashboard` - progress, recommendations, and community spotlight
+- `/community` - Q&A and collaboration
+- `/study-groups` - peer group discovery
+- `/schedule` - sessions and office hours
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deploy on Vercel using the standard project setup. Build/install commands are defined in `vercel.json`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `installCommand`: `npm install`
+- `buildCommand`: `npm run build`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Supabase (Market-Ready Data)
 
-## Deploy on Vercel
+To enable cloud auth/progress/community persistence, set:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Then run the SQL bootstrap in [supabase/schema.sql](/Users/ayaanoberoi/Code/Final%20FBLA%20Website/mastermathfbla.io/supabase/schema.sql).

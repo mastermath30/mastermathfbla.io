@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
 import { AuroraVolume, FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
 import {
   GraduationCap,
   Rocket,
@@ -125,8 +126,8 @@ const getFeatures = (t: (key: string) => string) => [
     title: t("Interactive Learning"),
     description: t("Engage with step-by-step lessons and practice problems that adapt to your learning pace."),
     link: "/learn",
-    linkText: t("Explore Resources"),
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop",
+    linkText: t("Start Guided Learn"),
+    image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=400&h=300&fit=crop",
   },
   {
     icon: TrendingUp,
@@ -140,9 +141,9 @@ const getFeatures = (t: (key: string) => string) => [
     icon: Users,
     title: t("Peer Tutoring"),
     description: t("Connect with experienced peer tutors for live sessions and personalized help."),
-    link: "/schedule",
-    linkText: t("Book a Session"),
-    image: "https://images.unsplash.com/photo-1596496050755-c923e73e42e1?w=400&h=300&fit=crop",
+    link: "/tutoring-request",
+    linkText: t("Request Tutoring"),
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop",
   },
   {
     icon: MessageCircle,
@@ -240,7 +241,8 @@ const HOME_HERO_SIDE_IMAGES = [
 export default function Home() {
   const { t, language } = useTranslations();
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [heroSideImageIndex, setHeroSideImageIndex] = useState(0);
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
@@ -272,10 +274,41 @@ export default function Home() {
   const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
-    // Check if user is logged in
-    const session = localStorage.getItem("mm_session");
-    const isLoggedInFlag = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!session || isLoggedInFlag === "true");
+    const syncAuthState = () => {
+      setIsLoggedIn(getStoredAuthState());
+    };
+
+    syncAuthState();
+    window.addEventListener("storage", syncAuthState);
+    window.addEventListener("focus", syncAuthState);
+    window.addEventListener("pageshow", syncAuthState);
+    window.addEventListener(authStateChangedEvent, syncAuthState);
+
+    return () => {
+      window.removeEventListener("storage", syncAuthState);
+      window.removeEventListener("focus", syncAuthState);
+      window.removeEventListener("pageshow", syncAuthState);
+      window.removeEventListener(authStateChangedEvent, syncAuthState);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateDepthProgress = () => {
+      if (!heroRef.current || typeof window === "undefined") return;
+      const rect = heroRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || 1;
+      const traveled = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight * 1.25), 0), 1);
+      heroRef.current.style.setProperty("--hero-depth-progress", traveled.toFixed(3));
+    };
+
+    updateDepthProgress();
+    window.addEventListener("scroll", updateDepthProgress, { passive: true });
+    window.addEventListener("resize", updateDepthProgress);
+
+    return () => {
+      window.removeEventListener("scroll", updateDepthProgress);
+      window.removeEventListener("resize", updateDepthProgress);
+    };
   }, []);
 
   useEffect(() => {
@@ -514,17 +547,31 @@ export default function Home() {
 
     return calendarDays;
   };
+
+  const isAuthResolved = isLoggedIn !== null;
+  const heroSecondaryHref = isLoggedIn ? "/dashboard" : "/auth";
+  const heroSecondaryLabel = isLoggedIn ? t("Go to Dashboard") : t("Create Free Account");
+  const bottomCtaHref = isLoggedIn ? "/learn" : "/auth";
+  const bottomCtaLabel = isLoggedIn ? t("Continue Learning") : t("Get Started Free");
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 px-safe">
+      <section ref={heroRef} className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-slate-50 px-safe dark:bg-slate-950">
+        <div className="hero-depth-backdrop" aria-hidden="true">
+          <div className="hero-depth-glow" />
+          <div className="hero-mesh-plane" />
+          <div className="hero-noise-layer" />
+          <div className="hero-depth-vignette" />
+        </div>
+
         {/* Background Image with Overlay */}
         <ParallaxSection className="absolute inset-0" speed={0.14}>
           <Image
             src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&h=1080&fit=crop"
             alt="Mathematics background"
             fill
-            className="object-cover opacity-5 dark:opacity-20"
+            className="object-cover opacity-[0.06] dark:opacity-[0.18]"
             priority
           />
           <div className="hero-vignette-layer" />
@@ -540,25 +587,17 @@ export default function Home() {
           className="absolute inset-0 pointer-events-none opacity-45 dark:opacity-38"
           style={{ background: "radial-gradient(80% 65% at 55% 42%, transparent, color-mix(in srgb, var(--theme-primary) 12%, #020617) 100%)" }}
         />
-        
+
         {/* Animated gradient orbs */}
         <div className="absolute top-16 left-8 w-40 h-40 md:w-56 md:h-56 rounded-full blur-3xl opacity-6 dark:opacity-5" style={{ background: "var(--theme-primary)" }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-[520px] md:h-[520px] rounded-full blur-3xl opacity-6 dark:opacity-4" style={{ background: "var(--theme-primary-light)" }} />
 
-        {/* Floating math symbols - hidden on small screens */}
-        <div className="hidden md:block absolute top-20 left-[15%] text-5xl md:text-7xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3s', color: 'var(--theme-primary)' }}>∫</div>
-        <div className="hidden md:block absolute top-32 right-[20%] text-4xl md:text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary-light)' }}>π</div>
-        <div className="hidden md:block absolute bottom-40 left-[10%] text-3xl md:text-5xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary)' }}>∑</div>
-        <div className="hidden md:block absolute bottom-32 right-[15%] text-4xl md:text-6xl font-serif animate-bounce opacity-10 dark:opacity-15" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary-light)' }}>√</div>
-        <div className="hidden lg:block absolute top-1/2 left-[5%] text-3xl md:text-5xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '5s', animationDelay: '2s', color: 'var(--theme-primary)' }}>∞</div>
-        <div className="hidden lg:block absolute top-[40%] right-[8%] text-3xl md:text-4xl font-serif animate-bounce opacity-5 dark:opacity-10" style={{ animationDuration: '3.8s', animationDelay: '0.8s', color: 'var(--theme-primary-light)' }}>θ</div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 md:py-20">
+          <div className="grid grid-cols-1 items-center gap-8 md:gap-12 lg:grid-cols-2">
             {/* Left content */}
-            <div className="text-center lg:text-left">
+            <div className="w-full max-w-full overflow-hidden text-center lg:text-left">
               <FadeIn delay={0.02}>
-                <SectionLabel icon={Sparkles} className="mb-4">
+                <SectionLabel icon={Sparkles} className="mx-auto mb-4 max-w-[calc(100vw-2rem)] px-3 py-1.5 text-xs sm:max-w-full sm:px-4 sm:py-2 sm:text-sm lg:mx-0">
                   {t("Trusted peer tutoring for ambitious students")}
                 </SectionLabel>
               </FadeIn>
@@ -590,32 +629,36 @@ export default function Home() {
               </FadeIn>
 
               <FadeIn delay={0.14}>
-                <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-xl leading-relaxed">
+                <p className="mx-auto mb-6 max-w-md text-base leading-relaxed text-slate-600 sm:text-lg md:mb-8 md:max-w-xl md:text-xl lg:mx-0 dark:text-slate-300">
                   {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
                 </p>
               </FadeIn>
 
               <FadeIn delay={0.2}>
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8">
-                  <Link href="/tutors">
-                    <Button size="lg" className="shadow-xl group" style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.25)' }}>
+                <div className="mb-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center md:mb-8 md:gap-4 lg:justify-start">
+                  <Link href="/tutors" className="block w-full sm:w-auto">
+                    <Button size="lg" className="group w-full shadow-xl glow-premium sm:w-auto" style={{ boxShadow: '0 14px 48px rgba(var(--theme-primary-rgb), 0.32)' }}>
                       <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                       {t("Book Your First Session")}
                     </Button>
                   </Link>
-                  <Link href="/auth">
-                    <Button variant="outline" size="lg" className="bg-white/60 dark:bg-slate-950/60 backdrop-blur border-slate-300 dark:border-slate-700">
-                      <Users className="w-5 h-5" />
-                      {t("Create Free Account")}
-                    </Button>
-                  </Link>
+                  <div className={isAuthResolved ? "w-full sm:w-auto" : "min-h-[52px] w-full sm:min-w-[212px] sm:w-auto"}>
+                    {isAuthResolved && (
+                      <Link href={heroSecondaryHref} className="block w-full sm:w-auto">
+                        <Button variant="outline" size="lg" className="glass-premium w-full sm:w-auto">
+                          <Users className="w-5 h-5" />
+                          {heroSecondaryLabel}
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </FadeIn>
 
               {/* Stats inline */}
-              <FadeInStagger className="flex flex-wrap gap-4 md:gap-8 justify-center lg:justify-start" staggerDelay={0.08}>
-                {stats.map((stat) => (
-                  <FadeInStaggerItem key={stat.label} className="text-center group cursor-default">
+              <FadeInStagger className="grid grid-cols-2 justify-center gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:justify-center md:gap-x-8 lg:justify-start" staggerDelay={0.08}>
+                {stats.map((stat, index) => (
+                  <FadeInStaggerItem key={stat.label} className={`text-center group cursor-default ${index === stats.length - 1 ? "col-span-2 justify-self-center sm:col-span-1" : ""}`}>
                     <div className="text-2xl md:text-3xl font-bold gradient-text font-mono group-hover:scale-110 transition-transform duration-300">
                       <AnimatedNumberClient value={stat.value} duration={900} label={stat.label} />
                     </div>
@@ -666,7 +709,7 @@ export default function Home() {
                 <Link
                   href="/tutors"
                   aria-label={t("Top Rated")}
-                  className="absolute -top-4 -left-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  className="absolute -top-4 -left-4 glass-premium rounded-2xl shadow-xl p-4 animate-float hover:scale-105 transition-transform cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(var(--theme-primary-rgb), 0.1)' }}>
@@ -682,7 +725,7 @@ export default function Home() {
                 <Link
                   href="/schedule"
                   aria-label={t("Study sessions this month")}
-                  className="absolute -bottom-4 -right-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  className="absolute -bottom-4 -right-4 glass-premium rounded-2xl shadow-xl p-4 animate-float hover:scale-105 transition-transform cursor-pointer"
                   style={{ animationDelay: '1s' }}
                 >
                   <div className="flex items-center gap-3">
@@ -700,7 +743,7 @@ export default function Home() {
                 <Link
                   href="/dashboard"
                   aria-label={t("Verified tutors")}
-                  className="absolute top-1/2 -right-8 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm rounded-2xl shadow-xl p-3 border border-slate-200/50 dark:border-slate-700/50 animate-float hover:scale-105 transition-transform cursor-pointer"
+                  className="absolute top-1/2 -right-8 glass-premium rounded-2xl shadow-xl p-3 animate-float hover:scale-105 transition-transform cursor-pointer"
                   style={{ animationDelay: '0.5s' }}
                 >
                   <div className="flex items-center gap-2">
@@ -719,12 +762,18 @@ export default function Home() {
         </div>
       </section>
 
+      <div
+        className="h-px w-full"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.35), transparent)" }}
+      />
+
       {/* Main Content */}
       {isLoggedIn && (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
         
         {/* Recent Sessions - only for logged in users */}
         {isLoggedIn && (
+          <FadeIn delay={0.04}>
           <Card className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
@@ -765,12 +814,14 @@ export default function Home() {
               ))}
             </div>
           </Card>
+          </FadeIn>
         )}
 
         {/* For logged in users: Show tutors first */}
         {isLoggedIn && (
           <>
             {/* Top Rated Tutors - for logged in users */}
+            <FadeIn delay={0.08}>
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
@@ -885,6 +936,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
+            </FadeIn>
           </>
         )}
       </div>
@@ -968,7 +1020,7 @@ export default function Home() {
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/40" />
+                        <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/40" />
                         <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), transparent)' }} />
                       </div>
                       <div className="md:w-3/5 p-6 flex flex-col">
@@ -998,17 +1050,17 @@ export default function Home() {
 
           {/* How It Works */}
           <FadeIn>
-          <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+          <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
             <GlowingOrbs variant="subtle" />
-            <div className="relative max-w-6xl mx-auto px-6">
-              <div className="text-center mb-16">
+            <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="text-center mb-10 md:mb-16">
                 <SectionLabel icon={Rocket} className="mb-4">
                   {t("Your Learning Journey")}
                 </SectionLabel>
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
                   {t("How MathMaster Works")}
                 </h2>
-                <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
                   {t("Three simple steps to transform your math skills")}
                 </p>
               </div>
@@ -1054,14 +1106,14 @@ export default function Home() {
 
           {/* Testimonials */}
           <FadeIn>
-          <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+          <section className="py-14 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
             <GlowingOrbs variant="section" />
-            <div className="relative max-w-7xl mx-auto px-6">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+              <div className="text-center mb-10 md:mb-12">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
                   {t("What Students Say")}
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
                   {t("See what our students have to say about us.")}
                 </p>
               </div>
@@ -1071,6 +1123,7 @@ export default function Home() {
           </FadeIn>
 
           {/* Now show Top Rated Tutors for new users */}
+          <FadeIn delay={0.16}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
@@ -1187,6 +1240,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+          </FadeIn>
         </>
       )}
 
@@ -1194,6 +1248,7 @@ export default function Home() {
       {isLoggedIn && (
         <>
           {/* Trusted By Section */}
+          <FadeIn>
           <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
               <p className="text-center text-slate-500 text-xs sm:text-sm mb-8 md:mb-10 uppercase tracking-widest">{t("Trusted by students from top institutions")}</p>
@@ -1237,13 +1292,14 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
       {/* Features Section */}
       <section id="features" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 md:mb-16">
+          <FadeIn className="text-center mb-12 md:mb-16">
             <SectionLabel icon={Zap} className="mb-4">
               {t("Why Choose MathMaster?")}
             </SectionLabel>
@@ -1253,11 +1309,12 @@ export default function Home() {
             <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
               {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
             </p>
-          </div>
+          </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 gap-8" staggerDelay={0.09}>
             {features.map((feature, index) => (
-              <Card key={feature.title} className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
+              <FadeInStaggerItem key={feature.title}>
+              <Card className="group overflow-hidden hover:shadow-2xl" padding="none" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="flex flex-col md:flex-row h-full">
                   <div className="md:w-2/5 relative h-48 md:h-auto min-h-[200px] overflow-hidden">
                     <Image
@@ -1288,25 +1345,27 @@ export default function Home() {
                   </div>
                 </div>
               </Card>
+              </FadeInStaggerItem>
             ))}
-          </div>
+          </FadeInStagger>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <FadeIn>
+      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
 
-        <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 md:mb-16">
             <SectionLabel icon={Rocket} className="mb-4">
               {t("Your Learning Journey")}
             </SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
               {t("How MathMaster Works")}
             </h2>
-            <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
               {t("Three simple steps to transform your math skills")}
             </p>
           </div>
@@ -1351,19 +1410,21 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
       {/* Testimonials */}
-      <section className="py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <FadeIn>
+      <section className="py-14 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
-        
-        <div className="relative max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-      
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 md:mb-12">
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
               {t("What Students Say")}
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
               {t("See what our students have to say about us.")}
             </p>
           </div>
@@ -1371,17 +1432,18 @@ export default function Home() {
           <TestimonialsScroll />
         </div>
       </section>
+      </FadeIn>
         </>
       )}
 
       {/* CTA Section - shown for everyone */}
-      <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
         {/* Subtle gradient background */}
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               {t("Ready to Master Math?")}
             </h2>
           </FadeIn>
@@ -1391,21 +1453,25 @@ export default function Home() {
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <Link href="/auth">
-              <Button size="lg" className="shadow-xl" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))", color: "white" }}>
-                <Rocket className="w-5 h-5" />
-                {t("Get Started Free")}
-              </Button>
-            </Link>
+            <div className="flex justify-center min-h-[52px]">
+              {isAuthResolved && (
+                <Link href={bottomCtaHref}>
+                  <Button size="lg" className="shadow-xl" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))", color: "white" }}>
+                    <Rocket className="w-5 h-5" />
+                    {bottomCtaLabel}
+                  </Button>
+                </Link>
+              )}
+            </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">{t("No credit card required • Free forever")}</p>
           </FadeIn>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-16 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <footer className="py-12 md:py-16 pb-28 md:pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-10 md:mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold font-serif text-xl" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))" }}>
@@ -1580,7 +1646,7 @@ export default function Home() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                           {t("Expiry Date")}
@@ -1681,7 +1747,7 @@ export default function Home() {
                               setBookingMonth(bookingMonth - 1);
                             }
                           }}
-                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
                           <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         </button>
@@ -1697,7 +1763,7 @@ export default function Home() {
                               setBookingMonth(bookingMonth + 1);
                             }
                           }}
-                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
                           <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         </button>
@@ -1733,7 +1799,7 @@ export default function Home() {
                     
                     {bookingDate ? (
                       <div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                           {getAllTimeSlotsWithAvailability().map(({slot, available}) => (
                             <button
                               key={slot}
@@ -1781,7 +1847,7 @@ export default function Home() {
                     </div>
                     
                     {selectedTime ? (
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                         {["1 hour", "1.5 hours", "2 hours"].map((duration) => (
                           <button
                             key={duration}

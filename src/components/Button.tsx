@@ -16,9 +16,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={clsx(
           // Base styles with touch-friendly improvements
-          "relative inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-300 ease-out",
-          // Glass baseline
-          "glass-medium",
+          "relative inline-flex items-center justify-center gap-2 rounded-2xl font-semibold tracking-[-0.01em] transition-all duration-300 ease-out",
           // Focus states
           "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950",
           // Disabled states
@@ -27,25 +25,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "cursor-pointer select-none touch-manipulation",
           // Accessibility and overflow
           "overflow-hidden group",
-          // Liquid glass highlight/refraction layer (most visible in dark mode)
-          "before:content-[''] before:absolute before:inset-[1px] before:rounded-[calc(theme(borderRadius.xl)-1px)] before:pointer-events-none before:bg-gradient-to-br before:from-white/50 before:via-white/15 before:to-transparent dark:before:from-white/20 dark:before:via-white/5 dark:before:to-white/0 before:opacity-80 dark:before:opacity-100",
           {
-            "bg-gradient-to-r text-white shadow-[0_0_0_1px_rgba(var(--theme-primary-rgb),0.28),0_0_26px_rgba(var(--theme-primary-rgb),0.38)] hover:shadow-[0_0_0_1px_rgba(var(--theme-primary-rgb),0.34),0_0_38px_rgba(var(--theme-primary-rgb),0.62)] hover:-translate-y-0.5 active:scale-[0.99] active:translate-y-0 focus:ring-[var(--theme-primary)] animate-pulse-glow":
+            "bg-gradient-to-r text-white shadow-[0_14px_36px_rgba(var(--theme-primary-rgb),0.24)] hover:shadow-[0_18px_42px_rgba(var(--theme-primary-rgb),0.32)] hover:-translate-y-0.5 active:scale-[0.99] active:translate-y-0 focus:ring-[var(--theme-primary)]":
               variant === "primary",
-            "bg-slate-200/70 dark:bg-[color-mix(in_srgb,rgb(15_23_42)_78%,transparent)] text-slate-800 dark:text-slate-100 hover:bg-slate-300/80 dark:hover:bg-[color-mix(in_srgb,rgb(30_41_59)_82%,transparent)] hover:-translate-y-0.5 hover:shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_28px_rgba(2,6,23,0.35)] active:translate-y-0 focus:ring-slate-400":
+            "bg-slate-200 dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 focus:ring-slate-400":
               variant === "secondary",
-            "bg-white/35 dark:bg-[color-mix(in_srgb,rgb(15_23_42)_68%,transparent)] text-slate-700 dark:text-slate-200 hover:bg-slate-100/65 dark:hover:bg-[color-mix(in_srgb,rgb(30_41_59)_74%,transparent)] hover:translate-y-[-1px] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_22px_rgba(2,6,23,0.30)] active:scale-[0.99] focus:ring-slate-400":
+            "bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:-translate-y-0.5 active:scale-[0.99] focus:ring-slate-400":
               variant === "ghost",
-            "bg-white/30 dark:bg-[color-mix(in_srgb,rgb(15_23_42)_72%,transparent)] border-2 border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] hover:-translate-y-0.5 hover:shadow-md dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_24px_rgba(2,6,23,0.32)] active:translate-y-0 focus:ring-[var(--theme-primary)]":
+            "bg-transparent border border-slate-300/90 dark:border-slate-700/90 text-slate-700 dark:text-slate-200 hover:border-[rgba(var(--theme-primary-rgb),0.45)] hover:bg-white/70 dark:hover:bg-slate-900/70 hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 focus:ring-[var(--theme-primary)]":
               variant === "outline",
-            "bg-gradient-to-r text-white shadow-[0_0_0_1px_rgba(var(--theme-primary-rgb),0.32),0_0_32px_rgba(var(--theme-primary-rgb),0.52)] hover:shadow-[0_0_0_1px_rgba(var(--theme-primary-rgb),0.38),0_0_44px_rgba(var(--theme-primary-rgb),0.72)] hover:-translate-y-1 hover:scale-[1.01] active:scale-[0.99] active:translate-y-0 animate-pulse-glow focus:ring-[var(--theme-primary)]":
+            "bg-gradient-to-r text-white shadow-lg shadow-[rgba(var(--theme-primary-rgb),0.34)] hover:shadow-xl hover:shadow-[rgba(var(--theme-primary-rgb),0.42)] hover:-translate-y-1 active:scale-[0.99] active:translate-y-0 animate-pulse-glow focus:ring-[var(--theme-primary)]":
               variant === "glow",
           },
           (variant === "primary" || variant === "glow") && "from-[var(--theme-primary)] to-[var(--theme-primary-light)]",
           {
-            "px-4 py-2 text-sm": size === "sm",
-            "px-6 py-3 text-base": size === "md",
-            "px-8 py-4 text-lg": size === "lg",
+            "min-h-10 px-4 py-2 text-sm": size === "sm",
+            "min-h-11 px-5 py-2.5 text-sm sm:text-base": size === "md",
+            "min-h-12 px-6 py-3 text-base sm:text-lg": size === "lg",
           },
           className
         )}
@@ -71,7 +67,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </svg>
         )}
         
-        <span className="relative z-10 flex items-center gap-2">
+        <span className="relative z-10 flex items-center gap-2 text-center">
           {children}
         </span>
       </button>
