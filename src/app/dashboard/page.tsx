@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
@@ -9,8 +9,12 @@ import { Badge } from "@/components/Badge";
 import { StatCard } from "@/components/StatCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal, ParallaxSection, TypingText } from "@/components/motion";
+import { RecommendationPanel } from "@/components/RecommendationPanel";
+import { CommunitySpotlight } from "@/components/CommunitySpotlight";
+import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
+import { getLearningProgress, learningProgressEvent } from "@/lib/progress";
+import { buildRecommendations } from "@/lib/guidance";
 import {
   Clock,
   CheckCircle2,
@@ -74,11 +78,11 @@ const initialGoals = [
 ];
 
 const colorClasses: Record<string, { bg: string; text: string }> = {
-  violet: { bg: "bg-violet-100", text: "text-violet-500" },
-  green: { bg: "bg-green-100", text: "text-green-500" },
-  yellow: { bg: "bg-yellow-100", text: "text-yellow-500" },
-  purple: { bg: "bg-purple-100", text: "text-purple-500" },
-  blue: { bg: "bg-blue-100", text: "text-blue-500" },
+  violet: { bg: "bg-violet-100", text: "text-violet-700" },
+  green: { bg: "bg-green-100", text: "text-green-700" },
+  yellow: { bg: "bg-yellow-100", text: "text-yellow-700" },
+  purple: { bg: "bg-purple-100", text: "text-purple-700" },
+  blue: { bg: "bg-blue-100", text: "text-blue-700" },
 };
 
 export default function DashboardPage() {
@@ -90,6 +94,8 @@ export default function DashboardPage() {
   const [goalTitle, setGoalTitle] = useState("");
   const [goalTarget, setGoalTarget] = useState("");
   const [isDark, setIsDark] = useState(false);
+  const [learningProgress, setLearningProgress] = useState(getLearningProgress);
+  const recommendations = useMemo(() => buildRecommendations(learningProgress), [learningProgress]);
 
   useEffect(() => {
     setMounted(true);
@@ -135,11 +141,15 @@ export default function DashboardPage() {
       }
     };
 
+    const handleLearningProgress = () => setLearningProgress(getLearningProgress());
+
     window.addEventListener("mm_goals_updated", handleGoalsUpdated);
+    window.addEventListener(learningProgressEvent, handleLearningProgress);
     
     return () => {
       observer.disconnect();
       window.removeEventListener("mm_goals_updated", handleGoalsUpdated);
+      window.removeEventListener(learningProgressEvent, handleLearningProgress);
     };
   }, []);
 
@@ -166,13 +176,13 @@ export default function DashboardPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <ParallaxSection className="absolute inset-0" speed={0.1}>
+        <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&h=400&fit=crop"
             alt="Math background"
@@ -185,11 +195,9 @@ export default function DashboardPage() {
             style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
           />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50" />
-          <div className="hero-vignette-layer" />
-          <div className="hero-grain-layer" />
-        </ParallaxSection>
+        </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-8 md:pt-36 md:pb-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <HeroText className="text-slate-900 dark:text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900/20 dark:bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
@@ -197,7 +205,7 @@ export default function DashboardPage() {
                 {t("Learning Dashboard")}
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
-                <TypingText text={`${t("Welcome back,")} ${userName}!`} speedMs={68} />
+                {t("Welcome back,")} {userName}!
               </h1>
               <p className="text-slate-900 dark:text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
               
@@ -248,9 +256,10 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-8">
+        <FadeIn delay={0.05}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-4 sm:-mt-8">
           <StatCard
             icon={Clock}
             label={t("Hours Studied")}
@@ -290,8 +299,10 @@ export default function DashboardPage() {
             subtextColor="text-purple-600"
           />
         </div>
+        </FadeIn>
 
         {/* Main Grid */}
+        <FadeIn delay={0.1}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Progress Chart */}
           <div className="lg:col-span-2" id="learning-progress">
@@ -325,9 +336,9 @@ export default function DashboardPage() {
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#334155" : "#e2e8f0"} />
-                        <XAxis dataKey="week" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} />
-                        <YAxis yAxisId="left" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} />
-                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#64748b" }} tickFormatter={(v) => `${v}%`} />
+                        <XAxis dataKey="week" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#475569" }} />
+                        <YAxis yAxisId="left" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#475569" }} />
+                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: isDark ? "#94a3b8" : "#475569" }} tickFormatter={(v) => `${v}%`} />
                         <Tooltip
                           contentStyle={{
                             backgroundColor: isDark ? "#0f172a" : "white",
@@ -344,7 +355,7 @@ export default function DashboardPage() {
                         />
                         <Legend 
                           wrapperStyle={{ 
-                            color: isDark ? "#94a3b8" : "#64748b",
+                            color: isDark ? "#94a3b8" : "#475569",
                             paddingTop: "20px"
                           }} 
                         />
@@ -419,15 +430,17 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-              <Link href="/learn#quizzes" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
-                {t("Practice in Resources")}
+              <button onClick={() => document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+                {t("View all challenges")}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </Card>
         </div>
+        </FadeIn>
 
         {/* Secondary Grid */}
+        <FadeIn delay={0.16}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Recent Activity */}
           <Card className="overflow-hidden" id="recent-activity">
@@ -468,10 +481,10 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-              <Link href="/community" className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
-                {t("Join Community Discussions")}
+              <button onClick={() => document.getElementById('recent-activity')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
+                {t("View all activity")}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </CardContent>
           </Card>
 
@@ -527,8 +540,20 @@ export default function DashboardPage() {
             </div>
           </Card>
         </div>
+        </FadeIn>
+
+        <FadeIn delay={0.2}>
+          <div className="mt-8 grid xl:grid-cols-[2fr_1fr] gap-6">
+            <RecommendationPanel
+              recommendations={recommendations}
+              title={t("Your Recommended Next Steps")}
+            />
+            <CommunitySpotlight />
+          </div>
+        </FadeIn>
 
         {/* Motivational Banner */}
+        <FadeIn delay={0.22}>
           <div className="mt-8 relative overflow-hidden rounded-2xl">
           <div className="absolute inset-0">
             <Image
@@ -552,7 +577,8 @@ export default function DashboardPage() {
               </Link>
           </div>
         </div>
-      </div>
+        </FadeIn>
+      </main>
 
       {showGoalModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">

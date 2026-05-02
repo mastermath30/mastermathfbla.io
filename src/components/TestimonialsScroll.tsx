@@ -186,7 +186,7 @@ function ScrollingColumn({
   const doubledTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <div ref={columnRef} className="relative h-[600px] overflow-hidden">
+    <div ref={columnRef} className="relative h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden">
       <div className="scroll-content">
         {doubledTestimonials.map((testimonial, index) => (
           <TestimonialCard key={`${testimonial.name}-${index}`} testimonial={testimonial} />

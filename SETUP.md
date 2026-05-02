@@ -57,6 +57,14 @@ SETUP.md                        ← This file
 
 ## Running Locally
 
+### Package Manager Standard
+
+MathMaster is standardized on **npm**. To prevent deployment failures caused by package-manager auto-detection:
+
+- Keep `package-lock.json` committed.
+- Do not commit `pnpm-lock.yaml`.
+- Vercel install/build commands are pinned in `vercel.json` (`npm install`, `npm run build`).
+
 ### Option A — Full stack (you have the API key)
 
 ```bash
@@ -119,6 +127,20 @@ You can work on all frontend code without ever touching the API key.
 |------------------------|---------------|---------------------|--------------------------------------------------|
 | `ANTHROPIC_API_KEY`    | Server only   | Backend deployer    | Anthropic secret key for Claude                  |
 | `NEXT_PUBLIC_API_URL`  | Client bundle | Frontend-only devs  | URL of hosted backend (empty = same origin)      |
+| `NEXT_PUBLIC_SUPABASE_URL` | Client bundle | Launch deployments | Supabase project URL for real auth/data          |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client bundle | Launch deployments | Supabase anon key for browser client access      |
+
+## Learning Integrity Check
+
+Run before deploy:
+
+```bash
+npm run verify:learning
+```
+
+This verifies:
+- every course `quizSlugs` entry has a real quiz definition
+- local worksheet/download links resolve to existing files
 
 ---
 

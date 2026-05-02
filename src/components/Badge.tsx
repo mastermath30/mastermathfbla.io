@@ -24,7 +24,7 @@ export function Badge({
         {
           "bg-slate-200 dark:bg-slate-950 text-slate-700 dark:text-slate-200": variant === "default",
           "bg-green-500/15 text-green-700 dark:text-green-300 border border-green-500/20": variant === "success",
-          "bg-yellow-500/15 text-yellow-700 dark:text-yellow-200 border border-yellow-500/20": variant === "warning",
+          "bg-yellow-500/15 text-yellow-800 dark:text-yellow-200 border border-yellow-500/20": variant === "warning",
           "bg-blue-500/15 text-blue-700 dark:text-blue-200 border border-blue-500/20": variant === "info",
           "bg-violet-500/15 text-violet-700 dark:text-violet-200 border border-violet-500/20": variant === "violet",
           "bg-purple-500/15 text-purple-700 dark:text-purple-200 border border-purple-500/20": variant === "purple",

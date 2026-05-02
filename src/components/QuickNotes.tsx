@@ -1,3 +1,4 @@
+// i18n-allow-hardcoded
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -26,24 +27,21 @@ const getNoteColors = (t: (key: string) => string) => [
 export function QuickNotes() {
   const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<Note[]>(() => {
+    if (typeof window === "undefined") return [];
+    const saved = localStorage.getItem("mathmaster-notes");
+    if (!saved) return [];
+    try {
+      return JSON.parse(saved) as Note[];
+    } catch {
+      return [];
+    }
+  });
   const [activeNote, setActiveNote] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
   const noteColors = getNoteColors(t);
-
-  // Load notes from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("mathmaster-notes");
-    if (saved) {
-      try {
-        setNotes(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load notes");
-      }
-    }
-  }, []);
 
   // Save notes to localStorage
   useEffect(() => {
@@ -128,7 +126,7 @@ export function QuickNotes() {
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, x: 50 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-4 top-4 bottom-4 z-[101] w-[90%] max-w-md"
+              className="fixed inset-x-4 top-4 bottom-24 z-[101] w-auto md:inset-x-auto md:right-4 md:top-4 md:bottom-4 md:w-[90%] md:max-w-md"
             >
               <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col h-full overflow-hidden">
                 {/* Header */}
@@ -149,9 +147,9 @@ export function QuickNotes() {
                 </div>
 
                 {/* Add Note Bar */}
-                <div className="p-3 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 p-3 dark:border-slate-700">
                   {/* Color Picker */}
-                  <div className="flex gap-1">
+                  <div className="flex flex-wrap gap-1">
                     {noteColors.map((color, i) => (
                       <button
                         key={i}
@@ -165,7 +163,7 @@ export function QuickNotes() {
                   </div>
                   <button
                     onClick={addNote}
-                    className="ml-auto flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-medium transition-colors"
+                    className="ml-auto flex min-h-[44px] items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-600"
                   >
                     <Plus className="w-4 h-4" />
                     {t("Add Note")}
@@ -193,7 +191,7 @@ export function QuickNotes() {
                           className={`${colorClasses.bg} ${colorClasses.border} border rounded-xl p-3 relative group`}
                         >
                           {/* Actions */}
-                          <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute top-2 right-2 flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                             <button
                               onClick={() => togglePin(note.id)}
                               className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10"

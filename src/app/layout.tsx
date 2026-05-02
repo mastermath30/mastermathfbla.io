@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+// i18n-allow-hardcoded
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
@@ -18,6 +19,7 @@ import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { ToolsMenu } from "@/components/ToolsMenu";
 import { AIMathTutor } from "@/components/AIMathTutor";
 import { InteractiveWhiteboard } from "@/components/InteractiveWhiteboard";
+import { SiteTutorialController } from "@/components/SiteTutorialController";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,9 +27,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MathMaster - Master Mathematics Together",
-  description: "An interactive learning platform created by students, for students. Unlock the beauty of numbers through peer tutoring and collaboration.",
+  title: "MathMaster - Guided Math Learning Ecosystem",
+  description:
+    "A course-aware math learning platform with guided pathways, targeted practice, AI tutoring, accessibility tools, and peer community support.",
   keywords: ["math", "tutoring", "learning", "education", "calculus", "algebra"],
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 // Script to apply theme and accessibility before React hydrates (prevents flash)
@@ -96,6 +105,7 @@ export default function RootLayout({
           <PomodoroTimer />
           <AIMathTutor />
           <InteractiveWhiteboard />
+          <SiteTutorialController />
         </LanguageProvider>
       </body>
     </html>

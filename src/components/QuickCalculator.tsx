@@ -10,6 +10,7 @@ declare global {
     Desmos?: {
       GraphingCalculator: (elt: HTMLElement, options?: Record<string, unknown>) => {
         destroy: () => void;
+        resize?: () => void;
       };
     };
   }
@@ -23,15 +24,15 @@ export function QuickCalculator() {
   const [size, setSize] = useState<"sm" | "md" | "lg">("md");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const calculatorRef = useRef<{ destroy: () => void } | null>(null);
+  const calculatorRef = useRef<{ destroy: () => void; resize?: () => void } | null>(null);
 
   // Load Desmos API script once on the client
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     if (window.Desmos) {
-      setIsScriptLoaded(true);
-      return;
+      const timer = window.setTimeout(() => setIsScriptLoaded(true), 0);
+      return () => window.clearTimeout(timer);
     }
 
     const existing = document.querySelector<HTMLScriptElement>(
@@ -40,7 +41,7 @@ export function QuickCalculator() {
     if (existing) {
       existing.addEventListener("load", () => setIsScriptLoaded(true));
       existing.addEventListener("error", () =>
-        setLoadError("Failed to load Desmos calculator.")
+        setLoadError("Failed to load Graphing Calculator.")
       );
       return;
     }
@@ -50,7 +51,7 @@ export function QuickCalculator() {
       "https://www.desmos.com/api/v1.11/calculator.js?apiKey=4623762d63fa4908af685d51e6d03006";
     script.async = true;
     script.onload = () => setIsScriptLoaded(true);
-    script.onerror = () => setLoadError("Failed to load Desmos calculator.");
+    script.onerror = () => setLoadError("Failed to load Graphing Calculator.");
     document.body.appendChild(script);
   }, []);
 
@@ -97,6 +98,35 @@ export function QuickCalculator() {
     };
   }, [isOpen, isScriptLoaded]);
 
+  useEffect(() => {
+    if (!isOpen || !calculatorRef.current) return;
+
+    const resizeCalculator = () => {
+      calculatorRef.current?.resize?.();
+    };
+
+    const frameId = window.requestAnimationFrame(resizeCalculator);
+    const timeoutId = window.setTimeout(resizeCalculator, 180);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [isOpen, isFullscreen, size]);
+
+  useEffect(() => {
+    if (!isOpen || !containerRef.current || !calculatorRef.current?.resize || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const observer = new ResizeObserver(() => {
+      calculatorRef.current?.resize?.();
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [isOpen, isFullscreen]);
+
   const wrapperWidthClass =
     size === "sm"
       ? "w-[320px] md:w-[480px]"
@@ -111,6 +141,22 @@ export function QuickCalculator() {
       ? "h-[320px] md:h-[480px]"
       : "h-[260px] md:h-[360px]";
 
+  const wrapperClassName = isFullscreen
+    ? "fixed inset-0 z-[101] bg-black/60 p-0 md:p-2"
+    : `fixed bottom-24 right-4 z-[101] ${wrapperWidthClass} md:bottom-24 md:right-8`;
+
+  const panelClassName = isFullscreen
+    ? "flex h-full w-full flex-col overflow-hidden border-0 bg-white shadow-none dark:bg-slate-900 md:rounded-[28px] md:border md:border-slate-200 md:shadow-2xl md:dark:border-slate-700"
+    : "flex w-full max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900";
+
+  const bodyClassName = isFullscreen
+    ? "flex min-h-0 flex-1 flex-col bg-slate-50 p-3 dark:bg-slate-900 md:p-4"
+    : "flex min-h-[260px] flex-1 flex-col bg-slate-50 p-2 dark:bg-slate-900 md:min-h-[360px]";
+
+  const graphClassName = isFullscreen
+    ? "h-full min-h-0 w-full flex-1 overflow-hidden rounded-2xl bg-white dark:bg-slate-800"
+    : `w-full ${containerHeightClass} overflow-hidden rounded-xl bg-white dark:bg-slate-800`;
+
   return (
     <>
       <AnimatePresence>
@@ -120,20 +166,16 @@ export function QuickCalculator() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className={
-              isFullscreen
-                ? "fixed inset-0 z-[101] flex items-center justify-center p-4 md:p-8 bg-black/40"
-                : `fixed right-4 bottom-24 md:right-8 md:bottom-24 z-[101] ${wrapperWidthClass}`
-            }
+            className={wrapperClassName}
           >
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh] w-full md:max-w-5xl">
+            <div className={panelClassName}>
               {/* Header */}
               <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-emerald-600">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <Calculator className="w-4 h-4 text-white" />
                     <span className="text-sm font-medium text-white">
-                      {t("Graphing Calculator (Desmos)")}
+                      {t("Graphing Calculator")}
                     </span>
                   </div>
                   {!isFullscreen && (
@@ -178,7 +220,7 @@ export function QuickCalculator() {
               </div>
 
               {/* Body: Desmos container or status */}
-              <div className="p-2 bg-slate-50 dark:bg-slate-900 flex-1 min-h-[260px] md:min-h-[360px]">
+              <div className={bodyClassName}>
                 {loadError && (
                   <div className="text-sm text-red-600 dark:text-red-400">
                     {loadError}
@@ -186,12 +228,12 @@ export function QuickCalculator() {
                 )}
                 {!loadError && !isScriptLoaded && (
                   <div className="text-sm text-slate-500 dark:text-slate-400">
-                    {t("Loading Desmos graphing calculator...")}
+                    {t("Loading Graphing Calculator...")}
                   </div>
                 )}
                 <div
                   ref={containerRef}
-                  className={`w-full ${containerHeightClass} bg-white dark:bg-slate-800 rounded-xl overflow-hidden`}
+                  className={graphClassName}
                 />
               </div>
 

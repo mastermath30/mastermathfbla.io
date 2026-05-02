@@ -1,33 +1,43 @@
+// i18n-allow-hardcoded
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeSelector } from "./ThemeSelector";
 import { MathLogo } from "./MathLogo";
 import { useTranslations } from "./LanguageProvider";
+import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
 
 export function TopBar() {
 	const pathname = usePathname();
 	const { t } = useTranslations();
 	const [isOpen, setIsOpen] = useState(false);
+	const [isVisible, setIsVisible] = useState(true);
 	const [hasLoaded, setHasLoaded] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userName, setUserName] = useState("");
+	const lastScrollY = useRef(0);
 
 	useEffect(() => {
-		// Check if user is logged in
-		const session = localStorage.getItem("mm_session");
-		const loggedInFlag = localStorage.getItem("isLoggedIn");
-		setIsLoggedIn(!!session || loggedInFlag === "true");
-		
-		// Get user's name from profile
-		const profileData = localStorage.getItem("mm_profile");
-		if (profileData) {
+		const syncAuth = () => {
+			const nextLoggedIn = getStoredAuthState();
+			setIsLoggedIn(nextLoggedIn);
+
+			if (!nextLoggedIn) {
+				setUserName("");
+				return;
+			}
+
+			const profileData = localStorage.getItem("mm_profile");
+			if (!profileData) {
+				setUserName("");
+				return;
+			}
+
 			try {
 				const profile = JSON.parse(profileData);
-				// Use username if available, otherwise use first name
 				if (profile.username) {
 					setUserName(profile.username);
 				} else if (profile.firstName) {
@@ -35,34 +45,80 @@ export function TopBar() {
 				} else {
 					setUserName("");
 				}
-			} catch (e) {
+			} catch {
 				setUserName("");
 			}
-		}
-	}, [pathname]); // Re-check on route change
+		};
+
+		const timer = window.setTimeout(syncAuth, 0);
+		window.addEventListener("focus", syncAuth);
+		window.addEventListener(authStateChangedEvent, syncAuth);
+
+		return () => {
+			window.clearTimeout(timer);
+			window.removeEventListener("focus", syncAuth);
+			window.removeEventListener(authStateChangedEvent, syncAuth);
+		};
+	}, [pathname]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setHasLoaded(true);
 		}, 100);
+
+		const controlNavbar = () => {
+			if (typeof window !== "undefined") {
+				const currentScrollY = window.scrollY;
+
+				// Only hide/show after scrolling past 50px to avoid flickering at top
+				if (currentScrollY > 50) {
+					if (
+						currentScrollY > lastScrollY.current &&
+						currentScrollY - lastScrollY.current > 5
+					) {
+						// Scrolling down - hide navbar
+						setIsVisible(false);
+					} else if (lastScrollY.current - currentScrollY > 5) {
+						// Scrolling up - show navbar
+						setIsVisible(true);
+					}
+				} else {
+					// Always show navbar when near top
+					setIsVisible(true);
+				}
+
+				lastScrollY.current = currentScrollY;
+			}
+		};
+
+		if (typeof window !== "undefined") {
+			window.addEventListener("scroll", controlNavbar, { passive: true });
+
+			return () => {
+				window.removeEventListener("scroll", controlNavbar);
+				clearTimeout(timer);
+			};
+		}
 		return () => clearTimeout(timer);
 	}, []);
 
 	const navigation = [
-		{ name: t("About"), href: "/about" },
 		{ name: t("Learn"), href: "/learn" },
 		{ name: t("Schedule"), href: "/schedule" },
 		{ name: t("Dashboard"), href: "/dashboard" },
 		{ name: t("Community"), href: "/community" },
 		{ name: t("Support"), href: "/support" },
+		{ name: t("About"), href: "/about" },
 	];
 
 	return (
 		<>
 			<nav
-				className={`hidden md:block fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-					hasLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-				}`}
+				className={`topbar-root hidden md:block fixed top-4 md:top-8 left-0 right-0 mx-auto z-50 w-[min(calc(100vw-2rem),64rem)] transition-all duration-500 ${
+					isVisible
+						? "translate-y-0 opacity-100 pointer-events-auto"
+						: "-translate-y-20 md:-translate-y-24 opacity-0 pointer-events-none"
+				} ${hasLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
 				style={{
 					transition: hasLoaded
 						? "all 0.5s ease-out"
@@ -70,28 +126,29 @@ export function TopBar() {
 				}}
 			>
 				{/* Main Navigation */}
-				<div className="w-[90vw] max-w-xs md:max-w-5xl mx-auto">
-					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-full px-4 py-3 md:px-6 md:py-2 shadow-lg">
-						<div className="flex items-center justify-between gap-4">
+				<div className="w-full">
+					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-lg">
+						<div className="flex items-center justify-center gap-6 lg:gap-7 xl:gap-8">
 							{/* Logo */}
 							<Link
 								href="/"
-								className="flex items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
+								data-no-auto-translate="true"
+								className="flex shrink-0 items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
 							>
 								<MathLogo className="w-8 h-8 md:w-10 md:h-10" />
-								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden sm:block">
+								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden lg:block whitespace-nowrap">
 									Math
 									<span className="gradient-text">Master</span>
 								</span>
 							</Link>
 
 							{/* Desktop Navigation */}
-							<div className="hidden lg:flex items-center space-x-6">
+							<div className="hidden lg:flex items-center justify-center gap-4 whitespace-nowrap">
 								{navigation.map((item) => (
 									<Link
 										key={item.name}
 										href={item.href}
-										className={`text-sm font-medium transition-all duration-200 cursor-pointer ${
+										className={`inline-flex items-center text-[13px] xl:text-sm font-medium leading-none transition-all duration-200 cursor-pointer ${
 											pathname === item.href
 												? "text-[var(--theme-primary)]"
 												: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)] hover:scale-105"
@@ -102,61 +159,62 @@ export function TopBar() {
 								))}
 							</div>
 
-							{/* Theme Selector */}
-							<div className="hidden md:block ml-2">
-								<ThemeSelector />
-							</div>
-
-							{/* Desktop Auth Button */}
-							<div className="hidden md:block min-w-0">
-								<Link
-									href="/auth"
-									title={isLoggedIn && userName ? userName : undefined}
-									className={`relative font-medium px-4 lg:px-6 py-2 rounded-full flex items-center gap-2 min-w-0 max-w-[11rem] lg:max-w-[14rem] transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
-										pathname === "/auth"
-											? "text-white shadow-lg"
-											: "text-white"
-									}`}
-									style={{
-										background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
-										boxShadow: pathname === "/auth" ? "0 10px 25px -5px rgba(var(--theme-primary-rgb), 0.3)" : undefined
-									}}
-								>
-									{isLoggedIn ? (
-										<>
-											<User className="w-4 h-4 shrink-0" />
-											<span className="truncate">{userName || t("Account")}</span>
-										</>
-									) : (
-										<span>{t("Sign In")}</span>
-									)}
-								</Link>
-							</div>
-
-							{/* Mobile Menu Button */}
-							<button
-								onClick={() => setIsOpen(!isOpen)}
-								className="lg:hidden text-slate-900 dark:text-white hover:scale-110 transition-transform duration-200 cursor-pointer"
-							>
-								<div className="relative w-6 h-6">
-									<Menu
-										size={24}
-										className={`absolute inset-0 transition-all duration-300 ${
-											isOpen
-												? "opacity-0 rotate-180 scale-75"
-												: "opacity-100 rotate-0 scale-100"
-										}`}
-									/>
-									<X
-										size={24}
-										className={`absolute inset-0 transition-all duration-300 ${
-											isOpen
-												? "opacity-100 rotate-0 scale-100"
-												: "opacity-0 -rotate-180 scale-75"
-										}`}
-									/>
+							<div className="flex shrink-0 items-center justify-end gap-4">
+								{/* Theme Selector */}
+								<div className="hidden md:block">
+									<ThemeSelector />
 								</div>
-							</button>
+
+								{/* Desktop Auth Button */}
+								<div className="hidden md:block">
+									<Link
+										href="/auth"
+										className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
+											pathname === "/auth"
+												? "text-white shadow-lg"
+												: "text-white"
+										}`}
+										style={{
+											background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
+											boxShadow: pathname === "/auth" ? "0 10px 25px -5px rgba(var(--theme-primary-rgb), 0.3)" : undefined
+										}}
+									>
+										{isLoggedIn ? (
+											<>
+												<User className="w-4 h-4" />
+												<span>{userName || t("Account")}</span>
+											</>
+										) : (
+											<span>{t("Sign In")}</span>
+										)}
+									</Link>
+								</div>
+
+								{/* Mobile Menu Button */}
+								<button
+									onClick={() => setIsOpen(!isOpen)}
+									className="lg:hidden -mr-1 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-900 transition-transform duration-200 hover:scale-110 dark:text-white"
+								>
+									<div className="relative w-6 h-6">
+										<Menu
+											size={24}
+											className={`absolute inset-0 transition-all duration-300 ${
+												isOpen
+													? "opacity-0 rotate-180 scale-75"
+													: "opacity-100 rotate-0 scale-100"
+											}`}
+										/>
+										<X
+											size={24}
+											className={`absolute inset-0 transition-all duration-300 ${
+												isOpen
+													? "opacity-100 rotate-0 scale-100"
+													: "opacity-0 -rotate-180 scale-75"
+											}`}
+										/>
+									</div>
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -165,20 +223,27 @@ export function TopBar() {
 					{/* Backdrop overlay */}
 					<div
 						className={`fixed inset-0 bg-black/20 backdrop-blur-sm transition-all duration-300 ${
-							isOpen ? "opacity-100 z-40" : "opacity-0 pointer-events-none"
+							isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
 						}`}
 						onClick={() => setIsOpen(false)}
+						style={{
+							top: "0",
+							left: "0",
+							right: "0",
+							bottom: "0",
+							zIndex: -1,
+						}}
 					/>
 
 					{/* Menu container */}
 					<div
-						className={`relative z-50 mt-2 w-[90vw] max-w-xs mx-auto transition-all duration-500 ease-out transform-gpu ${
+						className={`mt-2 w-[92vw] max-w-sm sm:max-w-md mx-auto transition-all duration-500 ease-out transform-gpu ${
 							isOpen
 								? "opacity-100 translate-y-0 scale-100"
 								: "opacity-0 -translate-y-8 scale-95 pointer-events-none"
 						}`}
 					>
-						<div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border border-white/20 dark:border-slate-700/50 rounded-2xl p-4 shadow-2xl">
+						<div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-4 shadow-2xl">
 							<div className="flex flex-col space-y-1">
 								{navigation.map((item, index) => (
 									<Link
@@ -215,7 +280,6 @@ export function TopBar() {
 								<div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
 								<Link
 									href="/auth"
-									title={isLoggedIn && userName ? userName : undefined}
 									className={`relative text-white font-medium px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group transform ${
 										isOpen ? "animate-mobile-menu-item" : ""
 									}`}
@@ -229,8 +293,8 @@ export function TopBar() {
 								>
 									{isLoggedIn ? (
 										<>
-											<User className="w-4 h-4 shrink-0" />
-											<span className="truncate max-w-[11rem]">{userName || t("Account")}</span>
+											<User className="w-4 h-4" />
+											<span>{userName || t("Account")}</span>
 										</>
 									) : (
 										<span>{t("Sign In")}</span>

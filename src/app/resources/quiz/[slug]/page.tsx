@@ -1,33 +1,17 @@
 "use client";
 
-import { useMemo, useState, Suspense } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
+import { FadeIn } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
-
-type QuizQuestion = {
-  prompt: string;
-  options: string[];
-  correctIndex: number;
-};
-
-type DifficultyQuestions = {
-  easy: QuizQuestion[];
-  medium: QuizQuestion[];
-  hard: QuizQuestion[];
-};
-
-type QuizData = {
-  title: string;
-  description: string;
-  difficulty: string;
-  time: string;
-  topic: string;
-  questionsByDifficulty: DifficultyQuestions;
-};
+import { addQuizAttempt, getLearningProgress } from "@/lib/progress";
+import { topicByQuizSlug } from "@/data/courses";
+import { toLearnActionHref } from "@/lib/learnActions";
+import { buildTopicGeneratedQuiz, type DifficultyQuestions, type QuizData } from "@/lib/quizBank";
 
 const quizzesBySlug: Record<string, QuizData> = {
   "algebra-basics": {
@@ -579,8 +563,15 @@ function QuizPageContent() {
   const searchParams = useSearchParams();
   const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
   const difficulty = (searchParams.get("difficulty") || "medium") as keyof DifficultyQuestions;
+  const [attemptVersion, setAttemptVersion] = useState(0);
   
-  const quiz = useMemo(() => (slug ? quizzesBySlug[slug] : undefined), [slug]);
+  const topicForSlug = slug ? topicByQuizSlug[slug] : undefined;
+  const quiz = useMemo(() => {
+    if (!slug) return undefined;
+    return topicForSlug
+      ? buildTopicGeneratedQuiz(topicForSlug, `${slug}:${difficulty}:${attemptVersion}`)
+      : quizzesBySlug[slug];
+  }, [attemptVersion, difficulty, slug, topicForSlug]);
   const questions = useMemo(() => {
     if (!quiz) return [];
     return quiz.questionsByDifficulty[difficulty] || quiz.questionsByDifficulty.medium;
@@ -590,28 +581,48 @@ function QuizPageContent() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
+  const [pendingCorrect, setPendingCorrect] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [finalScore, setFinalScore] = useState<number | null>(null);
+  const unlockThreshold = getLearningProgress().unlockThreshold;
+
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    setCurrentIndex(0);
+    setSelectedIndex(null);
+    setScore(0);
+    setAnswered(false);
+    setPendingCorrect(false);
+    setShowResults(false);
+    setFinalScore(null);
+  }, [attemptVersion, difficulty, slug]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const difficultyLabels: Record<string, { label: string; color: string }> = {
     easy: { label: t("Easy"), color: "text-green-500" },
     medium: { label: t("Medium"), color: "text-yellow-500" },
     hard: { label: t("Hard"), color: "text-red-500" },
   };
+  const difficultyDescriptions: Record<string, string> = {
+    easy: t("Easy focuses on core ideas, simpler calculations, and direct wording."),
+    medium: t("Medium uses standard topic questions with moderate multi-step thinking."),
+    hard: t("Hard emphasizes deeper application, richer reasoning, and more demanding scenarios."),
+  };
 
   if (!quiz || questions.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-        <div className="max-w-3xl mx-auto px-6 py-12">
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
           <Card className="p-8 text-center">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz not found")}</h1>
             <p className="text-slate-500 dark:text-slate-400 mb-6">
               {t("The quiz you are looking for does not exist yet.")}
             </p>
-            <Button onClick={() => router.push("/learn#quizzes")} type="button">
-              {t("Back to Resources")}
+            <Button onClick={() => router.push("/learn")} type="button">
+              {t("Back to Learn")}
             </Button>
           </Card>
-        </div>
+        </main>
       </div>
     );
   }
@@ -620,41 +631,93 @@ function QuizPageContent() {
   const totalQuestions = questions.length;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const progress = Math.round(((currentIndex + (showResults ? 1 : 0)) / totalQuestions) * 100);
+  const effectiveScore = showResults ? finalScore ?? score : score;
+  const scorePercent = totalQuestions ? Math.round((effectiveScore / totalQuestions) * 100) : 0;
+  const topicId = slug ? topicByQuizSlug[slug]?.id : undefined;
+  const mastered = scorePercent >= Math.round(unlockThreshold * 100);
+  const recommendedAction: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic" =
+    mastered
+      ? difficulty === "hard"
+        ? "next-topic"
+        : difficulty === "easy"
+        ? "continue-medium"
+        : "continue-hard"
+      : scorePercent < 50
+      ? "ask-ai"
+      : "retry-easy";
+
+  const learnResultHref = toLearnActionHref({
+    action: "view",
+    tab: "quiz",
+    topicId,
+    source: "quiz",
+    result: mastered ? "mastered" : "review",
+    score: scorePercent,
+    recommended: recommendedAction,
+  });
 
   const handleSubmit = () => {
     if (selectedIndex === null || answered) return;
-    if (selectedIndex === question.correctIndex) {
-      setScore((prev) => prev + 1);
-    }
+    setPendingCorrect(selectedIndex === question.correctIndex);
     setAnswered(true);
   };
 
   const handleNext = () => {
+    if (!answered) return;
+    const nextScore = score + (pendingCorrect ? 1 : 0);
+    setScore(nextScore);
+
     if (isLastQuestion) {
+      if (slug) {
+        const accuracy = totalQuestions ? nextScore / totalQuestions : 0;
+        const finalizedPercent = totalQuestions ? Math.round((nextScore / totalQuestions) * 100) : 0;
+        const finalizedMastered = finalizedPercent >= Math.round(unlockThreshold * 100);
+        const finalizedRecommended: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic" =
+          finalizedMastered
+            ? difficulty === "hard"
+              ? "next-topic"
+              : difficulty === "easy"
+              ? "continue-medium"
+              : "continue-hard"
+            : finalizedPercent < 50
+            ? "ask-ai"
+            : "retry-easy";
+        addQuizAttempt({
+          slug,
+          topic: topicByQuizSlug[slug]?.id ?? quiz.topic,
+          score: nextScore,
+          totalQuestions,
+          accuracy,
+          difficulty,
+          completedAt: new Date().toISOString(),
+          recommended: finalizedRecommended,
+          result: finalizedMastered ? "mastered" : "review",
+        });
+      }
+      setFinalScore(nextScore);
       setShowResults(true);
       return;
     }
     setCurrentIndex((prev) => prev + 1);
     setSelectedIndex(null);
     setAnswered(false);
+    setPendingCorrect(false);
   };
 
   const handleRestart = () => {
-    setCurrentIndex(0);
-    setSelectedIndex(null);
-    setScore(0);
-    setAnswered(false);
-    setShowResults(false);
+    setAttemptVersion((current) => current + 1);
   };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-      <div className="max-w-4xl mx-auto px-6 py-12 pb-24">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 pb-24">
+        <FadeIn>
         <div className="flex flex-col gap-4 mb-8">
           <SectionLabel>{`${t(quiz.topic)} ${t("Quiz")}`}</SectionLabel>
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t(quiz.title)}</h1>
             <p className="text-slate-500 dark:text-slate-400">{t(quiz.description)}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{difficultyDescriptions[difficulty] || difficultyDescriptions.medium}</p>
             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <span className={`px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-medium ${difficultyLabels[difficulty]?.color || ''}`}>
                 {difficultyLabels[difficulty]?.label || t('Medium')} {t("Mode")}
@@ -664,20 +727,76 @@ function QuizPageContent() {
             </div>
           </div>
         </div>
+        </FadeIn>
 
+        <FadeIn delay={0.08}>
         <Card className="p-6 md:p-8">
           {showResults ? (
             <div className="text-center">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz complete")}</h2>
               <p className="text-slate-500 dark:text-slate-400 mb-6">
-                {t("You scored")} {score} {t("out of")} {totalQuestions}.
+                {t("You scored")} {effectiveScore} {t("out of")} {totalQuestions}.
+              </p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+                {mastered
+                  ? t("Mastery unlocked. You can continue to the next topic ({threshold}% threshold).", {
+                      threshold: Math.round(unlockThreshold * 100),
+                    })
+                  : t("Mastery not reached. Review support is recommended before retrying ({threshold}% threshold).", {
+                      threshold: Math.round(unlockThreshold * 100),
+                    })}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                {recommendedAction === "next-topic"
+                  ? t("Recommended next step: move to your next topic.")
+                  : recommendedAction === "continue-medium"
+                  ? t("Recommended next step: continue with medium difficulty.")
+                  : recommendedAction === "continue-hard"
+                  ? t("Recommended next step: continue with hard difficulty.")
+                  : recommendedAction === "ask-ai"
+                  ? t("Recommended next step: ask AI for a guided recovery plan.")
+                  : t("Recommended next step: retry with easy difficulty.")}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button onClick={handleRestart} type="button">
-                  {t("Restart Quiz")}
+                <Button onClick={() => router.push(learnResultHref)} type="button">
+                  {t("Continue Path")}
                 </Button>
-                <Button variant="outline" onClick={() => router.push("/learn#quizzes")} type="button">
-                  {t("Back to Resources")}
+                {recommendedAction === "retry-easy" && slug && (
+                  <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=easy`)} type="button">
+                    {t("Start easy recovery quiz")}
+                  </Button>
+                )}
+                {recommendedAction === "continue-medium" && slug && (
+                  <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=medium`)} type="button">
+                    {t("Continue with medium")}
+                  </Button>
+                )}
+                {recommendedAction === "continue-hard" && slug && (
+                  <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=hard`)} type="button">
+                    {t("Try hard challenge")}
+                  </Button>
+                )}
+                {recommendedAction === "ask-ai" && (
+                  <Button
+                    onClick={() =>
+                      router.push(
+                        toLearnActionHref({
+                          action: "open-ai",
+                          topicId,
+                          source: "quiz",
+                          result: "review",
+                          score: scorePercent,
+                          recommended: "ask-ai",
+                        })
+                      )
+                    }
+                    type="button"
+                  >
+                    {t("Ask AI recovery help")}
+                  </Button>
+                )}
+                <Button onClick={handleRestart} variant="outline" type="button">
+                  {t("Restart Quiz")}
                 </Button>
               </div>
             </div>
@@ -763,7 +882,7 @@ function QuizPageContent() {
                   {isLastQuestion ? t("Finish Quiz") : t("Next Question")}
                 </Button>
                 <Link
-                  href="/learn#quizzes"
+                  href="/learn"
                   className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
                 >
                   {t("Exit Quiz")}
@@ -772,7 +891,8 @@ function QuizPageContent() {
             </div>
           )}
         </Card>
-      </div>
+        </FadeIn>
+      </main>
     </div>
   );
 }
