@@ -205,10 +205,15 @@ export function Navbar() {
                             ? "text-[var(--theme-primary)]"
                             : "hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700"
                         }`}
-                        style={pathname === link.href ? {
-                          backgroundColor: "color-mix(in srgb, var(--theme-primary) 12%, white)",
-                        } : undefined}
-                        style={{ WebkitTapHighlightColor: "transparent" }}
+                        style={{
+                          WebkitTapHighlightColor: "transparent",
+                          ...(pathname === link.href
+                            ? {
+                                backgroundColor:
+                                  "color-mix(in srgb, var(--theme-primary) 12%, white)",
+                              }
+                            : {}),
+                        }}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                           pathname === link.href
