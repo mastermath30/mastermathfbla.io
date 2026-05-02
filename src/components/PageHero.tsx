@@ -65,8 +65,8 @@ export function PageHero({
   return (
     <section className={`relative overflow-hidden px-safe ${className}`}>
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-10%] top-12 h-56 w-56 rounded-full bg-indigo-200/45 blur-3xl dark:bg-indigo-950/35" />
-        <div className="absolute right-[-8%] top-24 h-72 w-72 rounded-full bg-blue-200/35 blur-3xl dark:bg-blue-950/25" />
+        <div className="absolute left-[-10%] top-12 h-56 w-56 rounded-full blur-3xl opacity-40 dark:opacity-20" style={{ background: "var(--theme-primary)" }} />
+        <div className="absolute right-[-8%] top-24 h-72 w-72 rounded-full blur-3xl opacity-20 dark:opacity-10" style={{ background: "var(--theme-primary-light)" }} />
       </div>
 
       <div
@@ -74,7 +74,8 @@ export function PageHero({
       >
         <div className="max-w-2xl">
           {eyebrow ? (
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm dark:border-indigo-900/60 dark:bg-slate-900 dark:text-indigo-300">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm font-semibold shadow-sm dark:bg-slate-900"
+              style={{ borderColor: "var(--accent-border)", color: "var(--theme-primary)" }}>
               {Icon ? <Icon className="h-4 w-4" /> : null}
               {eyebrow}
             </p>
@@ -83,7 +84,7 @@ export function PageHero({
           <h1 className="text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl dark:text-white">
             <TypingText text={title} speedMs={60} showCursor={!highlight} />
             {highlight ? (
-              <span className="block text-indigo-700 dark:text-indigo-300">
+              <span className="block" style={{ color: "var(--theme-primary)" }}>
                 <TypingText text={highlight} speedMs={60} delayMs={title.length * 60 + 150} />
               </span>
             ) : null}
@@ -101,7 +102,8 @@ export function PageHero({
                   <Button
                     variant="ghost"
                     size={buttonSize}
-                    className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 hover:text-white sm:w-auto"
+                    className="w-full rounded-full px-7 text-white shadow-sm hover:text-white sm:w-auto"
+                    style={{ background: "var(--theme-primary)" }}
                   >
                     {primaryAction.label}
                     <ArrowRight className="h-5 w-5" />
@@ -113,7 +115,7 @@ export function PageHero({
                   <Button
                     variant="outline"
                     size={buttonSize}
-                    className="w-full rounded-full border-slate-300 bg-white px-7 text-slate-800 shadow-sm hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className="w-full rounded-full border-slate-300 bg-white px-7 text-slate-800 shadow-sm sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)]"
                   >
                     {secondaryAction.label}
                   </Button>
@@ -138,10 +140,11 @@ export function PageHero({
           <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
             <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{visualEyebrow}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--theme-primary)" }}>{visualEyebrow}</p>
                 <h2 className="mt-1 text-xl font-semibold text-slate-950 dark:text-white">{visualTitle}</h2>
               </div>
-              <div className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+              <div className="rounded-full px-3 py-1 text-sm font-semibold"
+                style={{ backgroundColor: "var(--accent-soft)", color: "var(--theme-primary)" }}>
                 {visualProgress}
               </div>
             </div>
@@ -149,7 +152,8 @@ export function PageHero({
             <div className="mt-5 grid gap-3">
               {visualItems.map((item, index) => (
                 <div key={`${item.label}-${item.title}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"}`}>
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : ""}`}
+                    style={index !== 0 ? { backgroundColor: "var(--accent-soft)", color: "var(--theme-primary)" } : undefined}>
                     {index === 0 ? <CheckCircle2 className="h-5 w-5" /> : index + 1}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -164,10 +168,10 @@ export function PageHero({
             <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
               <div className="flex items-center justify-between text-sm font-semibold text-slate-950 dark:text-white">
                 <span>{visualTitle}</span>
-                <span className="text-indigo-700 dark:text-indigo-300">{visualProgress}</span>
+                <span style={{ color: "var(--theme-primary)" }}>{visualProgress}</span>
               </div>
               <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800">
-                <div className="h-2 rounded-full bg-indigo-600" style={{ width: visualProgress }} />
+                <div className="h-2 rounded-full" style={{ width: visualProgress, backgroundColor: "var(--theme-primary)" }} />
               </div>
             </div>
           </div>

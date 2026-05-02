@@ -821,8 +821,8 @@ export default function Home() {
         />
 
         {/* Animated gradient orbs */}
-        <div className="absolute top-16 left-8 w-40 h-40 md:w-56 md:h-56 rounded-full blur-3xl opacity-6 dark:opacity-5" style={{ background: "var(--theme-primary)" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-[520px] md:h-[520px] rounded-full blur-3xl opacity-6 dark:opacity-4" style={{ background: "var(--theme-primary-light)" }} />
+        <div className="absolute top-16 left-8 w-40 h-40 md:w-56 md:h-56 rounded-full blur-3xl opacity-20 dark:opacity-12" style={{ background: "var(--theme-primary)" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-[520px] md:h-[520px] rounded-full blur-3xl opacity-15 dark:opacity-10" style={{ background: "var(--theme-primary-light)" }} />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 md:py-20">
           <div className="grid grid-cols-1 items-center gap-8 md:gap-12 lg:grid-cols-2">
@@ -1195,8 +1195,8 @@ export default function Home() {
       </section>
 
       <div
-        className="hidden h-px w-full"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.35), transparent)" }}
+        className="hidden h-[2px] w-full"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.6), transparent)" }}
       />
 
       {/* Main Content */}
@@ -1727,6 +1727,8 @@ export default function Home() {
       </section>
       </FadeIn>
 
+      <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.6), transparent)" }} />
+
       {/* Features Section */}
       <section id="features" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
@@ -1783,6 +1785,8 @@ export default function Home() {
           </FadeInStagger>
         </div>
       </section>
+
+      <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.6), transparent)" }} />
 
       {/* How It Works */}
       <FadeIn>
@@ -1844,6 +1848,8 @@ export default function Home() {
         </div>
       </section>
       </FadeIn>
+
+      <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.6), transparent)" }} />
 
       {/* Testimonials */}
       <FadeIn>

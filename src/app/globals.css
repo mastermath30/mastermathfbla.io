@@ -31,8 +31,12 @@ html {
   --secondary-foreground: #334155;
   --muted: #f8fafc;
   --muted-foreground: #64748b;
-  --accent: #f5f3ff;
-  --accent-foreground: #6d28d9;
+  --accent: color-mix(in srgb, var(--theme-primary) 12%, white);
+  --accent-foreground: var(--theme-primary-dark);
+  --accent-soft: color-mix(in srgb, var(--theme-primary) 8%, white);
+  --accent-border: color-mix(in srgb, var(--theme-primary) 25%, white);
+  --accent-ring: var(--theme-primary);
+  --accent-muted: color-mix(in srgb, var(--theme-primary) 6%, var(--background));
   --border: #e2e8f0;
   --ring: #7c3aed;
   --success: #22c55e;
@@ -40,9 +44,9 @@ html {
   --info: #3b82f6;
   
   /* Theme color variables */
-  --theme-primary: #7c3aed;
-  --theme-primary-light: #a78bfa;
-  --theme-primary-dark: #6d28d9;
+  --theme-primary: #4f46e5;
+  --theme-primary-light: #818cf8;
+  --theme-primary-dark: #4338ca;
 }
 
 /* Dark mode - triggered by .dark class on html */
@@ -55,17 +59,35 @@ html {
   --secondary-foreground: #f1f5f9;
   --muted: #0f172a;
   --muted-foreground: #94a3b8;
-  --accent: #1e1b4b;
-  --accent-foreground: #e0e7ff;
+  --accent: color-mix(in srgb, var(--theme-primary) 18%, #0f172a);
+  --accent-foreground: var(--theme-primary-light);
+  --accent-soft: color-mix(in srgb, var(--theme-primary) 12%, #0f172a);
+  --accent-border: color-mix(in srgb, var(--theme-primary) 22%, #1e293b);
+  --accent-ring: var(--theme-primary);
+  --accent-muted: color-mix(in srgb, var(--theme-primary) 8%, #020617);
   --border: #1e293b;
 }
 
 /* Color theme classes */
+.theme-indigo {
+  --theme-primary: #4f46e5;
+  --theme-primary-light: #818cf8;
+  --theme-primary-dark: #4338ca;
+  --theme-primary-rgb: 79, 70, 229;
+}
+
 .theme-violet {
   --theme-primary: #7c3aed;
   --theme-primary-light: #a78bfa;
   --theme-primary-dark: #6d28d9;
   --theme-primary-rgb: 124, 58, 237;
+}
+
+.theme-teal {
+  --theme-primary: #0d9488;
+  --theme-primary-light: #2dd4bf;
+  --theme-primary-dark: #0f766e;
+  --theme-primary-rgb: 13, 148, 136;
 }
 
 .theme-blue {
@@ -87,6 +109,13 @@ html {
   --theme-primary-light: #f87171;
   --theme-primary-dark: #b91c1c;
   --theme-primary-rgb: 220, 38, 38;
+}
+
+.theme-rose {
+  --theme-primary: #e11d48;
+  --theme-primary-light: #fb7185;
+  --theme-primary-dark: #be123c;
+  --theme-primary-rgb: 225, 29, 72;
 }
 
 .theme-orange {
@@ -187,6 +216,10 @@ html {
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-border: var(--accent-border);
+  --color-accent-ring: var(--accent-ring);
+  --color-accent-muted: var(--accent-muted);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -592,7 +625,7 @@ html {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #3730a3, #2563eb);
+  background: linear-gradient(135deg, var(--theme-primary-dark), var(--theme-primary-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -734,7 +767,7 @@ html {
 /* Background colors */
 .bg-violet-50,
 .bg-violet-100 {
-  background-color: color-mix(in srgb, var(--theme-primary) 10%, white) !important;
+  background-color: color-mix(in srgb, var(--theme-primary) 20%, white) !important;
 }
 
 .bg-violet-400,
@@ -769,7 +802,7 @@ html {
 
 .hover\:bg-violet-50:hover,
 .hover\:bg-violet-100:hover {
-  background-color: color-mix(in srgb, var(--theme-primary) 15%, white) !important;
+  background-color: color-mix(in srgb, var(--theme-primary) 25%, white) !important;
 }
 
 .hover\:bg-violet-500:hover,
@@ -785,7 +818,7 @@ html {
 /* Dark mode overrides */
 .dark .bg-violet-100,
 .dark .bg-violet-50 {
-  background-color: color-mix(in srgb, var(--theme-primary) 20%, #1e293b) !important;
+  background-color: color-mix(in srgb, var(--theme-primary) 30%, #1e293b) !important;
 }
 
 .dark .text-violet-100 {
@@ -804,22 +837,174 @@ html {
 
 .bg-purple-50,
 .bg-purple-100 {
-  background-color: color-mix(in srgb, var(--theme-primary-light) 10%, white) !important;
+  background-color: color-mix(in srgb, var(--theme-primary-light) 20%, white) !important;
 }
 
 /* Opacity variants */
 .bg-violet-400\/20,
 .bg-violet-400\/30 {
-  background-color: color-mix(in srgb, var(--theme-primary) 20%, transparent) !important;
+  background-color: color-mix(in srgb, var(--theme-primary) 30%, transparent) !important;
 }
 
 .bg-purple-400\/20,
 .bg-purple-400\/30 {
-  background-color: color-mix(in srgb, var(--theme-primary-light) 20%, transparent) !important;
+  background-color: color-mix(in srgb, var(--theme-primary-light) 30%, transparent) !important;
 }
 
 .bg-violet-300\/10 {
-  background-color: color-mix(in srgb, var(--theme-primary) 10%, transparent) !important;
+  background-color: color-mix(in srgb, var(--theme-primary) 20%, transparent) !important;
+}
+
+/* Also add gradient endpoint for purple-600 */
+.to-purple-600 {
+  --tw-gradient-to: var(--theme-primary-light) !important;
+}
+
+/* ============================================================
+   INDIGO class overrides — route all indigo-* brand accents
+   to the active theme primary (mirrors violet overrides above)
+   ============================================================ */
+
+/* Gradient backgrounds */
+.from-indigo-600,
+.from-indigo-500 {
+  --tw-gradient-from: var(--theme-primary) !important;
+}
+
+.to-indigo-500,
+.to-indigo-400 {
+  --tw-gradient-to: var(--theme-primary-light) !important;
+}
+
+/* Text colors */
+.text-indigo-300 {
+  color: var(--theme-primary-light) !important;
+}
+
+.text-indigo-400,
+.text-indigo-500,
+.text-indigo-600,
+.text-indigo-700 {
+  color: var(--theme-primary) !important;
+}
+
+/* Background colors */
+.bg-indigo-50,
+.bg-indigo-100 {
+  background-color: color-mix(in srgb, var(--theme-primary) 15%, white) !important;
+}
+
+.bg-indigo-200\/45 {
+  background-color: color-mix(in srgb, var(--theme-primary) 25%, transparent) !important;
+}
+
+.bg-indigo-500,
+.bg-indigo-600 {
+  background-color: var(--theme-primary) !important;
+}
+
+.bg-indigo-700 {
+  background-color: var(--theme-primary-dark) !important;
+}
+
+/* Border colors */
+.border-indigo-100,
+.border-indigo-200 {
+  border-color: color-mix(in srgb, var(--theme-primary) 20%, white) !important;
+}
+
+.border-indigo-300 {
+  border-color: color-mix(in srgb, var(--theme-primary) 40%, white) !important;
+}
+
+.border-indigo-500,
+.border-indigo-600 {
+  border-color: var(--theme-primary) !important;
+}
+
+/* Ring / outline */
+.ring-indigo-500,
+.ring-indigo-600 {
+  --tw-ring-color: var(--theme-primary) !important;
+}
+
+.outline-indigo-600 {
+  outline-color: var(--theme-primary) !important;
+}
+
+/* Hover states */
+.hover\:bg-indigo-50:hover,
+.hover\:bg-indigo-100:hover {
+  background-color: color-mix(in srgb, var(--theme-primary) 15%, white) !important;
+}
+
+.hover\:bg-indigo-600:hover,
+.hover\:bg-indigo-700:hover {
+  background-color: var(--theme-primary-dark) !important;
+}
+
+.hover\:text-indigo-400:hover,
+.hover\:text-indigo-500:hover,
+.hover\:text-indigo-600:hover,
+.hover\:text-indigo-700:hover {
+  color: var(--theme-primary) !important;
+}
+
+.hover\:border-indigo-200:hover,
+.hover\:border-indigo-300:hover {
+  border-color: color-mix(in srgb, var(--theme-primary) 40%, white) !important;
+}
+
+/* Focus states */
+.focus\:ring-indigo-500:focus,
+.focus\:ring-indigo-600:focus {
+  --tw-ring-color: var(--theme-primary) !important;
+}
+
+/* Dark mode overrides for indigo */
+.dark .bg-indigo-50,
+.dark .bg-indigo-100 {
+  background-color: color-mix(in srgb, var(--theme-primary) 25%, #1e293b) !important;
+}
+
+.dark .bg-indigo-950,
+.dark .dark\:bg-indigo-950\/50 {
+  background-color: color-mix(in srgb, var(--theme-primary) 20%, #0f172a) !important;
+}
+
+.dark .bg-indigo-950\/60,
+.dark .dark\:bg-indigo-950\/60 {
+  background-color: color-mix(in srgb, var(--theme-primary) 25%, #0f172a) !important;
+}
+
+.dark .dark\:bg-indigo-950\/35 {
+  background-color: color-mix(in srgb, var(--theme-primary) 12%, transparent) !important;
+}
+
+.dark .text-indigo-300,
+.dark .dark\:text-indigo-300 {
+  color: var(--theme-primary-light) !important;
+}
+
+.dark .text-indigo-200,
+.dark .dark\:text-indigo-200 {
+  color: color-mix(in srgb, var(--theme-primary-light) 70%, white) !important;
+}
+
+.dark .border-indigo-900\/60,
+.dark .dark\:border-indigo-900\/60,
+.dark .border-indigo-900\/70,
+.dark .dark\:border-indigo-900\/70 {
+  border-color: color-mix(in srgb, var(--theme-primary) 35%, #0f172a) !important;
+}
+
+.dark .hover\:text-indigo-300:hover,
+.dark .dark\:hover\:text-indigo-300:hover {
+  color: var(--theme-primary-light) !important;
+}
+
+.dark .dark\:hover\:border-indigo-900\/70:hover {
+  border-color: color-mix(in srgb, var(--theme-primary) 40%, #0f172a) !important;
 }
 
 /* Dark mode specific styles */
@@ -1599,7 +1784,7 @@ header p {
 
 .glow-premium {
   box-shadow:
-    0 10px 24px rgba(79, 70, 229, 0.18);
+    0 10px 24px rgba(var(--theme-primary-rgb), 0.35);
 }
 
 @media (max-width: 768px) {

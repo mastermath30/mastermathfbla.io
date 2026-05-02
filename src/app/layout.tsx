@@ -43,7 +43,7 @@ export const viewport: Viewport = {
 const themeInitScript = `
   (function() {
     try {
-      const savedColor = localStorage.getItem('mm_color_theme') || 'violet';
+      const savedColor = localStorage.getItem('mm_color_theme') || 'indigo';
       const savedMode = localStorage.getItem('mm_dark_mode');
       const isDark = savedMode === null ? true : savedMode === 'true';
 
@@ -59,6 +59,11 @@ const themeInitScript = `
         document.body.style.color = '#0f172a';
       }
       
+      // Remove any stale theme classes before applying saved one
+      document.documentElement.classList.remove(
+        'theme-indigo', 'theme-violet', 'theme-teal', 'theme-blue',
+        'theme-green', 'theme-red', 'theme-rose', 'theme-orange'
+      );
       document.documentElement.classList.add('theme-' + savedColor);
       
       // Apply accessibility settings

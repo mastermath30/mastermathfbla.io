@@ -102,7 +102,7 @@ export function Navbar() {
       title: t("Theme"),
       icon: <Palette className="w-5 h-5" />,
       event: "open-theme-selector",
-      color: "bg-indigo-600",
+      color: "bg-[var(--theme-primary)]",
     },
     {
       title: t("Accessibility"),
@@ -136,7 +136,7 @@ export function Navbar() {
       {/* Single FAB Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full bg-indigo-600 shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
+        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full bg-[var(--theme-primary)] shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
         style={{
           WebkitTapHighlightColor: "transparent",
           marginBottom:
@@ -202,16 +202,19 @@ export function Navbar() {
                         title={link.href === "/auth" && isLoggedIn && userName ? userName : undefined}
                         className={`flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl transition-colors touch-manipulation h-full ${
                           pathname === link.href
-                            ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300"
+                            ? "text-[var(--theme-primary)]"
                             : "hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700"
                         }`}
+                        style={pathname === link.href ? {
+                          backgroundColor: "color-mix(in srgb, var(--theme-primary) 12%, white)",
+                        } : undefined}
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                           pathname === link.href
-                            ? "bg-indigo-600 text-white"
+                            ? "text-white"
                             : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                        }`}>
+                        }`} style={pathname === link.href ? { backgroundColor: "var(--theme-primary)" } : undefined}>
                           {link.icon}
                         </div>
                         <span className="w-full max-w-full text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight whitespace-normal break-words">

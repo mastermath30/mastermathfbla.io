@@ -26,15 +26,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Accessibility and overflow
           "overflow-hidden group",
           {
-            "bg-indigo-600 text-white shadow-[0_10px_24px_rgba(79,70,229,0.18)] hover:bg-indigo-700 hover:shadow-[0_12px_28px_rgba(79,70,229,0.22)] active:scale-[0.99] focus:ring-indigo-500":
+            "bg-[var(--theme-primary)] text-white shadow-[0_10px_24px_rgba(var(--theme-primary-rgb),0.22)] hover:bg-[var(--theme-primary-dark)] hover:shadow-[0_12px_28px_rgba(var(--theme-primary-rgb),0.30)] active:scale-[0.99] focus:ring-[var(--theme-primary)]":
               variant === "primary",
             "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm active:scale-[0.99] focus:ring-slate-400":
               variant === "secondary",
             "bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 active:scale-[0.99] focus:ring-slate-400":
               variant === "ghost",
-            "bg-white dark:bg-slate-900 border border-slate-300/90 dark:border-slate-700/90 text-slate-700 dark:text-slate-200 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-700 dark:hover:text-indigo-300 hover:shadow-sm active:scale-[0.99] focus:ring-indigo-500":
+            "bg-white dark:bg-slate-900 border border-slate-300/90 dark:border-slate-700/90 text-slate-700 dark:text-slate-200 hover:border-[var(--theme-primary)] hover:bg-[var(--accent-soft)] dark:hover:bg-slate-800 hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] hover:shadow-sm active:scale-[0.99] focus:ring-[var(--theme-primary)]":
               variant === "outline",
-            "bg-indigo-600 text-white shadow-[0_10px_24px_rgba(79,70,229,0.2)] hover:bg-indigo-700 hover:shadow-[0_14px_30px_rgba(79,70,229,0.25)] active:scale-[0.99] focus:ring-indigo-500":
+            "bg-[var(--theme-primary)] text-white shadow-[0_10px_24px_rgba(var(--theme-primary-rgb),0.25)] hover:bg-[var(--theme-primary-dark)] hover:shadow-[0_14px_30px_rgba(var(--theme-primary-rgb),0.35)] active:scale-[0.99] focus:ring-[var(--theme-primary)]":
               variant === "glow",
           },
           {

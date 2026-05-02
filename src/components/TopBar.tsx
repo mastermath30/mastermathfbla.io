@@ -149,9 +149,9 @@ export function TopBar() {
 										key={item.name}
 										href={item.href}
 										className={`inline-flex items-center text-[13px] xl:text-sm font-medium leading-none transition-all duration-200 cursor-pointer ${
-											pathname === item.href
-												? "text-[var(--theme-primary)]"
-												: "text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-indigo-300"
+									pathname === item.href
+											? "text-[var(--theme-primary)]"
+											: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)]"
 										}`}
 									>
 										{item.name}
@@ -169,14 +169,12 @@ export function TopBar() {
 								<div className="hidden md:block">
 									<Link
 										href="/auth"
-										className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex min-w-0 max-w-[11rem] items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:shadow-sm cursor-pointer group lg:max-w-[14rem] ${
-											pathname === "/auth"
-												? "bg-indigo-700 text-white shadow-sm"
-												: "text-white"
-										}`}
-										style={{
-											background: "#4f46e5",
-										}}
+									className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex min-w-0 max-w-[11rem] items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:shadow-sm cursor-pointer group lg:max-w-[14rem] text-white`}
+									style={{
+										background: pathname === "/auth"
+											? "var(--theme-primary-dark)"
+											: "var(--theme-primary)",
+									}}
 										title={isLoggedIn && userName ? userName : undefined}
 									>
 										{isLoggedIn ? (

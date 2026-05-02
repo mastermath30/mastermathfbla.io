@@ -7,8 +7,8 @@ import { useLanguage, LanguageCode, useTranslations } from "./LanguageProvider";
 import { languages } from "@/lib/i18n";
 
 function getStoredColorTheme() {
-  if (typeof window === "undefined") return "violet";
-  return localStorage.getItem("mm_color_theme") || "violet";
+  if (typeof window === "undefined") return "indigo";
+  return localStorage.getItem("mm_color_theme") || "indigo";
 }
 
 function getStoredDarkMode() {
@@ -20,25 +20,25 @@ function getStoredDarkMode() {
 export function ThemeSelector({ className = "" }: { className?: string }) {
   const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [colorTheme, setColorTheme] = useState(() => getStoredColorTheme());
+  const [colorTheme, setColorTheme] = useState<string>(() => getStoredColorTheme());
   const [isDark, setIsDark] = useState(() => getStoredDarkMode());
   const containerRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage } = useLanguage();
   
   const COLOR_THEMES = [
-    { name: t("Violet"), value: "violet", color: "#7c3aed" },
-    { name: t("Blue"), value: "blue", color: "#2563eb" },
+    { name: t("Indigo"), value: "indigo", color: "#4f46e5" },
+    { name: t("Purple"), value: "violet", color: "#7c3aed" },
+    { name: t("Teal"), value: "teal", color: "#0d9488" },
     { name: t("Green"), value: "green", color: "#16a34a" },
-    { name: t("Red"), value: "red", color: "#dc2626" },
     { name: t("Orange"), value: "orange", color: "#ea580c" },
+    { name: t("Rose"), value: "rose", color: "#e11d48" },
   ];
 
   const applyColorTheme = (colorName: string) => {
-    // Remove all color theme classes
     document.documentElement.classList.remove(
-      "theme-violet", "theme-blue", "theme-green", "theme-red", "theme-orange"
+      "theme-indigo", "theme-violet", "theme-teal", "theme-blue",
+      "theme-green", "theme-red", "theme-rose", "theme-orange"
     );
-    // Add the new color theme class
     document.documentElement.classList.add(`theme-${colorName}`);
   };
 
