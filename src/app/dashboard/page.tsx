@@ -6,12 +6,12 @@ import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
+import { PageHero } from "@/components/PageHero";
 import { StatCard } from "@/components/StatCard";
 import { ProgressBar } from "@/components/ProgressBar";
-import { SectionLabel } from "@/components/SectionLabel";
 import { RecommendationPanel } from "@/components/RecommendationPanel";
 import { CommunitySpotlight } from "@/components/CommunitySpotlight";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
+import { FadeIn, PageWrapper } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import { getLearningProgress, learningProgressEvent } from "@/lib/progress";
 import { buildRecommendations } from "@/lib/guidance";
@@ -38,8 +38,6 @@ import {
   X,
 } from "lucide-react";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -86,7 +84,7 @@ const colorClasses: Record<string, { bg: string; text: string }> = {
 };
 
 export default function DashboardPage() {
-  const { t, language } = useTranslations();
+  const { t } = useTranslations();
   const [userName, setUserName] = useState("Student");
   const [mounted, setMounted] = useState(false);
   const [goals, setGoals] = useState(initialGoals);
@@ -176,84 +174,36 @@ export default function DashboardPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-      {/* Hero Header */}
-      <header className="relative overflow-hidden">
-        {/* Glowing orbs */}
-        <GlowingOrbs variant="section" />
-        {/* Background */}
-        <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&h=400&fit=crop"
-            alt="Math background"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-white/70 dark:bg-slate-950/80" />
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 35%, transparent), transparent)" }}
-          />
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <HeroText className="text-slate-900 dark:text-white">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900/20 dark:bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
-                <Sparkles className="w-4 h-4" />
-                {t("Learning Dashboard")}
-              </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
-                {t("Welcome back,")} {userName}!
-              </h1>
-              <p className="text-slate-900 dark:text-slate-200 text-base md:text-lg">{t("Track your progress and stay on top of your learning journey.")}</p>
-              
-              {/* Quick stats */}
-              <div className="flex flex-wrap gap-4 md:gap-6 mt-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center animate-float-slow">
-                    <Flame className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">7</p>
-                    <p className="text-xs text-slate-700 dark:text-slate-200">{t("Day Streak")}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-slate-900/20 dark:bg-white/20 flex items-center justify-center animate-float-slow">
-                    <Trophy className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">87%</p>
-                    <p className="text-xs text-slate-700 dark:text-slate-200">{t("Mastery")}</p>
-                  </div>
-                </div>
-              </div>
-            </HeroText>
-            
-            <div className="flex gap-3">
-              <Button onClick={() => setShowGoalModal(true)}>
-                <Plus className="w-4 h-4" />
-                {t("New Goal")}
+    <PageWrapper className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
+      <PageHero
+        eyebrow={t("Learning Dashboard")}
+        title={`${t("Welcome back,")} ${userName}!`}
+        highlight={t("Keep building momentum")}
+        description={t("Track progress, manage goals, and jump into your next best study step.")}
+        icon={Sparkles}
+        actions={
+          <>
+            <Button onClick={() => setShowGoalModal(true)} size="lg" className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 sm:w-auto">
+              <Plus className="w-4 h-4" />
+              {t("New Goal")}
+            </Button>
+            <Link href="/dashboard#learning-progress" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full rounded-full border-slate-300 bg-white px-7 text-slate-800 shadow-sm hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                <BarChart3 className="w-4 h-4" />
+                {t("Analytics")}
               </Button>
-              <Link href="/dashboard#learning-progress">
-                <Button 
-                  style={{ 
-                    backgroundColor: 'var(--theme-primary)', 
-                    color: 'white',
-                    borderColor: 'var(--theme-primary)'
-                  }}
-                  className="hover:opacity-90"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  {t("Analytics")}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+            </Link>
+          </>
+        }
+        visualEyebrow={t("Today's learning path")}
+        visualTitle={t("Dashboard snapshot")}
+        visualProgress="87%"
+        visualItems={[
+          { label: t("Goal"), title: t("Complete Calculus Module"), meta: "75%" },
+          { label: t("Practice"), title: t("Solve 50 Practice Problems"), meta: "15/50" },
+          { label: t("Session"), title: t("Calculus Review"), meta: t("Booked") },
+        ]}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">

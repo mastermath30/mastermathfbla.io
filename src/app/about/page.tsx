@@ -9,14 +9,14 @@ import ayaanOberoiImage from "../../../Images/Ayaan Oberoi.png";
 import khushKothariImage from "../../../Images/Khush Kothari.png";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { PageHero } from "@/components/PageHero";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, PageWrapper, HeroText, CardReveal } from "@/components/motion";
+import { FadeIn, GlowingOrbs, PageWrapper } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Heart,
   Target,
   Rocket,
-  MessageCircle,
   Users,
   Lightbulb,
   TrendingUp,
@@ -109,7 +109,7 @@ export default function AboutPage() {
   const selectedMember = team.find((member) => member.id === selectedMemberId) ?? null;
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
+    <PageWrapper className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
       {/* Team Member Modal */}
       {selectedMember && (
         <div 
@@ -160,62 +160,26 @@ export default function AboutPage() {
         </div>
       )}
 
-      {/* Hero Section */}
-      <header className="relative min-h-[70vh] flex items-center overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&h=1080&fit=crop"
-            alt="Students collaborating"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/60" />
-        </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-20 right-10 md:right-20 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl opacity-30" style={{ background: 'var(--theme-primary)' }} />
-        <div className="absolute bottom-20 left-10 md:left-20 w-32 h-32 md:w-48 md:h-48 rounded-full blur-3xl opacity-25" style={{ background: 'var(--theme-primary-light)' }} />
-        
-        {/* Floating math symbols - hidden on mobile */}
-        <div className="hidden md:block absolute top-24 left-[10%] text-4xl md:text-7xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3s', color: 'var(--theme-primary-light)' }}>∫</div>
-        <div className="hidden md:block absolute top-36 right-[15%] text-3xl md:text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4s', animationDelay: '1s', color: 'var(--theme-primary)' }}>π</div>
-        <div className="hidden lg:block absolute bottom-32 left-[8%] text-3xl md:text-5xl font-serif animate-bounce opacity-10" style={{ animationDuration: '3.5s', animationDelay: '0.5s', color: 'var(--theme-primary-light)' }}>∑</div>
-        <div className="hidden lg:block absolute bottom-24 right-[12%] text-3xl md:text-6xl font-serif animate-bounce opacity-10" style={{ animationDuration: '4.5s', animationDelay: '1.5s', color: 'var(--theme-primary)' }}>√</div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur border rounded-full text-sm font-medium mb-6" style={{ background: 'rgba(var(--theme-primary-rgb), 0.2)', borderColor: 'rgba(var(--theme-primary-rgb), 0.3)', color: 'var(--theme-primary-light)' }}>
-              <Heart className="w-4 h-4" />
-              {t("Our Story")}
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6">
-              {t("About")} <span className="gradient-text">MathMaster</span>
-            </h1>
-            <p className="text-base sm:text-xl text-white leading-relaxed mb-8">
-              {t("We make math feel learnable again — with clear practice, strong explanations, and a community that helps you when you're stuck.")}
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/auth">
-                <Button size="lg">
-                  <Rocket className="w-5 h-5" />
-                  {t("Get Started")}
-                </Button>
-              </Link>
-              <Link href="/community">
-                <Button size="lg" variant="outline" className="border-white/25 bg-white/10 text-white backdrop-blur hover:bg-white/15 hover:text-white">
-                  <MessageCircle className="w-5 h-5" />
-                  {t("Visit the Forum")}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        eyebrow={t("Our Story")}
+        title={t("About")}
+        highlight="MathMaster"
+        description={t("See who we are, what we believe, and how MathMaster helps students learn math with confidence.")}
+        icon={Heart}
+        primaryAction={{ label: t("Get Started"), href: "/auth" }}
+        secondaryAction={{ label: t("Visit the Forum"), href: "/community" }}
+        visualEyebrow={t("MathMaster mission")}
+        visualTitle={t("Learn with support")}
+        visualProgress="98%"
+        visualItems={[
+          { label: t("Clarity"), title: t("Step-by-step explanations"), meta: t("Built in") },
+          { label: t("Community"), title: t("Ask questions anytime"), meta: t("Live") },
+          { label: t("Growth"), title: t("Track progress weekly"), meta: t("Guided") },
+        ]}
+      />
 
       {/* Stats Section */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
+      <section className="py-16 bg-white dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -223,7 +187,7 @@ export default function AboutPage() {
               <div 
                 key={stat.label} 
                 className="text-center p-8 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 hover:-translate-y-1 transition-all duration-300 group"
-                style={{ boxShadow: '0 0 25px rgba(var(--theme-primary-rgb), 0.1)' }}
+                style={{ boxShadow: '0 10px 28px rgba(15, 23, 42, 0.05)' }}
               >
                 <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" style={{ color: "var(--theme-primary)" }}>
                   <stat.icon className="w-7 h-7" />
@@ -238,7 +202,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-[#f7f4ed] dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -287,7 +251,7 @@ export default function AboutPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-white dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
@@ -334,7 +298,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-[#f7f4ed] dark:bg-slate-950 relative overflow-hidden">
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
@@ -382,7 +346,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-white dark:bg-slate-950 relative overflow-hidden">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
@@ -410,7 +374,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-14 md:py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="py-14 md:py-24 relative overflow-hidden bg-[#f7f4ed] dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -437,7 +401,7 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+      <footer className="py-12 pb-32 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             {t("© 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.")}

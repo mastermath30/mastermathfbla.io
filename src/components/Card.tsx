@@ -10,21 +10,21 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ variant = "default", hover = true, padding = "md", glow = true, interactive = false, className, children, ...props }, ref) => {
+  ({ variant = "default", hover = true, padding = "md", glow = false, interactive = false, className, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={clsx(
-          "group/card rounded-[26px] transition-all duration-300 ease-out",
+          "group/card rounded-[24px] transition-all duration-300 ease-out",
           {
-            "bg-white/95 dark:bg-slate-900/95 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_16px_44px_rgba(2,6,23,0.35)]": variant === "default",
+            "bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)]": variant === "default",
             "bg-transparent border border-slate-300/80 dark:border-slate-700/80": variant === "outline",
-            "bg-white/75 dark:bg-slate-900/75 backdrop-blur-xl border border-white/30 dark:border-slate-800/70 shadow-[0_18px_48px_rgba(15,23,42,0.08)] dark:shadow-[0_20px_52px_rgba(2,6,23,0.38)]": variant === "glass",
-            "bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_14px_42px_rgba(15,23,42,0.06)] dark:shadow-[0_18px_46px_rgba(2,6,23,0.35)]": variant === "gradient",
-            "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_18px_48px_rgba(15,23,42,0.08)] dark:shadow-[0_22px_54px_rgba(2,6,23,0.4)]": variant === "elevated",
+            "bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_14px_36px_rgba(2,6,23,0.34)]": variant === "glass",
+            "bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_10px_28px_rgba(15,23,42,0.055)] dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)]": variant === "gradient",
+            "bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_14px_36px_rgba(15,23,42,0.07)] dark:shadow-[0_18px_42px_rgba(2,6,23,0.36)]": variant === "elevated",
           },
-          hover && "hover:-translate-y-0.5 hover:shadow-[0_24px_64px_rgba(15,23,42,0.1)] dark:hover:shadow-[0_26px_70px_rgba(2,6,23,0.45)]",
-          glow && "shadow-[0_0_24px_rgba(var(--theme-primary-rgb),0.06)] dark:shadow-[0_0_28px_rgba(var(--theme-primary-rgb),0.1)] hover:shadow-[0_0_38px_rgba(var(--theme-primary-rgb),0.12)] dark:hover:shadow-[0_0_42px_rgba(var(--theme-primary-rgb),0.16)]",
+          hover && "hover:-translate-y-px hover:shadow-[0_16px_42px_rgba(15,23,42,0.08)] dark:hover:shadow-[0_20px_48px_rgba(2,6,23,0.4)]",
+          glow && "shadow-[0_0_18px_rgba(var(--theme-primary-rgb),0.035)] dark:shadow-[0_0_22px_rgba(var(--theme-primary-rgb),0.07)] hover:shadow-[0_0_24px_rgba(var(--theme-primary-rgb),0.06)] dark:hover:shadow-[0_0_28px_rgba(var(--theme-primary-rgb),0.1)]",
           interactive && "cursor-pointer active:scale-[0.98] hover:border-[var(--theme-primary)]/30",
           {
             "p-0": padding === "none",

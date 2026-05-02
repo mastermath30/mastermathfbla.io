@@ -1,9 +1,10 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { X } from "lucide-react";
+import { MessageCircle, Users, X } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/Card";
 import { Button } from "@/components/Button";
+import { PageHero } from "@/components/PageHero";
 import { PageWrapper } from "@/components/motion";
 import { AskQuestionForm } from "@/components/community/AskQuestionForm";
 import { QuestionList } from "@/components/community/QuestionList";
@@ -125,7 +126,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 px-4 pb-20 pt-24 dark:bg-slate-950 sm:px-6">
+    <PageWrapper className="min-h-screen bg-[#f7f4ed] pb-20 dark:bg-slate-950">
       {/* Create Study Group Modal */}
       {showModal && (
         <div
@@ -209,7 +210,33 @@ export default function CommunityPage() {
         </div>
       )}
 
-      <main className="mx-auto w-full max-w-7xl space-y-6">
+      <PageHero
+        eyebrow="Community Q&A"
+        title="Community"
+        highlight="Learn together"
+        description="Ask questions, read clear answers, and start study groups with other learners."
+        icon={MessageCircle}
+        actions={
+          <Button
+            type="button"
+            onClick={() => setShowModal(true)}
+            size="lg"
+            className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 sm:w-auto"
+          >
+            Create Study Group
+          </Button>
+        }
+        visualEyebrow="Forum flow"
+        visualTitle="Community workspace"
+        visualProgress="88%"
+        visualItems={[
+          { label: "Ask", title: "Post a clear math question", meta: "Fast" },
+          { label: "Discuss", title: "Compare solution methods", meta: "Peer-led" },
+          { label: "Group", title: "Start a focused study circle", meta: "Live" },
+        ]}
+      />
+
+      <main className="mx-auto w-full max-w-7xl space-y-6 px-4 sm:px-6">
         <Card variant="glass" className="p-6 md:p-8">
           <div className="mb-4 flex items-start justify-between gap-4">
             <CardHeader className="p-0">
@@ -218,13 +245,7 @@ export default function CommunityPage() {
                 Ask math questions, explore existing threads, and help others with clear explanations.
               </CardDescription>
             </CardHeader>
-            <Button
-              type="button"
-              onClick={() => setShowModal(true)}
-              className="shrink-0 rounded-full"
-            >
-              Create Study Group
-            </Button>
+            <Users className="h-8 w-8 shrink-0 text-indigo-700 dark:text-indigo-300" />
           </div>
           <AskQuestionForm onSubmitQuestion={handleAskQuestion} />
         </Card>

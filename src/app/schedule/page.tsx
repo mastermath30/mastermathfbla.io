@@ -5,11 +5,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
+import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
-import { Avatar } from "@/components/Avatar";
-import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, GlowingOrbs, PageWrapper, HeroText, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import { getFeaturedTutors, getTutorByName } from "@/data/people";
@@ -29,8 +27,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Video,
-  MapPin,
-  Sparkles,
   X,
   CreditCard,
   Lock,
@@ -858,52 +854,52 @@ export default function SchedulePage() {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <PageWrapper className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
       {/* Hero Header */}
-      <header className="relative overflow-hidden">
+      <header className="relative overflow-hidden bg-[#f7f4ed] dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
-        <ParallaxSection className="absolute inset-0" speed={0.12}>
+        <ParallaxSection className="hidden" speed={0.12}>
           <Image
             src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&h=400&fit=crop"
             alt="Tutoring session"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-slate-950/90" />
+          <div className="absolute inset-0 bg-slate-950/72" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
+            style={{ background: "linear-gradient(90deg, rgba(79, 70, 229, 0.16), transparent)" }}
           />
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15%200L30%2015L15%2030L0%2015z%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%2F%3E%3C%2Fsvg%3E')]" />
-          <div className="hero-vignette-layer" />
-          <div className="hero-grain-layer" />
+          <div className="absolute inset-0 opacity-0" />
+          <div className="hidden" />
+          <div className="hidden" />
         </ParallaxSection>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-8 md:pt-36 md:pb-12">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <HeroText className="text-white">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-4">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-12 md:pt-32">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900 md:p-8">
+            <HeroText className="text-slate-950 dark:text-white">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-full text-sm font-semibold text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950 dark:text-indigo-300 mb-5">
                 <CalendarCheck className="w-4 h-4" />
                 {t("Tutoring Sessions")}
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              <h1 className="text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl dark:text-white mb-4">
                 <TypingText text={t("Schedule")} speedMs={74} />
               </h1>
-              <p className="text-slate-200 text-base md:text-lg mb-4">
+              <p className="text-slate-600 text-lg md:text-xl dark:text-slate-300 mb-6">
                 {t("Manage your study sessions and tutoring appointments.")}
               </p>
-              <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white/10 backdrop-blur rounded-xl text-sm md:text-base">
-                <Clock className="w-4 h-4 md:w-5 md:h-5" style={{ color: "var(--theme-primary)" }} />
-                <span className="text-slate-200">{t("Next session in:")}</span>
-                <span className="font-mono text-xl md:text-2xl font-bold text-white">{countdown}</span>
+              <div className="inline-flex items-center gap-2 md:gap-3 px-4 py-2 bg-[#fbfaf6] border border-slate-200 rounded-2xl text-sm md:text-base dark:border-slate-800 dark:bg-slate-950">
+                <Clock className="w-4 h-4 md:w-5 md:h-5 text-indigo-700 dark:text-indigo-300" />
+                <span className="text-slate-600 dark:text-slate-300">{t("Next session in:")}</span>
+                <span className="font-mono text-xl md:text-2xl font-bold text-indigo-700 dark:text-indigo-300">{countdown}</span>
               </div>
             </HeroText>
             
             <div className="flex gap-3 relative">
               <Link href="/tutoring-request">
-                <Button className="press-effect">
+                <Button className="press-effect rounded-full bg-indigo-600 px-7 text-white hover:bg-indigo-700">
                   <Plus className="w-4 h-4" />
                   {t("Book Now")}
                 </Button>
@@ -911,9 +907,9 @@ export default function SchedulePage() {
               <Button 
                 onClick={() => setShowFilters(!showFilters)}
                 style={{ 
-                  backgroundColor: 'var(--theme-primary)', 
-                  color: 'white',
-                  borderColor: 'var(--theme-primary)'
+                  backgroundColor: 'white', 
+                  color: 'rgb(51 65 85)',
+                  borderColor: 'rgb(203 213 225)'
                 }}
                 className="hover:opacity-90"
               >

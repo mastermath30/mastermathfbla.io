@@ -57,11 +57,6 @@ export function Navbar() {
   const links = [
     { title: t("Home"), icon: <IconHome className="h-6 w-6" />, href: "/" },
     {
-      title: t("About"),
-      icon: <IconInfoCircle className="h-6 w-6" />,
-      href: "/about",
-    },
-    {
       title: t("Learn"),
       icon: <IconBook className="h-6 w-6" />,
       href: "/learn",
@@ -87,6 +82,11 @@ export function Navbar() {
       href: "/support",
     },
     {
+      title: t("About"),
+      icon: <IconInfoCircle className="h-6 w-6" />,
+      href: "/about",
+    },
+    {
       title: isLoggedIn ? userName || t("Account") : t("Sign In"),
       icon: isLoggedIn ? (
         <IconUser className="h-6 w-6" />
@@ -102,25 +102,25 @@ export function Navbar() {
       title: t("Theme"),
       icon: <Palette className="w-5 h-5" />,
       event: "open-theme-selector",
-      color: "from-violet-500 to-purple-600",
+      color: "bg-indigo-600",
     },
     {
       title: t("Accessibility"),
       icon: <Accessibility className="w-5 h-5" />,
       event: "open-accessibility",
-      color: "from-blue-500 to-cyan-600",
+      color: "bg-blue-600",
     },
     {
       title: t("Tools"),
       icon: <Wrench className="w-5 h-5" />,
       event: "open-tools",
-      color: "from-slate-600 to-slate-800",
+      color: "bg-slate-700",
     },
     {
       title: t("Math Tip"),
       icon: <Lightbulb className="w-5 h-5" />,
       event: "open-mathtip",
-      color: "from-amber-400 to-orange-500",
+      color: "bg-amber-500",
     },
   ];
 
@@ -136,10 +136,8 @@ export function Navbar() {
       {/* Single FAB Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-all touch-manipulation"
+        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full bg-indigo-600 shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
         style={{
-          background:
-            "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))",
           WebkitTapHighlightColor: "transparent",
           marginBottom:
             "max(0px, calc(env(safe-area-inset-bottom) - 1rem))",
@@ -167,15 +165,15 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-slate-950/35 z-[100]"
             />
 
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl border-t border-slate-200 dark:border-slate-700 max-h-[80vh] overflow-y-auto"
+              transition={{ type: "spring", damping: 34, stiffness: 220 }}
+              className="fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-slate-900 rounded-t-3xl shadow-[0_-12px_40px_rgba(15,23,42,0.12)] border-t border-slate-200 dark:border-slate-700 max-h-[80vh] overflow-y-auto"
               style={{
                 paddingBottom: "max(6rem, calc(env(safe-area-inset-bottom) + 5rem))",
               }}
@@ -204,14 +202,14 @@ export function Navbar() {
                         title={link.href === "/auth" && isLoggedIn && userName ? userName : undefined}
                         className={`flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl transition-colors touch-manipulation h-full ${
                           pathname === link.href
-                            ? "bg-slate-200 dark:bg-slate-700"
+                            ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300"
                             : "hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700"
                         }`}
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                           pathname === link.href
-                            ? "bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white"
+                            ? "bg-indigo-600 text-white"
                             : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                         }`}>
                           {link.icon}
@@ -244,7 +242,7 @@ export function Navbar() {
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
                         <div
-                          className={`w-10 h-10 rounded-full bg-gradient-to-br ${util.color} flex items-center justify-center text-white flex-shrink-0`}
+                          className={`w-10 h-10 rounded-full ${util.color} flex items-center justify-center text-white flex-shrink-0`}
                         >
                           {util.icon}
                         </div>

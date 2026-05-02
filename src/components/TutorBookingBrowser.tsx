@@ -8,7 +8,7 @@ import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn } from "@/components/motion";
+import { FadeIn, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
   Star,
@@ -656,7 +656,7 @@ export function TutorBookingBrowser({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24 pb-32">
+    <div className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950 pt-20 md:pt-24 pb-32">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6 md:mb-8">
         <FadeIn>
@@ -674,7 +674,7 @@ export function TutorBookingBrowser({
           <div className="text-center mb-6 md:mb-8">
             <SectionLabel>{t(sectionLabel)}</SectionLabel>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              {t(title)}
+              <TypingText text={t(title)} speedMs={60} />
               <span className="gradient-text block">{t(accentTitle)}</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-4">

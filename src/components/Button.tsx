@@ -16,7 +16,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={clsx(
           // Base styles with touch-friendly improvements
-          "relative inline-flex items-center justify-center gap-2 rounded-2xl font-semibold tracking-[-0.01em] transition-all duration-300 ease-out",
+          "relative inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-[-0.01em] transition-all duration-300 ease-out",
           // Focus states
           "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950",
           // Disabled states
@@ -26,18 +26,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Accessibility and overflow
           "overflow-hidden group",
           {
-            "bg-gradient-to-r text-white shadow-[0_14px_36px_rgba(var(--theme-primary-rgb),0.24)] hover:shadow-[0_18px_42px_rgba(var(--theme-primary-rgb),0.32)] hover:-translate-y-0.5 active:scale-[0.99] active:translate-y-0 focus:ring-[var(--theme-primary)]":
+            "bg-indigo-600 text-white shadow-[0_10px_24px_rgba(79,70,229,0.18)] hover:bg-indigo-700 hover:shadow-[0_12px_28px_rgba(79,70,229,0.22)] active:scale-[0.99] focus:ring-indigo-500":
               variant === "primary",
-            "bg-slate-200 dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 focus:ring-slate-400":
+            "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm active:scale-[0.99] focus:ring-slate-400":
               variant === "secondary",
-            "bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:-translate-y-0.5 active:scale-[0.99] focus:ring-slate-400":
+            "bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 active:scale-[0.99] focus:ring-slate-400":
               variant === "ghost",
-            "bg-transparent border border-slate-300/90 dark:border-slate-700/90 text-slate-700 dark:text-slate-200 hover:border-[rgba(var(--theme-primary-rgb),0.45)] hover:bg-white/70 dark:hover:bg-slate-900/70 hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 focus:ring-[var(--theme-primary)]":
+            "bg-white dark:bg-slate-900 border border-slate-300/90 dark:border-slate-700/90 text-slate-700 dark:text-slate-200 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-700 dark:hover:text-indigo-300 hover:shadow-sm active:scale-[0.99] focus:ring-indigo-500":
               variant === "outline",
-            "bg-gradient-to-r text-white shadow-lg shadow-[rgba(var(--theme-primary-rgb),0.34)] hover:shadow-xl hover:shadow-[rgba(var(--theme-primary-rgb),0.42)] hover:-translate-y-1 active:scale-[0.99] active:translate-y-0 animate-pulse-glow focus:ring-[var(--theme-primary)]":
+            "bg-indigo-600 text-white shadow-[0_10px_24px_rgba(79,70,229,0.2)] hover:bg-indigo-700 hover:shadow-[0_14px_30px_rgba(79,70,229,0.25)] active:scale-[0.99] focus:ring-indigo-500":
               variant === "glow",
           },
-          (variant === "primary" || variant === "glow") && "from-[var(--theme-primary)] to-[var(--theme-primary-light)]",
           {
             "min-h-10 px-4 py-2 text-sm": size === "sm",
             "min-h-11 px-5 py-2.5 text-sm sm:text-base": size === "md",
@@ -48,14 +47,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         style={{
           // Disable iOS tap highlight for better touch feedback
           WebkitTapHighlightColor: 'transparent',
-          ...(variant === "primary" || variant === "glow" ? {
-            background: `linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))`,
-          } : {}),
         }}
         {...props}
       >
         {/* Shimmer effect on hover */}
-        {(variant === "primary" || variant === "glow") && (
+        {false && (variant === "primary" || variant === "glow") && (
           <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         )}
         

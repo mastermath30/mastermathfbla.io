@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
+import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Input, Textarea } from "@/components/Input";
-import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs } from "@/components/motion";
+import { PageHero } from "@/components/PageHero";
+import { FadeIn } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import {
-  Search,
   Rocket,
   Settings,
   Laptop,
@@ -23,7 +21,6 @@ import {
   MessageCircle,
   Mail,
   Phone,
-  MapPin,
 } from "lucide-react";
 
 const getHelpCategories = (t: (key: string) => string) => [
@@ -130,49 +127,24 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-      {/* Hero Header */}
-      <header className="relative overflow-hidden">
-        {/* Glowing orbs */}
-        <GlowingOrbs variant="section" />
-        {/* Background */}
-        <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=500&fit=crop"
-            alt="Support team"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-slate-950/90" />
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 25%, transparent), transparent)" }}
-          />
-        </div>
-
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm font-medium text-white mb-4 md:mb-6">
-            <Headphones className="w-4 h-4" />
-            {t("We're here to help")}
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">{t("Support Center")}</h1>
-          <p className="text-base sm:text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-6 md:mb-8 px-4">
-            {t("Find answers to common questions or get in touch with our friendly team")}
-          </p>
-
-          {/* Search */}
-          <div className="max-w-xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
-              <input
-                type="text"
-                placeholder={t("Search help articles...")}
-                className="w-full rounded-2xl border border-white/20 bg-white/10 py-4 pl-12 pr-4 text-white shadow-xl backdrop-blur placeholder:text-slate-300 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[rgba(var(--theme-primary-rgb),0.28)] focus:border-[rgba(var(--theme-primary-rgb),0.5)]"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
+      <PageHero
+        eyebrow={t("We're here to help")}
+        title={t("Support")}
+        highlight={t("Center")}
+        description={t("Find quick answers, message support, and get back to learning without losing momentum.")}
+        icon={Headphones}
+        primaryAction={{ label: t("Contact Support"), href: "#contact" }}
+        secondaryAction={{ label: t("Browse FAQs"), href: "#faq" }}
+        visualEyebrow={t("Support queue")}
+        visualTitle={t("Get unstuck faster")}
+        visualProgress="92%"
+        visualItems={[
+          { label: t("Search"), title: t("Find the right help article"), meta: t("Instant") },
+          { label: t("Message"), title: t("Send a detailed request"), meta: t("Guided") },
+          { label: t("Resolve"), title: t("Return to your study plan"), meta: t("Tracked") },
+        ]}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">

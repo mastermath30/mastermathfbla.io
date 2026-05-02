@@ -6,9 +6,9 @@ export default function TutoringRequestPage() {
       backHref="/schedule"
       backLabel="Back to Schedule"
       sectionLabel="Tutoring Request"
-      title="Choose Your Tutor"
-      accentTitle="Book a Session"
-      description="Browse every MathMaster tutor, compare specialties and availability, then book the session that fits your goals."
+      title="Tutoring Request"
+      accentTitle="Choose a Tutor"
+      description="Pick a tutor, select a time, and submit a session request in a few quick steps."
       authRedirect="/tutoring-request"
     />
   );

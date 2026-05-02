@@ -40,7 +40,7 @@ export function GlowingOrbs({ variant = "default" }: GlowingOrbsProps) {
         {orbs.map((orb, index) => (
           <div
             key={index}
-            className={`absolute ${orb.className} rounded-full blur-3xl pointer-events-none opacity-10`}
+            className={`absolute ${orb.className} rounded-full blur-3xl pointer-events-none opacity-[0.025]`}
             style={{
               background: index % 2 === 0 ? 'var(--theme-primary)' : 'var(--theme-primary-light)',
             }}
@@ -61,11 +61,11 @@ export function GlowingOrbs({ variant = "default" }: GlowingOrbsProps) {
           }}
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ 
-            opacity: [0.035, 0.065, 0.035],
-            scale: [1, 1.04, 1],
+            opacity: [0.012, 0.028, 0.012],
+            scale: [1, 1.015, 1],
           }}
           transition={{
-            duration: 22,
+            duration: 30,
             delay: orb.delay,
             repeat: Infinity,
             ease: "easeInOut",

@@ -5,10 +5,11 @@ import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
+import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { MathLogo } from "@/components/MathLogo";
+import { PageHero } from "@/components/PageHero";
 import { FadeIn, GlowingOrbs } from "@/components/motion";
 import { useLanguage } from "@/components/LanguageProvider";
 import { languages } from "@/lib/i18n";
@@ -20,7 +21,6 @@ import { getLearningProgress } from "@/lib/progress";
 import {
   User,
   Lock,
-  Mail,
   LogIn,
   UserPlus,
   LogOut,
@@ -308,33 +308,24 @@ function AuthPageContent() {
 
   if (profile) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-24">
-        {/* Hero Header */}
-        <header className="relative overflow-hidden">
-          <GlowingOrbs variant="section" />
-          <div className="absolute inset-0">
-            <Image
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&h=400&fit=crop"
-              alt="Account"
-              fill
-              className="object-cover opacity-20"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/98 via-slate-950/95 to-black/98" />
-          </div>
-
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16">
-            <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-primary-light))' }}>
-                {(profile.username || profile.firstName).charAt(0).toUpperCase()}
-              </div>
-              <div className="text-white">
-                <p className="text-sm font-medium mb-1" style={{ color: 'var(--theme-primary-light)' }}>{t("Welcome back")}</p>
-                <h1 className="text-4xl font-bold">{profile.username || `${profile.firstName} ${profile.lastName}`}</h1>
-                <p className="text-slate-400 mt-1">{profile.email}</p>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
+        <PageHero
+          eyebrow={t("Welcome back")}
+          title={profile.username || `${profile.firstName} ${profile.lastName}`}
+          highlight={t("Your account")}
+          description={profile.email}
+          icon={User}
+          primaryAction={{ label: t("Dashboard"), href: "/dashboard" }}
+          secondaryAction={{ label: t("Schedule"), href: "/schedule" }}
+          visualEyebrow={t("Account hub")}
+          visualTitle={t("MathMaster profile")}
+          visualProgress="100%"
+          visualItems={[
+            { label: t("Profile"), title: profile.username || profile.firstName, meta: t("Active") },
+            { label: t("Learn"), title: t("Continue your path"), meta: t("Ready") },
+            { label: t("Community"), title: t("Jump back into discussions"), meta: t("Open") },
+          ]}
+        />
 
         <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-32">
           <FadeIn delay={0.05}>
@@ -569,7 +560,7 @@ function AuthPageContent() {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50 pt-20 dark:bg-slate-950 md:pt-24">
+    <div className="min-h-screen flex bg-[#f7f4ed] pt-20 dark:bg-slate-950 md:pt-24">
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
@@ -617,7 +608,7 @@ function AuthPageContent() {
       </div>
 
       {/* Right side - Form */}
-      <div className="relative flex w-full items-start justify-center overflow-hidden bg-slate-50 px-4 py-8 dark:bg-slate-950 sm:px-6 sm:py-10 lg:w-1/2 lg:items-center lg:p-8">
+      <div className="relative flex w-full items-start justify-center overflow-hidden bg-[#f7f4ed] px-4 py-8 dark:bg-slate-950 sm:px-6 sm:py-10 lg:w-1/2 lg:items-center lg:p-8">
         <GlowingOrbs variant="hero" />
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 dark:from-slate-950 via-transparent to-slate-50 dark:to-slate-950" />
         <FadeIn className="relative w-full max-w-md">

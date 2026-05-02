@@ -127,13 +127,13 @@ export function TopBar() {
 			>
 				{/* Main Navigation */}
 				<div className="w-full">
-					<div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-full px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-lg">
+					<div className="bg-white/95 dark:bg-slate-950/95 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-[0_10px_28px_rgba(15,23,42,0.08)]">
 						<div className="flex items-center justify-center gap-6 lg:gap-7 xl:gap-8">
 							{/* Logo */}
 							<Link
 								href="/"
 								data-no-auto-translate="true"
-								className="flex shrink-0 items-center gap-2 hover:scale-105 transition-transform duration-200 cursor-pointer"
+								className="flex shrink-0 items-center gap-2 transition-colors duration-200 cursor-pointer"
 							>
 								<MathLogo className="w-8 h-8 md:w-10 md:h-10" />
 								<span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white hidden lg:block whitespace-nowrap">
@@ -151,7 +151,7 @@ export function TopBar() {
 										className={`inline-flex items-center text-[13px] xl:text-sm font-medium leading-none transition-all duration-200 cursor-pointer ${
 											pathname === item.href
 												? "text-[var(--theme-primary)]"
-												: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)] hover:scale-105"
+												: "text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-indigo-300"
 										}`}
 									>
 										{item.name}
@@ -169,20 +169,20 @@ export function TopBar() {
 								<div className="hidden md:block">
 									<Link
 										href="/auth"
-										className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group ${
+										className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex min-w-0 max-w-[11rem] items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:shadow-sm cursor-pointer group lg:max-w-[14rem] ${
 											pathname === "/auth"
-												? "text-white shadow-lg"
+												? "bg-indigo-700 text-white shadow-sm"
 												: "text-white"
 										}`}
 										style={{
-											background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-light))",
-											boxShadow: pathname === "/auth" ? "0 10px 25px -5px rgba(var(--theme-primary-rgb), 0.3)" : undefined
+											background: "#4f46e5",
 										}}
+										title={isLoggedIn && userName ? userName : undefined}
 									>
 										{isLoggedIn ? (
 											<>
 												<User className="w-4 h-4" />
-												<span>{userName || t("Account")}</span>
+												<span className="min-w-0 truncate">{userName || t("Account")}</span>
 											</>
 										) : (
 											<span>{t("Sign In")}</span>

@@ -15,6 +15,7 @@ import { AuroraVolume, FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, Pa
 import { useTranslations } from "@/components/LanguageProvider";
 import { getFeaturedTutors, getTutorByName } from "@/data/people";
 import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import {
   GraduationCap,
   Rocket,
@@ -205,16 +206,56 @@ const HOME_HERO_SIDE_IMAGES = [
   "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=600&h=600&fit=crop",
 ];
 
+type HeroPreviewFocus = "tutor" | "path" | "quiz" | "support";
+
 export default function Home() {
   const { t, language } = useTranslations();
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [heroSideImageIndex, setHeroSideImageIndex] = useState(0);
+  const [activeHeroMode, setActiveHeroMode] = useState(0);
+  const [typedHeroPhrase, setTypedHeroPhrase] = useState("");
+  const [heroTypingPhase, setHeroTypingPhase] = useState<"typing" | "pausing" | "deleting">("typing");
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
   const features = getFeatures(t);
   const steps = getSteps(t);
+  const heroModes: Array<{
+    label: string;
+    eyebrow: string;
+    previewFocus: HeroPreviewFocus;
+    description: string;
+  }> = [
+    {
+      label: t("Expert Tutors"),
+      eyebrow: t("Live help when you need it"),
+      previewFocus: "tutor",
+      description: t("Get matched with a tutor when you need help."),
+    },
+    {
+      label: t("Guided Practice"),
+      eyebrow: t("One clear path forward"),
+      previewFocus: "path",
+      description: t("Follow one clear path instead of guessing what to study next."),
+    },
+    {
+      label: t("Instant Feedback"),
+      eyebrow: t("Review mistakes faster"),
+      previewFocus: "quiz",
+      description: t("See what went wrong and what to try next."),
+    },
+    {
+      label: t("Study Support"),
+      eyebrow: t("Tools, AI, and community"),
+      previewFocus: "support",
+      description: t("Use built-in help, tools, and study groups without leaving the platform."),
+    },
+  ];
+  const heroMode = heroModes[activeHeroMode] ?? heroModes[0];
+  const firstHeroPhrase = `${t("With")} ${heroModes[0]?.label ?? ""}`;
+  const fullHeroPhrase = `${t("With")} ${heroMode.label}`;
   const primaryHeroLine = t("Master Mathematics");
   const secondaryHeroLine = t("With Expert Tutors");
   const primaryHeroSpeed = 78;
@@ -305,6 +346,52 @@ export default function Home() {
   }, []);
 
   const heroSideImage = HOME_HERO_SIDE_IMAGES[heroSideImageIndex];
+  const getHeroFocusClass = (focus: HeroPreviewFocus) =>
+    heroMode.previewFocus === focus
+      ? "border-indigo-300 bg-white shadow-[0_16px_42px_rgba(79,70,229,0.16)] ring-2 ring-indigo-100 dark:border-indigo-700 dark:ring-indigo-900/50"
+      : "border-slate-200 bg-white shadow-none dark:border-slate-800 dark:bg-slate-900";
+
+  useEffect(() => {
+    if (reducedMotion || heroModes.length <= 1) {
+      setActiveHeroMode(0);
+      setTypedHeroPhrase(firstHeroPhrase);
+      setHeroTypingPhase("typing");
+      return;
+    }
+
+    if (!fullHeroPhrase.startsWith(typedHeroPhrase)) {
+      setTypedHeroPhrase("");
+      setHeroTypingPhase("typing");
+      return;
+    }
+
+    let timeoutMs = 52;
+    let nextAction = () => {
+      setTypedHeroPhrase(fullHeroPhrase.slice(0, typedHeroPhrase.length + 1));
+    };
+
+    if (heroTypingPhase === "typing" && typedHeroPhrase.length >= fullHeroPhrase.length) {
+      timeoutMs = 1200;
+      nextAction = () => setHeroTypingPhase("deleting");
+    } else if (heroTypingPhase === "deleting") {
+      timeoutMs = 30;
+      nextAction = () => setTypedHeroPhrase(fullHeroPhrase.slice(0, Math.max(typedHeroPhrase.length - 1, 0)));
+
+      if (typedHeroPhrase.length === 0) {
+        timeoutMs = 180;
+        nextAction = () => {
+          setActiveHeroMode((currentMode) => (currentMode + 1) % heroModes.length);
+          setHeroTypingPhase("typing");
+        };
+      }
+    } else if (heroTypingPhase === "pausing") {
+      timeoutMs = 1200;
+      nextAction = () => setHeroTypingPhase("deleting");
+    }
+
+    const timeoutId = window.setTimeout(nextAction, timeoutMs);
+    return () => window.clearTimeout(timeoutId);
+  }, [firstHeroPhrase, fullHeroPhrase, heroModes.length, heroTypingPhase, reducedMotion, typedHeroPhrase]);
 
   const handleBookNow = (tutor: typeof topTutors[0]) => {
     if (!isLoggedIn) {
@@ -522,9 +609,187 @@ export default function Home() {
   const bottomCtaLabel = isLoggedIn ? t("Continue Learning") : t("Get Started Free");
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-slate-50 px-safe dark:bg-slate-950">
+    <div className="min-h-screen bg-[#f7f4ed] text-slate-950 dark:bg-slate-950 dark:text-white">
+      {/* Phase 1 Hero Section */}
+      <section className="relative overflow-hidden px-safe">
+        <div className="mx-auto grid min-h-[92vh] w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 pb-16 pt-28 sm:px-6 md:pt-32 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
+          <div className="max-w-2xl">
+            <FadeIn delay={0.02}>
+              <p className="mb-5 inline-flex rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm dark:border-indigo-900/60 dark:bg-slate-900 dark:text-indigo-300">
+                {t("Trusted peer tutoring for ambitious students")}
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.06}>
+              <h1 className="text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl dark:text-white">
+                {t("Master Mathematics")}
+                <span className="relative block min-h-[1.1em] overflow-hidden text-indigo-700 dark:text-indigo-300" aria-live="polite">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={heroMode.label}
+                      className="inline-flex items-baseline gap-2"
+                      initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={reducedMotion ? undefined : { opacity: 0, y: -10 }}
+                      transition={{ duration: 0.32, ease: "easeOut" }}
+                    >
+                      <span>{reducedMotion ? fullHeroPhrase : typedHeroPhrase}</span>
+                      {!reducedMotion && (
+                        <motion.span
+                          aria-hidden="true"
+                          className="mb-1 h-[0.78em] w-[3px] rounded-full bg-indigo-600 dark:bg-indigo-300"
+                          animate={{ opacity: [0.25, 1, 0.25] }}
+                          transition={{ duration: 1.05, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                        />
+                      )}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+              </h1>
+            </FadeIn>
+
+            <FadeIn delay={0.1}>
+              <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 sm:text-xl dark:text-slate-300">
+                {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.14}>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="/tutors" className="w-full sm:w-auto">
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 hover:text-white sm:w-auto"
+                  >
+                    {t("Book Your First Session")}
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <div className={isAuthResolved ? "w-full sm:w-auto" : "min-h-[52px] w-full sm:w-[210px]"}>
+                  {isAuthResolved && (
+                    <Link href={heroSecondaryHref} className="w-full sm:w-auto">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="w-full rounded-full border-slate-300 bg-white px-7 text-slate-800 shadow-sm hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                      >
+                        {heroSecondaryLabel}
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeInStagger className="mt-10 grid max-w-xl grid-cols-2 gap-4 sm:grid-cols-4" staggerDelay={0.05}>
+              {stats.map((stat) => (
+                <FadeInStaggerItem key={stat.label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  <div className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
+                    <AnimatedNumberClient value={stat.value} duration={700} label={stat.label} />
+                  </div>
+                  <div className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{stat.label}</div>
+                </FadeInStaggerItem>
+              ))}
+            </FadeInStagger>
+          </div>
+
+          <FadeIn delay={0.1}>
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900">
+              <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                <div className={`flex items-start justify-between gap-4 border-b pb-4 transition-all duration-300 ${heroMode.previewFocus === "path" ? "border-indigo-200 dark:border-indigo-800" : "border-slate-200 dark:border-slate-800"}`}>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Today's learning path")}</p>
+                    <h2 className="mt-1 text-xl font-semibold text-slate-950 dark:text-white">{t("Algebra confidence sprint")}</h2>
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.p
+                        key={heroMode.eyebrow}
+                        className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300"
+                        initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={reducedMotion ? undefined : { opacity: 0, y: -4 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                      >
+                        <span className="font-semibold text-indigo-700 dark:text-indigo-300">{heroMode.eyebrow}:</span>{" "}
+                        {heroMode.description}
+                      </motion.p>
+                    </AnimatePresence>
+                  </div>
+                  <div className={`rounded-full px-3 py-1 text-sm font-semibold transition-all duration-300 ${heroMode.previewFocus === "path" ? "bg-indigo-600 text-white shadow-sm" : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"}`}>68%</div>
+                </div>
+
+                <div className="mt-5 grid gap-3">
+                  {[
+                    { label: t("Learn"), title: t("Linear equations"), state: t("Complete") },
+                    { label: t("Practice"), title: t("8 adaptive questions"), state: t("In progress") },
+                    { label: t("Get Help"), title: topTutors[0]?.name ?? t("Expert tutor"), state: t("Available Now") },
+                  ].map((item, index) => {
+                    const isActivePathStep =
+                      (heroMode.previewFocus === "path" && index === 1) ||
+                      (heroMode.previewFocus === "tutor" && index === 2);
+
+                    return (
+                    <div key={item.label} className={`flex items-center gap-4 rounded-2xl border p-4 transition-all duration-300 ${isActivePathStep ? "border-indigo-300 bg-white shadow-[0_12px_30px_rgba(79,70,229,0.12)] ring-2 ring-indigo-100 dark:border-indigo-700 dark:bg-slate-900 dark:ring-indigo-900/40" : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"}`}>
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"}`}>
+                        {index + 1}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
+                        <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{item.title}</p>
+                      </div>
+                      <span className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline dark:bg-slate-800 dark:text-slate-300">{item.state}</span>
+                    </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-5 grid gap-4 md:grid-cols-2">
+                  <div className={`rounded-2xl border p-4 transition-all duration-300 ${getHeroFocusClass("quiz")}`}>
+                    <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Quiz Feedback")}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{t("Great work. Review factoring step 3, then try one more challenge.")}</p>
+                    <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800">
+                      <div className={`h-2 rounded-full transition-all duration-500 ${heroMode.previewFocus === "quiz" ? "w-4/5 bg-indigo-600" : "w-3/4 bg-indigo-500"}`} />
+                    </div>
+                  </div>
+                  <div className={`rounded-2xl border p-4 transition-all duration-300 ${getHeroFocusClass("tutor")}`}>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Tutor Match")}</p>
+                      <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors duration-300 ${heroMode.previewFocus === "tutor" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"}`}>
+                        {t("Book session")}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-3">
+                      <Avatar initials={topTutors[0]?.initials ?? "MT"} size="md" />
+                      <div>
+                        <p className="text-sm font-semibold text-slate-950 dark:text-white">{topTutors[0]?.name}</p>
+                        <p className="text-xs text-slate-500">{topTutors[0]?.subjects}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`rounded-2xl border p-4 transition-all duration-300 md:col-span-2 ${getHeroFocusClass("support")}`}>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Study Support")}</p>
+                        <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{t("AI helper, community answers, and focus tools stay one click away.")}</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {[t("AI Help"), t("Community"), t("Pomodoro")].map((tool) => (
+                          <span key={tool} className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* Legacy Hero Section hidden during Phase 1 proof of direction */}
+      <section ref={heroRef} className="hidden">
         <div className="hero-depth-backdrop" aria-hidden="true">
           <div className="hero-depth-glow" />
           <div className="hero-mesh-plane" />
@@ -729,12 +994,213 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Phase 1: How MathMaster works */}
+      <section className="border-y border-slate-200 bg-white py-20 dark:border-slate-800 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <FadeIn className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("How MathMaster works")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Build skill one clear step at a time")}</h2>
+            <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">{t("A focused path for learning concepts, practicing with feedback, and getting help when you get stuck.")}</p>
+          </FadeIn>
+
+          <FadeInStagger className="mt-12 grid gap-5 md:grid-cols-3" staggerDelay={0.06}>
+            {[
+              { title: t("Learn"), description: t("Start with guided lessons that explain the idea before the formula."), icon: BookOpen, href: "/learn" },
+              { title: t("Practice"), description: t("Try focused quizzes and use feedback to find the exact step to review."), icon: Target, href: "/learn#quizzes" },
+              { title: t("Get Help"), description: t("Connect with tutors and the community when a concept needs a real explanation."), icon: Users, href: "/tutoring-request" },
+            ].map((step, index) => (
+              <FadeInStaggerItem key={step.title}>
+                <Link href={step.href} className="group block h-full rounded-[1.75rem] border border-slate-200 bg-[#fbfaf6] p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                  <div className="mb-8 flex items-center justify-between">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                      <step.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-semibold text-slate-400">0{index + 1}</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{step.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{step.description}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+                    {t("Explore")}
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </FadeInStaggerItem>
+            ))}
+          </FadeInStagger>
+        </div>
+      </section>
+
+      {/* Phase 1: Product Preview */}
+      <section className="bg-[#f7f4ed] py-20 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+            <FadeIn>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Product preview")}</p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Everything points students to the next best step")}</h2>
+                <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
+                  {t("MathMaster combines a guided learning path, quiz feedback, AI help, tutoring, and lightweight tools so students know what to do next.")}
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link href="/learn">
+                    <Button variant="ghost" className="rounded-full bg-indigo-600 px-6 text-white hover:bg-indigo-700 hover:text-white">{t("Open Learn")}</Button>
+                  </Link>
+                  <Link href="/community">
+                    <Button variant="outline" className="rounded-full bg-white px-6 text-slate-800 hover:bg-indigo-50 hover:text-indigo-700 dark:bg-slate-900 dark:text-slate-100">{t("Ask the Community")}</Button>
+                  </Link>
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.08}>
+              <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_22px_64px_rgba(15,23,42,0.10)] dark:border-slate-800 dark:bg-slate-900">
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                    <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Learn Path")}</p>
+                    <div className="mt-5 space-y-3">
+                      {["Foundations", "Linear Equations", "Quadratics"].map((label, index) => (
+                        <div key={label} className="flex items-center gap-3">
+                          <div className={`h-8 w-8 rounded-full border text-center text-sm font-semibold leading-8 ${index === 0 ? "border-emerald-200 bg-emerald-50 text-emerald-700" : index === 1 ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 bg-white text-slate-400"}`}>
+                            {index === 0 ? "✓" : index + 1}
+                          </div>
+                          <div className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">{t(label)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                    <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Quiz Feedback")}</p>
+                    <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 dark:border-indigo-900 dark:bg-indigo-950/40">
+                      <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-200">{t("Almost there")}</p>
+                      <p className="mt-2 text-sm leading-6 text-indigo-800/80 dark:text-indigo-200/80">{t("You understand the setup. Review the sign change, then try one more problem.")}</p>
+                    </div>
+                    <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-semibold">
+                      <div className="rounded-xl bg-emerald-50 py-2 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">4 {t("right")}</div>
+                      <div className="rounded-xl bg-amber-50 py-2 text-amber-700 dark:bg-amber-950 dark:text-amber-300">1 {t("review")}</div>
+                      <div className="rounded-xl bg-slate-100 py-2 text-slate-600 dark:bg-slate-800 dark:text-slate-300">2 {t("next")}</div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                    <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("AI help and tools")}</p>
+                    <div className="mt-4 space-y-3 text-sm">
+                      <div className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">{t("Explain completing the square in simpler steps.")}</div>
+                      <div className="flex gap-2">
+                        {[t("Calculator"), t("Formula Reference"), t("Notes")].map((tool) => (
+                          <span key={tool} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{tool}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                    <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Tutoring")}</p>
+                    <div className="mt-4 flex items-start gap-3">
+                      <Avatar initials={topTutors[0]?.initials ?? "MT"} size="lg" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{topTutors[0]?.name}</p>
+                        <p className="text-xs leading-5 text-slate-500">{topTutors[0]?.subjects}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      className="mt-4 w-full rounded-full bg-white text-slate-800 hover:bg-indigo-50 hover:text-indigo-700 dark:bg-slate-900 dark:text-slate-100"
+                      disabled={!topTutors[0]?.available}
+                      onClick={() => topTutors[0]?.available && handleBookNow(topTutors[0])}
+                    >
+                      {topTutors[0]?.available ? t("Book Now") : t("Unavailable")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* Phase 1: Focused Features */}
+      <section className="bg-white py-20 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <FadeIn className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Why students stay on track")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Built for the full learning loop")}</h2>
+          </FadeIn>
+          <FadeInStagger className="mt-10 grid gap-5 md:grid-cols-3" staggerDelay={0.06}>
+            {features.slice(0, 3).map((feature) => (
+              <FadeInStaggerItem key={feature.title}>
+                <Link href={feature.link} className="group block h-full rounded-[1.75rem] border border-slate-200 bg-[#fbfaf6] p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                  <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{feature.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{feature.description}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+                    {feature.linkText}
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </FadeInStaggerItem>
+            ))}
+          </FadeInStagger>
+        </div>
+      </section>
+
+      {/* Phase 1: Validation */}
+      <section className="bg-[#f7f4ed] py-20 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <FadeIn>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Student validation")}</p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Clear help when math stops making sense")}</h2>
+                <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">{t("Students use MathMaster to find explanations, practice with purpose, and get support before confusion turns into frustration.")}</p>
+              </div>
+            </FadeIn>
+            <FadeInStagger className="grid gap-4 md:grid-cols-2" staggerDelay={0.06}>
+              {[
+                { quote: t("The tutor did not just give me the answer. They helped me understand the step I kept missing."), name: "Maya R.", detail: t("Algebra student") },
+                { quote: t("The learn path made practice feel less random. I knew exactly what to review next."), name: "Jordan K.", detail: t("Pre-Calculus student") },
+              ].map((item) => (
+                <FadeInStaggerItem key={item.name} className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  <Quote className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
+                  <p className="mt-4 text-base leading-7 text-slate-700 dark:text-slate-200">“{item.quote}”</p>
+                  <p className="mt-5 text-sm font-semibold text-slate-950 dark:text-white">{item.name}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{item.detail}</p>
+                </FadeInStaggerItem>
+              ))}
+            </FadeInStagger>
+          </div>
+        </div>
+      </section>
+
+      {/* Phase 1: Final CTA */}
+      <section className="bg-white py-20 dark:bg-slate-950">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+          <FadeIn>
+            <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Ready to get unstuck in math?")}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Start with a guided lesson, practice what matters, or connect with a tutor when you need a human explanation.")}</p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <div className="mt-8 flex min-h-[52px] justify-center">
+              {isAuthResolved && (
+                <Link href={bottomCtaHref}>
+                  <Button variant="ghost" size="lg" className="rounded-full bg-indigo-600 px-8 text-white shadow-sm hover:bg-indigo-700 hover:text-white">
+                    {bottomCtaLabel}
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+              )}
+            </div>
+            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{t("No credit card required • Free forever")}</p>
+          </FadeIn>
+        </div>
+      </section>
+
       <div
-        className="h-px w-full"
+        className="hidden h-px w-full"
         style={{ background: "linear-gradient(90deg, transparent, rgba(var(--theme-primary-rgb), 0.35), transparent)" }}
       />
 
       {/* Main Content */}
+      <div className="hidden">
       {isLoggedIn && (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-16">
         
@@ -1434,6 +1900,7 @@ export default function Home() {
           </FadeIn>
         </div>
       </section>
+      </div>
 
       {/* Footer */}
       <footer className="py-12 md:py-16 pb-28 md:pb-32 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">

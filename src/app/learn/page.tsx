@@ -9,6 +9,7 @@ import { CommunitySpotlight } from "@/components/CommunitySpotlight";
 import { GuidedOnboarding } from "@/components/GuidedOnboarding";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
+import { PageHero } from "@/components/PageHero";
 import { LearnPathMap } from "@/components/learn/LearnPathMap";
 import { LearnTopStrip } from "@/components/learn/LearnTopStrip";
 import { PathNodeVM } from "@/components/learn/types";
@@ -831,25 +832,56 @@ function LearnPageClient() {
 
   if (!isReady || !hasHydrated) {
     return (
-      <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 md:pt-28">
+      <PageWrapper className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950 pt-24 md:pt-28">
         <main className="max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 md:pt-4">{t("Loading learning path...")}</main>
       </PageWrapper>
     );
   }
 
   return (
-    <PageWrapper className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 md:pt-28 learn-page-bg">
+    <PageWrapper className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950 learn-page-bg">
+      <PageHero
+        eyebrow={t("Guided learning path")}
+        title={t("Start Learning")}
+        description={t("Focus on one topic at a time with lessons, practice, and quizzes in one place.")}
+        icon={BookOpen}
+        primaryAction={{ label: t("Find a Tutor"), href: "/tutors" }}
+        secondaryAction={{ label: t("Ask Community"), href: selectedTopicCommunityHref }}
+        buttonSize="sm"
+        maxWidthClass="max-w-[88rem]"
+        visualEyebrow={t("Current topic")}
+        visualTitle={activeTopic?.title ?? selectedCourse?.title ?? t("Learning path")}
+        visualProgress={`${Math.max(courseCompletionPercent, 8)}%`}
+        visualItems={[
+          {
+            label: t("Lesson"),
+            title: getLessonButtonLabel(toPathNodeState(activeFlowState), hasStartedActiveLesson, t),
+            meta: activeFlowState === "locked" ? t("Locked") : t("Ready"),
+          },
+          {
+            label: t("Practice"),
+            title: activeTopic?.masteryGoal || activeTopic?.readinessSignals[0] || t("Build fluency"),
+            meta: t("Guided"),
+          },
+          {
+            label: t("Quiz"),
+            title: activeQuizCount ? t("Choose quiz difficulty") : t("Topic review"),
+            meta: activeQuizCount ? `${activeQuizCount}` : t("Soon"),
+          },
+        ]}
+      />
+
       <main className="max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 md:pt-4 md:pb-10 space-y-6">
         {quizDifficultyPicker && (
           <div
-            className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/60 p-4 sm:items-center"
+            className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/45 p-4 sm:items-center"
             onClick={() => setQuizDifficultyPicker(null)}
           >
             <Card
-              className="w-full max-w-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-[0_28px_90px_-44px_rgba(15,23,42,0.55)] backdrop-blur"
+              className="w-full max-w-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_18px_54px_-32px_rgba(15,23,42,0.42)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="border-b border-slate-200/70 bg-gradient-to-br from-white via-slate-50 to-[var(--theme-primary)]/5 p-5 dark:border-slate-800/90 dark:from-slate-900 dark:via-slate-900 dark:to-[var(--theme-primary)]/10 sm:p-6">
+              <div className="border-b border-slate-200/70 bg-white p-5 dark:border-slate-800/90 dark:bg-slate-900 sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="inline-flex items-center gap-2 rounded-full border border-[var(--theme-primary)]/20 bg-[var(--theme-primary)]/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
@@ -870,7 +902,7 @@ function LearnPageClient() {
                   <button
                     type="button"
                     onClick={() => setQuizDifficultyPicker(null)}
-                    className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-[var(--theme-primary)]/35 bg-[var(--theme-primary)] px-3 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(var(--theme-primary-rgb),0.9)] transition hover:brightness-105 hover:shadow-[0_18px_36px_-20px_rgba(var(--theme-primary-rgb),0.95)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--theme-primary)]"
+                    className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-indigo-600 bg-indigo-600 px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     aria-label={t("Close")}
                   >
                     <span className="hidden sm:inline">{t("Close")}</span>
@@ -931,7 +963,7 @@ function LearnPageClient() {
                         });
                         setQuizDifficultyPicker(null);
                       }}
-                      className="group relative flex h-full min-h-[220px] flex-col rounded-3xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/70 p-5 text-left shadow-[0_20px_60px_-42px_rgba(15,23,42,0.45)] transition-all duration-200 hover:-translate-y-1 hover:border-[var(--theme-primary)]/70 hover:shadow-[0_28px_70px_-36px_rgba(var(--theme-primary-rgb),0.30)] hover:bg-gradient-to-br hover:from-white hover:to-[color-mix(in_srgb,var(--theme-primary)_4%,white)] active:scale-[0.98] active:shadow-[0_12px_40px_-20px_rgba(var(--theme-primary-rgb),0.42)] dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70 dark:shadow-[0_18px_48px_-36px_rgba(2,6,23,0.8)] dark:hover:border-[var(--theme-primary)]/55 dark:hover:shadow-[0_28px_70px_-36px_rgba(var(--theme-primary-rgb),0.26)] dark:hover:from-slate-900 dark:hover:to-[color-mix(in_srgb,var(--theme-primary)_6%,rgb(15_23_42))] focus-visible:outline-2 focus-visible:outline-[var(--theme-primary)] focus-visible:outline-offset-2"
+                      className="group relative flex h-full min-h-[220px] flex-col rounded-3xl border border-slate-200/90 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.05)] transition-all duration-200 hover:-translate-y-px hover:border-indigo-200 hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)] active:scale-[0.99] dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)] dark:hover:border-indigo-900/70 focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -942,7 +974,7 @@ function LearnPageClient() {
                             {option.title}
                           </p>
                         </div>
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--theme-primary)]/20 bg-[var(--theme-primary)]/9 text-sm font-bold text-[var(--theme-primary)] transition-all duration-200 group-hover:border-transparent group-hover:bg-gradient-to-br group-hover:from-[var(--theme-primary)] group-hover:to-[var(--theme-primary-light)] group-hover:text-white group-hover:shadow-[0_4px_12px_rgba(var(--theme-primary-rgb),0.32)]">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-sm font-bold text-indigo-700 transition-colors duration-200 group-hover:border-indigo-200 group-hover:bg-indigo-600 group-hover:text-white dark:border-indigo-900/60 dark:bg-indigo-950/50 dark:text-indigo-300">
                           {option.title.charAt(0)}
                         </div>
                       </div>

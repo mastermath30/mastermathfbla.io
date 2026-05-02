@@ -5,12 +5,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
-import { Input, Textarea, Select } from "@/components/Input";
-import { SectionLabel } from "@/components/SectionLabel";
-import { FadeIn, GlowingOrbs, PageWrapper, HeroText } from "@/components/motion";
+import { PageHero } from "@/components/PageHero";
+import { FadeIn, PageWrapper } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import { personImages } from "@/data/people";
 import {
@@ -20,26 +18,17 @@ import {
   Calendar,
   Clock,
   MapPin,
-  Video,
-  MessageCircle,
   Crown,
   Star,
   UserPlus,
-  Bell,
-  Settings,
   ChevronRight,
-  Sparkles,
   BookOpen,
-  Target,
-  Trophy,
   Filter,
   X,
   Check,
   Share2,
-  Copy,
   Globe,
   Lock,
-  Zap,
 } from "lucide-react";
 
 interface StudyGroup {
@@ -242,62 +231,23 @@ function StudyGroupsPageInner() {
 
   return (
     <PageWrapper>
-      <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
-        <GlowingOrbs />
-
-        {/* Hero Section */}
-        <section className="relative pt-20 md:pt-32 pb-16 px-4 overflow-hidden">
-          <div className="max-w-6xl mx-auto">
-            <FadeIn>
-              <SectionLabel icon={Users}>{t("Study Groups")}</SectionLabel>
-            </FadeIn>
-
-            <HeroText>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
-                {t("Learn Together,")}{" "}
-                <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  {t("Succeed Together")}
-                </span>
-              </h1>
-              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl">
-                {t("Join study groups with peers who share your goals. Collaborate, practice, and master math concepts together.")}
-              </p>
-            </HeroText>
-
-            {/* Stats */}
-            <FadeIn delay={0.2}>
-              <div className="flex flex-wrap gap-4 md:gap-8 mt-8">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/30">
-                    <Users className="w-5 h-5 text-violet-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">50+</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">{t("Active Groups")}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                    <UserPlus className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">500+</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">{t("Members")}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                    <Video className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">100+</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">{t("Sessions/Week")}</div>
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </section>
+      <main className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
+        <PageHero
+          eyebrow={t("Study Groups")}
+          title={t("Learn Together,")}
+          highlight={t("Succeed Together")}
+          description={t("Join focused groups, meet weekly, and stay accountable with peers working on the same topics.")}
+          icon={Users}
+          primaryAction={{ label: t("Browse Groups"), href: "#all-groups" }}
+          visualEyebrow={t("Group plan")}
+          visualTitle={t("Weekly study rhythm")}
+          visualProgress="76%"
+          visualItems={[
+            { label: t("Match"), title: t("Find peers by subject"), meta: t("Focused") },
+            { label: t("Meet"), title: t("Join weekly live sessions"), meta: t("Live") },
+            { label: t("Review"), title: t("Practice between meetings"), meta: t("Shared") },
+          ]}
+        />
 
         {/* My Groups Section */}
         {myGroups.length > 0 && (

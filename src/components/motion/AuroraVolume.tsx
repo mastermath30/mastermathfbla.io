@@ -23,7 +23,7 @@ export function AuroraVolume({ className = "" }: AuroraVolumeProps) {
         {bands.map((band, index) => (
           <div
             key={index}
-            className={`absolute ${band.size} rounded-full blur-3xl opacity-[0.13] dark:opacity-[0.16]`}
+            className={`absolute ${band.size} rounded-full blur-3xl opacity-[0.025] dark:opacity-[0.04]`}
             style={{
               top: band.top,
               left: band.left,
@@ -52,13 +52,13 @@ export function AuroraVolume({ className = "" }: AuroraVolumeProps) {
                 ? "linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 58%, transparent), transparent 70%)"
                 : "linear-gradient(220deg, color-mix(in srgb, var(--theme-primary-light) 54%, transparent), transparent 68%)",
           }}
-          initial={{ opacity: 0.08, rotate: index % 2 === 0 ? -8 : 8, scale: 0.98 }}
+          initial={{ opacity: 0.02, rotate: index % 2 === 0 ? -8 : 8, scale: 0.98 }}
           animate={{
-            opacity: [0.08, 0.18, 0.11, 0.16, 0.08],
-            x: [0, 18, -14, 10, 0],
-            y: [0, -14, 12, -10, 0],
+            opacity: [0.02, 0.045, 0.03, 0.04, 0.02],
+            x: [0, 8, -6, 4, 0],
+            y: [0, -6, 5, -4, 0],
             rotate: index % 2 === 0 ? [-8, -2, -10, -4, -8] : [8, 2, 10, 4, 8],
-            scale: [0.98, 1.03, 1, 1.04, 0.98],
+            scale: [0.99, 1.01, 1, 1.01, 0.99],
           }}
           transition={{
             duration: band.duration,
