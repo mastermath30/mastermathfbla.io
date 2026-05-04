@@ -563,23 +563,15 @@ export function AIMathTutor() {
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
       </motion.button>
 
-      {/* Modal */}
+      {/* Side Panel */}
       <AnimatePresence>
         {isOpen && (
-          <>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200]"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-4 z-[201] flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,59,0.98)_0%,rgba(15,23,42,0.98)_18%,rgba(2,6,23,0.985)_100%)] shadow-[0_32px_90px_rgba(2,6,23,0.65)] md:inset-auto md:left-1/2 md:top-1/2 md:h-[600px] md:w-[700px] md:-translate-x-1/2 md:-translate-y-1/2"
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed bottom-0 right-0 top-0 z-[201] flex w-full flex-col overflow-hidden border-l border-white/10 bg-[linear-gradient(180deg,rgba(30,41,59,0.98)_0%,rgba(15,23,42,0.98)_18%,rgba(2,6,23,0.985)_100%)] shadow-[-12px_0_48px_rgba(2,6,23,0.55)] md:w-[420px]"
             >
               {/* Header */}
               <div className="relative flex items-center justify-between border-b border-white/10 bg-[linear-gradient(180deg,rgba(76,29,149,0.28)_0%,rgba(30,41,59,0.86)_58%,rgba(15,23,42,0.96)_100%)] px-4 py-4 text-white">
@@ -878,7 +870,6 @@ export function AIMathTutor() {
                 </p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
     </>
