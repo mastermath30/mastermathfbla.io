@@ -15,7 +15,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Palette, Accessibility, Lightbulb, Wrench } from "lucide-react";
+import { Palette, Accessibility, Lightbulb, Wrench, Brain } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "./LanguageProvider";
@@ -229,6 +229,27 @@ export function Navbar() {
                     </motion.div>
                   ))}
                 </div>
+              </div>
+
+              {/* AI Agent */}
+              <div className="px-5 pb-4 pt-2 border-t border-slate-200 dark:border-slate-700">
+                <motion.button
+                  onClick={() => handleUtilityClick("open-ai-tutor")}
+                  className="w-full flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white touch-manipulation active:scale-[0.98] transition-transform"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.22 }}
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                >
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <Brain className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold text-sm">{t("AI Agent")}</p>
+                    <p className="text-xs text-violet-100">{t("Ask me anything about math")}</p>
+                  </div>
+                  <span className="ml-auto w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse flex-shrink-0" />
+                </motion.button>
               </div>
 
               {/* Quick Actions */}

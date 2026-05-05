@@ -553,7 +553,7 @@ export function AIMathTutor() {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="flex fixed bottom-24 right-4 md:bottom-6 md:right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 shadow-[0_16px_32px_rgba(76,29,149,0.38)] hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 shadow-[0_16px_32px_rgba(76,29,149,0.38)] hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
         aria-label={t("Open AI Agent")}
         title={t("AI Agent (Alt+M)")}
         whileHover={{ scale: 1.1 }}
