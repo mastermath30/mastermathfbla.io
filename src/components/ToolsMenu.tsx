@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wrench, X, Focus, ArrowRightLeft, StickyNote, Calculator, BookOpen, Timer } from "lucide-react";
 import { useTranslations } from "./LanguageProvider";
@@ -61,8 +62,10 @@ const getTools = (t: (key: string) => string): Tool[] => [
 
 export function ToolsMenu() {
   const { t } = useTranslations();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
+  const isHomePage = pathname === "/";
   
   const tools = getTools(t);
 
@@ -98,7 +101,9 @@ export function ToolsMenu() {
       <div className="tools-menu-container hidden md:block fixed bottom-6 left-[5.25rem] lg:left-[5.75rem] z-[89]">
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex w-14 h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 touch-manipulation ${
+          className={`flex rounded-full border border-slate-300/20 bg-slate-900/75 shadow-lg backdrop-blur-md items-center justify-center hover:scale-105 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 touch-manipulation ${
+            isHomePage ? "h-11 w-11 opacity-75 hover:opacity-100" : "h-14 w-14"
+          } ${
             isOpen ? "ring-2 ring-white/50" : ""
           }`}
           aria-label={t("Open tools menu")}
@@ -110,7 +115,7 @@ export function ToolsMenu() {
             animate={{ rotate: isOpen ? 90 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Wrench className="w-6 h-6 text-white" />
+            <Wrench className={isHomePage ? "h-5 w-5 text-white" : "h-6 w-6 text-white"} />
           </motion.div>
         </motion.button>
 

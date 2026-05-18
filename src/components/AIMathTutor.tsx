@@ -27,7 +27,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import katex from "katex";
 import "katex/dist/katex.min.css";
@@ -179,6 +179,8 @@ const PAGE_LABELS: Record<string, string> = {
 export function AIMathTutor() {
   const { t } = useTranslations();
   const router = useRouter();
+  const pathname = usePathname();
+  const showLauncher = pathname !== "/";
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -551,17 +553,19 @@ export function AIMathTutor() {
   return (
     <>
       {/* Floating Button */}
-      <motion.button
-        onClick={() => setIsOpen(true)}
-        className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 shadow-[0_16px_32px_rgba(76,29,149,0.38)] hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
-        aria-label={t("Open AI Agent")}
-        title={t("AI Agent (Alt+M)")}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Brain className="w-7 h-7 text-white" />
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
-      </motion.button>
+      {showLauncher && (
+        <motion.button
+          onClick={() => setIsOpen(true)}
+          className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 shadow-[0_16px_32px_rgba(76,29,149,0.38)] hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
+          aria-label={t("Open AI Agent")}
+          title={t("AI Agent (Alt+M)")}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Brain className="w-7 h-7 text-white" />
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+        </motion.button>
+      )}
 
       {/* Side Panel */}
       <AnimatePresence>

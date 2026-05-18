@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/Button";
@@ -17,9 +18,7 @@ import { getFeaturedTutors, getTutorByName } from "@/data/people";
 import { authStateChangedEvent, getStoredAuthState } from "@/lib/auth";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import {
-  GraduationCap,
   Rocket,
-  PlayCircle,
   Brain,
   TrendingUp,
   Users,
@@ -47,6 +46,10 @@ import {
   Lock,
   ShieldCheck,
 } from "lucide-react";
+
+const HeroMathScene = dynamic(() => import("@/components/HeroMathScene").then((mod) => mod.HeroMathScene), {
+  ssr: false,
+});
 
 const getStats = (t: (key: string) => string) => [
   { value: 12000, label: t("Sessions Completed") },
@@ -193,8 +196,6 @@ const getTutorAvailability = (tutorName: string, dayOfWeek: number): number => {
 };
 
 const ALL_TIME_SLOTS = generateTimeSlots();
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const currentDate = new Date();
 
 const getDaysInMonth = (month: number, year: number) => new Date(year, month + 1, 0).getDate();
@@ -205,6 +206,7 @@ const HOME_HERO_SIDE_IMAGES = [
   "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&h=600&fit=crop",
   "https://images.unsplash.com/photo-1596496050827-8299e0220de1?w=600&h=600&fit=crop",
 ];
+const HOME_HERO_PATH_IMAGES = HOME_HERO_SIDE_IMAGES.slice(0, 3);
 
 type HeroPreviewFocus = "tutor" | "path" | "quiz" | "support";
 
@@ -215,6 +217,7 @@ export default function Home() {
   const heroRef = useRef<HTMLElement | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [heroSideImageIndex, setHeroSideImageIndex] = useState(0);
+  const [heroPathImageIndex, setHeroPathImageIndex] = useState(0);
   const [activeHeroMode, setActiveHeroMode] = useState(0);
   const [typedHeroPhrase, setTypedHeroPhrase] = useState("");
   const [heroTypingPhase, setHeroTypingPhase] = useState<"typing" | "pausing" | "deleting">("typing");
@@ -346,23 +349,33 @@ export default function Home() {
   }, []);
 
   const heroSideImage = HOME_HERO_SIDE_IMAGES[heroSideImageIndex];
-  const getHeroFocusClass = (focus: HeroPreviewFocus) =>
-    heroMode.previewFocus === focus
-      ? "border-indigo-300 bg-white shadow-[0_16px_42px_rgba(79,70,229,0.16)] ring-2 ring-indigo-100 dark:border-indigo-700 dark:ring-indigo-900/50"
-      : "border-slate-200 bg-white shadow-none dark:border-slate-800 dark:bg-slate-900";
+  const heroPathImage = HOME_HERO_PATH_IMAGES[heroPathImageIndex] ?? HOME_HERO_PATH_IMAGES[0];
+  useEffect(() => {
+    if (HOME_HERO_PATH_IMAGES.length <= 1) return;
+
+    const intervalId = window.setInterval(() => {
+      setHeroPathImageIndex((previousIndex) => (previousIndex + 1) % HOME_HERO_PATH_IMAGES.length);
+    }, 4200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     if (reducedMotion || heroModes.length <= 1) {
-      setActiveHeroMode(0);
-      setTypedHeroPhrase(firstHeroPhrase);
-      setHeroTypingPhase("typing");
-      return;
+      const timeoutId = window.setTimeout(() => {
+        setActiveHeroMode(0);
+        setTypedHeroPhrase(firstHeroPhrase);
+        setHeroTypingPhase("typing");
+      }, 0);
+      return () => window.clearTimeout(timeoutId);
     }
 
     if (!fullHeroPhrase.startsWith(typedHeroPhrase)) {
-      setTypedHeroPhrase("");
-      setHeroTypingPhase("typing");
-      return;
+      const timeoutId = window.setTimeout(() => {
+        setTypedHeroPhrase("");
+        setHeroTypingPhase("typing");
+      }, 0);
+      return () => window.clearTimeout(timeoutId);
     }
 
     let timeoutMs = 52;
@@ -611,180 +624,120 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f7f4ed] text-slate-950 dark:bg-slate-950 dark:text-white">
       {/* Phase 1 Hero Section */}
-      <section className="relative overflow-hidden px-safe">
-        <div className="mx-auto grid min-h-[92vh] w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 pb-16 pt-28 sm:px-6 md:pt-32 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
-          <div className="max-w-2xl">
-            <FadeIn delay={0.02}>
-              <p className="mb-5 inline-flex rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm dark:border-indigo-900/60 dark:bg-slate-900 dark:text-indigo-300">
-                {t("Trusted peer tutoring for ambitious students")}
-              </p>
-            </FadeIn>
+      <section className="relative min-h-[94vh] overflow-hidden px-safe">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={heroPathImage}
+            className="absolute inset-0"
+            initial={reducedMotion ? false : { opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0, scale: 1.01 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <Image
+              src={heroPathImage}
+              alt={t("Students learning mathematics")}
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+          </motion.div>
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-slate-950/72" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.22),transparent_42%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
+        <HeroMathScene reducedMotion={Boolean(reducedMotion)} />
 
-            <FadeIn delay={0.06}>
-              <h1 className="text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl dark:text-white">
-                {t("Master Mathematics")}
-                <span className="relative block min-h-[1.1em] overflow-hidden text-indigo-700 dark:text-indigo-300" aria-live="polite">
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={heroMode.label}
-                      className="inline-flex items-baseline gap-2"
-                      initial={reducedMotion ? false : { opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={reducedMotion ? undefined : { opacity: 0, y: -10 }}
-                      transition={{ duration: 0.32, ease: "easeOut" }}
-                    >
-                      <span>{reducedMotion ? fullHeroPhrase : typedHeroPhrase}</span>
-                      {!reducedMotion && (
-                        <motion.span
-                          aria-hidden="true"
-                          className="mb-1 h-[0.78em] w-[3px] rounded-full bg-indigo-600 dark:bg-indigo-300"
-                          animate={{ opacity: [0.25, 1, 0.25] }}
-                          transition={{ duration: 1.05, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                        />
-                      )}
-                    </motion.span>
-                  </AnimatePresence>
-                </span>
-              </h1>
-            </FadeIn>
-
-            <FadeIn delay={0.1}>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 sm:text-xl dark:text-slate-300">
-                {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.14}>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/tutors" className="w-full sm:w-auto">
-                  <Button
-                    variant="ghost"
-                    size="lg"
-                    className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 hover:text-white sm:w-auto"
-                  >
-                    {t("Book Your First Session")}
-                    <ArrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <div className={isAuthResolved ? "w-full sm:w-auto" : "min-h-[52px] w-full sm:w-[210px]"}>
-                  {isAuthResolved && (
-                    <Link href={heroSecondaryHref} className="w-full sm:w-auto">
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className="w-full rounded-full border-slate-300 bg-white px-7 text-slate-800 shadow-sm hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-                      >
-                        {heroSecondaryLabel}
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </FadeIn>
-
-            <FadeInStagger className="mt-10 grid max-w-xl grid-cols-2 gap-4 sm:grid-cols-4" staggerDelay={0.05}>
-              {stats.map((stat) => (
-                <FadeInStaggerItem key={stat.label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                  <div className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-                    <AnimatedNumberClient value={stat.value} duration={700} label={stat.label} />
-                  </div>
-                  <div className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{stat.label}</div>
-                </FadeInStaggerItem>
-              ))}
-            </FadeInStagger>
+        <div className="relative z-20 mx-auto flex min-h-[94vh] w-full max-w-7xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 md:pt-32">
+          <div>
+            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-indigo-100 shadow-sm backdrop-blur-md">
+              {t("Trusted peer tutoring for ambitious students")}
+            </p>
           </div>
 
-          <FadeIn delay={0.1}>
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900">
-              <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
-                <div className={`flex items-start justify-between gap-4 border-b pb-4 transition-all duration-300 ${heroMode.previewFocus === "path" ? "border-indigo-200 dark:border-indigo-800" : "border-slate-200 dark:border-slate-800"}`}>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Today's learning path")}</p>
-                    <h2 className="mt-1 text-xl font-semibold text-slate-950 dark:text-white">{t("Algebra confidence sprint")}</h2>
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.p
-                        key={heroMode.eyebrow}
-                        className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300"
-                        initial={reducedMotion ? false : { opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={reducedMotion ? undefined : { opacity: 0, y: -4 }}
-                        transition={{ duration: 0.25, ease: "easeOut" }}
-                      >
-                        <span className="font-semibold text-indigo-700 dark:text-indigo-300">{heroMode.eyebrow}:</span>{" "}
-                        {heroMode.description}
-                      </motion.p>
-                    </AnimatePresence>
-                  </div>
-                  <div className={`rounded-full px-3 py-1 text-sm font-semibold transition-all duration-300 ${heroMode.previewFocus === "path" ? "bg-indigo-600 text-white shadow-sm" : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"}`}>68%</div>
-                </div>
+          <div>
+            <h1 className="mx-auto mt-8 max-w-5xl text-5xl font-semibold tracking-[-0.06em] text-white sm:text-7xl lg:text-8xl">
+              {t("Master Mathematics")}
+              <span className="relative block min-h-[1.12em] overflow-hidden text-indigo-200" aria-live="polite">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={heroMode.label}
+                    className="inline-flex items-baseline justify-center gap-2"
+                    initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reducedMotion ? undefined : { opacity: 0, y: -10 }}
+                    transition={{ duration: 0.32, ease: "easeOut" }}
+                  >
+                    <span>{reducedMotion ? fullHeroPhrase : typedHeroPhrase}</span>
+                    {!reducedMotion && (
+                      <motion.span
+                        aria-hidden="true"
+                        className="mb-1 h-[0.78em] w-[3px] rounded-full bg-indigo-200"
+                        animate={{ opacity: [0.25, 1, 0.25] }}
+                        transition={{ duration: 1.05, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      />
+                    )}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+            </h1>
+          </div>
 
-                <div className="mt-5 grid gap-3">
-                  {[
-                    { label: t("Learn"), title: t("Linear equations"), state: t("Complete") },
-                    { label: t("Practice"), title: t("8 adaptive questions"), state: t("In progress") },
-                    { label: t("Get Help"), title: topTutors[0]?.name ?? t("Expert tutor"), state: t("Available Now") },
-                  ].map((item, index) => {
-                    const isActivePathStep =
-                      (heroMode.previewFocus === "path" && index === 1) ||
-                      (heroMode.previewFocus === "tutor" && index === 2);
+          <div>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">
+              {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
+            </p>
+          </div>
 
-                    return (
-                    <div key={item.label} className={`flex items-center gap-4 rounded-2xl border p-4 transition-all duration-300 ${isActivePathStep ? "border-indigo-300 bg-white shadow-[0_12px_30px_rgba(79,70,229,0.12)] ring-2 ring-indigo-100 dark:border-indigo-700 dark:bg-slate-900 dark:ring-indigo-900/40" : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"}`}>
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"}`}>
-                        {index + 1}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
-                        <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{item.title}</p>
-                      </div>
-                      <span className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline dark:bg-slate-800 dark:text-slate-300">{item.state}</span>
-                    </div>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-5 grid gap-4 md:grid-cols-2">
-                  <div className={`rounded-2xl border p-4 transition-all duration-300 ${getHeroFocusClass("quiz")}`}>
-                    <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Quiz Feedback")}</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{t("Great work. Review factoring step 3, then try one more challenge.")}</p>
-                    <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800">
-                      <div className={`h-2 rounded-full transition-all duration-500 ${heroMode.previewFocus === "quiz" ? "w-4/5 bg-indigo-600" : "w-3/4 bg-indigo-500"}`} />
-                    </div>
-                  </div>
-                  <div className={`rounded-2xl border p-4 transition-all duration-300 ${getHeroFocusClass("tutor")}`}>
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Tutor Match")}</p>
-                      <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors duration-300 ${heroMode.previewFocus === "tutor" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"}`}>
-                        {t("Book session")}
-                      </span>
-                    </div>
-                    <div className="mt-3 flex items-center gap-3">
-                      <Avatar initials={topTutors[0]?.initials ?? "MT"} size="md" />
-                      <div>
-                        <p className="text-sm font-semibold text-slate-950 dark:text-white">{topTutors[0]?.name}</p>
-                        <p className="text-xs text-slate-500">{topTutors[0]?.subjects}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`rounded-2xl border p-4 transition-all duration-300 md:col-span-2 ${getHeroFocusClass("support")}`}>
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Study Support")}</p>
-                        <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{t("AI helper, community answers, and focus tools stay one click away.")}</p>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {[t("AI Help"), t("Community"), t("Pomodoro")].map((tool) => (
-                          <span key={tool} className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
-                            {tool}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div>
+            <div className="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+              <Link href="/tutors" className="w-full sm:w-auto">
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-[0_18px_60px_rgba(79,70,229,0.38)] hover:bg-indigo-500 hover:text-white sm:w-auto"
+                >
+                  {t("Book Your First Session")}
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <div className={isAuthResolved ? "w-full sm:w-auto" : "min-h-[52px] w-full sm:w-[210px]"}>
+                {isAuthResolved && (
+                  <Link href={heroSecondaryHref} className="w-full sm:w-auto">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full rounded-full border-white/20 bg-white/10 px-7 text-white shadow-sm backdrop-blur-md hover:border-indigo-200 hover:bg-white/20 hover:text-white sm:w-auto"
+                    >
+                      {heroSecondaryLabel}
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
-          </FadeIn>
+          </div>
+
+          <div className="mt-12 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/10 p-4 text-left shadow-sm backdrop-blur-md">
+                <div className="text-2xl font-semibold tracking-tight text-white">
+                  <AnimatedNumberClient value={stat.value} duration={700} label={stat.label} />
+                </div>
+                <div className="mt-1 text-xs font-medium text-slate-300">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="w-full">
+            <div className="mt-8 grid w-full max-w-4xl gap-3 md:grid-cols-3">
+              {heroModes.slice(1).map((mode) => (
+                <div key={mode.label} className="rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-left backdrop-blur-md">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-200">{mode.label}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-200">{mode.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1119,24 +1072,43 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Phase 1: Focused Features */}
+      {/* Phase 1: Tutor Profiles */}
       <section className="bg-white py-20 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <FadeIn className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Why students stay on track")}</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Built for the full learning loop")}</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Tutor Match")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Learn with real people when you need it")}</h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Connect with highly rated peer tutors for targeted support, clear explanations, and confidence before your next test.")}</p>
           </FadeIn>
           <FadeInStagger className="mt-10 grid gap-5 md:grid-cols-3" staggerDelay={0.06}>
-            {features.slice(0, 3).map((feature) => (
-              <FadeInStaggerItem key={feature.title}>
-                <Link href={feature.link} className="group block h-full rounded-[1.75rem] border border-slate-200 bg-[#fbfaf6] p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-                  <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{feature.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{feature.description}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
-                    {feature.linkText}
-                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                  </span>
-                </Link>
+            {topTutors.map((tutor) => (
+              <FadeInStaggerItem key={tutor.name}>
+                <Card className="h-full overflow-hidden rounded-[1.75rem] border-slate-200 bg-[#fbfaf6] shadow-sm dark:border-slate-800 dark:bg-slate-900" padding="none">
+                  <div className="relative h-56 overflow-hidden">
+                    <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-[center_20%]" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/45 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      {tutor.rating}
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{tutor.name}</h3>
+                        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{tutor.subjects}</p>
+                      </div>
+                      <p className="text-right text-lg font-bold text-indigo-600 dark:text-indigo-300">${tutor.price}<span className="text-sm font-medium text-slate-400">/hr</span></p>
+                    </div>
+                    <Button
+                      className="mt-5 w-full rounded-full"
+                      disabled={!tutor.available}
+                      onClick={() => tutor.available && handleBookNow(tutor)}
+                    >
+                      {tutor.available ? t("Book Now") : t("Unavailable")}
+                    </Button>
+                  </div>
+                </Card>
               </FadeInStaggerItem>
             ))}
           </FadeInStagger>
@@ -1230,7 +1202,7 @@ export default function Home() {
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{session.time}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <img src={session.image} alt={session.tutor} className="w-6 h-6 rounded-full object-cover object-[center_20%]" />
+                          <Image src={session.image} alt={session.tutor} width={24} height={24} className="h-6 w-6 rounded-full object-cover object-[center_20%]" />
                           <span className="text-xs text-slate-600 dark:text-slate-300">{session.tutor}</span>
                         </div>
                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -1376,7 +1348,7 @@ export default function Home() {
       )}
 
       {/* For new users: Show marketing sections before tutors */}
-      {!isLoggedIn && (
+      {false && !isLoggedIn && (
         <>
           {/* Trusted By Section */}
           <FadeIn>
@@ -1678,7 +1650,7 @@ export default function Home() {
       )}
 
       {/* For logged-in users: Show Trusted By + marketing sections after tutors */}
-      {isLoggedIn && (
+      {false && isLoggedIn && (
         <>
           {/* Trusted By Section */}
           <FadeIn>

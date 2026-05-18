@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "./LanguageProvider";
 import {
@@ -80,6 +81,8 @@ const TOOLS = [
 
 export function InteractiveWhiteboard() {
   const { t } = useTranslations();
+  const pathname = usePathname();
+  const showLauncher = pathname !== "/";
   const [isOpen, setIsOpen] = useState(false);
   const [elements, setElements] = useState<DrawingElement[]>([]);
   const [currentTool, setCurrentTool] = useState("pen");
@@ -576,16 +579,18 @@ export function InteractiveWhiteboard() {
   return (
     <>
       {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
-      <motion.button
-        onClick={openWhiteboard}
-        className="hidden md:flex fixed md:bottom-6 right-4 lg:right-5 z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
-        aria-label={t("Open Interactive Whiteboard")}
-        title={t("Interactive Whiteboard (Alt+W)")}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Pencil className="w-6 h-6 text-white" />
-      </motion.button>
+      {showLauncher && (
+        <motion.button
+          onClick={openWhiteboard}
+          className="hidden md:flex fixed md:bottom-6 right-4 lg:right-5 z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
+          aria-label={t("Open Interactive Whiteboard")}
+          title={t("Interactive Whiteboard (Alt+W)")}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Pencil className="w-6 h-6 text-white" />
+        </motion.button>
+      )}
 
       {/* Fullscreen Modal */}
       <AnimatePresence>
