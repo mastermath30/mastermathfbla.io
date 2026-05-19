@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "./LanguageProvider";
 import {
@@ -17,12 +16,8 @@ import {
   Minus,
   Plus,
   X,
-  Palette,
   MousePointer,
-  Move,
   PenTool,
-  Users,
-  Share2,
   Save,
   FolderOpen,
   Grid3X3,
@@ -81,8 +76,6 @@ const TOOLS = [
 
 export function InteractiveWhiteboard() {
   const { t } = useTranslations();
-  const pathname = usePathname();
-  const showLauncher = pathname !== "/";
   const [isOpen, setIsOpen] = useState(false);
   const [elements, setElements] = useState<DrawingElement[]>([]);
   const [currentTool, setCurrentTool] = useState("pen");
@@ -140,53 +133,25 @@ export function InteractiveWhiteboard() {
 
   // Load saved boards
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     const saved = localStorage.getItem("mm_whiteboard_boards");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setSavedBoards(parsed.map((b: SavedBoard) => ({
-          ...b,
-          timestamp: new Date(b.timestamp)
-        })));
+        timeoutId = setTimeout(() => {
+          setSavedBoards(parsed.map((b: SavedBoard) => ({
+            ...b,
+            timestamp: new Date(b.timestamp)
+          })));
+        }, 0);
       } catch (e) {
         console.error("Failed to load boards:", e);
       }
     }
-  }, []);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey && e.key.toLowerCase() === "w") {
-        e.preventDefault();
-        if (isOpen) {
-          closeWhiteboard();
-        } else {
-          openWhiteboard();
-        }
-      }
-      if (!isOpen) return;
-      
-      if (e.key === "Escape") {
-        if (textPosition) {
-          setTextPosition(null);
-          setTextInput("");
-        } else {
-          closeWhiteboard();
-        }
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === "z") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          redo();
-        } else {
-          undo();
-        }
-      }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeWhiteboard, isOpen, openWhiteboard, textPosition]);
+  }, []);
 
   // Allow external components (e.g. Navbar mobile menu) to open whiteboard
   useEffect(() => {
@@ -513,19 +478,53 @@ export function InteractiveWhiteboard() {
     setTextPosition(null);
   };
 
-  const undo = () => {
+  const undo = useCallback(() => {
     if (historyIndex > 0) {
       setHistoryIndex(historyIndex - 1);
       setElements(history[historyIndex - 1]);
     }
-  };
+  }, [history, historyIndex]);
 
-  const redo = () => {
+  const redo = useCallback(() => {
     if (historyIndex < history.length - 1) {
       setHistoryIndex(historyIndex + 1);
       setElements(history[historyIndex + 1]);
     }
-  };
+  }, [history, historyIndex]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === "w") {
+        e.preventDefault();
+        if (isOpen) {
+          closeWhiteboard();
+        } else {
+          openWhiteboard();
+        }
+      }
+      if (!isOpen) return;
+      
+      if (e.key === "Escape") {
+        if (textPosition) {
+          setTextPosition(null);
+          setTextInput("");
+        } else {
+          closeWhiteboard();
+        }
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [closeWhiteboard, isOpen, openWhiteboard, redo, textPosition, undo]);
 
   const clearCanvas = () => {
     setElements([]);
@@ -579,18 +578,16 @@ export function InteractiveWhiteboard() {
   return (
     <>
       {/* Floating Button - Hidden on mobile, accessible via Tools Menu */}
-      {showLauncher && (
-        <motion.button
-          onClick={openWhiteboard}
-          className="hidden md:flex fixed md:bottom-6 right-4 lg:right-5 z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
-          aria-label={t("Open Interactive Whiteboard")}
-          title={t("Interactive Whiteboard (Alt+W)")}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Pencil className="w-6 h-6 text-white" />
-        </motion.button>
-      )}
+      <motion.button
+        onClick={openWhiteboard}
+        className="hidden md:flex fixed md:bottom-6 right-4 lg:right-5 z-[88] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-xl items-center justify-center hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 touch-manipulation"
+        aria-label={t("Open Interactive Whiteboard")}
+        title={t("Interactive Whiteboard (Alt+W)")}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <Pencil className="w-6 h-6 text-white" />
+      </motion.button>
 
       {/* Fullscreen Modal */}
       <AnimatePresence>

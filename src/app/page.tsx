@@ -11,6 +11,7 @@ import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Avatar } from "@/components/Avatar";
 import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
+import InfiniteMovingCardsDemo from "@/components/infinite-moving-cards-demo";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
 import { AuroraVolume, FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
@@ -29,7 +30,6 @@ import {
   Trophy,
   ArrowRight,
   ChevronDown,
-  Quote,
   Sparkles,
   Zap,
   Target,
@@ -216,11 +216,7 @@ export default function Home() {
   const reducedMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [heroSideImageIndex, setHeroSideImageIndex] = useState(0);
-  const [heroPathImageIndex, setHeroPathImageIndex] = useState(0);
-  const [activeHeroMode, setActiveHeroMode] = useState(0);
   const [typedHeroPhrase, setTypedHeroPhrase] = useState("");
-  const [heroTypingPhase, setHeroTypingPhase] = useState<"typing" | "pausing" | "deleting">("typing");
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
   const features = getFeatures(t);
@@ -256,9 +252,8 @@ export default function Home() {
       description: t("Use built-in help, tools, and study groups without leaving the platform."),
     },
   ];
-  const heroMode = heroModes[activeHeroMode] ?? heroModes[0];
-  const firstHeroPhrase = `${t("With")} ${heroModes[0]?.label ?? ""}`;
-  const fullHeroPhrase = `${t("With")} ${heroMode.label}`;
+  const targetHeroPhrase = `${t("With")} ${heroModes[0]?.label ?? ""}`;
+  const typingComplete = typedHeroPhrase.length >= targetHeroPhrase.length;
   const primaryHeroLine = t("Master Mathematics");
   const secondaryHeroLine = t("With Expert Tutors");
   const primaryHeroSpeed = 78;
@@ -322,89 +317,31 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    if (HOME_HERO_SIDE_IMAGES.length <= 1) return;
-
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    const queueNextImage = () => {
-      const delayMs = 10000 + Math.floor(Math.random() * 5001);
-      timeoutId = setTimeout(() => {
-        setHeroSideImageIndex((previousIndex) => {
-          let nextIndex = previousIndex;
-          while (nextIndex === previousIndex) {
-            nextIndex = Math.floor(Math.random() * HOME_HERO_SIDE_IMAGES.length);
-          }
-          return nextIndex;
-        });
-        queueNextImage();
-      }, delayMs);
-    };
-
-    queueNextImage();
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, []);
-
-  const heroSideImage = HOME_HERO_SIDE_IMAGES[heroSideImageIndex];
-  const heroPathImage = HOME_HERO_PATH_IMAGES[heroPathImageIndex] ?? HOME_HERO_PATH_IMAGES[0];
-  useEffect(() => {
-    if (HOME_HERO_PATH_IMAGES.length <= 1) return;
-
-    const intervalId = window.setInterval(() => {
-      setHeroPathImageIndex((previousIndex) => (previousIndex + 1) % HOME_HERO_PATH_IMAGES.length);
-    }, 4200);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
+  const heroSideImage = HOME_HERO_SIDE_IMAGES[0];
+  const heroPathImage = HOME_HERO_PATH_IMAGES[0];
 
   useEffect(() => {
-    if (reducedMotion || heroModes.length <= 1) {
+    if (reducedMotion) {
       const timeoutId = window.setTimeout(() => {
-        setActiveHeroMode(0);
-        setTypedHeroPhrase(firstHeroPhrase);
-        setHeroTypingPhase("typing");
+        setTypedHeroPhrase(targetHeroPhrase);
       }, 0);
       return () => window.clearTimeout(timeoutId);
     }
 
-    if (!fullHeroPhrase.startsWith(typedHeroPhrase)) {
+    if (!targetHeroPhrase.startsWith(typedHeroPhrase)) {
       const timeoutId = window.setTimeout(() => {
         setTypedHeroPhrase("");
-        setHeroTypingPhase("typing");
       }, 0);
       return () => window.clearTimeout(timeoutId);
     }
 
-    let timeoutMs = 52;
-    let nextAction = () => {
-      setTypedHeroPhrase(fullHeroPhrase.slice(0, typedHeroPhrase.length + 1));
-    };
+    if (typingComplete) return;
 
-    if (heroTypingPhase === "typing" && typedHeroPhrase.length >= fullHeroPhrase.length) {
-      timeoutMs = 1200;
-      nextAction = () => setHeroTypingPhase("deleting");
-    } else if (heroTypingPhase === "deleting") {
-      timeoutMs = 30;
-      nextAction = () => setTypedHeroPhrase(fullHeroPhrase.slice(0, Math.max(typedHeroPhrase.length - 1, 0)));
-
-      if (typedHeroPhrase.length === 0) {
-        timeoutMs = 180;
-        nextAction = () => {
-          setActiveHeroMode((currentMode) => (currentMode + 1) % heroModes.length);
-          setHeroTypingPhase("typing");
-        };
-      }
-    } else if (heroTypingPhase === "pausing") {
-      timeoutMs = 1200;
-      nextAction = () => setHeroTypingPhase("deleting");
-    }
-
-    const timeoutId = window.setTimeout(nextAction, timeoutMs);
+    const timeoutId = window.setTimeout(() => {
+      setTypedHeroPhrase(targetHeroPhrase.slice(0, typedHeroPhrase.length + 1));
+    }, 52);
     return () => window.clearTimeout(timeoutId);
-  }, [firstHeroPhrase, fullHeroPhrase, heroModes.length, heroTypingPhase, reducedMotion, typedHeroPhrase]);
+  }, [reducedMotion, targetHeroPhrase, typedHeroPhrase, typingComplete]);
 
   const handleBookNow = (tutor: typeof topTutors[0]) => {
     if (!isLoggedIn) {
@@ -625,25 +562,16 @@ export default function Home() {
     <div className="min-h-screen bg-[#f7f4ed] text-slate-950 dark:bg-slate-950 dark:text-white">
       {/* Phase 1 Hero Section */}
       <section className="relative min-h-[94vh] overflow-hidden px-safe">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={heroPathImage}
-            className="absolute inset-0"
-            initial={reducedMotion ? false : { opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={reducedMotion ? undefined : { opacity: 0, scale: 1.01 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <Image
-              src={heroPathImage}
-              alt={t("Students learning mathematics")}
-              fill
-              priority
-              className="object-cover"
-              sizes="100vw"
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div className="absolute inset-0">
+          <Image
+            src={heroPathImage}
+            alt={t("Students learning mathematics")}
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
         <div className="absolute inset-0 bg-slate-950/72" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.22),transparent_42%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
         <HeroMathScene reducedMotion={Boolean(reducedMotion)} />
@@ -659,26 +587,12 @@ export default function Home() {
             <h1 className="mx-auto mt-8 max-w-5xl text-5xl font-semibold tracking-[-0.06em] text-white sm:text-7xl lg:text-8xl">
               {t("Master Mathematics")}
               <span className="relative block min-h-[1.12em] overflow-hidden text-indigo-200" aria-live="polite">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.span
-                    key={heroMode.label}
-                    className="inline-flex items-baseline justify-center gap-2"
-                    initial={reducedMotion ? false : { opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={reducedMotion ? undefined : { opacity: 0, y: -10 }}
-                    transition={{ duration: 0.32, ease: "easeOut" }}
-                  >
-                    <span>{reducedMotion ? fullHeroPhrase : typedHeroPhrase}</span>
-                    {!reducedMotion && (
-                      <motion.span
-                        aria-hidden="true"
-                        className="mb-1 h-[0.78em] w-[3px] rounded-full bg-indigo-200"
-                        animate={{ opacity: [0.25, 1, 0.25] }}
-                        transition={{ duration: 1.05, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                      />
-                    )}
-                  </motion.span>
-                </AnimatePresence>
+                <span className="inline-flex items-baseline justify-center gap-2">
+                  <span>{reducedMotion ? targetHeroPhrase : typedHeroPhrase}</span>
+                  {!reducedMotion && !typingComplete && (
+                    <span aria-hidden="true" className="mb-1 h-[0.78em] w-[3px] rounded-full bg-indigo-200" />
+                  )}
+                </span>
               </span>
             </h1>
           </div>
@@ -723,17 +637,17 @@ export default function Home() {
                 <div className="text-2xl font-semibold tracking-tight text-white">
                   <AnimatedNumberClient value={stat.value} duration={700} label={stat.label} />
                 </div>
-                <div className="mt-1 text-xs font-medium text-slate-300">{stat.label}</div>
+                <div className="mt-1 text-xs font-semibold text-white/85">{stat.label}</div>
               </div>
             ))}
           </div>
 
           <div className="w-full">
-            <div className="mt-8 grid w-full max-w-4xl gap-3 md:grid-cols-3">
+            <div className="mx-auto mt-8 grid w-full max-w-4xl items-stretch gap-4 md:grid-cols-3">
               {heroModes.slice(1).map((mode) => (
-                <div key={mode.label} className="rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-left backdrop-blur-md">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-200">{mode.label}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-200">{mode.description}</p>
+                <div key={mode.label} className="flex h-full min-h-[132px] flex-col rounded-2xl border border-white/10 bg-slate-950/45 p-5 text-left backdrop-blur-md">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-100">{mode.label}</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-100 sm:text-[15px]">{mode.description}</p>
                 </div>
               ))}
             </div>
@@ -948,7 +862,7 @@ export default function Home() {
       </section>
 
       {/* Phase 1: How MathMaster works */}
-      <section className="border-y border-slate-200 bg-white py-20 dark:border-slate-800 dark:bg-slate-950">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <FadeIn className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("How MathMaster works")}</p>
@@ -984,7 +898,7 @@ export default function Home() {
       </section>
 
       {/* Phase 1: Product Preview */}
-      <section className="bg-[#f7f4ed] py-20 dark:bg-slate-950">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
             <FadeIn>
@@ -1073,7 +987,7 @@ export default function Home() {
       </section>
 
       {/* Phase 1: Tutor Profiles */}
-      <section className="bg-white py-20 dark:bg-slate-950">
+      <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <FadeIn className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Tutor Match")}</p>
@@ -1116,35 +1030,21 @@ export default function Home() {
       </section>
 
       {/* Phase 1: Validation */}
-      <section className="bg-[#f7f4ed] py-20 dark:bg-slate-950">
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-            <FadeIn>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Student validation")}</p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Clear help when math stops making sense")}</h2>
-                <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">{t("Students use MathMaster to find explanations, practice with purpose, and get support before confusion turns into frustration.")}</p>
-              </div>
-            </FadeIn>
-            <FadeInStagger className="grid gap-4 md:grid-cols-2" staggerDelay={0.06}>
-              {[
-                { quote: t("The tutor did not just give me the answer. They helped me understand the step I kept missing."), name: "Maya R.", detail: t("Algebra student") },
-                { quote: t("The learn path made practice feel less random. I knew exactly what to review next."), name: "Jordan K.", detail: t("Pre-Calculus student") },
-              ].map((item) => (
-                <FadeInStaggerItem key={item.name} className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                  <Quote className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
-                  <p className="mt-4 text-base leading-7 text-slate-700 dark:text-slate-200">“{item.quote}”</p>
-                  <p className="mt-5 text-sm font-semibold text-slate-950 dark:text-white">{item.name}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{item.detail}</p>
-                </FadeInStaggerItem>
-              ))}
-            </FadeInStagger>
-          </div>
+          <FadeIn className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Student validation")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Clear help when math stops making sense")}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Students use MathMaster to find explanations, practice with purpose, and get support before confusion turns into frustration.")}</p>
+          </FadeIn>
+          <FadeIn delay={0.08} className="mt-12">
+            <InfiniteMovingCardsDemo />
+          </FadeIn>
         </div>
       </section>
 
       {/* Phase 1: Final CTA */}
-      <section className="bg-white py-20 dark:bg-slate-950">
+      <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
           <FadeIn>
             <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Ready to get unstuck in math?")}</h2>
