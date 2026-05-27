@@ -15,6 +15,16 @@ export type QuizAttempt = {
   result?: "mastered" | "review";
 };
 
+export type DiagnosticResult = {
+  completedAt: string;
+  score: number;
+  totalQuestions: number;
+  accuracy: number;
+  recommendedCourseId: string;
+  recommendedTopicId: string;
+  weakTopicIds: string[];
+};
+
 export type LearningProgress = {
   selectedCourseId: string | null;
   selectedTopicId: string | null;
@@ -36,6 +46,8 @@ export type LearningProgress = {
   globalTutorialLastRoute: string | null;
   testPrepMode: boolean;
   activeTopicView: "concept" | "video" | "practice" | "quiz" | "ai" | "community";
+  diagnosticCompleted: boolean;
+  diagnosticResult: DiagnosticResult | null;
   progressVersion: number;
   updatedAt: string;
   xpTotal?: number;
@@ -74,6 +86,8 @@ const DEFAULT_PROGRESS: LearningProgress = {
   globalTutorialLastRoute: null,
   testPrepMode: false,
   activeTopicView: "concept",
+  diagnosticCompleted: false,
+  diagnosticResult: null,
   progressVersion: 0,
   updatedAt: new Date(0).toISOString(),
   xpTotal: 0,
@@ -149,6 +163,18 @@ function normalizeProgress(partial?: Partial<LearningProgress>): LearningProgres
         stored.lastQuizReturnContext.result === "review") &&
       typeof stored.lastQuizReturnContext.timestamp === "string"
         ? stored.lastQuizReturnContext
+        : null,
+    diagnosticCompleted: Boolean(stored.diagnosticCompleted),
+    diagnosticResult:
+      stored.diagnosticResult &&
+      typeof stored.diagnosticResult === "object" &&
+      typeof stored.diagnosticResult.completedAt === "string" &&
+      typeof stored.diagnosticResult.score === "number" &&
+      typeof stored.diagnosticResult.totalQuestions === "number" &&
+      typeof stored.diagnosticResult.recommendedCourseId === "string" &&
+      typeof stored.diagnosticResult.recommendedTopicId === "string" &&
+      Array.isArray(stored.diagnosticResult.weakTopicIds)
+        ? stored.diagnosticResult
         : null,
   };
 
@@ -381,6 +407,43 @@ export function addQuizAttempt(attempt: QuizAttempt): void {
       },
     };
     return applyXpAward(withAttempt, mastered ? 20 : 5);
+  });
+}
+
+export function applyDiagnosticResult(result: DiagnosticResult): void {
+  updateLearningProgress((current) => {
+    const selectedCourse = courses.find((course) => course.id === result.recommendedCourseId) ?? courses[0];
+    const selectedTopicId =
+      selectedCourse?.recommendedSequence.includes(result.recommendedTopicId)
+        ? result.recommendedTopicId
+        : selectedCourse?.recommendedSequence[0] ?? result.recommendedTopicId;
+
+    const topicStatusById: Record<string, TopicStatus> = {
+      ...current.topicStatusById,
+      [selectedTopicId]: "in_progress",
+    };
+
+    result.weakTopicIds.forEach((topicId) => {
+      if (topicId !== selectedTopicId && topicStatusById[topicId] !== "mastered") {
+        topicStatusById[topicId] = topicStatusById[topicId] === "locked" ? "locked" : "needs_review";
+      }
+    });
+
+    return ensureTopicStatuses({
+      ...current,
+      selectedCourseId: selectedCourse?.id ?? result.recommendedCourseId,
+      selectedTopicId,
+      topicStatusById,
+      weakTopicIds: Array.from(new Set([...result.weakTopicIds, ...current.weakTopicIds])).slice(0, 8),
+      intent: result.accuracy >= 0.75 ? "quiz" : "learn",
+      activeTopicView: "concept",
+      diagnosticCompleted: true,
+      diagnosticResult: result,
+      recentActivity: [
+        `Diagnostic ${Math.round(result.accuracy * 100)}% -> ${selectedTopicId}`,
+        ...current.recentActivity,
+      ].slice(0, 10),
+    });
   });
 }
 

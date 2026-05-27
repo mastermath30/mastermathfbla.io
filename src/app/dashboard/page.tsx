@@ -14,7 +14,7 @@ import { CommunitySpotlight } from "@/components/CommunitySpotlight";
 import { FadeIn, PageWrapper } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
 import { getLearningProgress, learningProgressEvent } from "@/lib/progress";
-import { buildRecommendations } from "@/lib/guidance";
+import { buildDailyStudyPlan, buildRecommendations } from "@/lib/guidance";
 import {
   Clock,
   CheckCircle2,
@@ -94,6 +94,7 @@ export default function DashboardPage() {
   const [isDark, setIsDark] = useState(false);
   const [learningProgress, setLearningProgress] = useState(getLearningProgress);
   const recommendations = useMemo(() => buildRecommendations(learningProgress), [learningProgress]);
+  const dailyPlan = useMemo(() => buildDailyStudyPlan(learningProgress), [learningProgress]);
 
   useEffect(() => {
     setMounted(true);
@@ -249,6 +250,53 @@ export default function DashboardPage() {
             subtextColor="text-purple-600"
           />
         </div>
+        </FadeIn>
+
+        <FadeIn delay={0.08}>
+          <Card className="mb-8 overflow-hidden" id="today-study-plan">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-primary-themed">
+                  <Sparkles className="h-4 w-4" />
+                  {t("Today’s Study Plan")}
+                </div>
+                <h2 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{t("Your next 3 moves")}</h2>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                  {t("Personalized from diagnostics, mastery progress, and recent quiz results.")}
+                </p>
+              </div>
+              <Link href="/resources/quiz/diagnostic" className="w-full sm:w-auto">
+                <Button variant={learningProgress.diagnosticCompleted ? "outline" : "primary"} className="w-full sm:w-auto">
+                  <Target className="h-4 w-4" />
+                  {learningProgress.diagnosticCompleted ? t("Retake Diagnostic") : t("Take Diagnostic")}
+                </Button>
+              </Link>
+            </div>
+
+            <div className="mt-6 grid gap-3 md:grid-cols-3">
+              {dailyPlan.map((task) => (
+                <div
+                  key={task.id}
+                  className={[
+                    "rounded-2xl border p-4",
+                    task.tone === "primary" ? "border-indigo-200 bg-indigo-50/80 dark:border-indigo-900 dark:bg-indigo-950/30" : "",
+                    task.tone === "practice" ? "border-emerald-200 bg-emerald-50/80 dark:border-emerald-900 dark:bg-emerald-950/30" : "",
+                    task.tone === "support" ? "border-amber-200 bg-amber-50/80 dark:border-amber-900 dark:bg-amber-950/30" : "",
+                  ].join(" ")}
+                >
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{t(task.label)}</p>
+                  <h3 className="mt-2 text-base font-bold text-slate-900 dark:text-white">{t(task.title)}</h3>
+                  <p className="mt-2 min-h-[60px] text-sm leading-6 text-slate-600 dark:text-slate-400">{t(task.description)}</p>
+                  <Link href={task.href}>
+                    <Button size="sm" variant={task.tone === "primary" ? "primary" : "outline"} className="mt-4 w-full">
+                      {t(task.ctaLabel)}
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </Card>
         </FadeIn>
 
         {/* Main Grid */}

@@ -24,9 +24,10 @@ function FloatingShape({ color, position, speed, variant, reducedMotion, staticS
   useFrame((state) => {
     if (!meshRef.current || reducedMotion || staticScene) return;
     const elapsed = state.clock.elapsedTime;
-    meshRef.current.rotation.x = elapsed * speed;
-    meshRef.current.rotation.y = elapsed * speed * 0.72;
-    meshRef.current.position.y = position[1] + Math.sin(elapsed * speed + position[0]) * 0.18;
+    const calmSpeed = speed * 0.34;
+    meshRef.current.rotation.x = elapsed * calmSpeed;
+    meshRef.current.rotation.y = elapsed * calmSpeed * 0.62;
+    meshRef.current.position.y = position[1] + Math.sin(elapsed * calmSpeed + position[0]) * 0.055;
   });
 
   return (
@@ -51,8 +52,8 @@ function OrbitCurve({ reducedMotion, staticScene }: HeroMathSceneProps) {
 
   useFrame((state) => {
     if (!lineRef.current || reducedMotion || staticScene) return;
-    lineRef.current.rotation.z = state.clock.elapsedTime * 0.08;
-    lineRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.24) * 0.12;
+    lineRef.current.rotation.z = state.clock.elapsedTime * 0.018;
+    lineRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.12) * 0.035;
   });
 
   return <primitive ref={lineRef} object={line} />;
@@ -70,7 +71,7 @@ function FormulaNodes({ reducedMotion, staticScene }: HeroMathSceneProps) {
 
   useFrame((state) => {
     if (!groupRef.current || reducedMotion || staticScene) return;
-    groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.2) * 0.08;
+    groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.1) * 0.028;
   });
 
   return (

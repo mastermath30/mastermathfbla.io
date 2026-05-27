@@ -4,12 +4,20 @@ export type QuizQuestion = {
   prompt: string;
   options: string[];
   correctIndex: number;
+  explanation?: string;
 };
 
 export type DifficultyQuestions = {
   easy: QuizQuestion[];
   medium: QuizQuestion[];
   hard: QuizQuestion[];
+};
+
+export type LessonPracticeDifficulty = keyof DifficultyQuestions;
+
+export type LessonPracticeData = {
+  example: QuizQuestion;
+  questionsByDifficulty: DifficultyQuestions;
 };
 
 export type QuizData = {
@@ -1321,6 +1329,54 @@ function buildQuestionsForDifficulty(
   const selected = shuffle(rng, bank).slice(0, Math.max(0, Math.min(5, bank.length) - (anchor ? 1 : 0)));
   const generated = selected.map((factory) => finalizeQuestion(rng, factory(rng)));
   return anchor ? [finalizeQuestion(rng, anchor), ...generated] : generated;
+}
+
+function buildLessonPracticeQuestions(
+  topic: TopicQuizTopic,
+  family: TopicFamily,
+  difficulty: DifficultyLevel,
+  seed: string,
+  count: number
+) {
+  const questions: QuizQuestion[] = [];
+  const seenPrompts = new Set<string>();
+  let round = 0;
+
+  while (questions.length < count && round < 8) {
+    buildQuestionsForDifficulty(topic, family, difficulty, `${seed}:${round}`).forEach((question) => {
+      if (questions.length >= count || seenPrompts.has(question.prompt)) return;
+      seenPrompts.add(question.prompt);
+      questions.push(question);
+    });
+    round += 1;
+  }
+
+  return questions;
+}
+
+export function buildTopicLessonPractice(
+  topic: TopicQuizTopic,
+  attemptKey: string,
+  questionsPerDifficulty = 8
+): LessonPracticeData {
+  const family = resolveTopicFamily(topic);
+  const example =
+    buildQuestionsForDifficulty(topic, family, topic.difficulty === "advanced" ? "medium" : "easy", `${attemptKey}:${topic.id}:lesson-example`)[0] ??
+    buildQuestionsForDifficulty(topic, family, "easy", `${attemptKey}:${topic.id}:lesson-example-fallback`)[0] ??
+    {
+      prompt: `Which habit helps most with ${topic.title.toLowerCase()}?`,
+      options: ["Check each step against the main rule", "Skip the setup", "Use only mental math", "Ignore units and labels"],
+      correctIndex: 0,
+    };
+
+  return {
+    example,
+    questionsByDifficulty: {
+      easy: buildLessonPracticeQuestions(topic, family, "easy", `${attemptKey}:${topic.id}:lesson:easy`, questionsPerDifficulty),
+      medium: buildLessonPracticeQuestions(topic, family, "medium", `${attemptKey}:${topic.id}:lesson:medium`, questionsPerDifficulty),
+      hard: buildLessonPracticeQuestions(topic, family, "hard", `${attemptKey}:${topic.id}:lesson:hard`, questionsPerDifficulty),
+    },
+  };
 }
 
 export function buildTopicGeneratedQuiz(topic: TopicQuizTopic, attemptKey: string): QuizData {

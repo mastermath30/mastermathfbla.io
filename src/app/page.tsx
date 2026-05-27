@@ -216,6 +216,7 @@ export default function Home() {
   const reducedMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [heroPathImageIndex, setHeroPathImageIndex] = useState(0);
   const [typedHeroPhrase, setTypedHeroPhrase] = useState("");
   const [expandedSpecialties, setExpandedSpecialties] = useState<Record<string, boolean>>({});
   const stats = getStats(t);
@@ -318,7 +319,17 @@ export default function Home() {
   }, []);
 
   const heroSideImage = HOME_HERO_SIDE_IMAGES[0];
-  const heroPathImage = HOME_HERO_PATH_IMAGES[0];
+  const heroPathImage = HOME_HERO_PATH_IMAGES[heroPathImageIndex] ?? HOME_HERO_PATH_IMAGES[0];
+
+  useEffect(() => {
+    if (reducedMotion || HOME_HERO_PATH_IMAGES.length <= 1) return;
+
+    const intervalId = window.setInterval(() => {
+      setHeroPathImageIndex((previousIndex) => (previousIndex + 1) % HOME_HERO_PATH_IMAGES.length);
+    }, 11000);
+
+    return () => window.clearInterval(intervalId);
+  }, [reducedMotion]);
 
   useEffect(() => {
     if (reducedMotion) {
@@ -562,19 +573,28 @@ export default function Home() {
     <div className="min-h-screen bg-[#f7f4ed] text-slate-950 dark:bg-slate-950 dark:text-white">
       {/* Phase 1 Hero Section */}
       <section className="relative min-h-[94vh] overflow-hidden px-safe">
-        <div className="absolute inset-0">
-          <Image
-            src={heroPathImage}
-            alt={t("Students learning mathematics")}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={heroPathImage}
+            className="absolute inset-0"
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: 1.4, ease: "easeInOut" }}
+          >
+            <Image
+              src={heroPathImage}
+              alt={t("Students learning mathematics")}
+              fill
+              priority={heroPathImageIndex === 0}
+              className="object-cover"
+              sizes="100vw"
+            />
+          </motion.div>
+        </AnimatePresence>
         <div className="absolute inset-0 bg-slate-950/72" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.22),transparent_42%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
-        <HeroMathScene reducedMotion={Boolean(reducedMotion)} />
+        <HeroMathScene reducedMotion={Boolean(reducedMotion)} staticScene={false} />
 
         <div className="relative z-20 mx-auto flex min-h-[94vh] w-full max-w-7xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 md:pt-32">
           <div>

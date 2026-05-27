@@ -24,10 +24,107 @@ export type Recommendation = {
   primary?: boolean;
 };
 
+export type DailyStudyPlanTask = {
+  id: string;
+  label: string;
+  title: string;
+  description: string;
+  href: string;
+  ctaLabel: string;
+  tone: "primary" | "practice" | "support";
+};
+
 function toLabel(value: string): string {
   return value
     .replace(/[-_]/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export function buildDailyStudyPlan(progress: LearningProgress): DailyStudyPlanTask[] {
+  const selectedCourse = courses.find((course) => course.id === progress.selectedCourseId) ?? courses[0];
+  const selectedSequence = selectedCourse?.recommendedSequence ?? [];
+  const selectedTopic =
+    allTopics.find((topic) => topic.id === progress.selectedTopicId) ??
+    allTopics.find((topic) => topic.id === selectedSequence[0]);
+  const latestWeakTopicId = progress.weakTopicIds[0];
+  const weakTopic = latestWeakTopicId ? allTopics.find((topic) => topic.id === latestWeakTopicId) : null;
+  const latestQuiz = progress.quizAttempts[0];
+  const needsDiagnostic = !progress.diagnosticCompleted && progress.quizAttempts.length === 0;
+  const focusTopic = weakTopic ?? selectedTopic;
+
+  if (needsDiagnostic) {
+    return [
+      {
+        id: "diagnostic",
+        label: "Start",
+        title: "Take the diagnostic quiz",
+        description: "Find your best course and starting topic before committing to a path.",
+        href: "/resources/quiz/diagnostic",
+        ctaLabel: "Start diagnostic",
+        tone: "primary",
+      },
+      {
+        id: "choose-course",
+        label: "Set up",
+        title: "Preview learning paths",
+        description: "Compare the available courses while the diagnostic builds your recommendation.",
+        href: "/learn",
+        ctaLabel: "Open Learn",
+        tone: "practice",
+      },
+      {
+        id: "support-ready",
+        label: "Support",
+        title: "Use AI when you get stuck",
+        description: "Ask for a step-by-step explanation once your first topic is selected.",
+        href: toLearnActionHref({ action: "open-ai", topicId: selectedTopic?.id }),
+        ctaLabel: "Open AI help",
+        tone: "support",
+      },
+    ];
+  }
+
+  const activeTopic = focusTopic ?? selectedTopic;
+  const quizSlug = activeTopic?.quizSlugs[0];
+  const lowRecentScore = latestQuiz && latestQuiz.accuracy < progress.unlockThreshold;
+
+  return [
+    {
+      id: "main-learning",
+      label: "Main",
+      title: activeTopic ? `Study ${activeTopic.title}` : "Choose a course",
+      description: activeTopic
+        ? activeTopic.summary
+        : "Pick a learning path so MathMaster can build your next study step.",
+      href: toLearnActionHref({ action: "view", tab: "concept", topicId: activeTopic?.id }),
+      ctaLabel: activeTopic ? "Open lesson" : "Choose course",
+      tone: "primary",
+    },
+    {
+      id: "practice-review",
+      label: "Practice",
+      title: lowRecentScore && weakTopic ? `Review ${weakTopic.title}` : "Take focused practice",
+      description: lowRecentScore
+        ? `Your latest score was ${Math.round(latestQuiz.accuracy * 100)}%. Review before retrying.`
+        : "Use the topic quiz or practice resources to check understanding.",
+      href: quizSlug
+        ? toLearnActionHref({ action: "open-quiz", topicId: activeTopic?.id, slug: quizSlug, difficulty: lowRecentScore ? "easy" : "medium" })
+        : toLearnActionHref({ action: "view", tab: "practice", topicId: activeTopic?.id }),
+      ctaLabel: quizSlug ? (lowRecentScore ? "Retry easy" : "Start quiz") : "Open practice",
+      tone: "practice",
+    },
+    {
+      id: "support",
+      label: "Support",
+      title: lowRecentScore ? "Ask AI for a recovery plan" : "Get unstuck faster",
+      description: lowRecentScore
+        ? "Use a guided explanation before your next mastery attempt."
+        : "Bring the current topic to AI or the community if a step feels unclear.",
+      href: toLearnActionHref({ action: lowRecentScore ? "open-ai" : "open-community", topicId: activeTopic?.id }),
+      ctaLabel: lowRecentScore ? "Ask AI" : "Ask community",
+      tone: "support",
+    },
+  ];
 }
 
 export function buildRecommendations(progress: LearningProgress): Recommendation[] {

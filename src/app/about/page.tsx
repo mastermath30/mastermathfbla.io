@@ -179,7 +179,7 @@ export default function AboutPage() {
       />
 
       {/* Stats Section */}
-      <section className="py-16 bg-white dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800/50 relative overflow-hidden">
+      <section className="relative overflow-hidden py-16">
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -202,7 +202,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-12 md:py-20 bg-[#f7f4ed] dark:bg-slate-950 relative overflow-hidden">
+      <section className="relative overflow-hidden py-12 md:py-20">
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -251,7 +251,7 @@ export default function AboutPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-12 md:py-20 bg-white dark:bg-slate-950 relative overflow-hidden">
+      <section className="relative overflow-hidden py-12 md:py-20">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="section" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
@@ -298,7 +298,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-12 md:py-20 bg-[#f7f4ed] dark:bg-slate-950 relative overflow-hidden">
+      <section className="relative overflow-hidden py-12 md:py-20">
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
@@ -346,7 +346,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-12 md:py-20 bg-white dark:bg-slate-950 relative overflow-hidden">
+      <section className="relative overflow-hidden py-12 md:py-20">
         {/* Background gradient orbs */}
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
@@ -374,7 +374,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-14 md:py-24 relative overflow-hidden bg-[#f7f4ed] dark:bg-slate-950">
+      <section className="relative overflow-hidden py-14 md:py-24">
         {/* Glowing orbs */}
         <GlowingOrbs variant="subtle" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -401,7 +401,7 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 pb-32 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+      <footer className="py-12 pb-32">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             {t("© 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.")}

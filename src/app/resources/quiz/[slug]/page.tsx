@@ -8,8 +8,8 @@ import { Button } from "@/components/Button";
 import { SectionLabel } from "@/components/SectionLabel";
 import { FadeIn, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
-import { addQuizAttempt, getLearningProgress } from "@/lib/progress";
-import { topicByQuizSlug } from "@/data/courses";
+import { addQuizAttempt, applyDiagnosticResult, getLearningProgress } from "@/lib/progress";
+import { allTopics, courses, topicByQuizSlug } from "@/data/courses";
 import { toLearnActionHref } from "@/lib/learnActions";
 import { buildTopicGeneratedQuiz, type DifficultyQuestions, type QuizData } from "@/lib/quizBank";
 
@@ -556,6 +556,132 @@ const quizzesBySlug: Record<string, QuizData> = {
   },
 };
 
+type AnswerRecord = {
+  prompt: string;
+  options: string[];
+  selectedIndex: number;
+  correctIndex: number;
+  explanation?: string;
+  topicId?: string;
+};
+
+const diagnosticTopicIds = [
+  "pa-place-value",
+  "pa-fractions-decimals",
+  "pa-percents",
+  "pa-expressions",
+  "a1-linear-functions",
+  "a1-quadratics",
+  "geo-triangle-congruence",
+  "a2-polynomial-operations",
+  "stats-one-variable-data",
+  "calc-limits-continuity",
+];
+
+const diagnosticQuiz: QuizData = {
+  title: "Math Placement Diagnostic",
+  description: "A quick check that recommends your best course and first topic.",
+  difficulty: "Placement",
+  time: "10 questions • 10 min",
+  topic: "Diagnostic",
+  questionsByDifficulty: {
+    easy: [],
+    hard: [],
+    medium: [
+      {
+        prompt: "Round 4,867 to the nearest hundred.",
+        options: ["4,900", "4,800", "5,000", "4,860"],
+        correctIndex: 0,
+        explanation: "The tens digit is 6, so 4,867 rounds up to 4,900.",
+      },
+      {
+        prompt: "What is 1/2 + 1/3?",
+        options: ["5/6", "2/5", "1/5", "2/6"],
+        correctIndex: 0,
+        explanation: "Use a common denominator of 6: 3/6 + 2/6 = 5/6.",
+      },
+      {
+        prompt: "A $40 item is 25% off. What is the sale price?",
+        options: ["$30", "$10", "$35", "$25"],
+        correctIndex: 0,
+        explanation: "25% of $40 is $10, so the sale price is $40 - $10 = $30.",
+      },
+      {
+        prompt: "Evaluate 3x + 2 when x = 4.",
+        options: ["14", "9", "20", "12"],
+        correctIndex: 0,
+        explanation: "Substitute 4 for x: 3(4) + 2 = 12 + 2 = 14.",
+      },
+      {
+        prompt: "What is the slope of y = -2x + 5?",
+        options: ["-2", "5", "2", "-5"],
+        correctIndex: 0,
+        explanation: "In y = mx + b, m is the slope, so the slope is -2.",
+      },
+      {
+        prompt: "Factor x² + 5x + 6.",
+        options: ["(x + 2)(x + 3)", "(x + 1)(x + 6)", "(x - 2)(x - 3)", "(x + 5)(x + 1)"],
+        correctIndex: 0,
+        explanation: "2 and 3 multiply to 6 and add to 5, so the factors are (x + 2)(x + 3).",
+      },
+      {
+        prompt: "The angles of a triangle add up to:",
+        options: ["180°", "90°", "270°", "360°"],
+        correctIndex: 0,
+        explanation: "Every triangle has interior angles that sum to 180°.",
+      },
+      {
+        prompt: "Simplify 4x² + 3x².",
+        options: ["7x²", "7x⁴", "12x²", "x²"],
+        correctIndex: 0,
+        explanation: "Like terms with the same variable and exponent can be added: 4x² + 3x² = 7x².",
+      },
+      {
+        prompt: "Find the mean of 6, 8, and 10.",
+        options: ["8", "24", "9", "7"],
+        correctIndex: 0,
+        explanation: "Add the values and divide by 3: (6 + 8 + 10) / 3 = 8.",
+      },
+      {
+        prompt: "What does a derivative measure?",
+        options: ["Instantaneous rate of change", "Total area only", "The y-intercept", "A triangle angle"],
+        correctIndex: 0,
+        explanation: "A derivative gives the instantaneous rate of change, or the slope at a point.",
+      },
+    ],
+  },
+};
+
+function getQuestionExplanation(record: AnswerRecord) {
+  if (record.explanation) return record.explanation;
+  const correctAnswer = record.options[record.correctIndex] ?? "the correct answer";
+  return `The correct answer is ${correctAnswer}. Review the topic, then try a similar problem before retaking.`;
+}
+
+function buildDiagnosticResult(answerRecords: AnswerRecord[]) {
+  const score = answerRecords.filter((answer) => answer.selectedIndex === answer.correctIndex).length;
+  const totalQuestions = diagnosticQuiz.questionsByDifficulty.medium.length;
+  const weakTopicIds = answerRecords
+    .filter((answer) => answer.selectedIndex !== answer.correctIndex && answer.topicId)
+    .map((answer) => answer.topicId as string);
+  const firstWeakTopicId = weakTopicIds[0] ?? "calc-limits-continuity";
+  const recommendedTopic = allTopics.find((topic) => topic.id === firstWeakTopicId) ?? allTopics[0];
+  const recommendedCourse =
+    courses.find((course) => course.id === recommendedTopic?.courseId) ??
+    courses.find((course) => course.recommendedSequence.includes(recommendedTopic?.id ?? "")) ??
+    courses[0];
+
+  return {
+    completedAt: new Date().toISOString(),
+    score,
+    totalQuestions,
+    accuracy: totalQuestions ? score / totalQuestions : 0,
+    recommendedCourseId: recommendedCourse?.id ?? "pre-algebra",
+    recommendedTopicId: recommendedTopic?.id ?? "pa-place-value",
+    weakTopicIds: Array.from(new Set(weakTopicIds)).slice(0, 5),
+  };
+}
+
 function QuizPageContent() {
   const { t } = useTranslations();
   const router = useRouter();
@@ -568,6 +694,7 @@ function QuizPageContent() {
   const topicForSlug = slug ? topicByQuizSlug[slug] : undefined;
   const quiz = useMemo(() => {
     if (!slug) return undefined;
+    if (slug === "diagnostic") return diagnosticQuiz;
     return topicForSlug
       ? buildTopicGeneratedQuiz(topicForSlug, `${slug}:${difficulty}:${attemptVersion}`)
       : quizzesBySlug[slug];
@@ -582,6 +709,7 @@ function QuizPageContent() {
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [pendingCorrect, setPendingCorrect] = useState(false);
+  const [answerRecords, setAnswerRecords] = useState<AnswerRecord[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const unlockThreshold = getLearningProgress().unlockThreshold;
@@ -593,6 +721,7 @@ function QuizPageContent() {
     setScore(0);
     setAnswered(false);
     setPendingCorrect(false);
+    setAnswerRecords([]);
     setShowResults(false);
     setFinalScore(null);
   }, [attemptVersion, difficulty, slug]);
@@ -634,6 +763,7 @@ function QuizPageContent() {
   const effectiveScore = showResults ? finalScore ?? score : score;
   const scorePercent = totalQuestions ? Math.round((effectiveScore / totalQuestions) * 100) : 0;
   const topicId = slug ? topicByQuizSlug[slug]?.id : undefined;
+  const isDiagnostic = slug === "diagnostic";
   const mastered = scorePercent >= Math.round(unlockThreshold * 100);
   const recommendedAction: "retry-easy" | "continue-medium" | "continue-hard" | "ask-ai" | "next-topic" =
     mastered
@@ -665,10 +795,24 @@ function QuizPageContent() {
   const handleNext = () => {
     if (!answered) return;
     const nextScore = score + (pendingCorrect ? 1 : 0);
+    const nextAnswerRecords = [
+      ...answerRecords,
+      {
+        prompt: question.prompt,
+        options: question.options,
+        selectedIndex: selectedIndex ?? -1,
+        correctIndex: question.correctIndex,
+        explanation: question.explanation,
+        topicId: isDiagnostic ? diagnosticTopicIds[currentIndex] : topicId,
+      },
+    ];
+    setAnswerRecords(nextAnswerRecords);
     setScore(nextScore);
 
     if (isLastQuestion) {
-      if (slug) {
+      if (isDiagnostic) {
+        applyDiagnosticResult(buildDiagnosticResult(nextAnswerRecords));
+      } else if (slug) {
         const accuracy = totalQuestions ? nextScore / totalQuestions : 0;
         const finalizedPercent = totalQuestions ? Math.round((nextScore / totalQuestions) * 100) : 0;
         const finalizedMastered = finalizedPercent >= Math.round(unlockThreshold * 100);
@@ -738,7 +882,9 @@ function QuizPageContent() {
                 {t("You scored")} {effectiveScore} {t("out of")} {totalQuestions}.
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-                {mastered
+                {isDiagnostic
+                  ? t("Your placement is ready. Continue to your recommended learning path.")
+                  : mastered
                   ? t("Mastery unlocked. You can continue to the next topic ({threshold}% threshold).", {
                       threshold: Math.round(unlockThreshold * 100),
                     })
@@ -747,7 +893,9 @@ function QuizPageContent() {
                     })}
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
-                {recommendedAction === "next-topic"
+                {isDiagnostic
+                  ? t("Recommended next step: open your personalized study plan.")
+                  : recommendedAction === "next-topic"
                   ? t("Recommended next step: move to your next topic.")
                   : recommendedAction === "continue-medium"
                   ? t("Recommended next step: continue with medium difficulty.")
@@ -757,26 +905,47 @@ function QuizPageContent() {
                   ? t("Recommended next step: ask AI for a guided recovery plan.")
                   : t("Recommended next step: retry with easy difficulty.")}
               </p>
+              {answerRecords.some((record) => record.selectedIndex !== record.correctIndex) && (
+                <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left dark:border-slate-800 dark:bg-slate-950/60">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">{t("Review missed questions")}</h3>
+                  <div className="mt-3 space-y-3">
+                    {answerRecords
+                      .filter((record) => record.selectedIndex !== record.correctIndex)
+                      .map((record) => (
+                        <div key={`${record.prompt}-${record.selectedIndex}`} className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{t(record.prompt)}</p>
+                          <p className="mt-2 text-xs text-rose-600 dark:text-rose-300">
+                            {t("Your answer")}: {t(record.options[record.selectedIndex] ?? "No answer selected")}
+                          </p>
+                          <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300">
+                            {t("Correct answer")}: {t(record.options[record.correctIndex] ?? "")}
+                          </p>
+                          <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-400">{t(getQuestionExplanation(record))}</p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={() => router.push(learnResultHref)} type="button">
-                  {t("Continue Path")}
+                  {isDiagnostic ? t("Open Study Plan") : t("Continue Path")}
                 </Button>
-                {recommendedAction === "retry-easy" && slug && (
+                {!isDiagnostic && recommendedAction === "retry-easy" && slug && (
                   <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=easy`)} type="button">
                     {t("Start easy recovery quiz")}
                   </Button>
                 )}
-                {recommendedAction === "continue-medium" && slug && (
+                {!isDiagnostic && recommendedAction === "continue-medium" && slug && (
                   <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=medium`)} type="button">
                     {t("Continue with medium")}
                   </Button>
                 )}
-                {recommendedAction === "continue-hard" && slug && (
+                {!isDiagnostic && recommendedAction === "continue-hard" && slug && (
                   <Button onClick={() => router.push(`/resources/quiz/${slug}?difficulty=hard`)} type="button">
                     {t("Try hard challenge")}
                   </Button>
                 )}
-                {recommendedAction === "ask-ai" && (
+                {!isDiagnostic && recommendedAction === "ask-ai" && (
                   <Button
                     onClick={() =>
                       router.push(
