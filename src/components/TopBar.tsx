@@ -127,8 +127,8 @@ export function TopBar() {
 			>
 				{/* Main Navigation */}
 				<div className="w-full">
-					<div className="bg-white/95 dark:bg-slate-950/95 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-[0_10px_28px_rgba(15,23,42,0.08)]">
-						<div className="flex items-center justify-center gap-6 lg:gap-7 xl:gap-8">
+					<div className="box-border bg-white/95 dark:bg-slate-950/95 border border-slate-200 dark:border-slate-800 rounded-[2rem] px-4 py-3 lg:px-5 xl:px-6 md:py-2 shadow-[0_10px_28px_rgba(15,23,42,0.08)]">
+						<div className="flex min-w-0 flex-wrap items-center justify-center gap-4 lg:flex-nowrap lg:gap-5 xl:gap-6">
 							{/* Logo */}
 							<Link
 								href="/"
@@ -143,12 +143,12 @@ export function TopBar() {
 							</Link>
 
 							{/* Desktop Navigation */}
-							<div className="hidden lg:flex items-center justify-center gap-4 whitespace-nowrap">
+							<div className="hidden min-w-0 flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:flex">
 								{navigation.map((item) => (
 									<Link
 										key={item.name}
 										href={item.href}
-										className={`inline-flex items-center text-[13px] xl:text-sm font-medium leading-none transition-all duration-200 cursor-pointer ${
+										className={`inline-flex min-w-0 items-center rounded-full px-1.5 py-1 text-[13px] xl:text-sm font-medium leading-tight transition-all duration-200 cursor-pointer whitespace-normal break-words ${
 									pathname === item.href
 											? "text-[var(--theme-primary)]"
 											: "text-slate-700 dark:text-slate-300 hover:text-[var(--theme-primary)]"
@@ -159,7 +159,7 @@ export function TopBar() {
 								))}
 							</div>
 
-							<div className="flex shrink-0 items-center justify-end gap-4">
+							<div className="flex min-w-0 shrink-0 items-center justify-end gap-3">
 								{/* Theme Selector */}
 								<div className="hidden md:block">
 									<ThemeSelector />
@@ -169,7 +169,7 @@ export function TopBar() {
 								<div className="hidden md:block">
 									<Link
 										href="/auth"
-									className={`relative font-medium px-5 xl:px-6 py-2 rounded-full inline-flex min-w-0 max-w-[11rem] items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 hover:shadow-sm cursor-pointer group lg:max-w-[14rem] text-white`}
+									className={`relative box-border font-medium px-4 xl:px-5 py-2 rounded-full inline-flex min-w-0 max-w-[10rem] items-center justify-center gap-2 whitespace-normal break-words leading-tight transition-all duration-300 hover:shadow-sm cursor-pointer group lg:max-w-[13rem] text-white`}
 									style={{
 										background: pathname === "/auth"
 											? "var(--theme-primary-dark)"

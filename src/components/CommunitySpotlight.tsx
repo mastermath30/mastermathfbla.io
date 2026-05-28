@@ -21,14 +21,16 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
     : studyGroupSpotlights;
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
+      <div className="-mx-6 -mt-6 mb-5 rounded-t-[inherit] border-b border-slate-200 bg-slate-50 px-6 py-5 dark:border-slate-800 dark:bg-slate-900/80">
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Community Spotlight")}</h2>
       <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
         {t("Join a study group, drop into office hours, or ask peers for help.")}
       </p>
+      </div>
 
       {discussionLabel && (
-        <div className="mt-3 rounded-lg border border-violet-200 dark:border-violet-800 bg-violet-50/70 dark:bg-violet-900/20 px-3 py-2 text-xs text-violet-700 dark:text-violet-300">
+        <div className="mt-3 rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-2 text-xs text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">
           {t("Topic thread:")} <span>{discussionLabel}</span>
         </div>
       )}
@@ -38,18 +40,22 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
           <Link
             key={group.id}
             href={group.href}
-            className={`rounded-xl border p-4 hover:border-[var(--theme-primary)] transition-colors ${
+            className={`rounded-2xl border p-4 transition-all hover:-translate-y-px hover:border-[var(--theme-primary)] hover:shadow-sm ${
               group.id === studyGroupId
                 ? "border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 dark:bg-[var(--theme-primary)]/20"
                 : "border-slate-200 dark:border-slate-700"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[var(--theme-primary)]" />
-              <h3 className="font-semibold text-slate-900 dark:text-white">{group.name}</h3>
+            <div className="flex items-start gap-3">
+              <span className="mm-icon-tile h-9 w-9 shrink-0">
+                <Users className="w-4 h-4" />
+              </span>
+              <div className="min-w-0">
+                <h3 className="font-semibold leading-tight text-slate-900 dark:text-white">{group.name}</h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">{group.focus}</p>
+              </div>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{group.focus}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
               {t("Next:")} <span>{group.nextSession}</span> | {group.members} {t("members")}
             </p>
           </Link>
@@ -61,13 +67,13 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
           <Link
             key={event.id}
             href={event.href}
-            className="flex flex-col gap-2 rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:border-[var(--theme-primary)] dark:border-slate-700 dark:bg-slate-900/70 sm:flex-row sm:items-center sm:justify-between"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2">
               <CalendarClock className="w-4 h-4 text-[var(--theme-primary)]" />
               <span className="text-sm text-slate-800 dark:text-slate-200">{event.title}</span>
             </div>
-            <span className="text-xs text-slate-500 dark:text-slate-400">{event.startsAt}</span>
+            <span className="w-fit rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-950 dark:text-slate-400">{event.startsAt}</span>
           </Link>
         ))}
       </div>

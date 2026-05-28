@@ -737,6 +737,53 @@ html {
   color: var(--theme-primary);
 }
 
+.mm-section {
+  position: relative;
+  background: #f7f4ed;
+}
+
+.dark .mm-section {
+  background: rgb(2 6 23);
+}
+
+.mm-card-surface {
+  border: 1px solid rgb(226 232 240 / 0.9);
+  background: rgb(255 255 255 / 0.94);
+  box-shadow: 0 14px 34px rgb(15 23 42 / 0.06);
+}
+
+.dark .mm-card-surface {
+  border-color: rgb(30 41 59 / 0.95);
+  background: rgb(15 23 42 / 0.88);
+  box-shadow: 0 18px 42px rgb(2 6 23 / 0.36);
+}
+
+.mm-icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 24%, transparent);
+  background: color-mix(in srgb, var(--theme-primary) 11%, white);
+  color: var(--theme-primary);
+}
+
+.dark .mm-icon-tile {
+  background: color-mix(in srgb, var(--theme-primary) 18%, rgb(15 23 42));
+  color: var(--theme-primary-light);
+}
+
+.mm-accent-pill {
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 26%, transparent);
+  background: color-mix(in srgb, var(--theme-primary) 10%, white);
+  color: color-mix(in srgb, var(--theme-primary) 72%, black);
+}
+
+.dark .mm-accent-pill {
+  background: color-mix(in srgb, var(--theme-primary) 18%, rgb(15 23 42));
+  color: var(--theme-primary-light);
+}
+
 .bg-primary-themed {
   background-color: var(--theme-primary);
 }
@@ -1347,7 +1394,8 @@ body {
   }
   
   button, a, [role="button"] {
-    border: 2px solid currentColor !important;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
   }
 }
 
@@ -1410,14 +1458,44 @@ header p {
   --border: #ffffff;
 }
 
-.high-contrast * {
-  border-color: currentColor !important;
+.high-contrast {
+  --accent: color-mix(in srgb, var(--theme-primary) 16%, white);
+  --accent-soft: color-mix(in srgb, var(--theme-primary) 10%, white);
+  --accent-border: currentColor;
+}
+
+.high-contrast.dark {
+  --accent: color-mix(in srgb, var(--theme-primary) 24%, black);
+  --accent-soft: color-mix(in srgb, var(--theme-primary) 16%, black);
+  --accent-border: currentColor;
 }
 
 .high-contrast button,
 .high-contrast a,
+.high-contrast [role="button"],
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+  box-sizing: border-box;
+}
+
+.high-contrast button,
 .high-contrast [role="button"] {
-  border: 2px solid currentColor !important;
+  border-color: currentColor;
+}
+
+.high-contrast a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.high-contrast .topbar-root a,
+.high-contrast .topbar-root button,
+.high-contrast .learn-top-strip button,
+.high-contrast .learn-hub-tabs button,
+.high-contrast .learn-hub-mini-grid button {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .high-contrast img {
@@ -2076,22 +2154,23 @@ button, a, .card, .interactive {
 }
 
 .learn-top-strip {
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--theme-primary) 20%, white);
-  background: color-mix(in srgb, var(--theme-primary) 8%, white);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 10px 30px rgba(var(--theme-primary-rgb), 0.15);
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 22%, white);
+  background: color-mix(in srgb, var(--theme-primary) 6%, white);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.08);
 }
 
 .dark .learn-top-strip {
   border-color: rgba(148, 163, 184, 0.35);
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.9);
 }
 
 .learn-top-strip-inner {
   display: grid;
-  gap: 10px;
-  padding: 12px;
+  gap: 12px;
+  padding: 14px;
+  min-width: 0;
 }
 
 @media (min-width: 768px) {
@@ -2111,7 +2190,9 @@ button, a, .card, .interactive {
 .learn-top-strip-title {
   font-size: 1rem;
   font-weight: 700;
+  line-height: 1.25;
   color: rgb(15 23 42);
+  overflow-wrap: anywhere;
 }
 
 .dark .learn-top-strip-title {
@@ -2131,10 +2212,12 @@ button, a, .card, .interactive {
   font-size: 12px;
   font-weight: 600;
   border-radius: 999px;
+  min-width: 0;
   padding: 6px 10px;
   border: 1px solid color-mix(in srgb, var(--theme-primary) 25%, white);
   background: color-mix(in srgb, var(--theme-primary) 10%, white);
   color: rgb(15 23 42);
+  white-space: normal;
 }
 
 .dark .learn-pill {
@@ -3298,12 +3381,15 @@ button, a, .card, .interactive {
 /* Learn resource hub */
 .learn-hub-shell {
   scroll-margin-top: 120px;
-  border-radius: 8px;
-  border: 1px solid rgb(226 232 240);
+  border-radius: 24px;
+  border: 1px solid rgb(226 232 240 / 0.9);
+  background: rgb(255 255 255 / 0.96);
+  box-shadow: 0 14px 34px rgb(15 23 42 / 0.055);
 }
 
 .dark .learn-hub-shell {
-  border-color: rgb(51 65 85);
+  border-color: rgb(51 65 85 / 0.9);
+  background: rgb(15 23 42 / 0.9);
 }
 
 .learn-hub-chip {
@@ -3313,15 +3399,15 @@ button, a, .card, .interactive {
   padding: 6px 10px;
   font-size: 12px;
   font-weight: 700;
-  color: #0f766e;
-  background: #ccfbf1;
-  border: 1px solid #5eead4;
+  color: color-mix(in srgb, var(--theme-primary) 72%, black);
+  background: color-mix(in srgb, var(--theme-primary) 10%, white);
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 26%, white);
 }
 
 .dark .learn-hub-chip {
-  color: #5eead4;
-  background: rgba(15, 118, 110, 0.2);
-  border-color: rgba(45, 212, 191, 0.5);
+  color: var(--theme-primary-light);
+  background: color-mix(in srgb, var(--theme-primary) 18%, rgb(15 23 42));
+  border-color: color-mix(in srgb, var(--theme-primary) 32%, rgb(51 65 85));
 }
 
 .learn-hub-counts {
@@ -3330,6 +3416,19 @@ button, a, .card, .interactive {
   gap: 10px;
   font-size: 12px;
   color: rgb(100 116 139);
+}
+
+.learn-hub-counts span {
+  border-radius: 999px;
+  border: 1px solid rgb(226 232 240 / 0.8);
+  background: rgb(248 250 252 / 0.8);
+  padding: 5px 9px;
+}
+
+.dark .learn-hub-counts span {
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42 / 0.72);
+  color: rgb(203 213 225);
 }
 
 .learn-hub-tabs {
@@ -3341,7 +3440,8 @@ button, a, .card, .interactive {
 .learn-hub-tab {
   border-radius: 999px;
   border: 1px solid rgb(226 232 240);
-  padding: 7px 12px;
+  min-width: 0;
+  padding: 8px 13px;
   font-size: 12px;
   color: rgb(71 85 105);
   background: white;
@@ -3365,13 +3465,15 @@ button, a, .card, .interactive {
 }
 
 .learn-hub-player-shell {
-  border: 1px solid rgb(226 232 240);
-  border-radius: 8px;
-  padding: 12px;
+  border: 1px solid rgb(226 232 240 / 0.9);
+  border-radius: 20px;
+  padding: 14px;
+  background: rgb(248 250 252 / 0.76);
 }
 
 .dark .learn-hub-player-shell {
   border-color: rgb(71 85 105);
+  background: rgb(15 23 42 / 0.72);
 }
 
 .learn-hub-player-header {
@@ -3382,7 +3484,7 @@ button, a, .card, .interactive {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
   background: rgb(2 6 23);
 }
@@ -3397,34 +3499,35 @@ button, a, .card, .interactive {
 }
 
 .learn-hub-video-placeholder {
-  border: 1px solid rgb(226 232 240);
-  border-radius: 8px;
-  padding: 24px;
-  background: rgb(248 250 252);
+  border: 1px dashed color-mix(in srgb, var(--theme-primary) 35%, rgb(226 232 240));
+  border-radius: 18px;
+  padding: 22px;
+  background: color-mix(in srgb, var(--theme-primary) 7%, white);
 }
 
 .dark .learn-hub-video-placeholder {
-  border-color: rgb(71 85 105);
-  background: rgb(15 23 42);
+  border-color: color-mix(in srgb, var(--theme-primary) 36%, rgb(51 65 85));
+  background: color-mix(in srgb, var(--theme-primary) 12%, rgb(15 23 42));
 }
 
 .learn-hub-card {
-  border: 1px solid rgb(226 232 240);
-  border-radius: 8px;
-  padding: 12px;
-  min-height: 88px;
-  transition: border-color 150ms ease, transform 150ms ease;
-  background: white;
+  border: 1px solid rgb(226 232 240 / 0.9);
+  border-radius: 16px;
+  padding: 14px;
+  min-height: 96px;
+  transition: border-color 150ms ease, transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  background: rgb(255 255 255 / 0.92);
 }
 
 .learn-hub-card:hover {
   border-color: var(--theme-primary);
   transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgb(15 23 42 / 0.07);
 }
 
 .dark .learn-hub-card {
   border-color: rgb(71 85 105);
-  background: rgb(15 23 42);
+  background: rgb(15 23 42 / 0.82);
 }
 
 .learn-hub-card-active {
@@ -3465,13 +3568,14 @@ button, a, .card, .interactive {
 
 .learn-hub-mini-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
   gap: 8px;
 }
 
 .learn-hub-mini-grid button {
   min-height: 40px;
-  border-radius: 8px;
+  min-width: 0;
+  border-radius: 999px;
   border: 1px solid rgb(226 232 240);
   background: rgb(248 250 252);
   color: rgb(15 23 42);
@@ -3501,17 +3605,17 @@ button, a, .card, .interactive {
 .learn-hub-empty {
   grid-column: 1 / -1;
   min-height: 72px;
-  border: 1px dashed rgb(203 213 225);
-  border-radius: 8px;
+  border: 1px dashed color-mix(in srgb, var(--theme-primary) 28%, rgb(203 213 225));
+  border-radius: 16px;
   padding: 16px;
   color: rgb(100 116 139);
-  background: rgb(248 250 252);
+  background: color-mix(in srgb, var(--theme-primary) 5%, rgb(248 250 252));
 }
 
 .dark .learn-hub-empty {
-  border-color: rgb(71 85 105);
+  border-color: color-mix(in srgb, var(--theme-primary) 32%, rgb(71 85 105));
   color: rgb(148 163 184);
-  background: rgb(15 23 42);
+  background: color-mix(in srgb, var(--theme-primary) 10%, rgb(15 23 42));
 }
 
 /* Quiz difficulty buttons — Easy / Medium / Hard */

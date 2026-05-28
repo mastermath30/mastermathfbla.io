@@ -128,19 +128,21 @@ export function QuickNotes() {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed inset-x-4 top-4 bottom-24 z-[101] w-auto md:inset-x-auto md:right-4 md:top-4 md:bottom-4 md:w-[90%] md:max-w-md"
             >
-              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col h-full overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col h-full overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-yellow-400 to-amber-500">
+                <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
                   <div className="flex items-center gap-2">
-                    <StickyNote className="w-5 h-5 text-white" />
-                    <span className="font-semibold text-white">{t("Quick Notes")}</span>
-                    <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full text-white">
+                    <span className="mm-icon-tile h-9 w-9">
+                      <StickyNote className="w-5 h-5" />
+                    </span>
+                    <span className="font-semibold text-slate-900 dark:text-white">{t("Quick Notes")}</span>
+                    <span className="mm-accent-pill rounded-full px-2 py-0.5 text-xs">
                       {notes.length}
                     </span>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-1 rounded hover:bg-white/20 text-white"
+                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -163,7 +165,7 @@ export function QuickNotes() {
                   </div>
                   <button
                     onClick={addNote}
-                    className="ml-auto flex min-h-[44px] items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-600"
+                    className="ml-auto flex min-h-[44px] items-center gap-1 rounded-full bg-[var(--theme-primary)] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[var(--theme-primary-dark)]"
                   >
                     <Plus className="w-4 h-4" />
                     {t("Add Note")}

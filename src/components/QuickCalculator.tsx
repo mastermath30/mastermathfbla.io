@@ -147,7 +147,7 @@ export function QuickCalculator() {
 
   const panelClassName = isFullscreen
     ? "flex h-full w-full flex-col overflow-hidden border-0 bg-white shadow-none dark:bg-slate-900 md:rounded-[28px] md:border md:border-slate-200 md:shadow-2xl md:dark:border-slate-700"
-    : "flex w-full max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900";
+    : "flex w-full max-h-[90vh] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900";
 
   const bodyClassName = isFullscreen
     ? "flex min-h-0 flex-1 flex-col bg-slate-50 p-3 dark:bg-slate-900 md:p-4"
@@ -170,16 +170,18 @@ export function QuickCalculator() {
           >
             <div className={panelClassName}>
               {/* Header */}
-              <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 bg-emerald-600">
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <Calculator className="w-4 h-4 text-white" />
-                    <span className="text-sm font-medium text-white">
+                    <span className="mm-icon-tile h-9 w-9">
+                      <Calculator className="w-4 h-4" />
+                    </span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
                       {t("Graphing Calculator")}
                     </span>
                   </div>
                   {!isFullscreen && (
-                    <div className="hidden md:flex items-center gap-1 rounded-full bg-white/10 px-1 py-0.5">
+                    <div className="hidden md:flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1 py-0.5 dark:border-slate-700 dark:bg-slate-950">
                     {[
                       { id: "sm" as const, label: "S" },
                       { id: "md" as const, label: "M" },
@@ -190,8 +192,8 @@ export function QuickCalculator() {
                         onClick={() => setSize(opt.id)}
                         className={`px-2 py-0.5 text-[10px] rounded-full border transition-colors ${
                           size === opt.id
-                            ? "bg-white text-emerald-700 border-white"
-                            : "bg-transparent text-white/80 border-white/30 hover:bg-white/15"
+                            ? "bg-[var(--theme-primary)] text-white border-[var(--theme-primary)]"
+                            : "bg-transparent text-slate-600 border-transparent hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                         }`}
                       >
                         {opt.label}
@@ -203,7 +205,7 @@ export function QuickCalculator() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setIsFullscreen((prev) => !prev)}
-                    className="hidden md:inline-flex px-2 py-1 rounded text-[10px] font-medium bg-white/15 text-white hover:bg-white/25"
+                    className="hidden md:inline-flex rounded-full bg-[var(--theme-primary)] px-3 py-1 text-[10px] font-semibold text-white hover:bg-[var(--theme-primary-dark)]"
                   >
                     {isFullscreen ? t("Exit Fullscreen") : t("Fullscreen")}
                   </button>
@@ -212,7 +214,7 @@ export function QuickCalculator() {
                       setIsOpen(false);
                       setIsFullscreen(false);
                     }}
-                    className="p-1 rounded hover:bg-white/20 text-white/80 hover:text-white"
+                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                   >
                     <X className="w-4 h-4" />
                   </button>

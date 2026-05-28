@@ -11,7 +11,6 @@ import { Card } from "@/components/Card";
 import { SectionLabel } from "@/components/SectionLabel";
 import { Avatar } from "@/components/Avatar";
 import { AnimatedNumberClient } from "@/components/AnimatedNumberClient";
-import InfiniteMovingCardsDemo from "@/components/infinite-moving-cards-demo";
 import { TestimonialsScroll } from "@/components/TestimonialsScroll";
 import { AuroraVolume, FadeIn, FadeInStagger, FadeInStaggerItem, GlowingOrbs, ParallaxSection, TypingText } from "@/components/motion";
 import { useTranslations } from "@/components/LanguageProvider";
@@ -593,24 +592,24 @@ export default function Home() {
           </motion.div>
         </AnimatePresence>
         <div className="absolute inset-0 bg-slate-950/72" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.22),transparent_42%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--theme-primary-rgb),0.14),transparent_46%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
         <HeroMathScene reducedMotion={Boolean(reducedMotion)} staticScene={false} />
 
         <div className="relative z-20 mx-auto flex min-h-[94vh] w-full max-w-7xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 md:pt-32">
           <div>
-            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-indigo-100 shadow-sm backdrop-blur-md">
+            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md">
               {t("Trusted peer tutoring for ambitious students")}
             </p>
           </div>
 
           <div>
-            <h1 className="mx-auto mt-8 max-w-5xl text-5xl font-semibold tracking-[-0.06em] text-white sm:text-7xl lg:text-8xl">
+            <h1 className="mx-auto mt-8 max-w-5xl text-balance text-4xl font-semibold leading-[0.98] tracking-normal text-white sm:text-6xl lg:text-7xl xl:text-8xl">
               {t("Master Mathematics")}
-              <span className="relative block min-h-[1.12em] overflow-hidden text-indigo-200" aria-live="polite">
-                <span className="inline-flex items-baseline justify-center gap-2">
+              <span className="relative block min-h-[1.12em] overflow-hidden text-[var(--theme-primary-light)]" aria-live="polite">
+                <span className="inline-flex max-w-full flex-wrap items-baseline justify-center gap-2 break-words">
                   <span>{reducedMotion ? targetHeroPhrase : typedHeroPhrase}</span>
                   {!reducedMotion && !typingComplete && (
-                    <span aria-hidden="true" className="mb-1 h-[0.78em] w-[3px] rounded-full bg-indigo-200" />
+                    <span aria-hidden="true" className="mb-1 h-[0.78em] w-[3px] rounded-full bg-[var(--theme-primary-light)]" />
                   )}
                 </span>
               </span>
@@ -629,7 +628,7 @@ export default function Home() {
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-[0_18px_60px_rgba(79,70,229,0.38)] hover:bg-indigo-500 hover:text-white sm:w-auto"
+                  className="w-full rounded-full bg-[var(--theme-primary)] px-7 text-white shadow-[0_18px_60px_rgba(var(--theme-primary-rgb),0.34)] hover:bg-[var(--theme-primary-dark)] hover:text-white sm:w-auto"
                 >
                   {t("Book Your First Session")}
                   <ArrowRight className="h-5 w-5" />
@@ -641,7 +640,7 @@ export default function Home() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="w-full rounded-full border-white/20 bg-white/10 px-7 text-white shadow-sm backdrop-blur-md hover:border-indigo-200 hover:bg-white/20 hover:text-white sm:w-auto"
+                      className="w-full rounded-full border-white/20 bg-white/10 px-7 text-white shadow-sm backdrop-blur-md hover:border-white/40 hover:bg-white/20 hover:text-white sm:w-auto"
                     >
                       {heroSecondaryLabel}
                     </Button>
@@ -653,7 +652,7 @@ export default function Home() {
 
           <div className="mt-12 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/10 p-4 text-left shadow-sm backdrop-blur-md">
+              <div key={stat.label} className="rounded-2xl border border-white/12 bg-white/10 p-4 text-left shadow-sm backdrop-blur-md">
                 <div className="text-2xl font-semibold tracking-tight text-white">
                   <AnimatedNumberClient value={stat.value} duration={700} label={stat.label} />
                 </div>
@@ -665,8 +664,8 @@ export default function Home() {
           <div className="w-full">
             <div className="mx-auto mt-8 grid w-full max-w-4xl items-stretch gap-4 md:grid-cols-3">
               {heroModes.slice(1).map((mode) => (
-                <div key={mode.label} className="flex h-full min-h-[132px] flex-col rounded-2xl border border-white/10 bg-slate-950/45 p-5 text-left backdrop-blur-md">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-100">{mode.label}</p>
+                <div key={mode.label} className="flex h-full min-h-[132px] flex-col rounded-2xl border border-white/12 bg-slate-950/45 p-5 text-left backdrop-blur-md">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary-light)]">{mode.label}</p>
                   <p className="mt-3 text-sm leading-7 text-slate-100 sm:text-[15px]">{mode.description}</p>
                 </div>
               ))}
@@ -882,10 +881,10 @@ export default function Home() {
       </section>
 
       {/* Phase 1: How MathMaster works */}
-      <section className="py-20">
+      <section className="mm-section py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <FadeIn className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("How MathMaster works")}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("How MathMaster works")}</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Build skill one clear step at a time")}</h2>
             <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">{t("A focused path for learning concepts, practicing with feedback, and getting help when you get stuck.")}</p>
           </FadeIn>
@@ -897,16 +896,16 @@ export default function Home() {
               { title: t("Get Help"), description: t("Connect with tutors and the community when a concept needs a real explanation."), icon: Users, href: "/tutoring-request" },
             ].map((step, index) => (
               <FadeInStaggerItem key={step.title}>
-                <Link href={step.href} className="group block h-full rounded-[1.75rem] border border-slate-200 bg-[#fbfaf6] p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                <Link href={step.href} className="group mm-card-surface block h-full rounded-3xl p-6 transition hover:-translate-y-0.5 hover:border-[var(--theme-primary)]/30 hover:shadow-md">
                   <div className="mb-8 flex items-center justify-between">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                    <div className="mm-icon-tile flex h-12 w-12 items-center justify-center">
                       <step.icon className="h-5 w-5" />
                     </div>
                     <span className="text-sm font-semibold text-slate-400">0{index + 1}</span>
                   </div>
                   <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{step.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{step.description}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">
                     {t("Explore")}
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                   </span>
@@ -918,31 +917,31 @@ export default function Home() {
       </section>
 
       {/* Phase 1: Product Preview */}
-      <section className="py-20">
+      <section className="mm-section py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
             <FadeIn>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Product preview")}</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Product preview")}</p>
                 <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Everything points students to the next best step")}</h2>
                 <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
                   {t("MathMaster combines a guided learning path, quiz feedback, AI help, tutoring, and lightweight tools so students know what to do next.")}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link href="/learn">
-                    <Button variant="ghost" className="rounded-full bg-indigo-600 px-6 text-white hover:bg-indigo-700 hover:text-white">{t("Open Learn")}</Button>
+                    <Button variant="ghost" className="rounded-full bg-[var(--theme-primary)] px-6 text-white hover:bg-[var(--theme-primary-dark)] hover:text-white">{t("Open Learn")}</Button>
                   </Link>
                   <Link href="/community">
-                    <Button variant="outline" className="rounded-full bg-white px-6 text-slate-800 hover:bg-indigo-50 hover:text-indigo-700 dark:bg-slate-900 dark:text-slate-100">{t("Ask the Community")}</Button>
+                    <Button variant="outline" className="rounded-full bg-white px-6 text-slate-800 hover:bg-[var(--accent-soft)] hover:text-[var(--theme-primary)] dark:bg-slate-900 dark:text-slate-100">{t("Ask the Community")}</Button>
                   </Link>
                 </div>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.08}>
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_22px_64px_rgba(15,23,42,0.10)] dark:border-slate-800 dark:bg-slate-900">
+              <div className="mm-card-surface rounded-3xl p-4">
                 <div className="grid gap-4 lg:grid-cols-2">
-                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                  <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-950/70">
                     <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Learn Path")}</p>
                     <div className="mt-5 space-y-3">
                       {["Foundations", "Linear Equations", "Quadratics"].map((label, index) => (
@@ -956,11 +955,11 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                  <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-950/70">
                     <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Quiz Feedback")}</p>
-                    <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 dark:border-indigo-900 dark:bg-indigo-950/40">
-                      <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-200">{t("Almost there")}</p>
-                      <p className="mt-2 text-sm leading-6 text-indigo-800/80 dark:text-indigo-200/80">{t("You understand the setup. Review the sign change, then try one more problem.")}</p>
+                    <div className="mt-4 rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-4">
+                      <p className="text-sm font-semibold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Almost there")}</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">{t("You understand the setup. Review the sign change, then try one more problem.")}</p>
                     </div>
                     <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-semibold">
                       <div className="rounded-xl bg-emerald-50 py-2 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">4 {t("right")}</div>
@@ -969,7 +968,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                  <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-950/70">
                     <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("AI help and tools")}</p>
                     <div className="mt-4 space-y-3 text-sm">
                       <div className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">{t("Explain completing the square in simpler steps.")}</div>
@@ -981,7 +980,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+                  <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-950/70">
                     <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("Tutoring")}</p>
                     <div className="mt-4 flex items-start gap-3">
                       <Avatar initials={topTutors[0]?.initials ?? "MT"} size="lg" />
@@ -992,7 +991,7 @@ export default function Home() {
                     </div>
                     <Button
                       variant="outline"
-                      className="mt-4 w-full rounded-full bg-white text-slate-800 hover:bg-indigo-50 hover:text-indigo-700 dark:bg-slate-900 dark:text-slate-100"
+                      className="mt-4 w-full rounded-full bg-white text-slate-800 hover:bg-[var(--accent-soft)] hover:text-[var(--theme-primary)] dark:bg-slate-900 dark:text-slate-100"
                       disabled={!topTutors[0]?.available}
                       onClick={() => topTutors[0]?.available && handleBookNow(topTutors[0])}
                     >
@@ -1007,35 +1006,60 @@ export default function Home() {
       </section>
 
       {/* Phase 1: Tutor Profiles */}
-      <section className="py-20">
+      <section className="mm-section py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <FadeIn className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Tutor Match")}</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Learn with real people when you need it")}</h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Connect with highly rated peer tutors for targeted support, clear explanations, and confidence before your next test.")}</p>
+          <FadeIn className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Tutor Match")}</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Learn with real people when you need it")}</h2>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Connect with highly rated peer tutors for targeted support, clear explanations, and confidence before your next test.")}</p>
+            </div>
+            <Link href="/tutors" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--theme-primary)] transition hover:gap-3 dark:text-[var(--theme-primary-light)]">
+              {t("View more tutors")}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </FadeIn>
           <FadeInStagger className="mt-10 grid gap-5 md:grid-cols-3" staggerDelay={0.06}>
             {topTutors.map((tutor) => (
               <FadeInStaggerItem key={tutor.name}>
-                <Card className="h-full overflow-hidden rounded-[1.75rem] border-slate-200 bg-[#fbfaf6] shadow-sm dark:border-slate-800 dark:bg-slate-900" padding="none">
-                  <div className="relative h-56 overflow-hidden">
-                    <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-[center_20%]" />
+                <Card className="flex h-full flex-col overflow-hidden rounded-3xl border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" padding="none">
+                  <div className="relative h-60 overflow-hidden">
+                    <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-[center_18%] transition duration-500 hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    {tutor.available && (
+                      <div className="absolute right-4 top-4 rounded-full bg-emerald-500/95 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                        {t("Available Now")}
+                      </div>
+                    )}
                     <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/45 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       {tutor.rating}
                     </div>
                   </div>
-                  <div className="p-5">
+                  <div className="flex flex-1 flex-col p-5">
                     <div className="flex items-start justify-between gap-4">
-                      <div>
+                      <div className="min-w-0">
                         <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{tutor.name}</h3>
                         <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{tutor.subjects}</p>
                       </div>
-                      <p className="text-right text-lg font-bold text-indigo-600 dark:text-indigo-300">${tutor.price}<span className="text-sm font-medium text-slate-400">/hr</span></p>
+                      <p className="shrink-0 text-right text-lg font-bold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">${tutor.price}<span className="text-sm font-medium text-slate-400">/hr</span></p>
+                    </div>
+                    {tutor.specialties && (
+                      <div className="mt-4 flex flex-wrap gap-1.5">
+                        {tutor.specialties.slice(0, 3).map((specialty) => (
+                          <span key={specialty} className="mm-accent-pill rounded-full px-2.5 py-1 text-xs font-semibold">
+                            {specialty}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-4 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+                      <span>{tutor.reviews} {t("reviews")}</span>
+                      <span aria-hidden="true">•</span>
+                      <span>{Math.floor(tutor.reviews * 0.7)}+ {t("students")}</span>
                     </div>
                     <Button
-                      className="mt-5 w-full rounded-full"
+                      className="mt-auto w-full rounded-full"
                       disabled={!tutor.available}
                       onClick={() => tutor.available && handleBookNow(tutor)}
                     >
@@ -1050,22 +1074,23 @@ export default function Home() {
       </section>
 
       {/* Phase 1: Validation */}
-      <section className="py-24">
+      <section className="mm-section py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <FadeIn className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-300">{t("Student validation")}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Student validation")}</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Clear help when math stops making sense")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Students use MathMaster to find explanations, practice with purpose, and get support before confusion turns into frustration.")}</p>
           </FadeIn>
           <FadeIn delay={0.08} className="mt-12">
-            <InfiniteMovingCardsDemo />
+            <TestimonialsScroll />
           </FadeIn>
         </div>
       </section>
 
       {/* Phase 1: Final CTA */}
-      <section className="py-20">
+      <section className="mm-section py-20">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+          <div className="rounded-3xl border border-slate-200 bg-white/80 px-6 py-12 shadow-sm dark:border-slate-800 dark:bg-slate-900/70 sm:px-10">
           <FadeIn>
             <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Ready to get unstuck in math?")}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{t("Start with a guided lesson, practice what matters, or connect with a tutor when you need a human explanation.")}</p>
@@ -1074,7 +1099,7 @@ export default function Home() {
             <div className="mt-8 flex min-h-[52px] justify-center">
               {isAuthResolved && (
                 <Link href={bottomCtaHref}>
-                  <Button variant="ghost" size="lg" className="rounded-full bg-indigo-600 px-8 text-white shadow-sm hover:bg-indigo-700 hover:text-white">
+                  <Button variant="ghost" size="lg" className="rounded-full bg-[var(--theme-primary)] px-8 text-white shadow-sm hover:bg-[var(--theme-primary-dark)] hover:text-white">
                     {bottomCtaLabel}
                     <ArrowRight className="h-5 w-5" />
                   </Button>
@@ -1083,6 +1108,7 @@ export default function Home() {
             </div>
             <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{t("No credit card required • Free forever")}</p>
           </FadeIn>
+          </div>
         </div>
       </section>
 
@@ -1868,8 +1894,8 @@ export default function Home() {
             onClick={() => setShowBookingModal(false)}
           />
           
-          <div className="relative bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden">
-            <div className="relative h-32 bg-slate-950">
+          <div className="relative bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] sm:max-h-[88vh] overflow-hidden">
+            <div className="relative h-36 bg-slate-950 sm:h-44">
               <Image
                 src={selectedTutor.image}
                 alt={selectedTutor.name}
@@ -1886,13 +1912,18 @@ export default function Home() {
               >
                 <X className="w-5 h-5 text-white" />
               </button>
-              <div className="absolute bottom-4 left-6">
-                <h3 className="text-xl font-bold text-white">{selectedTutor.name}</h3>
+              <div className="absolute bottom-4 left-6 right-20">
+                <h3 className="text-2xl font-bold text-white">{selectedTutor.name}</h3>
                 <p className="text-white/80 text-sm">{selectedTutor.subjects}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-semibold text-white/90">
+                  <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur-sm">{selectedTutor.rating} ★</span>
+                  <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur-sm">${selectedTutor.price}/hr</span>
+                  <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur-sm">{selectedTutor.reviews} {t("reviews")}</span>
+                </div>
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 max-h-[calc(90vh-8rem)] sm:max-h-[70vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="p-4 sm:p-6 max-h-[calc(90vh-9rem)] sm:max-h-[calc(88vh-11rem)] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
               {bookingConfirmed ? (
                 <div className="text-center py-8">
                   <div 

@@ -981,9 +981,12 @@ function LearnPageClient() {
           <Card className="dlp-shell" glow={false}>
             <div className="dlp-header">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Your Learning Path")}</h1>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Current Learning Path")}</p>
+                <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{t("Your Learning Path")}</h1>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  {t("Follow the path, earn XP, and unlock your next lesson.")}
+                  {activeTopic?.title
+                    ? t("Your next step is connected to {topic}.", { topic: activeTopic.title })
+                    : t("Follow the path, earn XP, and unlock your next lesson.")}
                 </p>
               </div>
               <div className="dlp-summary-pill">{courseCompletionPercent}% complete</div>
@@ -1056,7 +1059,8 @@ function LearnPageClient() {
           </Card>
 
           <Card className="h-fit sticky top-36" glow={false}>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{selectedNode?.title ?? t("Select a lesson")}</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Your Next Step")}</p>
+            <h2 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">{selectedNode?.title ?? t("Select a lesson")}</h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               {selectedNode?.state ? selectedNode.state.replace("_", " ") : flowLabelByState[selectedFlowState]}
             </p>
@@ -1120,7 +1124,7 @@ function LearnPageClient() {
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Lesson Workspace")}</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                   {activeTopic?.title
-                    ? t("Study {topic} inside the page before moving on to practice or the quiz.", { topic: activeTopic.title })
+                    ? t("Review the goal, start the lesson, then move into practice or a quiz.", { topic: activeTopic.title })
                     : t("Select a topic to open its lesson workspace.")}
                 </p>
               </div>
@@ -1136,14 +1140,18 @@ function LearnPageClient() {
             {!activeTopic ? (
               <div className="learn-hub-empty mt-4">{t("Choose a topic from your learning path to load the lesson.")}</div>
             ) : (
-              <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+              <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
                 <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]">
                     <BookOpen className="h-4 w-4" />
-                    {t("Full-screen lesson")}
+                    {t("Current objective")}
                   </div>
-                  <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
-                  <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">{lessonKeyIdea}</p>
+                  <h4 className="mt-3 text-lg font-semibold text-slate-900 dark:text-white">{activeTopic.title}</h4>
+                  <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-300">{activeTopic.summary}</p>
+                  <div className="mt-4 rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-4">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Goal")}</p>
+                    <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">{lessonKeyIdea}</p>
+                  </div>
                 </div>
 
                 <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5">
@@ -1151,9 +1159,7 @@ function LearnPageClient() {
                     <Sparkles className="h-4 w-4" />
                     {t("Start here")}
                   </div>
-                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
-                    {t("Start the built-in lesson here. External sources stay available below if you want extra review.")}
-                  </p>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{t("One action at a time: open the lesson, then use extras only when they help.")}</p>
                   <Button className="mt-5 w-full" onClick={openLesson} disabled={selectedNode?.state === "locked"}>
                     {lessonButtonLabel}
                   </Button>
@@ -1165,10 +1171,10 @@ function LearnPageClient() {
           <Card className="learn-hub-shell" ref={resourceHubRef}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Optional Resource Hub")}</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Study Resource Hub")}</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                   {activeTopic?.title
-                    ? t("Extra outside resources for {topic}. You can use them anytime, but they are not required for the built-in lesson.", { topic: activeTopic.title })
+                    ? t("Extra help for {topic}, grouped by what you want to do next.", { topic: activeTopic.title })
                     : t("Select a topic to load optional outside resources.")}
                 </p>
               </div>
@@ -1254,8 +1260,25 @@ function LearnPageClient() {
                       <div className="learn-hub-video-placeholder">
                         <p className="font-semibold text-slate-900 dark:text-white">{t("Video unavailable")}</p>
                         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                          {t("Choose another video or use the lesson resources below.")}
+                          {t("This embed could not load, but the lesson is still ready below.")}
                         </p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <a
+                            href={activeVideo.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex min-h-10 items-center rounded-full border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                          >
+                            {t("Open lesson resource")}
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => jumpToResourceHub("practice")}
+                            className="inline-flex min-h-10 items-center rounded-full bg-[var(--theme-primary)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--theme-primary-dark)]"
+                          >
+                            {t("Try practice instead")}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

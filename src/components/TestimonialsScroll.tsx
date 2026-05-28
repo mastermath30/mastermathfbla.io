@@ -119,8 +119,8 @@ const rightColumnTestimonials: Testimonial[] = [
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <div className="testimonial-card rounded-2xl p-5 mb-4 transition-all duration-300 hover:-translate-y-1 border bg-white border-slate-200 shadow-lg dark:bg-slate-950/80 dark:border-slate-700/50 dark:shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)] dark:hover:shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.35)]">
-      <p className="text-sm leading-relaxed mb-4 font-medium text-slate-700 dark:text-slate-200">
+    <div className="testimonial-card mb-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--theme-primary)]/30 dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)]">
+      <p className="text-sm leading-7 mb-4 font-medium text-slate-700 dark:text-slate-200">
         &quot;{testimonial.text}&quot;
       </p>
       <div className="flex items-center gap-3">

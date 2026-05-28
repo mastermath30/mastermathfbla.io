@@ -200,7 +200,7 @@ export function Navbar() {
                         href={link.href}
                         onClick={() => setIsOpen(false)}
                         title={link.href === "/auth" && isLoggedIn && userName ? userName : undefined}
-                        className={`flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl transition-colors touch-manipulation h-full ${
+                        className={`box-border flex h-full min-w-0 flex-col items-center justify-start gap-1.5 rounded-xl p-2.5 transition-colors touch-manipulation sm:p-3 ${
                           pathname === link.href
                             ? "text-[var(--theme-primary)]"
                             : "hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700"
@@ -215,7 +215,7 @@ export function Navbar() {
                             : {}),
                         }}
                       >
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        <div className={`h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center ${
                           pathname === link.href
                             ? "text-white"
                             : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
@@ -267,7 +267,7 @@ export function Navbar() {
                     >
                       <button
                         onClick={() => handleUtilityClick(util.event)}
-                        className="flex flex-col items-center justify-start gap-1.5 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors touch-manipulation w-full h-full"
+                        className="box-border flex h-full w-full min-w-0 flex-col items-center justify-start gap-1.5 rounded-xl p-2.5 transition-colors touch-manipulation hover:bg-slate-100 active:bg-slate-200 dark:hover:bg-slate-800 dark:active:bg-slate-700 sm:p-3"
                         style={{ WebkitTapHighlightColor: "transparent" }}
                       >
                         <div

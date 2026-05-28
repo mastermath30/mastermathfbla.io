@@ -64,7 +64,7 @@ const challenges = [
 ];
 
 const activities = [
-  { icon: CheckCircle2, title: "Completed: Derivatives Practice", time: "2 hours ago", xp: "+50 XP", badge: "New Badge: Calculus Explorer", color: "violet" },
+  { icon: CheckCircle2, title: "Finished derivatives practice", time: "2 hours ago", xp: "+50 XP", badge: "New Badge: Calculus Explorer", color: "violet" },
   { icon: MessageCircle, title: "New reply on your question", time: "5 hours ago", preview: '"Great question! Have you tried using the formula for..."', color: "purple" },
   { icon: CalendarCheck, title: "Session Booked: Calculus Review", time: "Yesterday", details: "Monday, 2:00 PM - 3:30 PM with Michael Chen", color: "green" },
 ];
@@ -74,14 +74,6 @@ const initialGoals = [
   { title: "Solve 50 Practice Problems", status: "needs_work", progress: 30, label: "15/50" },
   { title: "Attend 3 Study Sessions", status: "completed", progress: 100, label: "3/3" },
 ];
-
-const colorClasses: Record<string, { bg: string; text: string }> = {
-  violet: { bg: "bg-violet-100", text: "text-violet-700" },
-  green: { bg: "bg-green-100", text: "text-green-700" },
-  yellow: { bg: "bg-yellow-100", text: "text-yellow-700" },
-  purple: { bg: "bg-purple-100", text: "text-purple-700" },
-  blue: { bg: "bg-blue-100", text: "text-blue-700" },
-};
 
 export default function DashboardPage() {
   const { t } = useTranslations();
@@ -95,6 +87,35 @@ export default function DashboardPage() {
   const [learningProgress, setLearningProgress] = useState(getLearningProgress);
   const recommendations = useMemo(() => buildRecommendations(learningProgress), [learningProgress]);
   const dailyPlan = useMemo(() => buildDailyStudyPlan(learningProgress), [learningProgress]);
+  const learningInsights = useMemo(
+    () => [
+      {
+        label: t("Strongest skill"),
+        value: t("Derivatives"),
+        detail: t("Accuracy is trending upward across recent practice."),
+        icon: Trophy,
+      },
+      {
+        label: t("Needs focus"),
+        value: t("Linear algebra"),
+        detail: t("Schedule a short review before the next quiz."),
+        icon: Target,
+      },
+      {
+        label: t("Quiz readiness"),
+        value: "87%",
+        detail: t("Ready for medium difficulty; review hard problems next."),
+        icon: CheckCircle2,
+      },
+      {
+        label: t("Recommended next lesson"),
+        value: dailyPlan[0]?.title ?? t("Open your lesson"),
+        detail: dailyPlan[0]?.description ?? t("Continue from your current learning path."),
+        icon: Sparkles,
+      },
+    ],
+    [dailyPlan, t]
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -319,6 +340,22 @@ export default function DashboardPage() {
                 </div>
               </CardHeader>
               <CardContent>
+                <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  {learningInsights.map((insight) => (
+                    <div key={insight.label} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-950/60">
+                      <div className="flex items-start gap-3">
+                        <div className="mm-icon-tile h-10 w-10 shrink-0">
+                          <insight.icon className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{insight.label}</p>
+                          <p className="mt-1 truncate text-sm font-bold text-slate-900 dark:text-white">{insight.value}</p>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-xs leading-5 text-slate-600 dark:text-slate-400">{insight.detail}</p>
+                    </div>
+                  ))}
+                </div>
                 {mounted ? (
                   <div className="h-72">
                     <ResponsiveContainer width="100%" height="100%">
@@ -393,9 +430,9 @@ export default function DashboardPage() {
 
           {/* Challenges */}
           <Card padding="none" className="overflow-hidden" id="challenges">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+            <div className="rounded-t-[inherit] border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900/80">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                <div className="mm-icon-tile h-11 w-11">
                   <Target className="w-5 h-5" />
                 </div>
                 <div>
@@ -406,9 +443,9 @@ export default function DashboardPage() {
             </div>
             <div className="divide-y divide-slate-200 dark:divide-slate-800">
               {challenges.map((challenge) => (
-                <div key={challenge.title} className="p-4 transition-colors">
+                <div key={challenge.title} className="p-4 transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-900/60">
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-lg ${colorClasses[challenge.color]?.bg ?? "bg-slate-100"} flex items-center justify-center ${colorClasses[challenge.color]?.text ?? "text-slate-500"} flex-shrink-0`}>
+                    <div className="mm-icon-tile h-10 w-10 flex-shrink-0">
                       <challenge.icon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -427,8 +464,8 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            <div className="p-4 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-              <button onClick={() => document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all">
+            <div className="rounded-b-[inherit] border-t border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/70">
+              <button onClick={() => document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                 {t("View all challenges")}
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -442,9 +479,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Recent Activity */}
           <Card className="overflow-hidden" id="recent-activity">
-            <CardHeader className="bg-slate-100 dark:bg-slate-900 -mx-6 -mt-6 px-6 pt-6 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
+            <CardHeader className="-mx-6 -mt-6 mb-4 rounded-t-[inherit] border-b border-slate-200 bg-slate-50 px-6 pb-4 pt-6 dark:border-slate-800 dark:bg-slate-900/80">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
+                <div className="mm-icon-tile h-11 w-11">
                   <Zap className="w-5 h-5" />
                 </div>
                 <div>
@@ -457,7 +494,7 @@ export default function DashboardPage() {
               <div className="space-y-4">
                 {activities.map((activity, index) => (
                   <div key={index} className="flex gap-4 pb-4 border-b border-slate-200 dark:border-slate-800 last:border-0 last:pb-0">
-                    <div className={`w-10 h-10 rounded-xl ${colorClasses[activity.color]?.bg ?? "bg-slate-100"} flex items-center justify-center ${colorClasses[activity.color]?.text ?? "text-slate-500"} flex-shrink-0`}>
+                    <div className="mm-icon-tile h-10 w-10 flex-shrink-0">
                       <activity.icon className="w-5 h-5" />
                     </div>
                     <div>

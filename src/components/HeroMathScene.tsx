@@ -35,7 +35,7 @@ function FloatingShape({ color, position, speed, variant, reducedMotion, staticS
       {variant === "torus" && <torusGeometry args={[0.72, 0.035, 18, 96]} />}
       {variant === "octahedron" && <octahedronGeometry args={[0.56, 0]} />}
       {variant === "icosahedron" && <icosahedronGeometry args={[0.5, 0]} />}
-      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.45} roughness={0.26} metalness={0.2} transparent opacity={0.78} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.28} roughness={0.32} metalness={0.12} transparent opacity={0.42} />
     </mesh>
   );
 }
@@ -43,10 +43,10 @@ function FloatingShape({ color, position, speed, variant, reducedMotion, staticS
 function OrbitCurve({ reducedMotion, staticScene }: HeroMathSceneProps) {
   const lineRef = useRef<THREE.Line>(null);
   const line = useMemo(() => {
-    const curve = new THREE.EllipseCurve(0, 0, 2.65, 1.15, 0, Math.PI * 2, false, 0.18);
+    const curve = new THREE.EllipseCurve(0, 0, 2.35, 1.02, 0, Math.PI * 2, false, 0.18);
     const points = curve.getPoints(160).map((point) => new THREE.Vector3(point.x, point.y, -0.35));
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.LineBasicMaterial({ color: "#a78bfa", transparent: true, opacity: 0.62 });
+    const material = new THREE.LineBasicMaterial({ color: "#a78bfa", transparent: true, opacity: 0.24 });
     return new THREE.Line(geometry, material);
   }, []);
 
@@ -79,7 +79,7 @@ function FormulaNodes({ reducedMotion, staticScene }: HeroMathSceneProps) {
       {nodes.map((position, index) => (
         <mesh key={position.join(",")} position={position}>
           <sphereGeometry args={[index % 2 === 0 ? 0.055 : 0.04, 16, 16]} />
-          <meshStandardMaterial color={index % 2 === 0 ? "#c4b5fd" : "#38bdf8"} emissive={index % 2 === 0 ? "#7c3aed" : "#0284c7"} emissiveIntensity={0.8} />
+          <meshStandardMaterial color={index % 2 === 0 ? "#c4b5fd" : "#38bdf8"} emissive={index % 2 === 0 ? "#7c3aed" : "#0284c7"} emissiveIntensity={0.38} transparent opacity={0.62} />
         </mesh>
       ))}
     </group>
@@ -90,7 +90,7 @@ export function HeroMathScene({ reducedMotion = false, staticScene = true }: Her
   const sceneRef = useRef<THREE.Group>(null);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-10 opacity-90">
+    <div className="pointer-events-none absolute inset-0 z-10 opacity-45">
       <Canvas dpr={[1, 1.65]} camera={{ position: [0, 0, 5.2], fov: 44 }} gl={{ antialias: true, alpha: true }}>
         <ambientLight intensity={1.3} />
         <pointLight position={[2.4, 2.8, 3.4]} intensity={18} color="#a78bfa" />
@@ -98,7 +98,7 @@ export function HeroMathScene({ reducedMotion = false, staticScene = true }: Her
         <group ref={sceneRef}>
           <OrbitCurve reducedMotion={reducedMotion} staticScene={staticScene} />
           <FormulaNodes reducedMotion={reducedMotion} staticScene={staticScene} />
-          <FloatingShape color="#8b5cf6" position={[-2.15, 0.2, 0.05]} speed={0.35} variant="torus" reducedMotion={reducedMotion} staticScene={staticScene} />
+          <FloatingShape color="#8b5cf6" position={[-2.15, 0.2, 0.05]} speed={0.18} variant="torus" reducedMotion={reducedMotion} staticScene={staticScene} />
           <FloatingShape color="#38bdf8" position={[2.1, 0.64, -0.25]} speed={0.25} variant="octahedron" reducedMotion={reducedMotion} staticScene={staticScene} />
           <FloatingShape color="#c4b5fd" position={[0.9, -1.15, 0.12]} speed={0.3} variant="icosahedron" reducedMotion={reducedMotion} staticScene={staticScene} />
         </group>
