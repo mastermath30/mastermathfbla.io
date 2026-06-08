@@ -348,8 +348,8 @@ export default function DashboardPage() {
                           <insight.icon className="h-5 w-5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{insight.label}</p>
-                          <p className="mt-1 truncate text-sm font-bold text-slate-900 dark:text-white">{insight.value}</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 leading-4">{insight.label}</p>
+                          <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white leading-snug">{insight.value}</p>
                         </div>
                       </div>
                       <p className="mt-3 text-xs leading-5 text-slate-600 dark:text-slate-400">{insight.detail}</p>
