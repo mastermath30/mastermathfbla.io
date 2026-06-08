@@ -198,7 +198,7 @@ export function AccessibilityPanel() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("Accessibility")}</h2>
-                    <p className="text-xs text-slate-500">{t("Customize your experience")}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t("Customize your experience")}</p>
                   </div>
                 </div>
                 <button
@@ -218,7 +218,7 @@ export function AccessibilityPanel() {
                     <Type className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                     <div>
                       <h3 className="font-semibold text-slate-900 dark:text-white">{t("Text Size")}</h3>
-                      <p className="text-xs text-slate-500">{settings.fontSize}%</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{settings.fontSize}%</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -342,6 +342,7 @@ export function AccessibilityPanel() {
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">{t("Keyboard Shortcuts")}</h3>
                 <button
                   onClick={() => setShowShortcuts(false)}
+                  aria-label={t("Close")}
                   className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   <X className="w-5 h-5" />

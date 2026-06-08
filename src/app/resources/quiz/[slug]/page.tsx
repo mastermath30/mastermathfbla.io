@@ -758,6 +758,8 @@ function QuizPageContent() {
 
   const question = questions[currentIndex];
   const totalQuestions = questions.length;
+
+  if (!question && !showResults) return null;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const progress = Math.round(((currentIndex + (showResults ? 1 : 0)) / totalQuestions) * 100);
   const effectiveScore = showResults ? finalScore ?? score : score;

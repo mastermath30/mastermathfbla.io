@@ -733,7 +733,7 @@ html {
   box-shadow: 0 10px 25px -5px color-mix(in srgb, var(--theme-primary) 40%, transparent);
 }
 
-.text-primary-themed {
+@utility text-primary-themed {
   color: var(--theme-primary);
 }
 

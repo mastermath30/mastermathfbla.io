@@ -146,8 +146,9 @@ export default function CommunityPage() {
             </div>
             <form onSubmit={handleCreateGroupSubmit} className="space-y-4 px-6 py-5">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Study Group Name</label>
+                <label htmlFor="group-name" className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Study Group Name</label>
                 <input
+                  id="group-name"
                   type="text"
                   required
                   value={groupName}
@@ -157,8 +158,9 @@ export default function CommunityPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Subject / Topic</label>
+                <label htmlFor="group-subject" className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Subject / Topic</label>
                 <input
+                  id="group-subject"
                   type="text"
                   required
                   value={groupSubject}
@@ -168,8 +170,9 @@ export default function CommunityPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Description</label>
+                <label htmlFor="group-description" className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Description</label>
                 <textarea
+                  id="group-description"
                   required
                   rows={3}
                   value={groupDescription}
@@ -179,8 +182,9 @@ export default function CommunityPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Max Members</label>
+                <label htmlFor="group-max-members" className="mb-1.5 block text-sm font-medium text-gray-900 dark:text-slate-200">Max Members</label>
                 <input
+                  id="group-max-members"
                   type="number"
                   required
                   min={2}

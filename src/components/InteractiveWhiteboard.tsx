@@ -606,7 +606,7 @@ export function InteractiveWhiteboard() {
                 </div>
                 <div>
                   <h2 className="font-bold text-slate-900 dark:text-white">{t("Interactive Whiteboard")}</h2>
-                  <p className="text-xs text-slate-500">{t("Collaborate and draw together")}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{t("Collaborate and draw together")}</p>
                 </div>
               </div>
 
@@ -893,7 +893,7 @@ export function InteractiveWhiteboard() {
                               className="flex-1 text-left"
                             >
                               <p className="font-medium text-slate-900 dark:text-white">{board.name}</p>
-                              <p className="text-xs text-slate-500">{board.elements.length} {t("elements")}</p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">{board.elements.length} {t("elements")}</p>
                             </button>
                             <button
                               onClick={() => deleteBoard(board.id)}

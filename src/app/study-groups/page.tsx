@@ -285,7 +285,7 @@ function StudyGroupsPageInner() {
                           />
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-slate-900 dark:text-white truncate">{group.name}</h3>
-                            <p className="text-xs text-slate-500">{t("Hosted by")} {group.host.name}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{t("Hosted by")} {group.host.name}</p>
                           </div>
                           <Badge color="violet">{t("Member")}</Badge>
                         </div>
@@ -458,7 +458,7 @@ function StudyGroupsPageInner() {
                         />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{group.host.name}</p>
-                          <p className="text-xs text-slate-500">{group.schedule}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{group.schedule}</p>
                         </div>
                       </div>
 
@@ -811,28 +811,28 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
               <Calendar className="w-5 h-5 text-violet-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Schedule")}</p>
-                <p className="text-xs text-slate-500">{group.schedule}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{group.schedule}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Clock className="w-5 h-5 text-green-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Next Session")}</p>
-                <p className="text-xs text-slate-500">{group.nextSession}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{group.nextSession}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Users className="w-5 h-5 text-blue-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Members")}</p>
-                <p className="text-xs text-slate-500">{group.memberCount} / {group.maxMembers}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{group.memberCount} / {group.maxMembers}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <BookOpen className="w-5 h-5 text-purple-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Subject")}</p>
-                <p className="text-xs text-slate-500">{group.subject}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{group.subject}</p>
               </div>
             </div>
           </div>

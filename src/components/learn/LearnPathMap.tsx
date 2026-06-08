@@ -75,7 +75,7 @@ export function LearnPathMap({
                       <LearnPathNode
                         node={{
                           id: `milestone-${node.chapterIndex}`,
-                          title: `Chest ${node.chapterIndex + 1}`,
+                          title: `Chapter ${node.chapterIndex + 1}`,
                           unitTitle: node.unitTitle,
                           estimatedMinutes: 0,
                           difficulty: "beginner",

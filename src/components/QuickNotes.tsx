@@ -142,6 +142,7 @@ export function QuickNotes() {
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
+                    aria-label={t("Close")}
                     className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                   >
                     <X className="w-5 h-5" />

@@ -602,6 +602,7 @@ export function AIMathTutor() {
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
+                    aria-label={t("Close")}
                     className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                   >
                     <X className="w-5 h-5" />

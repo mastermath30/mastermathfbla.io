@@ -136,6 +136,7 @@ export function PomodoroTimer() {
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
+                    aria-label={t("Close")}
                     className="p-1 rounded hover:bg-white/20 text-white"
                   >
                     <X className="w-5 h-5" />
@@ -147,7 +148,7 @@ export function PomodoroTimer() {
                   <button
                     onClick={() => switchMode("focus")}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      mode === "focus" ? "bg-white/30 text-white" : "text-white/70 hover:bg-white/10"
+                      mode === "focus" ? "bg-white/30 text-white" : "text-white/85 hover:bg-white/10"
                     }`}
                   >
                     <Brain className="w-4 h-4" />
@@ -156,7 +157,7 @@ export function PomodoroTimer() {
                   <button
                     onClick={() => switchMode("shortBreak")}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      mode === "shortBreak" ? "bg-white/30 text-white" : "text-white/70 hover:bg-white/10"
+                      mode === "shortBreak" ? "bg-white/30 text-white" : "text-white/85 hover:bg-white/10"
                     }`}
                   >
                     <Coffee className="w-4 h-4" />
@@ -165,7 +166,7 @@ export function PomodoroTimer() {
                   <button
                     onClick={() => switchMode("longBreak")}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      mode === "longBreak" ? "bg-white/30 text-white" : "text-white/70 hover:bg-white/10"
+                      mode === "longBreak" ? "bg-white/30 text-white" : "text-white/85 hover:bg-white/10"
                     }`}
                   >
                     <Coffee className="w-4 h-4" />
@@ -205,7 +206,7 @@ export function PomodoroTimer() {
                       <div className="text-5xl font-mono font-bold text-white">
                         {formatTime(timeLeft)}
                       </div>
-                      <div className="text-white/70 text-sm mt-1">
+                      <div className="text-white/85 text-sm mt-1">
                         {TIMER_SETTINGS[mode].label}
                       </div>
                     </div>
@@ -237,7 +238,7 @@ export function PomodoroTimer() {
                 </div>
 
                 {/* Sessions Info */}
-                <div className="p-3 text-center text-xs text-white/60 bg-black/10">
+                <div className="p-3 text-center text-xs text-white/80 bg-black/10">
                   {t("Complete 4 focus sessions for a long break")}
                 </div>
               </div>

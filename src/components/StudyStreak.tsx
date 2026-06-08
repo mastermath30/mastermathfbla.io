@@ -172,6 +172,7 @@ export function StudyStreak() {
 
                   <button
                     onClick={() => setIsOpen(false)}
+                    aria-label={t("Close")}
                     className="absolute top-4 right-4 p-2.5 min-w-[44px] min-h-[44px] rounded flex items-center justify-center hover:bg-white/20"
                   >
                     <X className="w-5 h-5" />
@@ -196,14 +197,14 @@ export function StudyStreak() {
                       <Trophy className="w-4 h-4" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">{streakData.longestStreak}</div>
-                    <div className="text-xs text-slate-500">{t("Longest Streak")}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Longest Streak")}</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-blue-500 mb-1">
                       <Calendar className="w-4 h-4" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">{streakData.totalDays}</div>
-                    <div className="text-xs text-slate-500">{t("Total Days")}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Total Days")}</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-yellow-500 mb-1">
@@ -212,7 +213,7 @@ export function StudyStreak() {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {Math.floor(streakData.totalDays / 7)}
                     </div>
-                    <div className="text-xs text-slate-500">{t("Weeks Active")}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Weeks Active")}</div>
                   </div>
                 </div>
 

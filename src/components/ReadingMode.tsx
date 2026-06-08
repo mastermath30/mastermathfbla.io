@@ -98,6 +98,7 @@ export function ReadingMode() {
                 </div>
                 <button
                   onClick={() => setIsActive(false)}
+                  aria-label={t("Close")}
                   className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
                 >
                   <X className="w-4 h-4" />

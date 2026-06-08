@@ -185,6 +185,7 @@ export function UnitConverter() {
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
+                    aria-label={t("Close")}
                     className="p-1 rounded hover:bg-white/20 text-white"
                   >
                     <X className="w-5 h-5" />

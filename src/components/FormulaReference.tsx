@@ -288,13 +288,14 @@ export function FormulaReference() {
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-white sm:text-xl">{t("Formula Reference")}</h2>
-                      <p className="mt-1 text-sm text-white/72">
+                      <p className="mt-1 text-sm text-white/90">
                         {activeData.name} • {activeData.items.length} {t("formulas")}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
+                    aria-label={t("Close")}
                     className="rounded-2xl border border-transparent p-2.5 text-white/80 transition-colors hover:border-white/15 hover:bg-white/12 hover:text-white"
                   >
                     <X className="w-5 h-5" />
