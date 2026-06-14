@@ -349,7 +349,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 leading-4">{insight.label}</p>
-                          <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white leading-snug">{insight.value}</p>
+                          <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white leading-snug break-words">{insight.value}</p>
                         </div>
                       </div>
                       <p className="mt-3 text-xs leading-5 text-slate-600 dark:text-slate-400">{insight.detail}</p>
@@ -516,7 +516,7 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => document.getElementById('recent-activity')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4">
+              <button onClick={() => document.getElementById('recent-activity')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-themed text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4 border-0 bg-transparent p-0 backdrop-filter-none">
                 {t("View all activity")}
                 <ArrowRight className="w-4 h-4" />
               </button>
