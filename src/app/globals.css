@@ -323,14 +323,6 @@ input[type="submit"],
 input[type="button"] {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid color-mix(in srgb, white 35%, transparent);
-}
-
-.dark button,
-.dark [role="button"],
-.dark input[type="submit"],
-.dark input[type="button"] {
-  border-color: color-mix(in srgb, rgb(71 85 105) 55%, transparent);
 }
 
 /* Ensure buttons and links are easily tappable */
