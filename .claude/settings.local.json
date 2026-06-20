@@ -13,7 +13,8 @@
       "Bash(npm run *)",
       "Bash(echo \"Dev server started \\(PID $!\\)\")",
       "Bash(git *)",
-      "Bash(npx vercel *)"
+      "Bash(npx vercel *)",
+      "Bash(grep -E \"package.json$\")"
     ]
   }
 }
