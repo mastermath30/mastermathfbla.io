@@ -617,19 +617,19 @@ export default function Home() {
             />
           </motion.div>
         </AnimatePresence>
-        <div className="absolute inset-0 bg-slate-950/72" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--theme-primary-rgb),0.14),transparent_46%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
+        <div className="absolute inset-0 bg-transparent dark:bg-slate-950/72" />
+        <div className="absolute inset-0 bg-transparent dark:bg-[radial-gradient(circle_at_center,rgba(var(--theme-primary-rgb),0.14),transparent_46%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
         <HeroMathScene reducedMotion={Boolean(reducedMotion)} staticScene={false} />
 
         <div className="relative z-20 mx-auto flex min-h-[94vh] w-full max-w-7xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 md:pt-32">
           <div>
-            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md">
+            <p className="inline-flex rounded-full border border-slate-900/10 bg-white/85 px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-white">
               {t("Trusted peer tutoring for ambitious students")}
             </p>
           </div>
 
           <div>
-            <h1 className="mx-auto mt-8 max-w-5xl text-balance text-4xl font-semibold leading-[0.98] tracking-normal text-white sm:text-6xl lg:text-7xl xl:text-8xl">
+            <h1 className="mx-auto mt-8 max-w-5xl text-balance text-4xl font-semibold leading-[0.98] tracking-normal text-slate-950 sm:text-6xl lg:text-7xl xl:text-8xl dark:text-white">
               {t("Master Mathematics")}
               <span className="relative block min-h-[1.12em] overflow-hidden text-[var(--theme-primary-light)]" aria-live="polite">
                 <span className="inline-flex max-w-full flex-wrap items-baseline justify-center gap-2 break-words">
@@ -643,7 +643,7 @@ export default function Home() {
           </div>
 
           <div>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-700 sm:text-xl dark:text-slate-200">
               {t("Get personalized lessons, clear explanations, and weekly progress support so you can feel confident in every math class and exam.")}
             </p>
           </div>
@@ -666,7 +666,7 @@ export default function Home() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="w-full rounded-full border-white/20 bg-white/10 px-7 text-white shadow-sm backdrop-blur-md hover:border-white/40 hover:bg-white/20 hover:text-white sm:w-auto"
+                      className="w-full rounded-full border-slate-900/15 bg-white/85 px-7 text-slate-950 shadow-sm backdrop-blur-md hover:border-slate-900/25 hover:bg-white hover:text-slate-950 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:border-white/40 dark:hover:bg-white/20 dark:hover:text-white sm:w-auto"
                     >
                       {heroSecondaryLabel}
                     </Button>
@@ -678,11 +678,11 @@ export default function Home() {
 
           <div className="mt-12 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label} className="rounded-2xl border border-white/12 bg-white/10 p-4 text-left shadow-sm backdrop-blur-md">
-                <div className="text-2xl font-semibold tracking-tight text-white">
+              <div key={stat.label} className="rounded-2xl border border-white/80 bg-white/80 p-4 text-left shadow-sm backdrop-blur-md dark:border-white/12 dark:bg-white/10">
+                <div className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
                   <AnimatedNumberClient value={stat.value} duration={700} label={stat.label} />
                 </div>
-                <div className="mt-1 text-xs font-semibold text-white/85">{stat.label}</div>
+                <div className="mt-1 text-xs font-semibold text-slate-700 dark:text-white/85">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -690,9 +690,9 @@ export default function Home() {
           <div className="w-full">
             <div className="mx-auto mt-8 grid w-full max-w-4xl items-stretch gap-4 md:grid-cols-3">
               {heroModes.slice(1).map((mode) => (
-                <div key={mode.label} className="flex h-full min-h-[132px] flex-col rounded-2xl border border-white/12 bg-slate-950/45 p-5 text-left backdrop-blur-md">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary-light)]">{mode.label}</p>
-                  <p className="mt-3 text-sm leading-7 text-slate-100 sm:text-[15px]">{mode.description}</p>
+                <div key={mode.label} className="flex h-full min-h-[132px] flex-col rounded-2xl border border-white/80 bg-white/80 p-5 text-left backdrop-blur-md dark:border-white/12 dark:bg-slate-950/45">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary-dark)] dark:text-[var(--theme-primary-light)]">{mode.label}</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-700 sm:text-[15px] dark:text-slate-100">{mode.description}</p>
                 </div>
               ))}
             </div>

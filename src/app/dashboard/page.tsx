@@ -241,7 +241,6 @@ export default function DashboardPage() {
             iconColor="text-violet-500"
             subtext={t("12% this week")}
             subtextColor="text-green-600"
-            trend="up"
           />
           <StatCard
             icon={CheckCircle2}
@@ -251,7 +250,6 @@ export default function DashboardPage() {
             iconColor="text-green-500"
             subtext={t("+32 this week")}
             subtextColor="text-green-600"
-            trend="up"
           />
           <StatCard
             icon={Flame}
@@ -525,7 +523,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* Study Goals */}
-          <Card padding="none" className="overflow-hidden" id="study-goals">
+          <Card padding="none" className="self-start overflow-hidden" id="study-goals">
             <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-100 dark:bg-slate-900">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
