@@ -230,6 +230,7 @@ export default function CommunityPage() {
             Create Study Group
           </Button>
         }
+        primaryAction={{ label: t("Open Study Groups"), href: "/study-groups" }}
         visualEyebrow="Forum flow"
         visualTitle="Community workspace"
         visualProgress="88%"

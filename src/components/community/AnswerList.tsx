@@ -18,7 +18,7 @@ export function AnswerList({ answers }: AnswerListProps) {
       {answers.map((answer, index) => (
         <div
           key={answer.id}
-          className="rounded-2xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/70"
+          className="rounded-2xl border border-slate-400 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/70"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Answer {index + 1}

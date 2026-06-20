@@ -2164,8 +2164,15 @@ button, a, .card, .interactive {
 
 @media (min-width: 768px) {
   .learn-top-strip-inner {
-    grid-template-columns: 1.3fr auto 1fr auto;
+    grid-template-columns: minmax(12rem, 1.3fr) auto minmax(14rem, 1fr) auto;
     align-items: center;
+  }
+
+  /* Keep the XP meter on the same visual baseline as the neighboring controls. */
+  .learn-top-strip-progress {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
   }
 }
 

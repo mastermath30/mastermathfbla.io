@@ -41,6 +41,8 @@ type PageHeroProps = {
   maxWidthClass?: string;
   /** Size for the auto-generated primaryAction / secondaryAction buttons. Default "lg". */
   buttonSize?: "sm" | "md" | "lg";
+  /** Text color for numbered visual items after the first completed item. */
+  visualItemNumberClassName?: string;
   className?: string;
 };
 
@@ -60,6 +62,7 @@ export function PageHero({
   visualItems,
   maxWidthClass = "max-w-7xl",
   buttonSize = "lg",
+  visualItemNumberClassName = "text-[var(--theme-primary)]",
   className = "",
 }: PageHeroProps) {
   return (
@@ -151,8 +154,8 @@ export function PageHero({
             <div className="mt-5 grid gap-3">
               {visualItems.map((item, index) => (
                 <div key={`${item.label}-${item.title}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : ""}`}
-                    style={index !== 0 ? { backgroundColor: "var(--accent-soft)", color: "var(--theme-primary)" } : undefined}>
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : visualItemNumberClassName}`}
+                    style={index !== 0 ? { backgroundColor: "var(--accent-soft)" } : undefined}>
                     {index === 0 ? <CheckCircle2 className="h-5 w-5" /> : index + 1}
                   </div>
                   <div className="min-w-0 flex-1">

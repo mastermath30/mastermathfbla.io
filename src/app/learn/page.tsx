@@ -779,6 +779,7 @@ function LearnPageClient() {
         secondaryAction={{ label: t("Ask Community"), href: selectedTopicCommunityHref }}
         buttonSize="sm"
         maxWidthClass="max-w-[88rem]"
+        visualItemNumberClassName="text-slate-950 dark:text-[var(--theme-primary)]"
         visualEyebrow={t("Current topic")}
         visualTitle={activeTopic?.title ?? selectedCourse?.title ?? t("Learning path")}
         visualProgress={`${Math.max(courseCompletionPercent, 8)}%`}
@@ -1064,7 +1065,7 @@ function LearnPageClient() {
           <Card className="h-fit sticky top-36" glow={false}>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Your Next Step")}</p>
             <h2 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">{selectedNode?.title ?? t("Select a lesson")}</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="mt-1 text-xs capitalize text-slate-500 dark:text-slate-400">
               {selectedNode?.state ? selectedNode.state.replace("_", " ") : flowLabelByState[selectedFlowState]}
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">{activeTopic?.summary ?? ""}</p>
@@ -1183,7 +1184,7 @@ function LearnPageClient() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {availableQuizSlugs.length > 0 && (
-                  <span className="learn-hub-chip">
+                  <span className="self-center text-xs font-medium text-slate-600 dark:text-slate-400">
                     {t("Quiz available")}
                   </span>
                 )}
