@@ -51,8 +51,8 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
     } else {
       document.documentElement.classList.remove('dark');
       document.body.classList.remove('dark');
-      document.body.style.background = '#f8fafc';
-      document.body.style.color = '#0f172a';
+      document.body.style.background = 'var(--background)';
+      document.body.style.color = 'var(--foreground)';
     }
   };
 

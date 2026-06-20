@@ -31,10 +31,15 @@ html {
 }
 
 :root {
-  --background: #fafafa;
+  --background: #f7f4ed;
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
+  --surface-subtle: #f8fafc;
+  --text-strong: #0f172a;
+  --text-default: #334155;
+  --text-muted: #475569;
+  --progress-track: #e2e8f0;
   --primary: #7c3aed;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
@@ -76,6 +81,11 @@ html {
   --accent-ring: var(--theme-primary);
   --accent-muted: color-mix(in srgb, var(--theme-primary) 8%, #020617);
   --border: #1e293b;
+  --surface-subtle: #0f172a;
+  --text-strong: #f8fafc;
+  --text-default: #e2e8f0;
+  --text-muted: #94a3b8;
+  --progress-track: #0f172a;
 }
 
 /* Color theme classes */
@@ -94,10 +104,10 @@ html {
 }
 
 .theme-teal {
-  --theme-primary: #0d9488;
+  --theme-primary: #0f766e;
   --theme-primary-light: #2dd4bf;
-  --theme-primary-dark: #0f766e;
-  --theme-primary-rgb: 13, 148, 136;
+  --theme-primary-dark: #115e59;
+  --theme-primary-rgb: 15, 118, 110;
 }
 
 .theme-blue {
@@ -108,10 +118,10 @@ html {
 }
 
 .theme-green {
-  --theme-primary: #16a34a;
+  --theme-primary: #15803d;
   --theme-primary-light: #4ade80;
   --theme-primary-dark: #15803d;
-  --theme-primary-rgb: 22, 163, 74;
+  --theme-primary-rgb: 21, 128, 61;
 }
 
 .theme-red {
@@ -129,10 +139,10 @@ html {
 }
 
 .theme-orange {
-  --theme-primary: #ea580c;
+  --theme-primary: #c2410c;
   --theme-primary-light: #fb923c;
   --theme-primary-dark: #c2410c;
-  --theme-primary-rgb: 234, 88, 12;
+  --theme-primary-rgb: 194, 65, 12;
 }
 
 /* Colorblind-friendly palette override */
@@ -251,7 +261,7 @@ html {
 }
 
 body {
-  background-color: #f7f4ed;
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   /* Prevent horizontal scroll on mobile */
@@ -680,39 +690,26 @@ html {
    Ensures readable text in all color modes
    ======================================== */
 
-/* Note: We keep .text-white as white since hero headers have dark overlays */
-
-:not(.dark) .text-slate-400 {
-  color: #475569 !important;
-}
-
+/* Light mode typography and surfaces use semantic tokens so nested cards, pills,
+   and controls cannot inherit washed-out colors from broad utility overrides. */
+:not(.dark) .text-slate-500,
+:not(.dark) .text-slate-400,
 :not(.dark) .text-slate-300 {
-  color: #475569 !important;
+  color: var(--text-muted);
 }
 
-:not(.dark) .text-slate-500 {
-  color: #475569 !important;
+.mm-primary-action {
+  background-color: var(--theme-primary);
+  color: var(--primary-foreground);
 }
 
-/* Light mode card backgrounds and text */
-:not(.dark) .bg-slate-950 {
-  background-color: #f8fafc !important;
+.mm-primary-action:hover {
+  background-color: var(--theme-primary-dark);
+  color: var(--primary-foreground);
 }
 
-:not(.dark) .bg-slate-900 {
-  background-color: #ffffff !important;
-}
-
-:not(.dark) .bg-slate-800 {
-  background-color: #f1f5f9 !important;
-}
-
-:not(.dark) .border-slate-700 {
-  border-color: #e2e8f0 !important;
-}
-
-:not(.dark) .border-slate-800 {
-  border-color: #e2e8f0 !important;
+.mm-progress-track {
+  background-color: var(--progress-track);
 }
 
 /* Primary themed elements */

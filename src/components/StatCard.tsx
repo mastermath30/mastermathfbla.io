@@ -25,7 +25,7 @@ export function StatCard({
   themed = false,
 }: StatCardProps) {
   return (
-    <div className="group bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-700/50 p-5 hover:shadow-xl hover:shadow-[rgba(var(--theme-primary-rgb),0.1)] dark:hover:shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--theme-primary)]/20">
+    <div className="group rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--theme-primary)]/20 hover:shadow-xl hover:shadow-[rgba(var(--theme-primary-rgb),0.1)] dark:hover:shadow-black/40">
       <div className="flex items-center gap-4">
         <div 
           className={clsx(
@@ -40,8 +40,8 @@ export function StatCard({
           />
         </div>
         <div className="flex-1">
-          <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide font-medium">{label}</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono tracking-tight">{value}</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">{label}</p>
+          <p className="text-2xl font-bold font-mono tracking-tight text-[var(--text-strong)]">{value}</p>
           {subtext && (
             <p className={clsx("text-xs mt-0.5 flex items-center gap-1 font-medium", subtextColor)}>
               {trend === "up" && <span className="inline-block w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[6px] border-b-current" />}

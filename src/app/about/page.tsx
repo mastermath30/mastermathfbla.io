@@ -266,12 +266,12 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((step, index) => (
-              <div key={step.number} className="relative">
+              <div key={step.number} className="relative h-full">
                 {/* Connector */}
                 {index < steps.length - 1 && (
                   <div className="hidden md:block absolute top-32 left-[60%] w-full h-0.5 z-0" style={{ background: 'linear-gradient(to right, var(--theme-primary-light), transparent)' }} />
                 )}
-                <Card className="relative overflow-hidden" padding="none">
+                <Card className="relative h-full overflow-hidden" padding="none">
                   <div className="relative h-48">
                     <Image
                       src={step.image}

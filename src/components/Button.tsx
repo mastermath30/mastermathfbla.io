@@ -26,7 +26,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Accessibility and overflow
           "overflow-hidden group",
           {
-            "bg-[var(--theme-primary)] text-white shadow-[0_10px_24px_rgba(var(--theme-primary-rgb),0.22)] hover:bg-[var(--theme-primary-dark)] hover:shadow-[0_12px_28px_rgba(var(--theme-primary-rgb),0.30)] active:scale-[0.99] focus:ring-[var(--theme-primary)]":
+            "mm-primary-action shadow-[0_10px_24px_rgba(var(--theme-primary-rgb),0.22)] hover:shadow-[0_12px_28px_rgba(var(--theme-primary-rgb),0.30)] active:scale-[0.99] focus:ring-[var(--theme-primary)]":
               variant === "primary",
             "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm active:scale-[0.99] focus:ring-slate-400":
               variant === "secondary",
@@ -34,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               variant === "ghost",
             "bg-white dark:bg-slate-900 border border-slate-300/90 dark:border-slate-700/90 text-slate-700 dark:text-slate-200 hover:border-[var(--theme-primary)] hover:bg-[var(--accent-soft)] dark:hover:bg-slate-800 hover:text-[var(--theme-primary)] dark:hover:text-[var(--theme-primary-light)] hover:shadow-sm active:scale-[0.99] focus:ring-[var(--theme-primary)]":
               variant === "outline",
-            "bg-[var(--theme-primary)] text-white shadow-[0_10px_24px_rgba(var(--theme-primary-rgb),0.25)] hover:bg-[var(--theme-primary-dark)] hover:shadow-[0_14px_30px_rgba(var(--theme-primary-rgb),0.35)] active:scale-[0.99] focus:ring-[var(--theme-primary)]":
+            "mm-primary-action shadow-[0_10px_24px_rgba(var(--theme-primary-rgb),0.25)] hover:shadow-[0_14px_30px_rgba(var(--theme-primary-rgb),0.35)] active:scale-[0.99] focus:ring-[var(--theme-primary)]":
               variant === "glow",
           },
           {

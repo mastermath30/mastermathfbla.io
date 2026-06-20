@@ -17,7 +17,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         className={clsx(
           "group/card rounded-[24px] transition-all duration-300 ease-out",
           {
-            "bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)]": variant === "default",
+            "bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)]": variant === "default",
             "bg-transparent border border-slate-300/80 dark:border-slate-700/80": variant === "outline",
             "bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_14px_36px_rgba(2,6,23,0.34)]": variant === "glass",
             "bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 shadow-[0_10px_28px_rgba(15,23,42,0.055)] dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)]": variant === "gradient",

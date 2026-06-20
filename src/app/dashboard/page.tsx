@@ -61,6 +61,7 @@ const challenges = [
   { icon: Infinity, title: "Linear Algebra Basics", due: "Due in 5 days", count: "15 problems", progress: 40, completed: 6, total: 15, color: "green" as const },
   { icon: PieChart, title: "Statistics Quiz", due: "Starts in 3 days", count: "30 min • 10 questions", progress: 0, color: "yellow" as const, isQuiz: true },
   { icon: FunctionSquare, title: "Advanced Functions", due: "Due in 1 week", count: "10 problems", progress: 20, completed: 2, total: 10, color: "purple" as const },
+  { icon: Calculator, title: "Trigonometry Identities", due: "Due in 9 days", count: "12 problems", progress: 50, completed: 6, total: 12, color: "violet" as const },
 ];
 
 const activities = [
@@ -429,7 +430,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Challenges */}
-          <Card padding="none" className="overflow-hidden" id="challenges">
+          <Card padding="none" className="self-start overflow-hidden" id="challenges">
             <div className="rounded-t-[inherit] border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900/80">
               <div className="flex items-center gap-3">
                 <div className="mm-icon-tile h-11 w-11">

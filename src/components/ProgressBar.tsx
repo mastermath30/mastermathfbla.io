@@ -23,7 +23,7 @@ export function ProgressBar({
     <div className="w-full">
       <div
         className={clsx(
-          "w-full bg-slate-200 dark:bg-slate-950 rounded-full overflow-hidden",
+          "mm-progress-track w-full rounded-full overflow-hidden",
           {
             "h-1.5": size === "sm",
             "h-2.5": size === "md",
@@ -53,7 +53,7 @@ export function ProgressBar({
         </div>
       </div>
       {showLabel && (
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-mono">{percentage.toFixed(0)}%</p>
+        <p className="mt-1.5 text-xs font-mono text-[var(--text-muted)]">{percentage.toFixed(0)}%</p>
       )}
     </div>
   );

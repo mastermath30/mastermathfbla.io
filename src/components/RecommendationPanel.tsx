@@ -26,6 +26,33 @@ export function RecommendationPanel({
   title = "Recommended Next Steps",
 }: RecommendationPanelProps) {
   const { t } = useTranslations();
+  const displayRecommendations: Recommendation[] = recommendations.length > 0
+    ? recommendations
+    : [
+        {
+          id: "start-learning-path",
+          kind: "next-best-action",
+          title: "Choose your learning path",
+          reason: "Pick a course and we’ll turn it into clear lessons, practice, and quizzes for you.",
+          href: "/learn",
+          ctaLabel: "Open Learn",
+          priority: 1,
+          confidence: 1,
+          primary: true,
+          sourceSignals: ["getting_started"],
+        },
+        {
+          id: "try-diagnostic",
+          kind: "quiz",
+          title: "Take a quick diagnostic",
+          reason: "Not sure where to begin? A short quiz can suggest the best starting point.",
+          href: "/resources/quiz/diagnostic",
+          ctaLabel: "Start diagnostic",
+          priority: 1,
+          confidence: 1,
+          sourceSignals: ["getting_started"],
+        },
+      ];
 
   return (
     <Card className="h-full">
@@ -35,7 +62,7 @@ export function RecommendationPanel({
       </p>
 
       <div className="space-y-3 mt-4">
-        {recommendations.map((recommendation) => {
+        {displayRecommendations.map((recommendation) => {
           const Icon = kindIcon[recommendation.kind];
           return (
             <Link

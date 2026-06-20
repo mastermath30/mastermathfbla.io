@@ -31,7 +31,6 @@ import {
   ChevronDown,
   Sparkles,
   Zap,
-  Target,
   Clock,
   CalendarPlus,
   SquareRadical,
@@ -84,6 +83,33 @@ const sessions = [
     status: "confirmed",
     color: "blue",
     image: getTutorByName("Michael Chen")?.image ?? "",
+  },
+];
+
+const recentSessions = [
+  {
+    title: "Quadratics Review",
+    date: "Yesterday",
+    tutor: "Michael Chen",
+    duration: "45 min",
+    takeaway: "Factoring and graphing patterns",
+    image: getTutorByName("Michael Chen")?.image ?? "",
+  },
+  {
+    title: "Limits & Continuity",
+    date: "Jun 16",
+    tutor: "Priya Patel",
+    duration: "1 hr",
+    takeaway: "One-sided limits are clicking",
+    image: getTutorByName("Priya Patel")?.image ?? "",
+  },
+  {
+    title: "Integration Practice",
+    date: "Jun 12",
+    tutor: "Sarah Johnson",
+    duration: "1 hr 15 min",
+    takeaway: "Substitution methods and area",
+    image: getTutorByName("Sarah Johnson")?.image ?? "",
   },
 ];
 
@@ -626,9 +652,9 @@ export default function Home() {
             <div className="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
               <Link href="/tutors" className="w-full sm:w-auto">
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="lg"
-                  className="w-full rounded-full bg-[var(--theme-primary)] px-7 text-white shadow-[0_18px_60px_rgba(var(--theme-primary-rgb),0.34)] hover:bg-[var(--theme-primary-dark)] hover:text-white sm:w-auto"
+                  className="w-full rounded-full px-7 shadow-[0_18px_60px_rgba(var(--theme-primary-rgb),0.34)] sm:w-auto"
                 >
                   {t("Book Your First Session")}
                   <ArrowRight className="h-5 w-5" />
@@ -880,36 +906,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Phase 1: How MathMaster works */}
+      {/* Returning student: recent sessions */}
       <section className="mm-section py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <FadeIn className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("How MathMaster works")}</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Build skill one clear step at a time")}</h2>
-            <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">{t("A focused path for learning concepts, practicing with feedback, and getting help when you get stuck.")}</p>
+          <FadeIn className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Your learning history")}</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{t("Recent sessions")}</h2>
+              <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">{t("Pick up where you left off and keep the ideas from your last tutoring sessions fresh.")}</p>
+            </div>
+            <Link href="/schedule" className="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">
+              {t("View all sessions")}
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+            </Link>
           </FadeIn>
 
           <FadeInStagger className="mt-12 grid gap-5 md:grid-cols-3" staggerDelay={0.06}>
-            {[
-              { title: t("Learn"), description: t("Start with guided lessons that explain the idea before the formula."), icon: BookOpen, href: "/learn" },
-              { title: t("Practice"), description: t("Try focused quizzes and use feedback to find the exact step to review."), icon: Target, href: "/learn#quizzes" },
-              { title: t("Get Help"), description: t("Connect with tutors and the community when a concept needs a real explanation."), icon: Users, href: "/tutoring-request" },
-            ].map((step, index) => (
-              <FadeInStaggerItem key={step.title}>
-                <Link href={step.href} className="group mm-card-surface block h-full rounded-3xl p-6 transition hover:-translate-y-0.5 hover:border-[var(--theme-primary)]/30 hover:shadow-md">
-                  <div className="mb-8 flex items-center justify-between">
-                    <div className="mm-icon-tile flex h-12 w-12 items-center justify-center">
-                      <step.icon className="h-5 w-5" />
+            {recentSessions.map((session) => (
+              <FadeInStaggerItem key={session.title}>
+                <Card className="flex h-full flex-col overflow-hidden rounded-3xl border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" padding="none">
+                  <div className="relative h-60 overflow-hidden">
+                    <Image src={session.image} alt={session.tutor} fill className="object-cover object-[center_18%] transition duration-500 hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/95 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      {t("Completed")}
                     </div>
-                    <span className="text-sm font-semibold text-slate-400">0{index + 1}</span>
+                    <div className="absolute bottom-4 left-4 rounded-full bg-black/45 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
+                      {session.duration}
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{step.description}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">
-                    {t("Explore")}
-                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                  </span>
-                </Link>
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{session.title}</h3>
+                        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{t("with")} {session.tutor}</p>
+                      </div>
+                      <p className="shrink-0 text-right text-sm font-semibold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{session.date}</p>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      <span className="mm-accent-pill rounded-full px-2.5 py-1 text-xs font-semibold">{session.takeaway}</span>
+                    </div>
+                    <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{t("Completed tutoring session")}</p>
+                    <Link href="/schedule" className="mt-auto pt-5">
+                      <Button className="w-full rounded-full">{t("Review Session")}</Button>
+                    </Link>
+                  </div>
+                </Card>
               </FadeInStaggerItem>
             ))}
           </FadeInStagger>
@@ -929,7 +972,7 @@ export default function Home() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link href="/learn">
-                    <Button variant="ghost" className="rounded-full bg-[var(--theme-primary)] px-6 text-white hover:bg-[var(--theme-primary-dark)] hover:text-white">{t("Open Learn")}</Button>
+                    <Button variant="primary" className="rounded-full px-6">{t("Open Learn")}</Button>
                   </Link>
                   <Link href="/community">
                     <Button variant="outline" className="rounded-full bg-white px-6 text-slate-800 hover:bg-[var(--accent-soft)] hover:text-[var(--theme-primary)] dark:bg-slate-900 dark:text-slate-100">{t("Ask the Community")}</Button>
@@ -1099,7 +1142,7 @@ export default function Home() {
             <div className="mt-8 flex min-h-[52px] justify-center">
               {isAuthResolved && (
                 <Link href={bottomCtaHref}>
-                  <Button variant="ghost" size="lg" className="rounded-full bg-[var(--theme-primary)] px-8 text-white shadow-sm hover:bg-[var(--theme-primary-dark)] hover:text-white">
+                  <Button variant="primary" size="lg" className="rounded-full px-8 shadow-sm">
                     {bottomCtaLabel}
                     <ArrowRight className="h-5 w-5" />
                   </Button>

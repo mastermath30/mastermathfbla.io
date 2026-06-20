@@ -100,10 +100,9 @@ export function PageHero({
               {primaryAction && (
                 <Link href={primaryAction.href} className="w-full sm:w-auto">
                   <Button
-                    variant="ghost"
+                    variant="primary"
                     size={buttonSize}
-                    className="w-full rounded-full px-7 text-white shadow-sm hover:text-white sm:w-auto"
-                    style={{ background: "var(--theme-primary)" }}
+                    className="w-full rounded-full px-7 shadow-sm sm:w-auto"
                   >
                     {primaryAction.label}
                     <ArrowRight className="h-5 w-5" />

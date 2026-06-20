@@ -859,6 +859,9 @@ function LearnPageClient() {
                       eyebrow: t("Foundations"),
                       description: t("Start with more direct questions and simpler examples."),
                       detail: t("Best for first attempts, review, and building confidence."),
+                      eyebrowClass: "text-emerald-700 dark:text-emerald-300",
+                      titleClass: "text-emerald-950 dark:text-emerald-100",
+                      descriptionClass: "text-emerald-800 dark:text-emerald-200",
                     },
                     {
                       id: "medium" as const,
@@ -866,6 +869,9 @@ function LearnPageClient() {
                       eyebrow: t("Standard"),
                       description: t("Use the standard quiz path for topic understanding."),
                       detail: t("Balanced challenge with multi-step thinking and familiar problem types."),
+                      eyebrowClass: "text-indigo-700 dark:text-indigo-300",
+                      titleClass: "text-indigo-950 dark:text-indigo-100",
+                      descriptionClass: "text-indigo-800 dark:text-indigo-200",
                     },
                     {
                       id: "hard" as const,
@@ -873,6 +879,9 @@ function LearnPageClient() {
                       eyebrow: t("Challenge"),
                       description: t("Take on more demanding reasoning and deeper application."),
                       detail: t("Best for stronger recall, word problems, and tougher distractors."),
+                      eyebrowClass: "text-rose-700 dark:text-rose-300",
+                      titleClass: "text-rose-950 dark:text-rose-100",
+                      descriptionClass: "text-rose-800 dark:text-rose-200",
                     },
                   ].map((option) => (
                     <button
@@ -893,24 +902,18 @@ function LearnPageClient() {
                         });
                         setQuizDifficultyPicker(null);
                       }}
-                      className="group relative flex h-full min-h-[220px] flex-col rounded-3xl border border-slate-200/90 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.05)] transition-all duration-200 hover:-translate-y-px hover:border-indigo-200 hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)] active:scale-[0.99] dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)] dark:hover:border-indigo-900/70 focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2"
+                      className="group relative flex h-full min-h-[196px] flex-col rounded-3xl border border-slate-200/90 bg-white p-5 text-left shadow-[0_10px_28px_rgba(15,23,42,0.05)] transition-all duration-200 hover:-translate-y-px hover:border-indigo-200 hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)] active:scale-[0.99] dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_14px_34px_rgba(2,6,23,0.32)] dark:hover:border-indigo-900/70 focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2"
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-primary)]/90">
-                            {option.eyebrow}
-                          </p>
-                          <p className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
-                            {option.title}
-                          </p>
-                        </div>
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-sm font-bold text-indigo-700 transition-colors duration-200 group-hover:border-indigo-200 group-hover:bg-indigo-600 group-hover:text-white dark:border-indigo-900/60 dark:bg-indigo-950/50 dark:text-indigo-300">
-                          {option.title.charAt(0)}
-                        </div>
+                      <div>
+                        <p className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${option.eyebrowClass}`}>
+                          {option.eyebrow}
+                        </p>
+                        <p className={`mt-1.5 text-lg font-semibold tracking-tight ${option.titleClass}`}>
+                          {option.title}
+                        </p>
                       </div>
-                      <p className="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-300">{option.description}</p>
-                      <p className="mt-3 flex-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{option.detail}</p>
-                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--theme-primary)] group-hover:text-[var(--theme-primary)]">
+                      <p className={`mt-3 flex-1 text-[13px] leading-5 ${option.descriptionClass}`}>{option.description} {option.detail}</p>
+                      <div className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-[var(--theme-primary)] group-hover:text-[var(--theme-primary)]">
                         <span>{t("Start {level}", { level: option.title })}</span>
                         <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                       </div>
