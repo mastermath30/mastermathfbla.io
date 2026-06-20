@@ -775,7 +775,7 @@ export function TutorBookingBrowser({
                       {(expandedSpecialties[tutor.name] ? tutor.specialties : tutor.specialties.slice(0, 2)).map(specialty => (
                         <span 
                           key={specialty}
-                          className="text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
+                          className="inline-flex items-center justify-center text-center text-xs px-2.5 py-1 rounded-full transition-colors bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium"
                         >
                           {specialty}
                         </span>

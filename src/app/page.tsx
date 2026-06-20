@@ -1090,7 +1090,7 @@ export default function Home() {
                     {tutor.specialties && (
                       <div className="mt-4 flex flex-wrap gap-1.5">
                         {tutor.specialties.slice(0, 3).map((specialty) => (
-                          <span key={specialty} className="mm-accent-pill rounded-full px-2.5 py-1 text-xs font-semibold">
+                          <span key={specialty} className="mm-accent-pill inline-flex items-center justify-center text-center rounded-full px-2.5 py-1 text-xs font-semibold">
                             {specialty}
                           </span>
                         ))}
