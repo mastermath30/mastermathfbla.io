@@ -1319,7 +1319,7 @@ export default function SchedulePage() {
                     </span>
                   </div>
                   <Button
-                    className="w-full group/btn"
+                    className="mt-3 w-full group/btn"
                     disabled={!tutor.available}
                     onClick={() => tutor.available && handleBookNow(tutor)}
                   >

@@ -74,6 +74,8 @@ const initialGoals = [
   { title: "Complete Calculus Module", status: "in_progress", progress: 75, label: "75%" },
   { title: "Solve 50 Practice Problems", status: "needs_work", progress: 30, label: "15/50" },
   { title: "Attend 3 Study Sessions", status: "completed", progress: 100, label: "3/3" },
+  { title: "Review Trigonometry Identities", status: "in_progress", progress: 50, label: "5/10" },
+  { title: "Complete Statistics Quiz", status: "needs_work", progress: 40, label: "4/10" },
 ];
 
 export default function DashboardPage() {
@@ -85,9 +87,15 @@ export default function DashboardPage() {
   const [goalTitle, setGoalTitle] = useState("");
   const [goalTarget, setGoalTarget] = useState("");
   const [isDark, setIsDark] = useState(false);
-  const [learningProgress, setLearningProgress] = useState(getLearningProgress);
-  const recommendations = useMemo(() => buildRecommendations(learningProgress), [learningProgress]);
-  const dailyPlan = useMemo(() => buildDailyStudyPlan(learningProgress), [learningProgress]);
+  const [learningProgress, setLearningProgress] = useState<ReturnType<typeof getLearningProgress> | null>(null);
+  const recommendations = useMemo(
+    () => (learningProgress ? buildRecommendations(learningProgress) : []),
+    [learningProgress]
+  );
+  const dailyPlan = useMemo(
+    () => (learningProgress ? buildDailyStudyPlan(learningProgress) : []),
+    [learningProgress]
+  );
   const learningInsights = useMemo(
     () => [
       {
@@ -109,7 +117,7 @@ export default function DashboardPage() {
         icon: CheckCircle2,
       },
       {
-        label: t("Recommended next lesson"),
+        label: t("Next lesson"),
         value: dailyPlan[0]?.title ?? t("Open your lesson"),
         detail: dailyPlan[0]?.description ?? t("Continue from your current learning path."),
         icon: Sparkles,
@@ -120,6 +128,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
+    setLearningProgress(getLearningProgress());
     // Check if dark mode is enabled
     const checkDarkMode = () => {
       const isDarkMode = document.documentElement.classList.contains('dark');
@@ -339,19 +348,22 @@ export default function DashboardPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="mb-6 grid grid-cols-1 items-start gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   {learningInsights.map((insight) => (
-                    <div key={insight.label} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-950/60">
+                    <div
+                      key={insight.label}
+                      className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-800 dark:bg-slate-950/60"
+                      title={`${insight.value}. ${insight.detail}`}
+                    >
                       <div className="flex items-start gap-3">
                         <div className="mm-icon-tile h-10 w-10 shrink-0">
                           <insight.icon className="h-5 w-5" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 leading-4">{insight.label}</p>
-                          <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white leading-snug break-words">{insight.value}</p>
+                          <p className="mt-1 truncate text-sm font-bold leading-snug text-slate-900 dark:text-white">{insight.value}</p>
                         </div>
                       </div>
-                      <p className="mt-3 text-xs leading-5 text-slate-600 dark:text-slate-400">{insight.detail}</p>
                     </div>
                   ))}
                 </div>
@@ -428,7 +440,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Challenges */}
-          <Card padding="none" className="self-start overflow-hidden" id="challenges">
+          <Card padding="none" className="flex h-full flex-col overflow-hidden" id="challenges">
             <div className="rounded-t-[inherit] border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900/80">
               <div className="flex items-center gap-3">
                 <div className="mm-icon-tile h-11 w-11">
@@ -440,8 +452,8 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-            <div className="divide-y divide-slate-200 dark:divide-slate-800">
-              {challenges.map((challenge) => (
+            <div className="flex-1 divide-y divide-slate-200 dark:divide-slate-800">
+              {challenges.slice(0, 4).map((challenge) => (
                 <div key={challenge.title} className="p-4 transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-900/60">
                   <div className="flex items-start gap-3">
                     <div className="mm-icon-tile h-10 w-10 flex-shrink-0">
@@ -577,7 +589,7 @@ export default function DashboardPage() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <div className="mt-8 grid xl:grid-cols-[2fr_1fr] gap-6">
+          <div className="mt-8 grid gap-6 xl:grid-cols-[2fr_1fr]">
             <RecommendationPanel
               recommendations={recommendations}
               title={t("Your Recommended Next Steps")}

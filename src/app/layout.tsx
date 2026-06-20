@@ -41,45 +41,6 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// Script to apply theme and accessibility before React hydrates (prevents flash)
-const themeInitScript = `
-  (function() {
-    try {
-      const savedColor = localStorage.getItem('mm_color_theme') || 'indigo';
-      const savedMode = localStorage.getItem('mm_dark_mode');
-      const isDark = savedMode === null ? true : savedMode === 'true';
-
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-        document.body.classList.add('dark');
-        document.body.style.background = '#020617';
-        document.body.style.color = '#f8fafc';
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.body.classList.remove('dark');
-        document.body.style.background = 'var(--background)';
-        document.body.style.color = 'var(--foreground)';
-      }
-      
-      // Remove any stale theme classes before applying saved one
-      document.documentElement.classList.remove(
-        'theme-indigo', 'theme-violet', 'theme-teal', 'theme-blue',
-        'theme-green', 'theme-red', 'theme-rose', 'theme-orange'
-      );
-      document.documentElement.classList.add('theme-' + savedColor);
-      
-      // Apply accessibility settings
-      const accessibility = JSON.parse(localStorage.getItem('mm_accessibility') || '{}');
-      if (accessibility.fontSize) document.documentElement.style.fontSize = accessibility.fontSize + '%';
-      if (accessibility.highContrast) document.documentElement.classList.add('high-contrast');
-      if (accessibility.reduceMotion) document.documentElement.classList.add('reduce-motion');
-      if (accessibility.dyslexiaFont) document.documentElement.classList.add('dyslexia-font');
-      if (accessibility.largePointer) document.documentElement.classList.add('large-pointer');
-      if (accessibility.focusHighlight) document.documentElement.classList.add('focus-highlight');
-    } catch (e) {}
-  })();
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -87,9 +48,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body className={`${inter.variable} antialiased min-h-screen bg-slate-50 dark:bg-slate-950`}>
         <LanguageProvider>
           <SkipToContentLink />

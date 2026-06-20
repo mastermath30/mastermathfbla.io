@@ -720,6 +720,40 @@ html {
   color: var(--primary-foreground);
 }
 
+/* Older page-level buttons still carry hard-coded brand utilities. Keep their
+   actions in the selected theme so the UI has one coherent accent language. */
+button[class*="bg-indigo-500"],
+button[class*="bg-indigo-600"],
+button[class*="bg-indigo-700"],
+button[class*="bg-violet-500"],
+button[class*="bg-violet-600"],
+button[class*="bg-violet-700"],
+button[class*="bg-purple-500"],
+button[class*="bg-purple-600"],
+button[class*="bg-purple-700"],
+button[class*="bg-blue-500"],
+button[class*="bg-blue-600"],
+button[class*="bg-blue-700"] {
+  background-color: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+button[class*="bg-indigo-500"]:hover,
+button[class*="bg-indigo-600"]:hover,
+button[class*="bg-indigo-700"]:hover,
+button[class*="bg-violet-500"]:hover,
+button[class*="bg-violet-600"]:hover,
+button[class*="bg-violet-700"]:hover,
+button[class*="bg-purple-500"]:hover,
+button[class*="bg-purple-600"]:hover,
+button[class*="bg-purple-700"]:hover,
+button[class*="bg-blue-500"]:hover,
+button[class*="bg-blue-600"]:hover,
+button[class*="bg-blue-700"]:hover {
+  background-color: var(--theme-primary-dark) !important;
+}
+
 .mm-progress-track {
   background-color: var(--progress-track);
 }

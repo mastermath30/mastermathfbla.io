@@ -1102,7 +1102,7 @@ export default function Home() {
                       <span>{Math.floor(tutor.reviews * 0.7)}+ {t("students")}</span>
                     </div>
                     <Button
-                      className="mt-auto w-full rounded-full"
+                      className="mt-3 w-full rounded-full"
                       disabled={!tutor.available}
                       onClick={() => tutor.available && handleBookNow(tutor)}
                     >
@@ -1312,7 +1312,7 @@ export default function Home() {
                       </div>
                       
                       <Button 
-                        className="w-full group/btn" 
+                        className="mt-3 w-full group/btn"
                         disabled={!tutor.available}
                         onClick={() => tutor.available && handleBookNow(tutor)}
                       >
@@ -1615,7 +1615,7 @@ export default function Home() {
                       </div>
                       
                       <Button 
-                        className="w-full group/btn" 
+                        className="mt-3 w-full group/btn"
                         disabled={!tutor.available}
                         onClick={() => tutor.available && handleBookNow(tutor)}
                       >
