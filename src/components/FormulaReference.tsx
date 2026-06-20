@@ -305,20 +305,20 @@ export function FormulaReference() {
                 <div className="border-b border-white/8 bg-slate-950/30 px-5 py-4 sm:px-6">
                   {/* Search */}
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                    <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t("Search formulas...")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] py-3 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] py-3 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                     />
                   </div>
 
                   {/* Category Tabs */}
                   {!searchQuery && (
                     <div className="mt-4 space-y-2.5">
-                      <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
                         {t("Browse By Category")}
                       </p>
                       <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-2">
@@ -346,7 +346,7 @@ export function FormulaReference() {
                 {/* Formulas Grid */}
                 <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
                   {filteredFormulas.length === 0 ? (
-                    <div className="py-14 text-center text-slate-400">
+                    <div className="py-14 text-center text-slate-300">
                       <Search className="mx-auto mb-3 h-8 w-8 opacity-50" />
                       <p className="text-sm">{t("No formulas found")}</p>
                     </div>
@@ -371,7 +371,7 @@ export function FormulaReference() {
                                       {item.categoryIcon} {item.categoryName}
                                     </span>
                                   )}
-                                  <h4 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                                  <h4 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
                                     {item.name}
                                   </h4>
                                 </div>
@@ -381,7 +381,7 @@ export function FormulaReference() {
                               </div>
                               <button
                                 onClick={() => handleCopy(item.formula, i)}
-                                className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-black/5 bg-white/70 text-slate-500 opacity-100 transition-all hover:bg-white md:opacity-0 md:focus:opacity-100 md:group-hover:opacity-100 dark:border-white/10 dark:bg-slate-800/85 dark:text-slate-400 dark:hover:bg-slate-800"
+                                className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-black/5 bg-white/70 text-slate-500 opacity-100 transition-all hover:bg-white md:opacity-0 md:focus:opacity-100 md:group-hover:opacity-100 dark:border-white/10 dark:bg-slate-800/85 dark:text-white dark:hover:bg-slate-800"
                                 title={t("Copy")}
                               >
                                 {copiedIndex === i ? (
@@ -400,9 +400,9 @@ export function FormulaReference() {
 
                 {/* Footer */}
                 <div className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.82)_0%,rgba(2,6,23,0.95)_100%)] px-5 py-3 sm:px-6">
-                  <div className="flex flex-col gap-2 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-2 text-xs text-slate-300 sm:flex-row sm:items-center sm:justify-between">
                     <p>{t("Use search to scan every category, or browse formulas by subject.")}</p>
-                    <div className="inline-flex items-center gap-2 text-slate-500">
+                    <div className="inline-flex items-center gap-2 text-slate-400">
                       <kbd className="rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 font-mono text-[10px] text-slate-300">Alt+R</kbd>
                       <span>{t("Toggle reference")}</span>
                     </div>

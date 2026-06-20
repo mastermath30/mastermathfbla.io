@@ -215,7 +215,7 @@ export function QuickCalculator() {
                       setIsFullscreen(false);
                     }}
                     aria-label={t("Close")}
-                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-white dark:hover:bg-slate-800 dark:hover:text-white"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -230,7 +230,7 @@ export function QuickCalculator() {
                   </div>
                 )}
                 {!loadError && !isScriptLoaded && (
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                  <div className="text-sm text-slate-500 dark:text-white">
                     {t("Loading Graphing Calculator...")}
                   </div>
                 )}
@@ -241,7 +241,7 @@ export function QuickCalculator() {
               </div>
 
               {/* Keyboard hint */}
-              <div className="px-4 py-2 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700">
+              <div className="px-4 py-2 text-center text-xs text-slate-500 dark:text-white border-t border-slate-200 dark:border-slate-700">
                 {t("Press Esc to close")} • Alt+C
               </div>
             </div>

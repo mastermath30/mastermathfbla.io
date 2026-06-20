@@ -141,7 +141,7 @@ export default function CommunityPage() {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 transition-colors hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
+                className="text-gray-400 transition-colors hover:text-gray-900 dark:text-white dark:hover:text-white"
               >
                 <X size={20} />
               </button>
@@ -227,7 +227,7 @@ export default function CommunityPage() {
             type="button"
             onClick={() => setShowModal(true)}
             size="lg"
-            className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 sm:w-auto"
+            className="w-full rounded-full px-7 shadow-sm sm:w-auto"
           >
             Create Study Group
           </Button>
@@ -258,17 +258,19 @@ export default function CommunityPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(280px,380px)_1fr]">
           <section className="space-y-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-white">
               Questions ({questions.length})
             </h2>
             <QuestionList
               questions={questions}
               selectedQuestionId={selectedQuestionId}
               onSelectQuestion={setSelectedQuestionId}
+              selectedQuestion={selectedQuestion}
+              onSubmitAnswer={handleSubmitAnswer}
             />
           </section>
 
-          <section>
+          <section className="hidden lg:block">
             {selectedQuestion ? (
               <QuestionPage question={selectedQuestion} onSubmitAnswer={handleSubmitAnswer} />
             ) : (

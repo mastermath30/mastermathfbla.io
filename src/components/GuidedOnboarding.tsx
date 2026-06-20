@@ -39,7 +39,7 @@ export function GuidedOnboarding({ progress }: GuidedOnboardingProps) {
   return (
     <Card>
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Post-Tutorial Checklist")}</h2>
-      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+      <p className="text-sm text-slate-600 dark:text-white mt-1">
         {t("{count}/4 complete. Use this checklist after the website tour to build momentum.", { count: doneCount })}
       </p>
 
@@ -52,9 +52,9 @@ export function GuidedOnboarding({ progress }: GuidedOnboardingProps) {
             {item.done ? (
               <CheckCircle2 className="w-4 h-4 text-green-500" />
             ) : (
-              <Circle className="w-4 h-4 text-slate-400" />
+              <Circle className="w-4 h-4 text-slate-400 dark:text-slate-300" />
             )}
-            <span className={`text-sm ${item.done ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400"}`}>
+            <span className={`text-sm ${item.done ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-white"}`}>
               {item.label}
             </span>
           </div>

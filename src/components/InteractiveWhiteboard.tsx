@@ -606,7 +606,7 @@ export function InteractiveWhiteboard() {
                 </div>
                 <div>
                   <h2 className="font-bold text-slate-900 dark:text-white">{t("Interactive Whiteboard")}</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{t("Collaborate and draw together")}</p>
+                  <p className="text-xs text-slate-500 dark:text-white">{t("Collaborate and draw together")}</p>
                 </div>
               </div>
 
@@ -622,7 +622,7 @@ export function InteractiveWhiteboard() {
                 {/* Grid Toggle */}
                 <button
                   onClick={() => setShowGrid(!showGrid)}
-                  className={`p-2 rounded-lg transition-colors ${showGrid ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"}`}
+                  className={`p-2 rounded-lg transition-colors ${showGrid ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white"}`}
                   title={t("Toggle Grid")}
                 >
                   <Grid3X3 className="w-5 h-5" />
@@ -632,7 +632,7 @@ export function InteractiveWhiteboard() {
                 <button
                   onClick={undo}
                   disabled={historyIndex <= 0}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-600"
                   title={t("Undo (Ctrl+Z)")}
                 >
                   <Undo className="w-5 h-5" />
@@ -640,7 +640,7 @@ export function InteractiveWhiteboard() {
                 <button
                   onClick={redo}
                   disabled={historyIndex >= history.length - 1}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-600"
                   title={t("Redo (Ctrl+Shift+Z)")}
                 >
                   <Redo className="w-5 h-5" />
@@ -651,14 +651,14 @@ export function InteractiveWhiteboard() {
                 {/* Save/Load */}
                 <button
                   onClick={() => setShowSaveModal(true)}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                   title={t("Save Board")}
                 >
                   <Save className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setShowLoadModal(true)}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                   title={t("Load Board")}
                 >
                   <FolderOpen className="w-5 h-5" />
@@ -667,7 +667,7 @@ export function InteractiveWhiteboard() {
                 {/* Download */}
                 <button
                   onClick={downloadCanvas}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                   title={t("Download as PNG")}
                 >
                   <Download className="w-5 h-5" />
@@ -687,7 +687,7 @@ export function InteractiveWhiteboard() {
                 {/* Close */}
                 <button
                   onClick={closeWhiteboard}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                   aria-label={t("Exit Whiteboard")}
                 >
                   <X className="w-5 h-5" />
@@ -707,7 +707,7 @@ export function InteractiveWhiteboard() {
                     className={`p-3 rounded-xl transition-all ${
                       currentTool === tool.id
                         ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg"
-                        : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                        : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                     }`}
                     title={t(tool.label)}
                   >
@@ -760,14 +760,14 @@ export function InteractiveWhiteboard() {
                 <div className="flex flex-col items-center gap-1">
                   <button
                     onClick={() => setStrokeWidth(Math.min(strokeWidth + 1, 20))}
-                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
-                  <div className="text-xs font-medium text-slate-600 dark:text-slate-400">{strokeWidth}</div>
+                  <div className="text-xs font-medium text-slate-600 dark:text-white">{strokeWidth}</div>
                   <button
                     onClick={() => setStrokeWidth(Math.max(strokeWidth - 1, 1))}
-                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
@@ -880,7 +880,7 @@ export function InteractiveWhiteboard() {
                   >
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t("Load Board")}</h3>
                     {savedBoards.length === 0 ? (
-                      <p className="text-slate-500 text-center py-4">{t("No saved boards")}</p>
+                      <p className="text-slate-500 dark:text-slate-300 text-center py-4">{t("No saved boards")}</p>
                     ) : (
                       <div className="space-y-2 max-h-64 overflow-y-auto">
                         {savedBoards.map((board) => (
@@ -893,7 +893,7 @@ export function InteractiveWhiteboard() {
                               className="flex-1 text-left"
                             >
                               <p className="font-medium text-slate-900 dark:text-white">{board.name}</p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400">{board.elements.length} {t("elements")}</p>
+                              <p className="text-xs text-slate-500 dark:text-white">{board.elements.length} {t("elements")}</p>
                             </button>
                             <button
                               onClick={() => deleteBoard(board.id)}

@@ -57,7 +57,7 @@ export function RecommendationPanel({
   return (
     <Card className="flex h-full flex-col">
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t(title)}</h2>
-      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+      <p className="text-sm text-slate-600 dark:text-white mt-1">
         {t("Personalized from mastery progress, quiz performance, and current study intent.")}
       </p>
 
@@ -80,7 +80,7 @@ export function RecommendationPanel({
                     <Icon className="h-4 w-4 shrink-0 text-[var(--theme-primary)]" />
                     <h3 className="min-w-0 line-clamp-2 break-words font-semibold text-slate-900 dark:text-white">{recommendation.title}</h3>
                   </div>
-                  <p className="mt-1 line-clamp-2 break-words text-sm text-slate-600 dark:text-slate-400">{recommendation.reason}</p>
+                  <p className="mt-1 line-clamp-2 break-words text-sm text-slate-600 dark:text-white">{recommendation.reason}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                     {recommendation.primary && (
                       <span className="px-2 py-0.5 rounded-full bg-[var(--theme-primary)] text-white">

@@ -284,11 +284,11 @@ function StudyGroupsPageInner() {
                           />
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-slate-900 dark:text-white truncate">{group.name}</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{t("Hosted by")} {group.host.name}</p>
+                            <p className="text-xs text-slate-500 dark:text-white">{t("Hosted by")} {group.host.name}</p>
                           </div>
                           <Badge color="violet">{t("Member")}</Badge>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+                        <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-white">
                           <span className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             {group.nextSession}
@@ -356,7 +356,7 @@ function StudyGroupsPageInner() {
                               onClick={() => setSelectedSubject(subject)}
                               className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                                 selectedSubject === subject
-                                  ? "bg-violet-500 text-white"
+                                  ? "bg-[var(--theme-primary)] text-white"
                                   : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600"
                               }`}
                             >
@@ -374,7 +374,7 @@ function StudyGroupsPageInner() {
                               onClick={() => setSelectedLevel(level)}
                               className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                                 selectedLevel === level
-                                  ? "bg-violet-500 text-white"
+                                  ? "bg-[var(--theme-primary)] text-white"
                                   : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600"
                               }`}
                             >
@@ -389,7 +389,7 @@ function StudyGroupsPageInner() {
               </AnimatePresence>
 
               {/* Results Count */}
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              <p className="text-sm text-slate-600 dark:text-white mb-4">
                 {t("Showing")} {filteredGroups.length} {t("of")} {groups.length} {t("groups")}
               </p>
             </FadeIn>
@@ -435,12 +435,12 @@ function StudyGroupsPageInner() {
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-bold text-slate-900 dark:text-white line-clamp-1">{group.name}</h3>
                       </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3">{group.description}</p>
+                      <p className="text-sm text-slate-600 dark:text-white line-clamp-2 mb-3">{group.description}</p>
 
                       {/* Tags */}
                       <div className="flex flex-wrap gap-1 mb-3">
                         {group.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs text-slate-600 dark:text-slate-400">
+                          <span key={tag} className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs text-slate-600 dark:text-white">
                             {tag}
                           </span>
                         ))}
@@ -457,7 +457,7 @@ function StudyGroupsPageInner() {
                         />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{group.host.name}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">{group.schedule}</p>
+                          <p className="text-xs text-slate-500 dark:text-white">{group.schedule}</p>
                         </div>
                       </div>
 
@@ -476,7 +476,7 @@ function StudyGroupsPageInner() {
                               />
                             ))}
                           </div>
-                          <span className="ml-2 text-sm text-slate-600 dark:text-slate-400">
+                          <span className="ml-2 text-sm text-slate-600 dark:text-white">
                             {group.memberCount}/{group.maxMembers}
                           </span>
                         </div>
@@ -495,7 +495,7 @@ function StudyGroupsPageInner() {
                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                               joinedGroups.includes(group.id)
                                 ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                : "bg-violet-500 text-white hover:bg-violet-600"
+                                : "bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-dark)]"
                             }`}
                           >
                             {joinedGroups.includes(group.id) ? (
@@ -519,7 +519,7 @@ function StudyGroupsPageInner() {
               <div className="text-center py-16">
                 <Users className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t("No groups found")}</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">{t("Try adjusting your filters or create a new group!")}</p>
+                <p className="text-slate-600 dark:text-white mb-4">{t("Try adjusting your filters or create a new group!")}</p>
                 <Button onClick={() => setShowCreateModal(true)}>
                   <Plus className="w-5 h-5 mr-2" />
                   {t("Create Group")}
@@ -617,7 +617,7 @@ function CreateGroupModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("Create Group")}</h2>
             <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-              <X className="w-5 h-5 text-slate-500" />
+              <X className="w-5 h-5 text-slate-500 dark:text-slate-300" />
             </button>
           </div>
         </div>
@@ -794,14 +794,14 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
                 <p className="font-semibold text-slate-900 dark:text-white">{group.host.name}</p>
                 <Crown className="w-4 h-4 text-yellow-500" />
               </div>
-              <p className="text-sm text-slate-500">{t("Group Host")}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-300">{t("Group Host")}</p>
             </div>
           </div>
 
           {/* Description */}
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t("About")}</h3>
-            <p className="text-slate-600 dark:text-slate-400">{group.description}</p>
+            <p className="text-slate-600 dark:text-white">{group.description}</p>
           </div>
 
           {/* Details */}
@@ -810,28 +810,28 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
               <Calendar className="w-5 h-5 text-violet-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Schedule")}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{group.schedule}</p>
+                <p className="text-xs text-slate-500 dark:text-white">{group.schedule}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Clock className="w-5 h-5 text-green-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Next Session")}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{group.nextSession}</p>
+                <p className="text-xs text-slate-500 dark:text-white">{group.nextSession}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <Users className="w-5 h-5 text-blue-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Members")}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{group.memberCount} / {group.maxMembers}</p>
+                <p className="text-xs text-slate-500 dark:text-white">{group.memberCount} / {group.maxMembers}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <BookOpen className="w-5 h-5 text-purple-500" />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{t("Subject")}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{group.subject}</p>
+                <p className="text-xs text-slate-500 dark:text-white">{group.subject}</p>
               </div>
             </div>
           </div>
@@ -865,7 +865,7 @@ function GroupDetailModal({ group, onClose, isJoined, onJoin }: { group: StudyGr
                 ))}
               </div>
               {group.memberCount > 5 && (
-                <span className="text-sm text-slate-500">+{group.memberCount - 5} more</span>
+                <span className="text-sm text-slate-500 dark:text-slate-300">+{group.memberCount - 5} more</span>
               )}
             </div>
           </div>

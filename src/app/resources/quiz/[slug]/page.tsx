@@ -744,7 +744,7 @@ function QuizPageContent() {
         <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
           <Card className="p-8 text-center">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz not found")}</h1>
-            <p className="text-slate-500 dark:text-slate-400 mb-6">
+            <p className="text-slate-500 dark:text-white mb-6">
               {t("The quiz you are looking for does not exist yet.")}
             </p>
             <Button onClick={() => router.push("/learn")} type="button">
@@ -862,9 +862,9 @@ function QuizPageContent() {
           <SectionLabel>{`${t(quiz.topic)} ${t("Quiz")}`}</SectionLabel>
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white"><TypingText text={t(quiz.title)} speedMs={60} /></h1>
-            <p className="text-slate-500 dark:text-slate-400">{t(quiz.description)}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{difficultyDescriptions[difficulty] || difficultyDescriptions.medium}</p>
-            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-slate-500 dark:text-white">{t(quiz.description)}</p>
+            <p className="text-sm text-slate-500 dark:text-white">{difficultyDescriptions[difficulty] || difficultyDescriptions.medium}</p>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-white">
               <span className={`px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-medium ${difficultyLabels[difficulty]?.color || ''}`}>
                 {difficultyLabels[difficulty]?.label || t('Medium')} {t("Mode")}
               </span>
@@ -880,10 +880,10 @@ function QuizPageContent() {
           {showResults ? (
             <div className="text-center">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Quiz complete")}</h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-6">
+              <p className="text-slate-500 dark:text-white mb-6">
                 {t("You scored")} {effectiveScore} {t("out of")} {totalQuestions}.
               </p>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+              <p className="text-sm text-slate-600 dark:text-white mb-6">
                 {isDiagnostic
                   ? t("Your placement is ready. Continue to your recommended learning path.")
                   : mastered
@@ -894,7 +894,7 @@ function QuizPageContent() {
                       threshold: Math.round(unlockThreshold * 100),
                     })}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+              <p className="text-xs text-slate-500 dark:text-white mb-6">
                 {isDiagnostic
                   ? t("Recommended next step: open your personalized study plan.")
                   : recommendedAction === "next-topic"
@@ -922,7 +922,7 @@ function QuizPageContent() {
                           <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300">
                             {t("Correct answer")}: {t(record.options[record.correctIndex] ?? "")}
                           </p>
-                          <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-400">{t(getQuestionExplanation(record))}</p>
+                          <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-white">{t(getQuestionExplanation(record))}</p>
                         </div>
                       ))}
                   </div>
@@ -973,7 +973,7 @@ function QuizPageContent() {
             </div>
           ) : (
             <div>
-              <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mb-4">
+              <div className="flex items-center justify-between text-sm text-slate-500 dark:text-white mb-4">
                 <span>
                   {t("Question")} {currentIndex + 1} {t("of")} {totalQuestions}
                 </span>
@@ -1019,11 +1019,11 @@ function QuizPageContent() {
                       <div className="flex items-center gap-3">
                         <span className={[
                           "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border-2 transition-all",
-                          !isSelected && !answered ? "border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-500" : "",
+                          !isSelected && !answered ? "border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300" : "",
                           isSelected && !answered ? "border-[var(--theme-primary)] bg-[var(--theme-primary)] text-white" : "",
                           answered && isCorrect ? "border-emerald-500 bg-emerald-500 text-white" : "",
                           answered && isIncorrect ? "border-rose-500 bg-rose-500 text-white" : "",
-                          answered && !isCorrect && !isIncorrect ? "border-slate-300 dark:border-slate-600 text-slate-400" : "",
+                          answered && !isCorrect && !isIncorrect ? "border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300" : "",
                         ].filter(Boolean).join(" ")}>
                           {String.fromCharCode(65 + index)}
                         </span>
@@ -1032,7 +1032,7 @@ function QuizPageContent() {
                           !answered ? "text-slate-700 dark:text-slate-200" : "",
                           answered && isCorrect ? "text-emerald-700 dark:text-emerald-300" : "",
                           answered && isIncorrect ? "text-rose-700 dark:text-rose-300" : "",
-                          answered && !isCorrect && !isIncorrect ? "text-slate-500 dark:text-slate-400" : "",
+                          answered && !isCorrect && !isIncorrect ? "text-slate-500 dark:text-slate-300" : "",
                         ].filter(Boolean).join(" ")}>{t(option)}</span>
                       </div>
                     </button>

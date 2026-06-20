@@ -108,7 +108,7 @@ export function Navbar() {
       title: t("Accessibility"),
       icon: <Accessibility className="w-5 h-5" />,
       event: "open-accessibility",
-      color: "bg-blue-600",
+      color: "bg-[var(--theme-primary)]",
     },
     {
       title: t("Tools"),
@@ -136,7 +136,7 @@ export function Navbar() {
       {/* Single FAB Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full bg-[var(--theme-primary)] shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
+        className="fixed bottom-6 left-6 z-[102] w-14 h-14 rounded-full bg-[var(--theme-primary)] shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
         style={{
           WebkitTapHighlightColor: "transparent",
           marginBottom:
@@ -185,7 +185,7 @@ export function Navbar() {
 
               {/* Navigation Links */}
               <div className="px-5 pb-4">
-                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-slate-500 dark:text-white mb-3 uppercase tracking-wider">
                   {t("Navigation")}
                 </p>
                 <div className="grid grid-cols-3 gap-3">
@@ -222,7 +222,7 @@ export function Navbar() {
                         }`} style={pathname === link.href ? { backgroundColor: "var(--theme-primary)" } : undefined}>
                           {link.icon}
                         </div>
-                        <span className="w-full max-w-full text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight whitespace-normal break-words">
+                        <span className="w-full max-w-full text-[11px] font-medium text-slate-600 dark:text-white text-center leading-tight whitespace-normal break-words">
                           {link.title}
                         </span>
                       </Link>
@@ -235,7 +235,7 @@ export function Navbar() {
               <div className="px-5 pb-4 pt-2 border-t border-slate-200 dark:border-slate-700">
                 <motion.button
                   onClick={() => handleUtilityClick("open-ai-tutor")}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white touch-manipulation active:scale-[0.98] transition-transform"
+                  className="w-full flex items-center gap-3 p-4 rounded-2xl text-white touch-manipulation active:scale-[0.98] transition-transform" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-dark))" }}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.22 }}
@@ -254,7 +254,7 @@ export function Navbar() {
 
               {/* Quick Actions */}
               <div className="px-5 pb-4 pt-2 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-slate-500 dark:text-white mb-3 uppercase tracking-wider">
                   {t("Quick Actions")}
                 </p>
                 <div className="grid grid-cols-4 gap-3">
@@ -275,7 +275,7 @@ export function Navbar() {
                         >
                           {util.icon}
                         </div>
-                        <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
+                        <span className="text-[11px] font-medium text-slate-600 dark:text-white text-center leading-tight">
                           {util.title}
                         </span>
                       </button>

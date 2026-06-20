@@ -149,7 +149,7 @@ export default function FullScreenLessonPage() {
           <Card className="p-8 text-center" glow={false}>
             <BookOpen className="mx-auto h-10 w-10 text-[var(--theme-primary)]" />
             <h1 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">{t("Lesson not found")}</h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{t("This lesson does not exist yet.")}</p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-white">{t("This lesson does not exist yet.")}</p>
             <Button className="mt-6" onClick={() => router.push("/learn")}>
               {t("Back to Learn")}
             </Button>
@@ -166,7 +166,7 @@ export default function FullScreenLessonPage() {
           <Card className="p-8 text-center" glow={false}>
             <Lock className="mx-auto h-10 w-10 text-amber-600" />
             <h1 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">{t("Lesson locked")}</h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-sm text-slate-600 dark:text-white">
               {t("Master the previous topic first, then this lesson will unlock.")}
             </p>
             <Button className="mt-6" onClick={goBackToLearn}>
@@ -238,7 +238,7 @@ export default function FullScreenLessonPage() {
               />
             ) : (
               <Card className="p-6" glow={false}>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{t("Built-in practice is not available for this topic yet.")}</p>
+                <p className="text-sm text-slate-600 dark:text-white">{t("Built-in practice is not available for this topic yet.")}</p>
               </Card>
             )}
           </section>
@@ -248,7 +248,7 @@ export default function FullScreenLessonPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("Optional Sources")}</h2>
-                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                  <p className="mt-1 text-sm text-slate-600 dark:text-white">
                     {t("Use these for extra review without leaving your lesson flow.")}
                   </p>
                 </div>
@@ -314,7 +314,7 @@ export default function FullScreenLessonPage() {
                   <a key={`${topic.id}-lesson-${resource.title}`} href={resource.href} target={resource.href.startsWith("http") ? "_blank" : "_self"} rel={resource.href.startsWith("http") ? "noreferrer" : undefined} className="learn-hub-card">
                     <p className="learn-hub-card-kind">{t("External lesson")}</p>
                     <p className="learn-hub-card-title">{t(resource.title)}</p>
-                    <ExternalLink className="mt-3 h-4 w-4 text-slate-400" />
+                    <ExternalLink className="mt-3 h-4 w-4 text-slate-400 dark:text-slate-300" />
                   </a>
                 ))}
 
@@ -335,7 +335,7 @@ export default function FullScreenLessonPage() {
                   <a key={`${topic.id}-worksheet-${resource.title}`} href={resource.href} target={resource.href.startsWith("http") ? "_blank" : "_self"} rel={resource.href.startsWith("http") ? "noreferrer" : undefined} className="learn-hub-card">
                     <p className="learn-hub-card-kind">{t("Worksheet")}</p>
                     <p className="learn-hub-card-title">{t(resource.title)}</p>
-                    <FileText className="mt-3 h-4 w-4 text-slate-400" />
+                    <FileText className="mt-3 h-4 w-4 text-slate-400 dark:text-slate-300" />
                   </a>
                 ))}
 
@@ -344,7 +344,7 @@ export default function FullScreenLessonPage() {
                   <a key={`${topic.id}-practice-${resource.title}`} href={resource.href} target={resource.href.startsWith("http") ? "_blank" : "_self"} rel={resource.href.startsWith("http") ? "noreferrer" : undefined} className="learn-hub-card">
                     <p className="learn-hub-card-kind">{t("External practice")}</p>
                     <p className="learn-hub-card-title">{t(resource.title)}</p>
-                    <ExternalLink className="mt-3 h-4 w-4 text-slate-400" />
+                    <ExternalLink className="mt-3 h-4 w-4 text-slate-400 dark:text-slate-300" />
                   </a>
                 ))}
 

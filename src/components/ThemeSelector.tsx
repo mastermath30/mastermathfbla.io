@@ -145,14 +145,14 @@ export function ThemeSelector({
               <div className="p-3">
                 {/* Dark/Light Mode Toggle */}
                 <div className="mb-3">
-                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">{t("Appearance")}</div>
+                  <div className="text-xs font-semibold text-slate-600 dark:text-white px-2 py-1.5">{t("Appearance")}</div>
                   <div className="flex gap-2 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
                     <button
                       onClick={() => { if (!isDark) handleModeToggle(); }}
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                         isDark
                           ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
+                          : "text-slate-600 dark:text-white hover:text-slate-800 dark:hover:text-slate-300"
                       }`}
                     >
                       <Moon className="w-4 h-4" />
@@ -163,7 +163,7 @@ export function ThemeSelector({
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                         !isDark
                           ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
+                          : "text-slate-600 dark:text-white hover:text-slate-800 dark:hover:text-slate-300"
                       }`}
                     >
                       <Sun className="w-4 h-4" />
@@ -174,7 +174,7 @@ export function ThemeSelector({
 
                 {/* Color Theme */}
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
-                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5">{t("Accent Color")}</div>
+                  <div className="text-xs font-semibold text-slate-600 dark:text-white px-2 py-1.5">{t("Accent Color")}</div>
                   <div className="grid grid-cols-3 gap-2 px-1 sm:grid-cols-5">
                     {COLOR_THEMES.map((c) => {
                       const isSelected = colorTheme === c.value;
@@ -200,7 +200,7 @@ export function ThemeSelector({
                               </div>
                             )}
                           </div>
-                          <span className="mt-1 text-center text-[10px] leading-tight text-slate-600 dark:text-slate-400">{c.name}</span>
+                          <span className="mt-1 text-center text-[10px] leading-tight text-slate-600 dark:text-white">{c.name}</span>
                         </button>
                       );
                     })}
@@ -209,7 +209,7 @@ export function ThemeSelector({
 
                 {/* Language Selector */}
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-3" data-no-auto-translate="true">
-                  <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 px-2 py-1.5 flex items-center gap-1">
+                  <div className="text-xs font-semibold text-slate-600 dark:text-white px-2 py-1.5 flex items-center gap-1">
                     <Globe className="w-3 h-3" />
                     {t("Language")}
                   </div>
@@ -224,7 +224,7 @@ export function ThemeSelector({
                           className={`w-full min-h-[40px] min-w-0 rounded-lg px-2 py-2 text-center text-xs font-medium leading-tight whitespace-normal break-words transition-all ${
                             isSelected
                               ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
+                              : "text-slate-600 dark:text-white hover:text-slate-800 dark:hover:text-slate-300"
                           }`}
                         >
                           {lang.label}

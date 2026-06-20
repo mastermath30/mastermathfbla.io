@@ -790,7 +790,11 @@ function LearnPageClient() {
           {
             label: t("Quiz"),
             title: activeQuizCount ? t("Choose quiz difficulty") : t("Topic review"),
-            meta: activeQuizCount ? `${activeQuizCount}` : t("Soon"),
+            meta: activeQuizCount
+              ? t(activeTopic?.difficulty
+                  ? activeTopic.difficulty.charAt(0).toUpperCase() + activeTopic.difficulty.slice(1)
+                  : "Mixed")
+              : t("Soon"),
           },
         ]}
       />
@@ -819,14 +823,14 @@ function LearnPageClient() {
                         ? `${activeTopic.title} Quiz`
                         : t("Built-in quiz")}
                     </h2>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-white">
                       {t("Pick the challenge level that matches how ready you feel. The quiz will stay focused on this topic, but the depth, reasoning, and question style will change with the level you choose.")}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setQuizDifficultyPicker(null)}
-                    className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-indigo-600 bg-indigo-600 px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-[var(--theme-primary)] bg-[var(--theme-primary)] px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--theme-primary-dark)] hover:border-[var(--theme-primary-dark)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--theme-primary)]"
                     aria-label={t("Close")}
                   >
                     <span className="hidden sm:inline">{t("Close")}</span>
@@ -839,7 +843,7 @@ function LearnPageClient() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("Pick a level to begin")}</p>
-                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                    <p className="mt-1 text-sm text-slate-600 dark:text-white">
                       {t("Start with fundamentals, stay with the standard path, or push into deeper application.")}
                     </p>
                   </div>
@@ -915,7 +919,7 @@ function LearnPageClient() {
                   ))}
                 </div>
 
-                <div className="mt-5 rounded-2xl border border-slate-200/70 bg-slate-50/80 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
+                <div className="mt-5 rounded-2xl border border-slate-200/70 bg-slate-50/80 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white">
                   {t("You can retake the quiz at a different level anytime to review fundamentals or push for a harder challenge.")}
                 </div>
               </div>
@@ -963,7 +967,7 @@ function LearnPageClient() {
                   {t("Placement Diagnostic")}
                 </div>
                 <h2 className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{t("Find your best starting point")}</h2>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mt-1 text-sm text-slate-600 dark:text-white">
                   {t("Answer a short set of questions and MathMaster will recommend a course, topic, and study plan.")}
                 </p>
               </div>
@@ -980,7 +984,7 @@ function LearnPageClient() {
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Current Learning Path")}</p>
                 <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{t("Your Learning Path")}</h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-sm text-slate-600 dark:text-white mt-1">
                   {activeTopic?.title
                     ? t("Your next step is connected to {topic}.", { topic: activeTopic.title })
                     : t("Follow the path, earn XP, and unlock your next lesson.")}
@@ -1058,10 +1062,10 @@ function LearnPageClient() {
           <Card className="h-fit lg:sticky lg:top-36" glow={false} data-tutorial-target="next-step">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Your Next Step")}</p>
             <h2 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">{selectedNode?.title ?? t("Select a lesson")}</h2>
-            <p className="mt-1 text-xs capitalize text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs capitalize text-slate-500 dark:text-white">
               {selectedNode?.state ? selectedNode.state.replace("_", " ") : flowLabelByState[selectedFlowState]}
             </p>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">{activeTopic?.summary ?? ""}</p>
+            <p className="text-sm text-slate-600 dark:text-white mt-2">{activeTopic?.summary ?? ""}</p>
 
             <div className="mt-4 flex flex-col gap-2">
               {selectedNode?.lockedReason && (
@@ -1109,14 +1113,14 @@ function LearnPageClient() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Lesson Workspace")}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-sm text-slate-600 dark:text-white mt-1">
                   {activeTopic?.title
                     ? t("Review the goal, start the lesson, then move into practice or a quiz.", { topic: activeTopic.title })
                     : t("Select a topic to open its lesson workspace.")}
                 </p>
               </div>
               {activeTopic && (
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-white">
                   <span className="learn-hub-chip">{activeTopic.estimatedMinutes} {t("min lesson")}</span>
                   <span className="learn-hub-chip">{t(activeTopic.difficulty)}</span>
                   <span className="learn-hub-chip">{flowLabelByState[activeFlowState]}</span>
@@ -1146,7 +1150,7 @@ function LearnPageClient() {
                     <Sparkles className="h-4 w-4" />
                     {t("Start here")}
                   </div>
-                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{t("One action at a time: open the lesson, then use extras only when they help.")}</p>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-white">{t("One action at a time: open the lesson, then use extras only when they help.")}</p>
                   <Button className="mt-5 w-full" onClick={openLesson} disabled={selectedNode?.state === "locked"}>
                     {lessonButtonLabel}
                   </Button>
@@ -1159,7 +1163,7 @@ function LearnPageClient() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Study Resource Hub")}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-sm text-slate-600 dark:text-white mt-1">
                   {activeTopic?.title
                     ? t("Extra help for {topic}, grouped by what you want to do next.", { topic: activeTopic.title })
                     : t("Select a topic to load optional outside resources.")}
@@ -1167,7 +1171,7 @@ function LearnPageClient() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {availableQuizSlugs.length > 0 && (
-                  <span className="self-center text-xs font-medium text-slate-600 dark:text-slate-400">
+                  <span className="self-center text-xs font-medium text-slate-600 dark:text-white">
                     {t("Quiz available")}
                   </span>
                 )}
@@ -1230,7 +1234,7 @@ function LearnPageClient() {
                     )}
                     {activeVideoPlayback.mode === "external" && (
                       <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                        <p className="text-sm text-slate-600 dark:text-white mb-3">
                           {t("Watch this lesson video on YouTube.")}
                         </p>
                         <a
@@ -1246,7 +1250,7 @@ function LearnPageClient() {
                     {activeVideoPlayback.mode === "unavailable" && (
                       <div className="learn-hub-video-placeholder">
                         <p className="font-semibold text-slate-900 dark:text-white">{t("Video unavailable")}</p>
-                        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                        <p className="mt-1 text-sm text-slate-600 dark:text-white">
                           {t("This embed could not load, but the lesson is still ready below.")}
                         </p>
                         <div className="mt-4 flex flex-wrap gap-2">
@@ -1270,7 +1274,7 @@ function LearnPageClient() {
                     )}
                   </div>
                 ) : (
-                  <div className="text-sm text-slate-500 dark:text-slate-400">{t("No videos for this topic yet.")}</div>
+                  <div className="text-sm text-slate-500 dark:text-white">{t("No videos for this topic yet.")}</div>
                 )}
               </div>
             )}
@@ -1344,7 +1348,7 @@ function LearnPageClient() {
                   <p className="learn-hub-card-kind">{t("Worksheet")}</p>
                   <p className="learn-hub-card-title">{t(resource.title)}</p>
                   {resource.label ? (
-                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-white">
                       {t(resource.label)}
                     </p>
                   ) : null}
@@ -1365,7 +1369,7 @@ function LearnPageClient() {
                   <p className="learn-hub-card-kind">{t("External practice")}</p>
                   <p className="learn-hub-card-title">{t(resource.title)}</p>
                   {resource.label ? (
-                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.16em] text-slate-500 dark:text-white">
                       {t(resource.label)}
                     </p>
                   ) : null}

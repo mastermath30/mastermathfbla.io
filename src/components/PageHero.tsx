@@ -131,15 +131,15 @@ export function PageHero({
               {stats.map((stat) => (
                 <div key={stat.label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                   <div className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{stat.value}</div>
-                  <div className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{stat.label}</div>
+                  <div className="mt-1 text-xs font-medium text-slate-500 dark:text-white">{stat.label}</div>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="min-w-0 max-w-full overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900">
-          <div className="min-w-0 max-w-full overflow-hidden rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+        <div className="min-w-0 max-w-full overflow-hidden rounded-[2rem] border border-slate-200 bg-[#fbfaf6] p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900">
+          <div>
             <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--theme-primary)" }}>{visualEyebrow}</p>
@@ -161,7 +161,7 @@ export function PageHero({
                     {index === 0 ? <CheckCircle2 className="h-5 w-5" /> : index + 1}
                   </div>
                   <div className="min-w-0 flex-1 overflow-hidden">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-300">{item.label}</p>
                     <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{item.title}</p>
                   </div>
                   <span className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline dark:bg-slate-800 dark:text-slate-300">{item.meta}</span>

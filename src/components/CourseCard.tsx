@@ -25,13 +25,13 @@ export function CourseCard({ course, selected, completionPercent, onSelect }: Co
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{course.title}</h3>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{course.summary}</p>
+          <p className="mt-1 text-sm text-slate-600 dark:text-white">{course.summary}</p>
         </div>
         <BookOpen className="w-5 h-5 text-[var(--theme-primary)] shrink-0" />
       </div>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white mb-2">
           <span>Course readiness</span>
           <span>{completionPercent}%</span>
         </div>
@@ -47,7 +47,7 @@ export function CourseCard({ course, selected, completionPercent, onSelect }: Co
       </div>
 
       <div className="mt-4 flex items-center justify-between">
-        <span className="text-xs text-slate-500 dark:text-slate-400">{course.units.length} units</span>
+        <span className="text-xs text-slate-500 dark:text-white">{course.units.length} units</span>
         <Button size="sm" variant={selected ? "primary" : "outline"}>
           <CheckCircle2 className="w-4 h-4" />
           {selected ? "Selected" : "Start Here"}

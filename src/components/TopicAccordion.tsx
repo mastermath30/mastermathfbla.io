@@ -34,7 +34,7 @@ export function TopicAccordion({
   return (
     <section>
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">Choose a unit and topic</h2>
-      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+      <p className="text-sm text-slate-600 dark:text-white mt-1">
         Follow your class path and pick the topic you need right now.
       </p>
 
@@ -50,7 +50,7 @@ export function TopicAccordion({
               >
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{unit.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{unit.summary}</p>
+                  <p className="text-sm text-slate-600 dark:text-white">{unit.summary}</p>
                 </div>
                 <ChevronDown
                   className={`w-5 h-5 text-slate-500 transition-transform ${open ? "rotate-180" : ""}`}
@@ -76,7 +76,7 @@ export function TopicAccordion({
                           <h4 className="font-semibold text-slate-900 dark:text-white">{topic.title}</h4>
                           {completed && <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />}
                         </div>
-                        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{topic.summary}</p>
+                        <p className="mt-1 text-sm text-slate-600 dark:text-white">{topic.summary}</p>
 
                         <div className="mt-3 flex flex-wrap gap-2">
                           <Button size="sm" onClick={() => onSelectTopic(topic.id)}>

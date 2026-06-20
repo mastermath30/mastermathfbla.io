@@ -156,7 +156,7 @@ export default function SupportPage() {
                 <method.icon className="w-7 h-7" />
               </div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{method.title}</h3>
-              <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">{method.description}</p>
+              <p className="mb-5 text-sm text-slate-500 dark:text-white">{method.description}</p>
               <a href={method.href}>
                 <Button variant="outline" size="sm" className="mx-auto mt-auto">
                   {method.action}
@@ -183,7 +183,7 @@ export default function SupportPage() {
                 />
                 <div>
                   <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-primary-themed transition-colors">{cat.title}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">{cat.description}</p>
+                  <p className="text-slate-500 dark:text-white text-sm">{cat.description}</p>
                 </div>
               </div>
               <div className="mt-auto space-y-2 pt-2">
@@ -214,7 +214,7 @@ export default function SupportPage() {
               {t("Our support team is ready to help you with any questions.")}
             </p>
             <a href="#contact">
-              <Button variant="outline" className="w-full border-white/40 text-white hover:bg-white/10">
+              <Button variant="outline" className="w-full border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white">
                 {t("Contact Support")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -266,7 +266,7 @@ export default function SupportPage() {
                 {t("Still need help?")}
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">{t("Get in Touch")}</h2>
-              <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+              <p className="text-slate-600 dark:text-white text-lg max-w-2xl mx-auto">
                 {t("Send us a message and we'll get back to you within 24 hours. Our team is here to help.")}
               </p>
             </div>
@@ -291,7 +291,7 @@ export default function SupportPage() {
                       <CheckCircle2 className="w-10 h-10" />
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Message Sent Successfully!")}</h3>
-                    <p className="text-slate-500 dark:text-slate-400 mb-8">{t("We've received your message and will respond within 24 hours.")}</p>
+                    <p className="text-slate-500 dark:text-white mb-8">{t("We've received your message and will respond within 24 hours.")}</p>
                     <Button onClick={() => setSubmitted(false)} variant="outline">
                       {t("Send Another Message")}
                     </Button>
@@ -320,7 +320,7 @@ export default function SupportPage() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
+                      <div className="flex items-center gap-2 text-slate-500 dark:text-white text-sm">
                         <div className="w-2 h-2 rounded-full" style={{ background: 'var(--theme-primary)' }} />
                         {t("Average response time: 12 hours")}
                       </div>
@@ -345,7 +345,7 @@ export default function SupportPage() {
       {/* Footer */}
       <footer className="py-12 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <p className="text-slate-500 dark:text-white text-sm">
             © 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.
           </p>
         </div>

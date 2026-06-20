@@ -133,7 +133,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         />
         <div>
           <h4 className="font-semibold text-sm text-slate-900 dark:text-white">{testimonial.name}</h4>
-          <p className="text-xs text-slate-600 dark:text-slate-400">{testimonial.role}</p>
+          <p className="text-xs text-slate-600 dark:text-white">{testimonial.role}</p>
         </div>
       </div>
     </div>

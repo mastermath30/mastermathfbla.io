@@ -195,7 +195,7 @@ export function UnitConverter() {
                 <div className="p-4 space-y-4">
                   {/* Category Selector */}
                   <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("Category")}</label>
+                    <label className="text-xs text-slate-500 dark:text-white mb-1 block">{t("Category")}</label>
                     <div className="relative">
                       <select
                         value={category}
@@ -212,7 +212,7 @@ export function UnitConverter() {
 
                   {/* From */}
                   <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("From")}</label>
+                    <label className="text-xs text-slate-500 dark:text-white mb-1 block">{t("From")}</label>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <input
                         type="number"
@@ -245,7 +245,7 @@ export function UnitConverter() {
 
                   {/* To */}
                   <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">{t("To")}</label>
+                    <label className="text-xs text-slate-500 dark:text-white mb-1 block">{t("To")}</label>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <div className="flex-1 p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 font-mono text-lg font-semibold">
                         {result || "0"}
@@ -263,7 +263,7 @@ export function UnitConverter() {
                   </div>
 
                   {/* Quick Info */}
-                  <div className="text-center text-sm text-slate-500 dark:text-slate-400 pt-2">
+                  <div className="text-center text-sm text-slate-500 dark:text-white pt-2">
                     {fromValue && result && (
                       <span>{fromValue} {fromUnit} = {result} {toUnit}</span>
                     )}

@@ -24,7 +24,7 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
     <Card className="overflow-hidden">
       <div className="-mx-6 -mt-6 mb-5 rounded-t-[inherit] border-b border-slate-200 bg-slate-50 px-6 py-5 dark:border-slate-800 dark:bg-slate-900/80">
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Community Spotlight")}</h2>
-      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+      <p className="text-sm text-slate-600 dark:text-white mt-1">
         {t("Join a study group, drop into office hours, or ask peers for help.")}
       </p>
       </div>
@@ -52,10 +52,10 @@ export function CommunitySpotlight({ studyGroupId, discussionLabel }: CommunityS
               </span>
               <div className="min-w-0">
                 <h3 className="font-semibold leading-tight text-slate-900 dark:text-white">{group.name}</h3>
-                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">{group.focus}</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-white">{group.focus}</p>
               </div>
             </div>
-            <p className="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
+            <p className="mt-3 text-xs leading-5 text-slate-500 dark:text-white">
               {t("Next:")} <span>{group.nextSession}</span> | {group.members} {t("members")}
             </p>
           </Link>

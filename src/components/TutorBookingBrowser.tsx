@@ -663,7 +663,7 @@ export function TutorBookingBrowser({
           <div className="flex items-center gap-4 mb-4 md:mb-6">
             <Link 
               href={backHref}
-              className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-slate-600 dark:text-white hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">{t(backLabel)}</span>
@@ -740,7 +740,7 @@ export function TutorBookingBrowser({
                   <h3 className="font-bold text-slate-900 dark:text-white mb-1 group-hover/tutor:text-[var(--theme-primary)] transition-colors">
                     {tutor.name}
                   </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-sm text-slate-500 dark:text-white mb-2">
                     {tutor.education}
                   </p>
                   
@@ -751,7 +751,7 @@ export function TutorBookingBrowser({
                         {tutor.rating}
                       </span>
                     </div>
-                    <span className="text-slate-500 dark:text-slate-400 text-sm">
+                    <span className="text-slate-500 dark:text-white text-sm">
                       ({tutor.reviews} {t("reviews")})
                     </span>
                   </div>
@@ -759,7 +759,7 @@ export function TutorBookingBrowser({
 
                 <div className="space-y-4 mb-4 flex-1">
                   <div>
-                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+                    <p className="text-xs font-medium text-slate-500 dark:text-white uppercase tracking-wide mb-1">
                       {t("Subjects")}
                     </p>
                     <p className="text-sm text-slate-700 dark:text-slate-200">
@@ -768,10 +768,10 @@ export function TutorBookingBrowser({
                   </div>
                   
                   <div>
-                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+                    <p className="text-xs font-medium text-slate-500 dark:text-white uppercase tracking-wide mb-2">
                       {t("Specialties")}
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       {(expandedSpecialties[tutor.name] ? tutor.specialties : tutor.specialties.slice(0, 2)).map(specialty => (
                         <span 
                           key={specialty}
@@ -822,7 +822,7 @@ export function TutorBookingBrowser({
                         <span className="text-2xl font-bold" style={{ color: 'var(--theme-primary)' }}>
                           ${tutor.price}
                         </span>
-                        <span className="text-slate-500 dark:text-slate-400">{t("/hr")}</span>
+                        <span className="text-slate-500 dark:text-white">{t("/hr")}</span>
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
@@ -864,7 +864,7 @@ export function TutorBookingBrowser({
             <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
               {t("No tutors found")}
             </h3>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-600 dark:text-white">
               {t("Try adjusting your search criteria or browse all available tutors.")}
             </p>
           </div>
@@ -885,14 +885,14 @@ export function TutorBookingBrowser({
                   <CheckCircle2 className="w-10 h-10 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t("Payment Successful!")}</h2>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                <p className="text-slate-600 dark:text-white mb-4">
                   {t("Your session with")} {selectedTutor.name} {t("has been booked for")} {bookingDate && formatDate(bookingDate)} {t("at")} {selectedTime}.
                 </p>
                 <div className="inline-flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-full mb-4">
                   <ShieldCheck className="w-4 h-4" />
                   {t("Payment of")} ${calculatePrice()} {t("confirmed")}
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-slate-500 dark:text-white">
                   {t("Check your schedule for details. A confirmation email has been sent.")}
                 </p>
               </div>
@@ -910,7 +910,7 @@ export function TutorBookingBrowser({
                       </button>
                       <div>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("Checkout")}</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">{t("Complete your booking")}</p>
+                        <p className="text-slate-500 dark:text-white text-sm">{t("Complete your booking")}</p>
                       </div>
                     </div>
                     <button
@@ -934,18 +934,18 @@ export function TutorBookingBrowser({
                       />
                       <div className="flex-1">
                         <h4 className="font-semibold text-slate-900 dark:text-white">{selectedTutor.name}</h4>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-slate-500 dark:text-white">
                           {bookingDate && formatDate(bookingDate)} • {selectedTime} • {t(selectedDuration)}
                         </p>
                       </div>
                     </div>
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500 dark:text-slate-400">{t("Session Rate")}</span>
+                        <span className="text-slate-500 dark:text-white">{t("Session Rate")}</span>
                         <span className="text-slate-900 dark:text-white">${selectedTutor.price}{t("/hr")} × {getDurationHours(selectedDuration)} {t("hr")}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500 dark:text-slate-400">{t("Platform Fee")}</span>
+                        <span className="text-slate-500 dark:text-white">{t("Platform Fee")}</span>
                         <span className="text-slate-900 dark:text-white">$0.00</span>
                       </div>
                       <div className="flex justify-between font-semibold pt-2 border-t border-slate-200 dark:border-slate-700">
@@ -961,7 +961,7 @@ export function TutorBookingBrowser({
                       <CreditCard className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                       <h4 className="font-semibold text-slate-900 dark:text-white">{t("Payment Details")}</h4>
                       <div className="flex-1" />
-                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-white">
                         <Lock className="w-3 h-3" />
                         {t("Secure")}
                       </div>
@@ -1090,7 +1090,7 @@ export function TutorBookingBrowser({
                       />
                       <div>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedTutor.name}</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">{selectedTutor.subjects}</p>
+                        <p className="text-slate-500 dark:text-white text-sm">{selectedTutor.subjects}</p>
                       </div>
                     </div>
                     <button
@@ -1127,7 +1127,7 @@ export function TutorBookingBrowser({
                           }}
                           className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"
                         >
-                          <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                          <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-white" />
                         </button>
                         <h4 className="font-semibold text-slate-900 dark:text-white">
                           {new Date(bookingYear, bookingMonth).toLocaleDateString(language, { month: 'long', year: 'numeric' })}
@@ -1143,7 +1143,7 @@ export function TutorBookingBrowser({
                           }}
                           className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"
                         >
-                          <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                          <ChevronRight className="w-5 h-5 text-slate-600 dark:text-white" />
                         </button>
                       </div>
                       <div className="grid grid-cols-7 gap-1 mb-2">
@@ -1154,7 +1154,7 @@ export function TutorBookingBrowser({
                       <div className="grid grid-cols-7 gap-1">
                         {renderBookingCalendar()}
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
+                      <p className="text-xs text-slate-500 dark:text-white mt-3 text-center">
                         <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: "var(--theme-primary)" }} />
                         {t("Dots indicate available days")}
                       </p>
@@ -1165,10 +1165,10 @@ export function TutorBookingBrowser({
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div 
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${!bookingDate ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400" : "text-white"}`}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${!bookingDate ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-white" : "text-white"}`}
                         style={bookingDate ? { background: "var(--theme-primary)" } : {}}
                       >2</div>
-                      <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                      <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-300"}`}>
                         {t("Select a Time")} {bookingDate && `- ${formatDate(bookingDate)}`}
                       </h4>
                     </div>
@@ -1196,14 +1196,14 @@ export function TutorBookingBrowser({
                           ))}
                         </div>
                         {getAvailableTimeSlots().length === 0 && (
-                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
+                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-white bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
                             <div className="font-medium text-lg mb-1">{t("🚫 Fully Booked")}</div>
                             <div className="text-sm">{t("No available slots for this day")}</div>
                           </div>
                         )}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                      <p className="text-sm text-slate-400 dark:text-slate-300 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
                         {t("Please select a date first")}
                       </p>
                     )}
@@ -1213,10 +1213,10 @@ export function TutorBookingBrowser({
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div 
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${selectedTime ? "text-white" : "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400"}`}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${selectedTime ? "text-white" : "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-white"}`}
                         style={selectedTime ? { background: "var(--theme-primary)" } : {}}
                       >3</div>
-                      <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                      <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-300"}`}>
                         {t("Select Duration")}
                       </h4>
                     </div>
@@ -1239,7 +1239,7 @@ export function TutorBookingBrowser({
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                      <p className="text-sm text-slate-400 dark:text-slate-300 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
                         {t("Please select a time first")}
                       </p>
                     )}
@@ -1251,19 +1251,19 @@ export function TutorBookingBrowser({
                       <h4 className="font-semibold text-slate-900 dark:text-white mb-3">{t("Booking Summary")}</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">{t("Tutor")}</span>
+                          <span className="text-slate-500 dark:text-white">{t("Tutor")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{selectedTutor.name}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">{t("Date")}</span>
+                          <span className="text-slate-500 dark:text-white">{t("Date")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{bookingDate && formatDate(bookingDate)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">{t("Time")}</span>
+                          <span className="text-slate-500 dark:text-white">{t("Time")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{selectedTime}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-500 dark:text-slate-400">{t("Duration")}</span>
+                          <span className="text-slate-500 dark:text-white">{t("Duration")}</span>
                           <span className="text-slate-900 dark:text-white font-medium">{t(selectedDuration)}</span>
                         </div>
                         <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
@@ -1271,7 +1271,7 @@ export function TutorBookingBrowser({
                             <span className="text-slate-900 dark:text-white font-semibold">{t("Total")}</span>
                             <span className="text-lg font-bold gradient-text">${calculatePrice()}</span>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                          <p className="text-xs text-slate-500 dark:text-white mt-1">
                             ${selectedTutor.price}{t("/hr")} × {getDurationHours(selectedDuration)} {t("hours")}
                           </p>
                         </div>

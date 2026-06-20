@@ -806,14 +806,14 @@ export default function Home() {
                     <div className="text-2xl md:text-3xl font-bold gradient-text font-mono group-hover:scale-110 transition-transform duration-300">
                       <AnimatedNumberClient value={stat.value} duration={900} label={stat.label} />
                     </div>
-                    <div className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mt-1">{stat.label}</div>
+                    <div className="text-slate-500 dark:text-white text-xs uppercase tracking-wider mt-1">{stat.label}</div>
                   </FadeInStaggerItem>
                 ))}
               </FadeInStagger>
               <FadeIn delay={0.3}>
                 <Link
                   href="#features"
-                  className="mt-8 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-[var(--theme-primary)] transition-colors"
+                  className="mt-8 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-white hover:text-[var(--theme-primary)] transition-colors"
                 >
                   {t("See how it works")}
                   <ChevronDown className="w-4 h-4 animate-bounce" />
@@ -861,7 +861,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">4.9 ⭐</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{t("Top Rated")}</p>
+                      <p className="text-xs text-slate-500 dark:text-white">{t("Top Rated")}</p>
                     </div>
                   </div>
                 </Link>
@@ -878,7 +878,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">1,200+</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{t("Study sessions this month")}</p>
+                      <p className="text-xs text-slate-500 dark:text-white">{t("Study sessions this month")}</p>
                     </div>
                   </div>
                 </Link>
@@ -896,7 +896,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-green-600">320</p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400">{t("Verified tutors")}</p>
+                      <p className="text-[10px] text-slate-500 dark:text-white">{t("Verified tutors")}</p>
                     </div>
                   </div>
                 </Link>
@@ -940,14 +940,14 @@ export default function Home() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{session.title}</h3>
-                        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{t("with")} {session.tutor}</p>
+                        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-white">{t("with")} {session.tutor}</p>
                       </div>
                       <p className="shrink-0 text-right text-sm font-semibold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{session.date}</p>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-1.5">
                       <span className="mm-accent-pill rounded-full px-2.5 py-1 text-xs font-semibold">{session.takeaway}</span>
                     </div>
-                    <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{t("Completed tutoring session")}</p>
+                    <p className="mt-4 text-sm text-slate-500 dark:text-white">{t("Completed tutoring session")}</p>
                     <Link href="/tutors" className="mt-auto pt-5">
                       <Button className="w-full rounded-full">{t("Book Again")}</Button>
                     </Link>
@@ -989,7 +989,7 @@ export default function Home() {
                     <div className="mt-5 space-y-3">
                       {["Foundations", "Linear Equations", "Quadratics"].map((label, index) => (
                         <div key={label} className="flex items-center gap-3">
-                          <div className={`h-8 w-8 rounded-full border text-center text-sm font-semibold leading-8 ${index === 0 ? "border-emerald-200 bg-emerald-50 text-emerald-700" : index === 1 ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 bg-white text-slate-400"}`}>
+                          <div className={`h-8 w-8 rounded-full border text-center text-sm font-semibold leading-8 ${index === 0 ? "border-emerald-200 bg-emerald-50 text-emerald-700" : index === 1 ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800 text-slate-400 dark:text-white"}`}>
                             {index === 0 ? "✓" : index + 1}
                           </div>
                           <div className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">{t(label)}</div>
@@ -1029,12 +1029,12 @@ export default function Home() {
                       <Avatar initials={topTutors[0]?.initials ?? "MT"} size="lg" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{topTutors[0]?.name}</p>
-                        <p className="text-xs leading-5 text-slate-500">{topTutors[0]?.subjects}</p>
+                        <p className="text-xs leading-5 text-slate-500 dark:text-white">{topTutors[0]?.subjects}</p>
                       </div>
                     </div>
                     <Button
-                      variant="outline"
-                      className="mt-4 w-full rounded-full bg-white text-slate-800 hover:bg-[var(--accent-soft)] hover:text-[var(--theme-primary)] dark:bg-slate-900 dark:text-slate-100"
+                      variant="primary"
+                      className="mt-4 w-full rounded-full"
                       disabled={!topTutors[0]?.available}
                       onClick={() => topTutors[0]?.available && handleBookNow(topTutors[0])}
                     >
@@ -1083,9 +1083,9 @@ export default function Home() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{tutor.name}</h3>
-                        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{tutor.subjects}</p>
+                        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-white">{tutor.subjects}</p>
                       </div>
-                      <p className="shrink-0 text-right text-lg font-bold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">${tutor.price}<span className="text-sm font-medium text-slate-400">/hr</span></p>
+                      <p className="shrink-0 text-right text-lg font-bold text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">${tutor.price}<span className="text-sm font-medium text-slate-400 dark:text-white">/hr</span></p>
                     </div>
                     {tutor.specialties && (
                       <div className="mt-4 flex flex-wrap gap-1.5">
@@ -1096,7 +1096,7 @@ export default function Home() {
                         ))}
                       </div>
                     )}
-                    <div className="mt-4 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+                    <div className="mt-auto pt-4 flex items-center gap-3 text-sm text-slate-500 dark:text-white">
                       <span>{tutor.reviews} {t("reviews")}</span>
                       <span aria-hidden="true">•</span>
                       <span>{Math.floor(tutor.reviews * 0.7)}+ {t("students")}</span>
@@ -1149,7 +1149,7 @@ export default function Home() {
                 </Link>
               )}
             </div>
-            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{t("No credit card required • Free forever")}</p>
+            <p className="mt-4 text-sm text-slate-500 dark:text-white">{t("No credit card required • Free forever")}</p>
           </FadeIn>
           </div>
         </div>
@@ -1172,7 +1172,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
                 <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{t("Your Recent Sessions")}</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Manage your upcoming and past sessions")}</p>
+                <p className="text-slate-500 dark:text-white text-sm mt-1">{t("Manage your upcoming and past sessions")}</p>
               </div>
               <Link href="/schedule" className="text-primary-themed text-sm font-medium hover:underline">
                 {t("View all sessions")}
@@ -1188,7 +1188,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-slate-900 dark:text-white text-sm mb-1">{session.title}</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{session.time}</p>
+                      <p className="text-xs text-slate-500 dark:text-white mb-2">{session.time}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Image src={session.image} alt={session.tutor} width={24} height={24} className="h-6 w-6 rounded-full object-cover object-[center_20%]" />
@@ -1220,7 +1220,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
                   <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t("Top Rated Tutors")}</h2>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Our highest-rated math tutors ready to help you succeed")}</p>
+                  <p className="text-slate-500 dark:text-white text-sm mt-1">{t("Our highest-rated math tutors ready to help you succeed")}</p>
                 </div>
                 <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group whitespace-nowrap" style={{ color: 'var(--theme-primary)' }}>
                   {t("View all tutors")}
@@ -1261,14 +1261,14 @@ export default function Home() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h3 className="font-semibold text-slate-900 dark:text-white text-lg group-hover/tutor:text-[var(--theme-primary)] transition-colors">{tutor.name}</h3>
-                          <p className="text-slate-500 dark:text-slate-400 text-sm">{tutor.subjects}</p>
+                          <p className="text-slate-500 dark:text-white text-sm">{tutor.subjects}</p>
                         </div>
                         <div className="text-right">
                           <span className="font-bold text-lg" style={{ color: 'var(--theme-primary)' }}>${tutor.price}</span>
-                          <span className="text-slate-400 text-sm">/hr</span>
+                          <span className="text-slate-400 dark:text-white text-sm">/hr</span>
                         </div>
                       </div>
-                      
+
                       {tutor.specialties && (
                         <div className="mb-4">
                           <div className="flex flex-wrap gap-1.5">
@@ -1302,7 +1302,7 @@ export default function Home() {
                         </div>
                       )}
                       
-                      <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-white">
                         <span>{tutor.reviews} {t("reviews")}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
@@ -1397,7 +1397,7 @@ export default function Home() {
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4 tracking-tight px-4">
                   {t("Learn Smarter,")} <span className="gradient-text">{t("Not Harder")}</span>
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
+                <p className="text-slate-600 dark:text-white text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
                   {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
                 </p>
               </FadeIn>
@@ -1422,7 +1422,7 @@ export default function Home() {
                           <feature.icon className="w-6 h-6 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors">{feature.title}</h3>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 flex-1">
+                        <p className="text-slate-600 dark:text-white text-sm leading-relaxed mb-4 flex-1">
                           {feature.description}
                         </p>
                         <Link
@@ -1507,7 +1507,7 @@ export default function Home() {
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
                   {t("What Students Say")}
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-white text-base sm:text-lg max-w-2xl mx-auto">
                   {t("See what our students have to say about us.")}
                 </p>
               </div>
@@ -1523,7 +1523,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
                   <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t("Top Rated Tutors")}</h2>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("Our highest-rated math tutors ready to help you succeed")}</p>
+                  <p className="text-slate-500 dark:text-white text-sm mt-1">{t("Our highest-rated math tutors ready to help you succeed")}</p>
                 </div>
                 <Link href="/tutors" className="inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all group whitespace-nowrap" style={{ color: 'var(--theme-primary)' }}>
                   {t("View all tutors")}
@@ -1564,14 +1564,14 @@ export default function Home() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h3 className="font-semibold text-slate-900 dark:text-white text-lg group-hover/tutor:text-[var(--theme-primary)] transition-colors">{tutor.name}</h3>
-                          <p className="text-slate-500 dark:text-slate-400 text-sm">{tutor.subjects}</p>
+                          <p className="text-slate-500 dark:text-white text-sm">{tutor.subjects}</p>
                         </div>
                         <div className="text-right">
                           <span className="font-bold text-lg" style={{ color: 'var(--theme-primary)' }}>${tutor.price}</span>
-                          <span className="text-slate-400 text-sm">/hr</span>
+                          <span className="text-slate-400 dark:text-white text-sm">/hr</span>
                         </div>
                       </div>
-                      
+
                       {tutor.specialties && (
                         <div className="mb-4">
                           <div className="flex flex-wrap gap-1.5">
@@ -1605,7 +1605,7 @@ export default function Home() {
                         </div>
                       )}
                       
-                      <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-3 mb-4 text-sm text-slate-500 dark:text-white">
                         <span>{tutor.reviews} {t("reviews")}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
@@ -1702,7 +1702,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4 tracking-tight px-4">
               {t("Learn Smarter,")} <span className="gradient-text">{t("Not Harder")}</span>
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
+            <p className="text-slate-600 dark:text-white text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
               {t("Our platform combines the best of peer learning with powerful tools to help you succeed in mathematics.")}
             </p>
           </FadeIn>
@@ -1727,7 +1727,7 @@ export default function Home() {
                       <feature.icon className="w-6 h-6 text-white" />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors">{feature.title}</h3>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 flex-1">
+                    <p className="text-slate-600 dark:text-white text-sm leading-relaxed mb-4 flex-1">
                       {feature.description}
                     </p>
                     <Link
@@ -1824,7 +1824,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mt-6 mb-4">
               {t("What Students Say")}
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-white text-base sm:text-lg max-w-2xl mx-auto">
               {t("See what our students have to say about us.")}
             </p>
           </div>
@@ -1863,7 +1863,7 @@ export default function Home() {
                 </Link>
               )}
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">{t("No credit card required • Free forever")}</p>
+            <p className="text-slate-500 dark:text-white text-sm mt-4">{t("No credit card required • Free forever")}</p>
           </FadeIn>
         </div>
       </section>
@@ -1880,41 +1880,41 @@ export default function Home() {
                 </div>
                 <span className="text-xl font-bold">{t("MathMaster")}</span>
               </div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              <p className="text-slate-500 dark:text-white text-sm">
                 {t("Empowering students to master mathematics through peer learning and collaboration.")}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Platform")}</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-white mb-4">{t("Platform")}</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Dashboard")}</Link></li>
-                <li><Link href="/schedule" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Schedule")}</Link></li>
-                <li><Link href="/learn" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Learn")}</Link></li>
-                <li><Link href="/community" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Community")}</Link></li>
+                <li><Link href="/dashboard" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Dashboard")}</Link></li>
+                <li><Link href="/schedule" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Schedule")}</Link></li>
+                <li><Link href="/learn" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Learn")}</Link></li>
+                <li><Link href="/community" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Community")}</Link></li>
                 </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Company")}</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-white mb-4">{t("Company")}</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("About Us")}</Link></li>
-                <li><Link href="/support" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Support")}</Link></li>
-                <li><Link href="/support#faq" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Privacy Policy")}</Link></li>
-                <li><Link href="/support#faq" className="text-slate-500 dark:text-slate-400 hover:text-primary-themed transition-colors">{t("Terms of Service")}</Link></li>
+                <li><Link href="/about" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("About Us")}</Link></li>
+                <li><Link href="/support" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Support")}</Link></li>
+                <li><Link href="/support#faq" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Privacy Policy")}</Link></li>
+                <li><Link href="/support#faq" className="text-slate-500 dark:text-white hover:text-primary-themed transition-colors">{t("Terms of Service")}</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">{t("Connect")}</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-500 dark:text-white mb-4">{t("Connect")}</h4>
               <div className="flex gap-3">
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-white hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-white hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-950 hover:bg-[var(--theme-primary)] flex items-center justify-center text-slate-500 dark:text-white hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[rgba(var(--theme-primary-rgb),0.3)]">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 </a>
               </div>
@@ -1922,7 +1922,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-slate-200 dark:border-slate-800 pt-8">
-            <p className="text-center text-slate-500 text-sm">
+            <p className="text-center text-slate-500 dark:text-slate-300 text-sm">
               {t("© 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.")}
             </p>
           </div>
@@ -1976,7 +1976,7 @@ export default function Home() {
                     <CheckCircle2 className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t("Payment Successful!")}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-slate-500 dark:text-white mb-2">
                     {t("Your session with")} {selectedTutor.name} {t("has been scheduled.")}
                   </p>
                   <div className="inline-flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-full mb-2">
@@ -1991,7 +1991,7 @@ export default function Home() {
                 <>
                   <button 
                     onClick={() => setShowCheckout(false)}
-                    className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
+                    className="flex items-center gap-2 text-slate-600 dark:text-white hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     {t("Back to booking")}
@@ -2001,15 +2001,15 @@ export default function Home() {
                     <h4 className="font-semibold text-slate-900 dark:text-white mb-3">{t("Order Summary")}</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-slate-500 dark:text-slate-400">{t("Session")}</span>
+                        <span className="text-slate-500 dark:text-white">{t("Session")}</span>
                         <span className="text-slate-900 dark:text-white">{bookingDate && formatDate(bookingDate)} • {selectedTime}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500 dark:text-slate-400">{t("Duration")}</span>
+                        <span className="text-slate-500 dark:text-white">{t("Duration")}</span>
                         <span className="text-slate-900 dark:text-white">{selectedDuration}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500 dark:text-slate-400">{t("Rate")}</span>
+                        <span className="text-slate-500 dark:text-white">{t("Rate")}</span>
                         <span className="text-slate-900 dark:text-white">${selectedTutor.price}/hr</span>
                       </div>
                       <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
@@ -2026,7 +2026,7 @@ export default function Home() {
                       <CreditCard className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                       <h4 className="font-semibold text-slate-900 dark:text-white">{t("Payment Details")}</h4>
                       <div className="flex-1" />
-                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-white">
                         <Lock className="w-3 h-3" />
                         {t("Secure")}
                       </div>
@@ -2184,7 +2184,7 @@ export default function Home() {
                       <div className="grid grid-cols-7 gap-1">
                         {renderBookingCalendar()}
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
+                      <p className="text-xs text-slate-500 dark:text-white mt-3 text-center">
                         <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: "var(--theme-primary)" }} />
                         {t("Dots indicate available days")}
                       </p>
@@ -2195,10 +2195,10 @@ export default function Home() {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div 
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${!bookingDate ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400" : "text-white"}`}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${!bookingDate ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-white" : "text-white"}`}
                         style={bookingDate ? { background: "var(--theme-primary)" } : {}}
                       >2</div>
-                      <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                      <h4 className={`font-semibold ${bookingDate ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-300"}`}>
                         {t("Select a Time")} {bookingDate && `- ${formatDate(bookingDate)}`}
                       </h4>
                     </div>
@@ -2227,14 +2227,14 @@ export default function Home() {
                           ))}
                         </div>
                         {getAvailableTimeSlots().length === 0 && (
-                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
+                          <div className="text-center py-6 mt-4 text-slate-500 dark:text-white bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700">
                             <div className="font-medium text-lg mb-1">🚫 {t("Fully Booked")}</div>
                             <div className="text-sm">{t("No available slots for this day")}</div>
                           </div>
                         )}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                      <p className="text-sm text-slate-400 dark:text-slate-300 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
                         {t("Please select a date first")}
                       </p>
                     )}
@@ -2244,10 +2244,10 @@ export default function Home() {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <div 
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${selectedTime ? "text-white" : "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400"}`}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${selectedTime ? "text-white" : "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-white"}`}
                         style={selectedTime ? { background: "var(--theme-primary)" } : {}}
                       >3</div>
-                      <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500"}`}>
+                      <h4 className={`font-semibold ${selectedTime ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-300"}`}>
                         {t("Choose Duration")}
                       </h4>
                     </div>
@@ -2273,7 +2273,7 @@ export default function Home() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 dark:text-slate-500 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
+                      <p className="text-sm text-slate-400 dark:text-slate-300 p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-center">
                         {t("Please select a time first")}
                       </p>
                     )}
@@ -2282,8 +2282,8 @@ export default function Home() {
                   {/* Price Summary */}
                   <div className="flex items-center justify-between mb-6 p-4 rounded-xl border-2 border-dashed" style={{ borderColor: "var(--theme-primary)" }}>
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400 text-sm">{t("Session Total")}</span>
-                      <div className="text-xs text-slate-500 dark:text-slate-500">
+                      <span className="text-slate-600 dark:text-white text-sm">{t("Session Total")}</span>
+                      <div className="text-xs text-slate-500 dark:text-slate-300">
                         {t(selectedDuration)} × ${selectedTutor.price}/hr
                       </div>
                     </div>

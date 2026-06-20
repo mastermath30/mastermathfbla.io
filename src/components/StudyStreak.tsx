@@ -197,14 +197,14 @@ export function StudyStreak() {
                       <Trophy className="w-4 h-4" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">{streakData.longestStreak}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Longest Streak")}</div>
+                    <div className="text-xs text-slate-500 dark:text-white">{t("Longest Streak")}</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-blue-500 mb-1">
                       <Calendar className="w-4 h-4" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">{streakData.totalDays}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Total Days")}</div>
+                    <div className="text-xs text-slate-500 dark:text-white">{t("Total Days")}</div>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-yellow-500 mb-1">
@@ -213,7 +213,7 @@ export function StudyStreak() {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {Math.floor(streakData.totalDays / 7)}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Weeks Active")}</div>
+                    <div className="text-xs text-slate-500 dark:text-white">{t("Weeks Active")}</div>
                   </div>
                 </div>
 
@@ -244,7 +244,7 @@ export function StudyStreak() {
 
                 {/* Motivation */}
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/50 text-center">
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-slate-600 dark:text-white">
                     {streakData.currentStreak >= 7
                       ? t("Amazing! Keep the fire burning!")
                       : streakData.currentStreak >= 3

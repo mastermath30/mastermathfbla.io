@@ -364,24 +364,24 @@ function AuthPageContent() {
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
-                  <Settings className="w-5 h-5 text-slate-400" />
+                  <Settings className="w-5 h-5 text-slate-400 dark:text-slate-300" />
                   <span className="text-slate-700 dark:text-slate-300">{t("Profile Settings")}</span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(true)}>{t("Edit")}</Button>
               </div>
               <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-slate-400" />
+                  <Lock className="w-5 h-5 text-slate-400 dark:text-slate-300" />
                   <span className="text-slate-700 dark:text-slate-300">{t("Change Password")}</span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setIsChangingPassword(true)}>{t("Update")}</Button>
               </div>
               <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-3">
-                  <Globe className="w-5 h-5 text-slate-400" />
+                  <Globe className="w-5 h-5 text-slate-400 dark:text-slate-300" />
                   <div>
                     <div className="text-slate-700 dark:text-slate-300 font-medium">{t("Language")}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Choose your language")}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-200">{t("Choose your language")}</div>
                   </div>
                 </div>
                 <select
@@ -396,19 +396,18 @@ function AuthPageContent() {
                   ))}
                 </select>
               </div>
-              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
-                <div className="flex items-center gap-3">
-                  <Accessibility className="w-5 h-5 text-slate-400" />
-                  <div>
-                    <div className="text-slate-700 dark:text-slate-300 font-medium">{t("Colorblind Mode")}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{t("Use a high-contrast, colorblind-safe palette")}</div>
-                  </div>
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-950">
+                <Accessibility className="w-5 h-5 shrink-0 text-slate-400 dark:text-slate-300" />
+                <div className="min-w-0 flex-1">
+                  <div className="text-slate-700 dark:text-slate-300 font-medium">{t("Colorblind Mode")}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-200">{t("Use a high-contrast, colorblind-safe palette")}</div>
                 </div>
                 <Button
                   variant={isColorblindMode ? "primary" : "outline"}
                   size="sm"
                   onClick={handleColorblindToggle}
                   type="button"
+                  className="shrink-0"
                 >
                   {isColorblindMode ? t("On") : t("Off")}
                 </Button>
@@ -429,7 +428,7 @@ function AuthPageContent() {
               <div className="bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Edit Profile")}</h3>
-                  <button onClick={() => { setIsEditingProfile(false); setError(""); }} type="button" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation">
+                  <button onClick={() => { setIsEditingProfile(false); setError(""); }} type="button" className="text-slate-400 dark:text-slate-300 hover:text-slate-600 dark:hover:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -469,7 +468,7 @@ function AuthPageContent() {
                       defaultValue={profile.username !== `${profile.firstName} ${profile.lastName}` ? profile.username : ""}
                       placeholder={t("Optional - for privacy")}
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-200 mt-1">
                       {t("Leave blank to use your full name as display name")}
                     </p>
                   </div>
@@ -502,7 +501,7 @@ function AuthPageContent() {
               <div className="bg-white dark:bg-slate-950 rounded-t-2xl sm:rounded-2xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Change Password")}</h3>
-                  <button onClick={() => { setIsChangingPassword(false); setError(""); }} type="button" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation">
+                  <button onClick={() => { setIsChangingPassword(false); setError(""); }} type="button" className="text-slate-400 dark:text-slate-300 hover:text-slate-600 dark:hover:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -631,7 +630,7 @@ function AuthPageContent() {
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-[2rem]">
               {mode === "signin" ? t("Welcome back") : t("Create your account")}
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 mt-2">
+            <p className="text-slate-600 dark:text-slate-200 mt-2">
               {mode === "signin" 
                 ? (bookingAction ? t("Sign in to book your tutoring session") : t("Sign in to continue learning"))
                 : t("Start your math journey today")}
@@ -645,7 +644,7 @@ function AuthPageContent() {
               className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 mode === "signin"
                   ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
+                  : "text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
               <LogIn className="hidden h-4 w-4 shrink-0 sm:block" />
@@ -656,7 +655,7 @@ function AuthPageContent() {
               className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 mode === "signup"
                   ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
+                  : "text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-300"
               }`}
             >
               <UserPlus className="hidden h-4 w-4 shrink-0 sm:block" />
@@ -683,7 +682,7 @@ function AuthPageContent() {
                     label={t("Username")} 
                     placeholder={t("Optional - for privacy")} 
                   />
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-slate-200 mt-1">
                     {t("Leave blank to use your full name as display name")}
                   </p>
                 </div>
@@ -724,7 +723,7 @@ function AuthPageContent() {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-slate-600 dark:text-slate-500 text-sm">
+            <p className="text-slate-600 dark:text-slate-300 text-sm">
               {mode === "signin" ? t("Don't have an account?") : t("Already have an account?")}{" "}
               <button
                 onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); }}
@@ -736,7 +735,7 @@ function AuthPageContent() {
           </div>
 
           <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
-            <p className="text-slate-500 dark:text-slate-400 text-xs">
+            <p className="text-slate-500 dark:text-slate-200 text-xs">
               {t("By continuing, you agree to our Terms of Service and Privacy Policy.")}
             </p>
           </div>

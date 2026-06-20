@@ -125,7 +125,7 @@ export function ToolsMenu() {
               className="absolute bottom-16 left-0 w-[calc(100vw-2rem)] max-w-[14rem] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
             >
               <div className="p-2 border-b border-slate-200 dark:border-slate-700">
-                <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-2">
+                <div className="text-xs font-medium text-slate-500 dark:text-white px-2">
                   {t("Study Tools")}
                 </div>
               </div>
@@ -143,7 +143,7 @@ export function ToolsMenu() {
                       <div className="text-sm font-medium text-slate-900 dark:text-white">
                         {tool.name}
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                      <div className="text-xs text-slate-500 dark:text-white">
                         {tool.shortcut}
                       </div>
                     </div>
@@ -182,7 +182,7 @@ export function ToolsMenu() {
                   className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label={t("Close tools")}
                 >
-                  <X className="w-4 h-4 text-slate-500" />
+                  <X className="w-4 h-4 text-slate-500 dark:text-slate-300" />
                 </button>
               </div>
               <div className="p-2">
@@ -408,7 +408,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                 {/* Toggle Options */}
                 <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-700">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("Dim Distractions")}</span>
+                    <span className="text-sm text-slate-600 dark:text-white">{t("Dim Distractions")}</span>
                     <button
                       type="button"
                       role="switch"
@@ -421,7 +421,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("Hide Images")}</span>
+                    <span className="text-sm text-slate-600 dark:text-white">{t("Hide Images")}</span>
                     <button
                       type="button"
                       role="switch"
@@ -434,7 +434,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("Breathing Border")}</span>
+                    <span className="text-sm text-slate-600 dark:text-white">{t("Breathing Border")}</span>
                     <button
                       type="button"
                       role="switch"
@@ -450,7 +450,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
 
               {/* Footer */}
               <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
-                <div className="flex items-center justify-between text-xs text-slate-500">
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-300">
                   <span>{t("Press Esc to exit")}</span>
                   <span className="text-indigo-500">{t("Focus Active")} ✓</span>
                 </div>

@@ -211,7 +211,7 @@ export function AdaptiveLessonPractice({
           <h4 className="mt-3 text-xl font-bold tracking-tight text-slate-900 dark:text-white">{topic.title}</h4>
           <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{topic.summary}</p>
           <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/50">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{t("Goal")}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-white">{t("Goal")}</p>
             <p className="mt-2 text-sm font-medium leading-6 text-slate-800 dark:text-slate-200">{topic.masteryGoal}</p>
           </div>
         </section>
@@ -222,10 +222,10 @@ export function AdaptiveLessonPractice({
             {t("Worked example")}
           </div>
           <p className="mt-3 text-sm font-semibold leading-6 text-slate-900 dark:text-white">{t(practiceData.example.prompt)}</p>
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-3 text-sm text-slate-600 dark:text-white">
             {t("Answer")}: <span className="font-semibold text-emerald-700 dark:text-emerald-300">{t(exampleAnswer)}</span>
           </p>
-          <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+          <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-white">
             {t("Use the lesson goal as your check, then try the adaptive set below.")}
           </p>
         </section>
@@ -236,7 +236,7 @@ export function AdaptiveLessonPractice({
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("Adaptive practice is ready")}</p>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mt-1 text-sm text-slate-600 dark:text-white">
                 {t("You will answer 8 built-in problems. Difficulty adjusts after each answer.")}
               </p>
             </div>
@@ -288,7 +288,7 @@ export function AdaptiveLessonPractice({
                     selected && !answered ? "border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-slate-900 ring-2 ring-[var(--theme-primary)]/20 dark:text-white" : "",
                     correct ? "border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-100" : "",
                     incorrect ? "border-rose-500 bg-rose-50 text-rose-900 dark:bg-rose-950/50 dark:text-rose-100" : "",
-                    answered && !correct && !incorrect ? "border-slate-200 bg-slate-50 text-slate-500 opacity-70 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400" : "",
+                    answered && !correct && !incorrect ? "border-slate-200 bg-slate-50 text-slate-500 opacity-70 dark:border-slate-800 dark:bg-slate-900 dark:text-white" : "",
                   ].filter(Boolean).join(" ")}
                 >
                   {t(option)}
@@ -338,7 +338,7 @@ export function AdaptiveLessonPractice({
           <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
             {t("Final practice level")}: <span className="font-semibold">{t(formatDifficultyLabel(finalDifficulty))}</span>
           </p>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-2 text-sm text-slate-600 dark:text-white">
             {checkpointComplete
               ? t("Your lesson checkpoint is already complete.")
               : t("Your lesson checkpoint is now complete.")}

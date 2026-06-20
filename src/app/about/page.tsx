@@ -192,7 +192,7 @@ export default function AboutPage() {
                 </div>
                 <div className="text-4xl font-bold gradient-text font-mono mb-2">{stat.value}</div>
                 <p className="text-slate-900 dark:text-white font-medium">{stat.label}</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">{stat.sublabel}</p>
+                <p className="text-slate-500 dark:text-white text-sm">{stat.sublabel}</p>
               </div>
             ))}
           </div>
@@ -319,7 +319,7 @@ export default function AboutPage() {
                   <div className="flex flex-1 flex-col p-6">
                     <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{member.name}</h3>
                     <p className="text-sm font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>{member.role}</p>
-                    <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{member.bio}</p>
+                    <p className="text-sm leading-relaxed text-slate-500 dark:text-white">{member.bio}</p>
                   </div>
                 </Card>
               </button>
@@ -349,7 +349,7 @@ export default function AboutPage() {
                   <value.icon className="w-7 h-7" />
                 </div>
                 <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{value.title}</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">{value.description}</p>
+                <p className="text-slate-500 dark:text-white text-sm">{value.description}</p>
               </Card>
             ))}
           </div>
@@ -378,7 +378,7 @@ export default function AboutPage() {
                 {t("Get Started Today")}
               </Button>
             </Link>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">{t("No credit card required • Free forever")}</p>
+            <p className="text-slate-500 dark:text-white text-sm mt-4">{t("No credit card required • Free forever")}</p>
           </FadeIn>
         </div>
       </section>
@@ -386,7 +386,7 @@ export default function AboutPage() {
       {/* Footer */}
       <footer className="py-12 pb-32">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <p className="text-slate-500 dark:text-white text-sm">
             {t("© 2026 MathMaster. All rights reserved. Built for FBLA Website Design Competition.")}
           </p>
         </div>

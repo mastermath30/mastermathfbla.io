@@ -26,9 +26,9 @@ export function QuestionCard({ question, onSelect, isActive = false }: QuestionC
             {question.answers.length} {question.answers.length === 1 ? "answer" : "answers"}
           </span>
         </div>
-        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{getPreview(question.body)}</p>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{getPreview(question.body)}</p>
         {question.author && (
-          <p className="mt-2 text-sm text-slate-400 dark:text-slate-500">Asked by {question.author}</p>
+          <p className="mt-2 text-sm text-slate-400 dark:text-slate-300">Asked by {question.author}</p>
         )}
       </Card>
     </button>

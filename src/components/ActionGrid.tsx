@@ -52,7 +52,7 @@ export function ActionGrid({ intent, onSetIntent, onQuickAction, showHeader = tr
       {showHeader && (
         <>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("What do you need right now?")}</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-white mt-1">
             {t("Choose one action and follow through before switching context.")}
           </p>
         </>
@@ -72,7 +72,7 @@ export function ActionGrid({ intent, onSetIntent, onQuickAction, showHeader = tr
           >
             <option.icon className="w-5 h-5 text-[var(--theme-primary)] mb-2" />
             <h3 className="font-semibold text-slate-900 dark:text-white">{t(option.title)}</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{t(option.description)}</p>
+            <p className="text-xs text-slate-600 dark:text-white mt-1">{t(option.description)}</p>
           </button>
         ))}
       </div>

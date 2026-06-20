@@ -58,7 +58,7 @@ export const CardTitle = ({ className, children, ...props }: HTMLAttributes<HTML
 );
 
 export const CardDescription = ({ className, children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={clsx("text-slate-600 dark:text-slate-400 text-sm mt-1 leading-relaxed", className)} {...props}>
+  <p className={clsx("text-slate-600 dark:text-white text-sm mt-1 leading-relaxed", className)} {...props}>
     {children}
   </p>
 );

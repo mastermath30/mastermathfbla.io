@@ -99,7 +99,7 @@ export function ReadingMode() {
                 <button
                   onClick={() => setIsActive(false)}
                   aria-label={t("Close")}
-                  className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+                  className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-300"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -108,7 +108,7 @@ export function ReadingMode() {
               {/* Font Size */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 dark:text-slate-400">{t("Text Size")}</span>
+                  <span className="text-slate-600 dark:text-white">{t("Text Size")}</span>
                   <span className="font-medium text-slate-900 dark:text-white">{fontSize}%</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -174,7 +174,7 @@ export function ReadingMode() {
               </div>
 
               {/* Keyboard hint */}
-              <div className="text-center text-xs text-slate-500">
+              <div className="text-center text-xs text-slate-500 dark:text-slate-300">
                 {t("Press Esc to exit")}
               </div>
             </div>

@@ -143,7 +143,7 @@ export function QuickNotes() {
                   <button
                     onClick={() => setIsOpen(false)}
                     aria-label={t("Close")}
-                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-white dark:hover:bg-slate-800 dark:hover:text-white"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -176,7 +176,7 @@ export function QuickNotes() {
                 {/* Notes List */}
                 <div className="flex-1 overflow-y-auto p-3 space-y-2">
                   {sortedNotes.length === 0 ? (
-                    <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                    <div className="text-center py-8 text-slate-500 dark:text-white">
                       <StickyNote className="w-12 h-12 mx-auto mb-2 opacity-50" />
                       <p>{t("No notes yet")}</p>
                       <p className="text-sm">{t('Click "Add Note" to get started')}</p>
@@ -231,7 +231,7 @@ export function QuickNotes() {
                           />
 
                           {/* Timestamp */}
-                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                          <div className="text-xs text-slate-500 dark:text-white mt-1">
                             {new Date(note.createdAt).toLocaleDateString()}
                           </div>
                         </motion.div>
@@ -241,7 +241,7 @@ export function QuickNotes() {
                 </div>
 
                 {/* Footer hint */}
-                <div className="p-2 text-center text-xs text-slate-500 border-t border-slate-200 dark:border-slate-700">
+                <div className="p-2 text-center text-xs text-slate-500 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">
                   {t("Notes are saved automatically")} • Press <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded text-xs">Esc</kbd> to close
                 </div>
               </div>

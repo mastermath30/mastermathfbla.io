@@ -198,7 +198,7 @@ export function AccessibilityPanel() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("Accessibility")}</h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{t("Customize your experience")}</p>
+                    <p className="text-xs text-slate-500 dark:text-white">{t("Customize your experience")}</p>
                   </div>
                 </div>
                 <button
@@ -206,7 +206,7 @@ export function AccessibilityPanel() {
                   className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label={t("Close accessibility panel")}
                 >
-                  <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                  <X className="w-5 h-5 text-slate-600 dark:text-white" />
                 </button>
               </div>
 
@@ -218,7 +218,7 @@ export function AccessibilityPanel() {
                     <Type className="w-5 h-5" style={{ color: "var(--theme-primary)" }} />
                     <div>
                       <h3 className="font-semibold text-slate-900 dark:text-white">{t("Text Size")}</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{settings.fontSize}%</p>
+                      <p className="text-xs text-slate-500 dark:text-white">{settings.fontSize}%</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -299,7 +299,7 @@ export function AccessibilityPanel() {
                 {/* Reset Button */}
                 <button
                   onClick={resetSettings}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-600 dark:text-white hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
                   {t("Reset to Defaults")}
@@ -351,7 +351,7 @@ export function AccessibilityPanel() {
               <div className="space-y-2 sm:space-y-3">
                 {shortcuts.map((shortcut, i) => (
                   <div key={i} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800 last:border-0 gap-2">
-                    <span className="text-sm sm:text-base text-slate-600 dark:text-slate-400 flex-1">{shortcut.description}</span>
+                    <span className="text-sm sm:text-base text-slate-600 dark:text-white flex-1">{shortcut.description}</span>
                     <div className="flex gap-1 flex-shrink-0">
                       {shortcut.keys.map((key, j) => (
                         <kbd
@@ -395,12 +395,12 @@ function ToggleOption({
           : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
       }`}
     >
-      <div className={`mt-0.5 ${enabled ? "text-[var(--theme-primary)]" : "text-slate-400"}`}>
+      <div className={`mt-0.5 ${enabled ? "text-[var(--theme-primary)]" : "text-slate-400 dark:text-slate-300"}`}>
         {icon}
       </div>
       <div className="flex-1">
         <h4 className="font-medium text-slate-900 dark:text-white">{title}</h4>
-        <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">{description}</p>
       </div>
       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
         enabled

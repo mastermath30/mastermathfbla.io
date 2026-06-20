@@ -253,7 +253,7 @@ export function SiteTutorialController() {
             <Card className="pointer-events-auto w-full border-[var(--theme-primary)] shadow-2xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white">
                     {t("Website Tour")}
                   </p>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1">{currentStep.title}</h3>
@@ -261,7 +261,7 @@ export function SiteTutorialController() {
                 <button
                   type="button"
                   onClick={closeAndComplete}
-                  className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100"
+                  className="text-slate-500 hover:text-slate-800 dark:text-white dark:hover:text-slate-100"
                   aria-label={t("Close tutorial")}
                 >
                   <X className="w-5 h-5" />
@@ -282,7 +282,7 @@ export function SiteTutorialController() {
               </div>
 
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs text-slate-500 dark:text-slate-400">
+                <span className="text-xs text-slate-500 dark:text-white">
                   {currentStepIndex + 1}/{tutorialSteps.length}
                 </span>
                 <div className="flex items-center gap-2">

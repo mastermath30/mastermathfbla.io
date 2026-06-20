@@ -342,6 +342,7 @@ export function AIMathTutor() {
     if (!input.trim() || isLoading) return;
     const messageText = input.trim();
     setInput("");
+    if (inputRef.current) inputRef.current.style.height = "auto";
     await sendText(messageText);
   };
 
@@ -553,7 +554,8 @@ export function AIMathTutor() {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 shadow-[0_16px_32px_rgba(76,29,149,0.38)] hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 touch-manipulation"
+        className="hidden md:flex fixed md:bottom-6 right-[5.25rem] lg:right-[5.75rem] z-[88] h-14 w-14 items-center justify-center rounded-full hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] focus:ring-offset-2 touch-manipulation"
+        style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.20)", background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-dark))", boxShadow: "0 16px 32px rgba(var(--theme-primary-rgb),0.38)" }}
         aria-label={t("Open AI Agent")}
         title={t("AI Agent (Alt+M)")}
         whileHover={{ scale: 1.1 }}
@@ -577,35 +579,35 @@ export function AIMathTutor() {
               <div className="relative flex items-center justify-between border-b border-white/10 bg-[linear-gradient(180deg,rgba(76,29,149,0.28)_0%,rgba(30,41,59,0.86)_58%,rgba(15,23,42,0.96)_100%)] px-4 py-4 text-white">
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-300/35 to-transparent" />
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg border border-white/10 bg-white/8 p-2 shadow-[0_8px_20px_rgba(15,23,42,0.25)]">
-                    <Brain className="w-6 h-6" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/8 shadow-[0_8px_20px_rgba(15,23,42,0.25)]">
+                    <Brain className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-lg">{t("AI Agent")}</h2>
+                    <h2 className="font-bold text-lg leading-tight">{t("AI Agent")}</h2>
                     <p className="text-xs text-slate-300">{t("Powered by MathMaster AI")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowHistory(!showHistory)}
-                    className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                     title={t("Conversation History")}
                   >
-                    <History className="w-5 h-5" />
+                    <History className="h-5 w-5" />
                   </button>
                   <button
                     onClick={clearChat}
-                    className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                     title={t("New Chat")}
                   >
-                    <RefreshCw className="w-5 h-5" />
+                    <RefreshCw className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
                     aria-label={t("Close")}
-                    className="rounded-lg border border-transparent p-2 text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent text-slate-200 transition-colors hover:border-white/10 hover:bg-white/8 hover:text-white"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="h-5 w-5" />
                   </button>
                 </div>
               </div>
@@ -621,7 +623,7 @@ export function AIMathTutor() {
                   >
                     <div className="max-h-40 overflow-y-auto bg-slate-950/45 px-3 py-3">
                       {conversations.length === 0 ? (
-                        <p className="py-2 text-center text-sm text-slate-400">{t("No conversation history")}</p>
+                        <p className="py-2 text-center text-sm text-slate-300">{t("No conversation history")}</p>
                       ) : (
                         <div className="space-y-2">
                           {conversations.map((conv) => (
@@ -631,7 +633,7 @@ export function AIMathTutor() {
                               className="w-full rounded-xl border border-white/8 bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07]"
                             >
                               <p className="truncate text-sm font-medium text-slate-100">{conv.title}</p>
-                              <p className="truncate text-xs text-slate-400">{conv.preview}</p>
+                              <p className="truncate text-xs text-slate-300">{conv.preview}</p>
                             </button>
                           ))}
                         </div>
@@ -647,7 +649,7 @@ export function AIMathTutor() {
                   <div className="space-y-6">
                     {/* Welcome */}
                     <div className="text-center py-4">
-                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-violet-300/20 bg-gradient-to-br from-violet-600/95 to-indigo-600/90 shadow-[0_14px_30px_rgba(76,29,149,0.35)]">
+                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-white" style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.20)", background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-dark))", boxShadow: "0 14px 30px rgba(var(--theme-primary-rgb),0.35)" }}>
                         <Sparkles className="w-8 h-8 text-white" />
                       </div>
                       <h3 className="mb-2 text-xl font-bold text-white">
@@ -660,7 +662,7 @@ export function AIMathTutor() {
 
                     {/* Quick Prompts */}
                     <div>
-                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("QUICK ACTIONS")}</p>
+                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">{t("QUICK ACTIONS")}</p>
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {QUICK_PROMPTS.map((qp) => (
                           <button
@@ -668,7 +670,7 @@ export function AIMathTutor() {
                             onClick={() => handleQuickPrompt(qp.prompt)}
                             className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07]"
                           >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-300/15 bg-violet-500/12 text-violet-200">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.15)", background: "rgba(var(--theme-primary-rgb),0.12)", color: "var(--theme-primary-light)" }}>
                               <qp.icon className="w-4 h-4" />
                             </span>
                             <span className="text-sm text-slate-200">{t(qp.label)}</span>
@@ -679,15 +681,15 @@ export function AIMathTutor() {
 
                     {/* Navigation & Website Actions */}
                     <div>
-                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("EXPLORE & NAVIGATE")}</p>
+                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">{t("EXPLORE & NAVIGATE")}</p>
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {NAVIGATION_PROMPTS.map((np) => (
                           <button
                             key={np.label}
                             onClick={() => handleQuickPrompt(np.prompt)}
-                            className="flex items-center gap-2 rounded-xl border border-violet-400/20 bg-violet-500/10 p-3 text-left transition-colors hover:bg-violet-500/14"
+                            className="flex items-center gap-2 rounded-xl p-3 text-left transition-colors" style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.20)", background: "rgba(var(--theme-primary-rgb),0.10)" } as React.CSSProperties}
                           >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-300/20 bg-violet-500/14 text-violet-100">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.20)", background: "rgba(var(--theme-primary-rgb),0.14)", color: "var(--theme-primary-light)" }}>
                               <np.icon className="w-4 h-4" />
                             </span>
                             <span className="text-sm text-slate-200">{t(np.label)}</span>
@@ -698,7 +700,7 @@ export function AIMathTutor() {
 
                     {/* Topics */}
                     <div>
-                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t("MATH TOPICS")}</p>
+                      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">{t("MATH TOPICS")}</p>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                         {MATH_TOPICS.map((topic) => (
                           <div
@@ -736,9 +738,10 @@ export function AIMathTutor() {
                     <div
                       className={`max-w-[85%] rounded-2xl p-4 ${
                         msg.role === "user"
-                          ? "border border-violet-300/20 bg-gradient-to-br from-violet-600 via-violet-600 to-indigo-600 text-white shadow-[0_14px_30px_rgba(76,29,149,0.28)]"
+                          ? "border border-[rgba(var(--theme-primary-rgb),0.20)] text-white shadow-[0_14px_30px_rgba(var(--theme-primary-rgb),0.28)]"
                           : "border border-white/10 bg-white/[0.05] text-slate-100 backdrop-blur-sm"
                       }`}
+                      style={msg.role === "user" ? { background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-dark))" } : undefined}
                     >
                       <div
                         className="text-sm leading-relaxed"
@@ -748,7 +751,7 @@ export function AIMathTutor() {
                         <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-2">
                           <button
                             onClick={() => copyToClipboard(msg.content, msg.id)}
-                            className="flex items-center gap-1 text-xs text-slate-400 transition-colors hover:text-slate-200"
+                            className="flex items-center gap-1 text-xs text-slate-300 transition-colors hover:text-white"
                           >
                             {copiedId === msg.id ? (
                               <>
@@ -775,7 +778,8 @@ export function AIMathTutor() {
                   >
                     <button
                       onClick={() => navigateToPage(pendingNavigation)}
-                      className="flex items-center gap-2 rounded-xl border border-violet-300/20 bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-3 font-medium text-white shadow-[0_14px_28px_rgba(76,29,149,0.28)] transition-opacity hover:opacity-90"
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 font-medium text-white transition-opacity hover:opacity-90"
+                      style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.20)", background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-dark))", boxShadow: "0 14px 28px rgba(var(--theme-primary-rgb),0.28)" }}
                     >
                       <Navigation className="w-4 h-4" />
                       {t("Go to")} {t(PAGE_LABELS[pendingNavigation] || pendingNavigation)}
@@ -788,9 +792,9 @@ export function AIMathTutor() {
                   <div className="flex justify-start">
                     <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
                       <div className="flex items-center gap-2">
-                        <div className="h-2 w-2 animate-bounce rounded-full bg-violet-300" style={{ animationDelay: "0ms" }} />
-                        <div className="h-2 w-2 animate-bounce rounded-full bg-violet-300" style={{ animationDelay: "150ms" }} />
-                        <div className="h-2 w-2 animate-bounce rounded-full bg-violet-300" style={{ animationDelay: "300ms" }} />
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-[var(--theme-primary-light)]" style={{ animationDelay: "0ms" }} />
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-[var(--theme-primary-light)]" style={{ animationDelay: "150ms" }} />
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-[var(--theme-primary-light)]" style={{ animationDelay: "300ms" }} />
                       </div>
                     </div>
                   </div>
@@ -803,13 +807,17 @@ export function AIMathTutor() {
               <div className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.86)_0%,rgba(2,6,23,0.96)_100%)] p-4">
                 <div className={`flex gap-2 rounded-2xl border p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 ${
                   isListening
-                    ? "border-violet-400/40 bg-violet-500/[0.06] shadow-[0_0_24px_rgba(139,92,246,0.15)]"
+                    ? `border-[rgba(var(--theme-primary-rgb),0.40)] bg-[rgba(var(--theme-primary-rgb),0.06)] shadow-[0_0_24px_rgba(var(--theme-primary-rgb),0.15)]`
                     : "border-white/10 bg-white/[0.04]"
                 }`}>
                   <textarea
                     ref={inputRef}
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      e.target.style.height = "auto";
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
@@ -817,8 +825,9 @@ export function AIMathTutor() {
                       }
                     }}
                     placeholder={isListening ? t("Listening...") : t("Ask me anything...")}
-                    className="flex-1 resize-none rounded-xl border border-transparent bg-transparent px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                    className="flex-1 resize-none overflow-hidden rounded-xl border border-transparent bg-transparent px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)]"
                     rows={1}
+                    style={{ maxHeight: "120px", overflowY: "auto" }}
                   />
 
                   {/* Mic button */}
@@ -827,15 +836,15 @@ export function AIMathTutor() {
                       onClick={toggleListening}
                       aria-label={isListening ? "Stop voice input" : "Start voice input"}
                       title={isListening ? "Stop listening" : "Voice input"}
-                      className={`relative flex items-center justify-center rounded-xl border px-3 py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-400/60 ${
+                      className={`relative flex items-center justify-center rounded-xl border px-3 py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)] ${
                         isListening
-                          ? "border-violet-400/50 bg-violet-500/[0.18] text-violet-300 shadow-[0_0_18px_rgba(139,92,246,0.40)]"
-                          : "border-white/10 bg-white/[0.04] text-slate-400 hover:border-violet-300/30 hover:bg-violet-500/[0.08] hover:text-violet-300 active:scale-95"
+                          ? "border-[rgba(var(--theme-primary-rgb),0.50)] bg-[rgba(var(--theme-primary-rgb),0.18)] text-[var(--theme-primary-light)] shadow-[0_0_18px_rgba(var(--theme-primary-rgb),0.40)]"
+                          : "border-white/10 bg-white/[0.04] text-slate-300 hover:border-[rgba(var(--theme-primary-rgb),0.30)] hover:bg-[rgba(var(--theme-primary-rgb),0.08)] hover:text-[var(--theme-primary-light)] active:scale-95"
                       }`}
                     >
                       {isListening && (
                         <motion.span
-                          className="absolute inset-[-3px] rounded-xl border border-violet-400/50"
+                          className="absolute inset-[-3px] rounded-xl border border-[rgba(var(--theme-primary-rgb),0.50)]"
                           animate={{ scale: [1, 1.22, 1], opacity: [0.6, 0, 0.6] }}
                           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                         />
@@ -853,18 +862,18 @@ export function AIMathTutor() {
                   <button
                     onClick={handleSend}
                     disabled={!input.trim() || isLoading}
-                    className="flex items-center gap-2 rounded-xl border border-violet-300/20 bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex items-center gap-2 rounded-xl border border-[rgba(var(--theme-primary-rgb),0.20)] px-4 py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" style={{ background: "linear-gradient(135deg, var(--theme-primary), var(--theme-primary-dark))" }}
                   >
                     <Send className="w-4 h-4" />
                   </button>
                 </div>
                 <p className="mt-2 text-center text-xs transition-colors duration-200">
                   {isListening ? (
-                    <span className="font-medium text-violet-400 animate-pulse">
+                    <span className="font-medium text-[var(--theme-primary-light)] animate-pulse">
                       {t("Listening")}... &bull; {t("Tap mic to stop or wait to auto-send")}
                     </span>
                   ) : (
-                    <span className="text-slate-500">
+                    <span className="text-slate-400">
                       {t("Press Enter to send • Shift+Enter for new line")}
                     </span>
                   )}

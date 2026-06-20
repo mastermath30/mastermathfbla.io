@@ -215,7 +215,7 @@ export default function DashboardPage() {
         icon={Sparkles}
         actions={
           <>
-            <Button onClick={() => setShowGoalModal(true)} size="lg" className="w-full rounded-full bg-indigo-600 px-7 text-white shadow-sm hover:bg-indigo-700 sm:w-auto">
+            <Button onClick={() => setShowGoalModal(true)} size="lg" className="w-full rounded-full px-7 shadow-sm sm:w-auto">
               <Plus className="w-4 h-4" />
               {t("New Goal")}
             </Button>
@@ -290,14 +290,14 @@ export default function DashboardPage() {
                   {t("Today’s Study Plan")}
                 </div>
                 <h2 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{t("Your next 3 moves")}</h2>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mt-1 text-sm text-slate-600 dark:text-white">
                   {t("Personalized from diagnostics, mastery progress, and recent quiz results.")}
                 </p>
               </div>
               <Link href="/resources/quiz/diagnostic" className="w-full sm:w-auto">
-                <Button variant={learningProgress.diagnosticCompleted ? "outline" : "primary"} className="w-full sm:w-auto">
+                <Button variant={learningProgress?.diagnosticCompleted ? "outline" : "primary"} className="w-full sm:w-auto">
                   <Target className="h-4 w-4" />
-                  {learningProgress.diagnosticCompleted ? t("Retake Diagnostic") : t("Take Diagnostic")}
+                  {learningProgress?.diagnosticCompleted ? t("Retake Diagnostic") : t("Take Diagnostic")}
                 </Button>
               </Link>
             </div>
@@ -313,9 +313,9 @@ export default function DashboardPage() {
                     task.tone === "support" ? "border-amber-200 bg-amber-50/80 dark:border-amber-900 dark:bg-amber-950/30" : "",
                   ].join(" ")}
                 >
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{t(task.label)}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-white">{t(task.label)}</p>
                   <h3 className="mt-2 text-base font-bold text-slate-900 dark:text-white">{t(task.title)}</h3>
-                  <p className="mt-2 min-h-[60px] text-sm leading-6 text-slate-600 dark:text-slate-400">{t(task.description)}</p>
+                  <p className="mt-2 min-h-[60px] text-sm leading-6 text-slate-600 dark:text-white">{t(task.description)}</p>
                   <Link href={task.href}>
                     <Button size="sm" variant={task.tone === "primary" ? "primary" : "outline"} className="mt-4 w-full">
                       {t(task.ctaLabel)}
@@ -360,7 +360,7 @@ export default function DashboardPage() {
                           <insight.icon className="h-5 w-5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 leading-4">{insight.label}</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-white leading-4">{insight.label}</p>
                           <p className="mt-1 truncate text-sm font-bold leading-snug text-slate-900 dark:text-white">{insight.value}</p>
                         </div>
                       </div>
@@ -461,13 +461,13 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-sm text-slate-900 dark:text-white">{challenge.title}</h4>
-                      <p className={`text-xs mt-0.5 ${challenge.isQuiz ? 'text-yellow-600 dark:text-yellow-500' : 'text-slate-500 dark:text-slate-400'}`}>
+                      <p className={`text-xs mt-0.5 ${challenge.isQuiz ? 'text-yellow-600 dark:text-yellow-500' : 'text-slate-500 dark:text-white'}`}>
                         {challenge.due} • {challenge.count}
                       </p>
                       {!challenge.isQuiz && (
                         <div className="mt-2">
                           <ProgressBar value={challenge.progress} color={challenge.color} size="sm" />
-                          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">{challenge.completed}/{challenge.total} {t("completed")}</p>
+                          <p className="text-slate-500 dark:text-white text-xs mt-1">{challenge.completed}/{challenge.total} {t("completed")}</p>
                         </div>
                       )}
                     </div>
@@ -510,18 +510,18 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <h4 className="font-medium text-sm text-slate-900 dark:text-white">{activity.title}</h4>
-                      <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">{activity.time}</p>
+                      <p className="text-slate-500 dark:text-white text-xs mt-0.5">{activity.time}</p>
                       {activity.xp && (
                         <div className="flex items-center gap-3 mt-2">
                           <span className="text-primary-themed text-xs font-medium bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">{activity.xp}</span>
-                          <span className="text-slate-500 dark:text-slate-400 text-xs">{activity.badge}</span>
+                          <span className="text-slate-500 dark:text-white text-xs">{activity.badge}</span>
                         </div>
                       )}
                       {activity.preview && (
-                        <p className="text-slate-500 dark:text-slate-400 text-xs mt-2 italic">{activity.preview}</p>
+                        <p className="text-slate-500 dark:text-white text-xs mt-2 italic">{activity.preview}</p>
                       )}
                       {activity.details && (
-                        <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{activity.details}</p>
+                        <p className="text-slate-500 dark:text-white text-xs mt-2">{activity.details}</p>
                       )}
                     </div>
                   </div>
@@ -579,7 +579,7 @@ export default function DashboardPage() {
                         }
                       />
                     </div>
-                    <span className="text-slate-500 dark:text-slate-400 text-xs font-mono">{goal.label}</span>
+                    <span className="text-slate-500 dark:text-white text-xs font-mono">{goal.label}</span>
                   </div>
                 </div>
               ))}
