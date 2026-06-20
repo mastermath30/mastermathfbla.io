@@ -319,7 +319,6 @@ function AuthPageContent() {
           secondaryAction={{ label: t("Schedule"), href: "/schedule" }}
           visualEyebrow={t("Account hub")}
           visualTitle={t("MathMaster profile")}
-          visualProgress="100%"
           visualItems={[
             { label: t("Profile"), title: profile.username || profile.firstName, meta: t("Active") },
             { label: t("Learn"), title: t("Continue your path"), meta: t("Ready") },

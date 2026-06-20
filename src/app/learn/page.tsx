@@ -1062,7 +1062,7 @@ function LearnPageClient() {
             )}
           </Card>
 
-          <Card className="h-fit sticky top-36" glow={false}>
+          <Card className="h-fit lg:sticky lg:top-36" glow={false}>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Your Next Step")}</p>
             <h2 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">{selectedNode?.title ?? t("Select a lesson")}</h2>
             <p className="mt-1 text-xs capitalize text-slate-500 dark:text-slate-400">

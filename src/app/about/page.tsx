@@ -170,7 +170,6 @@ export default function AboutPage() {
         secondaryAction={{ label: t("Visit the Forum"), href: "/community" }}
         visualEyebrow={t("MathMaster mission")}
         visualTitle={t("Learn with support")}
-        visualProgress="98%"
         visualItems={[
           { label: t("Clarity"), title: t("Step-by-step explanations"), meta: t("Built in") },
           { label: t("Community"), title: t("Ask questions anytime"), meta: t("Live") },

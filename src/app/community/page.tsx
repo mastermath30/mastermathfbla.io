@@ -233,7 +233,6 @@ export default function CommunityPage() {
         primaryAction={{ label: t("Open Study Groups"), href: "/study-groups" }}
         visualEyebrow="Forum flow"
         visualTitle="Community workspace"
-        visualProgress="88%"
         visualItems={[
           { label: "Ask", title: "Post a clear math question", meta: "Fast" },
           { label: "Discuss", title: "Compare solution methods", meta: "Peer-led" },

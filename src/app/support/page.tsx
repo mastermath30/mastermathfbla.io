@@ -138,7 +138,6 @@ export default function SupportPage() {
         secondaryAction={{ label: t("Browse FAQs"), href: "#faq" }}
         visualEyebrow={t("Support queue")}
         visualTitle={t("Get unstuck faster")}
-        visualProgress="92%"
         visualItems={[
           { label: t("Search"), title: t("Find the right help article"), meta: t("Instant") },
           { label: t("Message"), title: t("Send a detailed request"), meta: t("Guided") },

@@ -241,7 +241,6 @@ function StudyGroupsPageInner() {
           primaryAction={{ label: t("Browse Groups"), href: "#all-groups" }}
           visualEyebrow={t("Group plan")}
           visualTitle={t("Weekly study rhythm")}
-          visualProgress="76%"
           visualItems={[
             { label: t("Match"), title: t("Find peers by subject"), meta: t("Focused") },
             { label: t("Meet"), title: t("Join weekly live sessions"), meta: t("Live") },

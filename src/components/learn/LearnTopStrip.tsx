@@ -27,7 +27,7 @@ export function LearnTopStrip({
   const progressPct = Math.max(0, Math.min(100, xpToday % 100 === 0 && xpToday > 0 ? 100 : xpToday % 100));
 
   return (
-    <div className="learn-top-strip sticky top-20 md:top-24 z-30">
+    <div className="learn-top-strip md:sticky md:top-24 z-30">
       <div className="learn-top-strip-inner">
         <div>
           <p className="learn-top-strip-label">{t("Current Mission")}</p>

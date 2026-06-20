@@ -58,7 +58,7 @@ export function PageHero({
   stats = [],
   visualTitle,
   visualEyebrow,
-  visualProgress = "68%",
+  visualProgress,
   visualItems,
   maxWidthClass = "max-w-7xl",
   buttonSize = "lg",
@@ -75,7 +75,7 @@ export function PageHero({
       <div
         className={`relative mx-auto grid w-full grid-cols-1 items-center gap-10 px-4 pb-12 pt-28 sm:px-6 md:pt-32 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14 ${maxWidthClass}`}
       >
-        <div className="max-w-2xl">
+        <div className="min-w-0 max-w-2xl">
           {eyebrow ? (
             <p className="mb-5 inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm font-semibold shadow-sm dark:bg-slate-900"
               style={{ borderColor: "var(--accent-border)", color: "var(--theme-primary)" }}>
@@ -138,27 +138,29 @@ export function PageHero({
           )}
         </div>
 
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900">
-          <div className="rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
+        <div className="min-w-0 max-w-full overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:border-slate-800 dark:bg-slate-900">
+          <div className="min-w-0 max-w-full overflow-hidden rounded-[1.5rem] border border-slate-200 bg-[#fbfaf6] p-5 dark:border-slate-800 dark:bg-slate-950">
             <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--theme-primary)" }}>{visualEyebrow}</p>
-                <h2 className="mt-1 text-xl font-semibold text-slate-950 dark:text-white">{visualTitle}</h2>
+                <h2 className="mt-1 truncate text-xl font-semibold text-slate-950 dark:text-white">{visualTitle}</h2>
               </div>
-              <div className="rounded-full px-3 py-1 text-sm font-semibold"
-                style={{ backgroundColor: "var(--accent-soft)", color: "var(--theme-primary)" }}>
-                {visualProgress}
-              </div>
+              {visualProgress && (
+                <div className="shrink-0 rounded-full px-3 py-1 text-sm font-semibold text-white shadow-sm"
+                  style={{ backgroundColor: "var(--theme-primary)" }}>
+                  {visualProgress}
+                </div>
+              )}
             </div>
 
             <div className="mt-5 grid gap-3">
               {visualItems.map((item, index) => (
-                <div key={`${item.label}-${item.title}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                <div key={`${item.label}-${item.title}`} className="flex min-w-0 max-w-full items-center gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 sm:gap-4 dark:border-slate-800 dark:bg-slate-900">
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index === 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : visualItemNumberClassName}`}
                     style={index !== 0 ? { backgroundColor: "var(--accent-soft)" } : undefined}>
                     {index === 0 ? <CheckCircle2 className="h-5 w-5" /> : index + 1}
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 overflow-hidden">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
                     <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{item.title}</p>
                   </div>
@@ -167,15 +169,17 @@ export function PageHero({
               ))}
             </div>
 
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-              <div className="flex items-center justify-between text-sm font-semibold text-slate-950 dark:text-white">
-                <span>{visualTitle}</span>
-                <span style={{ color: "var(--theme-primary)" }}>{visualProgress}</span>
+            {visualProgress && (
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                <div className="flex items-center justify-between text-sm font-semibold text-slate-950 dark:text-white">
+                  <span>{visualTitle}</span>
+                  <span style={{ color: "var(--theme-primary)" }}>{visualProgress}</span>
+                </div>
+                <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div className="h-2 rounded-full" style={{ width: visualProgress, backgroundColor: "var(--theme-primary)" }} />
+                </div>
               </div>
-              <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800">
-                <div className="h-2 rounded-full" style={{ width: visualProgress, backgroundColor: "var(--theme-primary)" }} />
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

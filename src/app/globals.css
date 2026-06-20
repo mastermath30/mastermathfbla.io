@@ -3240,6 +3240,20 @@ button, a, .card, .interactive {
 }
 
 @media (max-width: 767px) {
+  .dlp-shell {
+    border-radius: 22px;
+  }
+
+  .dlp-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dlp-summary-pill {
+    align-self: flex-start;
+    padding: 6px 9px;
+  }
+
   /* Top strip: compact 2-column layout — title + button on row 1, stats on row 2 */
   .learn-top-strip-inner {
     grid-template-columns: 1fr auto;
@@ -3268,7 +3282,9 @@ button, a, .card, .interactive {
     overflow-x: auto;
     overflow-y: hidden;
     max-height: none;
-    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    touch-action: pan-x pan-y;
     -webkit-overflow-scrolling: touch;
   }
   .learn-chapter-menu-item {
@@ -3283,9 +3299,14 @@ button, a, .card, .interactive {
   }
 
   .dlp-map-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
     padding-inline: 0 12px;
     margin-inline: 0 -12px;
+    overscroll-behavior-x: contain;
     scrollbar-gutter: auto;
+    scroll-snap-type: x proximity;
+    touch-action: pan-x pan-y;
     -webkit-overflow-scrolling: touch;
   }
 

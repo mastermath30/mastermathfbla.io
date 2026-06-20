@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { TopBar } from "@/components/TopBar";
+import { ThemeSelector } from "@/components/ThemeSelector";
+import { MathTip } from "@/components/MathTip";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { SkipToContentLink } from "@/components/SkipToContentLink";
 
@@ -93,6 +95,8 @@ export default function RootLayout({
           <SkipToContentLink />
           
           <TopBar />
+          <ThemeSelector showTrigger={false} />
+          <MathTip />
           <main id="main-content" className="pb-24 md:pb-0" tabIndex={-1}>
             {children}
           </main>

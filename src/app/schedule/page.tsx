@@ -729,7 +729,7 @@ export default function SchedulePage() {
       calendarDays.push(
         <div
           key={`empty-${i}`}
-          className="h-24 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
+          className="h-[4.5rem] sm:h-24 rounded-lg sm:rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-950/30"
         />
       );
     }
@@ -746,7 +746,7 @@ export default function SchedulePage() {
           key={day}
           type="button"
           onClick={() => { setSelectedDate(date); setShowDayDetail(true); }}
-          className={`h-16 sm:h-24 min-h-[44px] rounded-lg sm:rounded-xl border p-1 sm:p-2 text-left text-xs sm:text-sm transition-all touch-manipulation ${
+          className={`h-[4.5rem] sm:h-24 min-h-[44px] rounded-lg sm:rounded-xl border p-2 text-left text-sm transition-all touch-manipulation ${
             isSelected
               ? "border-[var(--theme-primary)] shadow-lg"
               : "border-slate-200 dark:border-slate-800"
@@ -1077,12 +1077,12 @@ export default function SchedulePage() {
         {/* Calendar */}
         <FadeIn delay={0.04}>
         <Card className="mb-8 overflow-hidden">
-          <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-950 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
-                <CalendarCheck className="w-6 h-6" />
+          <div className="flex items-center justify-between gap-3 p-4 sm:p-6 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 shrink-0 rounded-xl bg-slate-200 dark:bg-slate-950 flex items-center justify-center sm:w-12 sm:h-12" style={{ color: "var(--theme-primary)" }}>
+                <CalendarCheck className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+              <h2 className="truncate text-xl font-bold text-slate-900 sm:text-2xl dark:text-white">
                 {getHeaderTitle()}
               </h2>
             </div>
@@ -1108,30 +1108,30 @@ export default function SchedulePage() {
                 type="button"
                 className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors touch-manipulation flex items-center justify-center"
               >
-                <ChevronLeft className="w-5 h-5 text-slate-300" />
+                <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
               </button>
               <button
                 onClick={() => navigateCalendar("next")}
                 type="button"
                 className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors touch-manipulation flex items-center justify-center"
               >
-                <ChevronRight className="w-5 h-5 text-slate-300" />
+                <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
               </button>
             </div>
           </div>
-          <div className="p-4 sm:p-6">
+          <div className="p-3 sm:p-6">
             {viewMode === "month" && (
               <>
-                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-3">
+                <div className="mb-2 grid grid-cols-7 gap-1.5 sm:gap-2 sm:mb-3">
                   {Array.from({ length: 7 }, (_, i) =>
                     new Date(2024, 0, 7 + i).toLocaleDateString(language, { weekday: 'short' })
                   ).map((day, i) => (
-                    <div key={i} className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-slate-400">
+                    <div key={i} className="flex h-7 items-center justify-center text-[11px] font-semibold text-slate-500 sm:h-10 sm:text-sm sm:font-medium sm:text-slate-400">
                       {day}
                     </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-7 gap-1 sm:gap-3">{renderCalendar()}</div>
+                <div className="grid grid-cols-7 gap-1.5 sm:gap-3">{renderCalendar()}</div>
               </>
             )}
             {viewMode === "week" && (

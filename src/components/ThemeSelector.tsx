@@ -17,7 +17,13 @@ function getStoredDarkMode() {
   return savedMode === null ? true : savedMode === "true";
 }
 
-export function ThemeSelector({ className = "" }: { className?: string }) {
+export function ThemeSelector({
+  className = "",
+  showTrigger = true,
+}: {
+  className?: string;
+  showTrigger?: boolean;
+}) {
   const { t } = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [colorTheme, setColorTheme] = useState<string>(() => getStoredColorTheme());
@@ -115,12 +121,14 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center gap-2 w-10 h-10 md:px-3 md:py-2 md:w-auto md:h-auto rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:scale-105"
-      >
-        <Palette className="w-5 h-5 md:w-4 md:h-4 text-slate-600 dark:text-slate-300" />
-      </button>
+      {showTrigger && (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center justify-center gap-2 w-10 h-10 md:px-3 md:py-2 md:w-auto md:h-auto rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+        >
+          <Palette className="w-5 h-5 md:w-4 md:h-4 text-slate-600 dark:text-slate-300" />
+        </button>
+      )}
 
       <AnimatePresence>
         {isOpen && (
@@ -132,7 +140,7 @@ export function ThemeSelector({ className = "" }: { className?: string }) {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="fixed left-4 right-4 bottom-auto top-1/2 -translate-y-1/2 md:absolute md:left-auto md:right-0 md:top-full md:bottom-auto md:translate-y-0 md:mt-2 w-auto md:w-80 bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 z-[101]"
+              className="fixed inset-x-4 bottom-4 top-auto max-h-[calc(100dvh-2rem)] overflow-y-auto md:absolute md:left-auto md:right-0 md:top-full md:bottom-auto md:mt-2 md:w-80 md:max-h-none bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 z-[101]"
             >
               <div className="p-3">
                 {/* Dark/Light Mode Toggle */}
