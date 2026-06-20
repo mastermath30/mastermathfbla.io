@@ -136,7 +136,7 @@ export function Navbar() {
       {/* Single FAB Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-[102] w-14 h-14 rounded-full bg-[var(--theme-primary)] shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
+        className="fixed bottom-6 right-6 z-[102] w-14 h-14 rounded-full bg-[var(--theme-primary)] shadow-lg flex items-center justify-center active:scale-95 transition-all touch-manipulation"
         style={{
           WebkitTapHighlightColor: "transparent",
           marginBottom:
