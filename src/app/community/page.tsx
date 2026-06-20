@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { MessageCircle, Users, X } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/Card";
 import { Button } from "@/components/Button";
+import { useTranslations } from "@/components/LanguageProvider";
 import { PageHero } from "@/components/PageHero";
 import { PageWrapper } from "@/components/motion";
 import { AskQuestionForm } from "@/components/community/AskQuestionForm";
@@ -73,6 +74,7 @@ function createId(prefix: string) {
 }
 
 export default function CommunityPage() {
+  const { t } = useTranslations();
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(initialQuestions[0]?.id ?? null);
   const [showModal, setShowModal] = useState(false);
