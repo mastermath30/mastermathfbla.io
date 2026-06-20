@@ -15,12 +15,14 @@ import {
 import { Compass, HelpCircle, X } from "lucide-react";
 
 const GLOBAL_TUTORIAL_PENDING_KEY = "mm_global_tutorial_pending_v1";
+const tutorialRoutes = ["/", "/learn", "/learn", "/dashboard", "/community"];
 
 type TutorialStep = {
   title: string;
   description: string;
   route: string;
   focusArea: string;
+  targetSelector?: string;
 };
 
 export function SiteTutorialController() {
@@ -30,36 +32,42 @@ export function SiteTutorialController() {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(() => getLearningProgress());
   const [step, setStep] = useState(() => getLearningProgress().globalTutorialStep || 0);
+  const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const tutorialSteps: TutorialStep[] = [
     {
       title: t("Home Orientation"),
       description: t("This is your command center. Start learning, check progress, or jump to help in one click."),
       route: "/",
       focusArea: t("Home hero and main actions"),
+      targetSelector: "main",
     },
     {
       title: t("Choose Your Class"),
       description: t("Pick your class in Learn to unlock the right unit and topic sequence."),
       route: "/learn",
       focusArea: t("Learn path panel"),
+      targetSelector: '[data-tutorial-target="learning-path"]',
     },
     {
       title: t("Pick Topic + Action"),
       description: t("Choose one topic, then choose one action right now: concept, practice, quiz, AI, or community."),
       route: "/learn",
       focusArea: t("Topic workspace and action picker"),
+      targetSelector: '[data-tutorial-target="next-step"]',
     },
     {
       title: t("Track Progress"),
       description: t("Use Dashboard to see what is improving and what needs targeted review."),
       route: "/dashboard",
       focusArea: t("Dashboard recommendations and progress"),
+      targetSelector: '[data-tutorial-target="dashboard-overview"]',
     },
     {
       title: t("Get Community Support"),
       description: t("When you get stuck, join peer discussions, study groups, or office hours from Community."),
       route: "/community",
       focusArea: t("Community help entry points"),
+      targetSelector: '[data-tutorial-target="community-questions"]',
     },
   ];
 
@@ -86,9 +94,57 @@ export function SiteTutorialController() {
   }, []);
 
   const clampStep = (value: number) => Math.min(Math.max(value, 0), tutorialSteps.length - 1);
-  const currentStepIndex = clampStep(step);
+  const routeStepIndex = tutorialRoutes.indexOf(pathname);
+  const currentStepIndex = clampStep(
+    pathname === "/learn"
+      ? step === 0 ? 1 : step
+      : routeStepIndex >= 0 && pathname !== "/"
+      ? routeStepIndex
+      : step
+  );
   const currentStep = tutorialSteps[currentStepIndex];
   const onTargetRoute = pathname === currentStep.route;
+
+  useEffect(() => {
+    if (!open) return;
+
+    // Learn has two sequential tour steps, so its in-page click target controls
+    // whether the user is on the path step or the action step.
+    if (pathname === "/learn") return;
+
+    const matchingStep = tutorialRoutes.indexOf(pathname);
+    if (matchingStep < 0 || matchingStep === currentStepIndex) return;
+
+    setGlobalTutorialStep(matchingStep);
+    setGlobalTutorialLastRoute(pathname);
+    setStep(matchingStep);
+  }, [currentStepIndex, open, pathname]);
+
+  useEffect(() => {
+    if (!open || !onTargetRoute || !currentStep.targetSelector) {
+      setTargetRect(null);
+      return;
+    }
+
+    const target = document.querySelector<HTMLElement>(currentStep.targetSelector);
+    if (!target) return;
+
+    const updateTarget = () => {
+      const rect = target.getBoundingClientRect();
+      setTargetRect({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+    };
+
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    const timer = window.setTimeout(updateTarget, 450);
+    window.addEventListener("resize", updateTarget);
+    window.addEventListener("scroll", updateTarget, true);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("resize", updateTarget);
+      window.removeEventListener("scroll", updateTarget, true);
+    };
+  }, [currentStep.targetSelector, onTargetRoute, open]);
 
   const startTutorial = () => {
     const firstStep = tutorialSteps[0];
@@ -140,6 +196,36 @@ export function SiteTutorialController() {
     goToStep(currentStepIndex - 1);
   };
 
+  useEffect(() => {
+    if (!open || !onTargetRoute || !currentStep.targetSelector) return;
+
+    const target = document.querySelector<HTMLElement>(currentStep.targetSelector);
+    if (!target) return;
+
+    const handleTargetClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Node) || !target.contains(event.target)) return;
+
+      if (currentStepIndex >= tutorialRoutes.length - 1) {
+        setGlobalTutorialCompleted(true);
+        setGlobalTutorialStep(0);
+        setGlobalTutorialLastRoute(null);
+        setOpen(false);
+        window.localStorage.setItem(GLOBAL_TUTORIAL_PENDING_KEY, "false");
+        return;
+      }
+
+      const nextStep = currentStepIndex + 1;
+      const nextRoute = tutorialRoutes[nextStep];
+      setGlobalTutorialStep(nextStep);
+      setGlobalTutorialLastRoute(nextRoute);
+      setStep(nextStep);
+      router.push(nextRoute);
+    };
+
+    document.addEventListener("click", handleTargetClick);
+    return () => document.removeEventListener("click", handleTargetClick);
+  }, [currentStep.targetSelector, currentStepIndex, onTargetRoute, open, router]);
+
   return (
     <>
       <button
@@ -155,10 +241,16 @@ export function SiteTutorialController() {
       {/* Mobile tutorial access is via the Navbar bottom sheet */}
 
       {open && (
-        <div className="fixed inset-0 z-[160]">
-          <div className="absolute inset-0 bg-slate-950/65 backdrop-blur-sm" />
-          <div className="relative h-full w-full flex items-center justify-center p-4">
-            <Card className="w-full max-w-xl border-[var(--theme-primary)]">
+        <div className="pointer-events-none fixed inset-0 z-[160]">
+          <div className="pointer-events-none absolute inset-0 bg-slate-950/25" />
+          {targetRect && (
+            <div
+              className="pointer-events-none fixed rounded-2xl ring-4 ring-[var(--theme-primary)] ring-offset-4 ring-offset-white/80 shadow-[0_0_0_9999px_rgba(15,23,42,0.18)] dark:ring-offset-slate-950/80"
+              style={{ top: targetRect.top, left: targetRect.left, width: targetRect.width, height: targetRect.height }}
+            />
+          )}
+          <div className="pointer-events-none fixed inset-x-4 bottom-4 md:inset-x-auto md:right-6 md:w-full md:max-w-md">
+            <Card className="pointer-events-auto w-full border-[var(--theme-primary)] shadow-2xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">

@@ -327,12 +327,24 @@ input[type="button"],
   touch-action: manipulation;
 }
 
-button,
-[role="button"],
-input[type="submit"],
-input[type="button"] {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+/* One predictable interaction treatment. Page-specific controls can still define
+   their own surface, but all real buttons keep the same pointer, focus, and
+   disabled language. */
+:where(button, [role="button"], input[type="submit"], input[type="button"]) {
+  font: inherit;
+}
+
+:where(button, [role="button"], input[type="submit"], input[type="button"]):not(:disabled) {
+  cursor: pointer;
+}
+
+:where(button, [role="button"], input[type="submit"], input[type="button"]):disabled {
+  cursor: not-allowed;
+}
+
+:where(button, [role="button"], input[type="submit"], input[type="button"]):focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 3px;
 }
 
 /* Ensure buttons and links are easily tappable */
@@ -1890,8 +1902,9 @@ header p {
 
 /* ===== Enhanced Page Flow Animations ===== */
 
-/* Smooth hover transitions for interactive elements */
-button, a, .card, .interactive {
+/* Smooth hover transitions for interactive elements only. Static cards and links
+   stay visually calm so they are not mistaken for buttons. */
+button, [role="button"], .interactive {
   transition: transform 0.25s cubic-bezier(0.25, 0.4, 0.25, 1), 
               box-shadow 0.25s cubic-bezier(0.25, 0.4, 0.25, 1),
               background-color 0.2s ease,

@@ -55,7 +55,7 @@ export function RecommendationPanel({
       ];
 
   return (
-    <Card className="h-full">
+    <Card className="self-start">
       <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t(title)}</h2>
       <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
         {t("Personalized from mastery progress, quiz performance, and current study intent.")}
@@ -89,9 +89,6 @@ export function RecommendationPanel({
                     )}
                     <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                       {recommendation.ctaLabel}
-                    </span>
-                    <span className="text-slate-500 dark:text-slate-400">
-                      {t("Confidence")} {Math.round(recommendation.confidence * 100)}%
                     </span>
                   </div>
                 </div>

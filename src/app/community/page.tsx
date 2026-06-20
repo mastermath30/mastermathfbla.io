@@ -243,7 +243,7 @@ export default function CommunityPage() {
       />
 
       <main className="mx-auto w-full max-w-7xl space-y-6 px-4 sm:px-6">
-        <Card variant="glass" className="p-6 md:p-8">
+        <Card variant="glass" className="p-6 md:p-8" data-tutorial-target="community-questions">
           <div className="mb-4 flex items-start justify-between gap-4">
             <CardHeader className="p-0">
               <CardTitle className="text-3xl">Community Q&A</CardTitle>

@@ -13,10 +13,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        data-ui-button={variant}
         disabled={disabled || loading}
         className={clsx(
-          // Base styles with touch-friendly improvements
-          "relative inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-[-0.01em] transition-all duration-300 ease-out",
+          // Shared button language for primary, secondary, and utility actions.
+          "relative inline-flex min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full border border-transparent font-semibold leading-tight tracking-[-0.01em] transition-all duration-200 ease-out",
           // Focus states
           "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950",
           // Disabled states

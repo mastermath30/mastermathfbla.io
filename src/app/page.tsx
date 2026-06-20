@@ -612,13 +612,13 @@ export default function Home() {
               alt={t("Students learning mathematics")}
               fill
               priority={heroPathImageIndex === 0}
-              className="object-cover"
+              className="object-cover brightness-110 saturate-[0.8] dark:brightness-75 dark:saturate-100"
               sizes="100vw"
             />
           </motion.div>
         </AnimatePresence>
-        <div className="absolute inset-0 bg-transparent dark:bg-slate-950/72" />
-        <div className="absolute inset-0 bg-transparent dark:bg-[radial-gradient(circle_at_center,rgba(var(--theme-primary-rgb),0.14),transparent_46%),linear-gradient(180deg,rgba(2,6,23,0.12),rgba(2,6,23,0.92))]" />
+        <div className="absolute inset-0 bg-white/80 dark:bg-slate-950/82" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),rgba(255,255,255,0.58))] dark:bg-[radial-gradient(circle_at_center,rgba(var(--theme-primary-rgb),0.14),transparent_46%),linear-gradient(180deg,rgba(2,6,23,0.18),rgba(2,6,23,0.96))]" />
         <HeroMathScene reducedMotion={Boolean(reducedMotion)} staticScene={false} />
 
         <div className="relative z-20 mx-auto flex min-h-[94vh] w-full max-w-7xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 md:pt-32">
@@ -948,8 +948,8 @@ export default function Home() {
                       <span className="mm-accent-pill rounded-full px-2.5 py-1 text-xs font-semibold">{session.takeaway}</span>
                     </div>
                     <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{t("Completed tutoring session")}</p>
-                    <Link href="/schedule" className="mt-auto pt-5">
-                      <Button className="w-full rounded-full">{t("Review Session")}</Button>
+                    <Link href="/tutors" className="mt-auto pt-5">
+                      <Button className="w-full rounded-full">{t("Book Again")}</Button>
                     </Link>
                   </div>
                 </Card>
@@ -1011,13 +1011,13 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-950/70">
+                  <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-950/70">
                     <p className="text-sm font-semibold text-slate-950 dark:text-white">{t("AI help and tools")}</p>
-                    <div className="mt-4 space-y-3 text-sm">
+                    <div className="mt-4 flex flex-1 flex-col text-sm">
                       <div className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">{t("Explain completing the square in simpler steps.")}</div>
-                      <div className="flex gap-2">
+                      <div className="mt-auto grid grid-cols-3 gap-2 pt-3">
                         {[t("Calculator"), t("Formula Reference"), t("Notes")].map((tool) => (
-                          <span key={tool} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{tool}</span>
+                          <span key={tool} className="flex min-h-10 items-center justify-center rounded-xl bg-slate-100 px-2 py-1.5 text-center text-xs font-semibold leading-tight text-slate-600 dark:bg-slate-800 dark:text-slate-300">{tool}</span>
                         ))}
                       </div>
                     </div>

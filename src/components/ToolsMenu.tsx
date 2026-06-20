@@ -407,39 +407,39 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
 
                 {/* Toggle Options */}
                 <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => setIsDimmed(!isDimmed)}>
-                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{t("Dim Distractions")}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("Dim Distractions")}</span>
                     <button
                       type="button"
                       role="switch"
                       aria-checked={isDimmed}
-                      onClick={(e) => { e.stopPropagation(); setIsDimmed(!isDimmed); }}
+                      onClick={() => setIsDimmed(!isDimmed)}
                       className={`w-11 h-6 rounded-full transition-all duration-200 ${isDimmed ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
                     >
                       <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${isDimmed ? "translate-x-[22px]" : "translate-x-0.5"} mt-0.5`} />
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => setHideImages(!hideImages)}>
-                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{t("Hide Images")}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("Hide Images")}</span>
                     <button
                       type="button"
                       role="switch"
                       aria-checked={hideImages}
-                      onClick={(e) => { e.stopPropagation(); setHideImages(!hideImages); }}
+                      onClick={() => setHideImages(!hideImages)}
                       className={`w-11 h-6 rounded-full transition-all duration-200 ${hideImages ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
                     >
                       <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${hideImages ? "translate-x-[22px]" : "translate-x-0.5"} mt-0.5`} />
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => setBreathingAnimation(!breathingAnimation)}>
-                    <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{t("Breathing Border")}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("Breathing Border")}</span>
                     <button
                       type="button"
                       role="switch"
                       aria-checked={breathingAnimation}
-                      onClick={(e) => { e.stopPropagation(); setBreathingAnimation(!breathingAnimation); }}
+                      onClick={() => setBreathingAnimation(!breathingAnimation)}
                       className={`w-11 h-6 rounded-full transition-all duration-200 ${breathingAnimation ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"}`}
                     >
                       <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${breathingAnimation ? "translate-x-[22px]" : "translate-x-0.5"} mt-0.5`} />

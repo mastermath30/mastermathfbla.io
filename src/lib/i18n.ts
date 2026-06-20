@@ -46,6 +46,7 @@ export const translations: TranslationTable = {
     "View all tutors": "Browse All Tutors",
     "Available Now": "Available Now",
     "Book Now": "Book Now",
+    "Book Again": "Book Again",
     "Unavailable": "Unavailable",
     "reviews": "reviews",
     "students": "students",

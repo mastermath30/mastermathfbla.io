@@ -120,7 +120,7 @@ You can include navigation AND an explanation in the same response. Always expla
 ## ABOUT MATHMASTER
 MathMaster is an interactive learning platform for peer math tutoring and collaboration. Key facts:
 - **Mission**: Making math accessible, engaging, and collaborative for every student through peer-to-peer learning.
-- **Platform Stats**: 12,000+ students, 320+ peer tutors, 98% success rate, 24/7 AI support.
+- **Platform Stats**: 12,000+ students, 320+ peer tutors, and 24/7 AI support.
 - **Built for FBLA**: Created by students who are passionate about math education and leadership.
 - **Core Values**: Accessibility (math for everyone), Community (learning together), Clarity (clear explanations), Growth (continuous improvement).
 - **Team**:

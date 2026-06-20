@@ -4,9 +4,6 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BookOpen, CheckCircle2, Sparkles, Target, Users } from "lucide-react";
 import { PageWrapper } from "@/components/motion";
-import { RecommendationPanel } from "@/components/RecommendationPanel";
-import { CommunitySpotlight } from "@/components/CommunitySpotlight";
-import { GuidedOnboarding } from "@/components/GuidedOnboarding";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { PageHero } from "@/components/PageHero";
@@ -38,7 +35,6 @@ import {
   type LearningProgress,
   type TopicStatus,
 } from "@/lib/progress";
-import { buildRecommendations } from "@/lib/guidance";
 import { getSupabaseUserId, loadLearningProgressFromCloud, saveLearningProgressToCloud } from "@/lib/cloud";
 
 type ResourceHubTab = "lessons" | "videos" | "worksheets" | "practice" | "quizzes";
@@ -389,8 +385,6 @@ function LearnPageClient() {
     if (!unit) return false;
     return unit.topics.every((topic) => (progress.topicStatusById[topic.id] ?? "locked") === "mastered");
   }, [activeTopic, progress.topicStatusById, selectedCourse?.units]);
-
-  const recommendations = useMemo(() => buildRecommendations(progress), [progress]);
 
   const selectedTopicCommunityHref = useMemo(
     () =>
@@ -782,7 +776,6 @@ function LearnPageClient() {
         visualItemNumberClassName="text-slate-950 dark:text-[var(--theme-primary)]"
         visualEyebrow={t("Current topic")}
         visualTitle={activeTopic?.title ?? selectedCourse?.title ?? t("Learning path")}
-        visualProgress={`${Math.max(courseCompletionPercent, 8)}%`}
         visualItems={[
           {
             label: t("Lesson"),
@@ -982,7 +975,7 @@ function LearnPageClient() {
         )}
 
         <div className="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-6 items-start">
-          <Card className="dlp-shell" glow={false}>
+          <Card className="dlp-shell" glow={false} data-tutorial-target="learning-path">
             <div className="dlp-header">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Current Learning Path")}</p>
@@ -1062,7 +1055,7 @@ function LearnPageClient() {
             )}
           </Card>
 
-          <Card className="h-fit lg:sticky lg:top-36" glow={false}>
+          <Card className="h-fit lg:sticky lg:top-36" glow={false} data-tutorial-target="next-step">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--theme-primary)] dark:text-[var(--theme-primary-light)]">{t("Your Next Step")}</p>
             <h2 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">{selectedNode?.title ?? t("Select a lesson")}</h2>
             <p className="mt-1 text-xs capitalize text-slate-500 dark:text-slate-400">
@@ -1108,21 +1101,11 @@ function LearnPageClient() {
               </Button>
             </div>
 
-            <div className="learn-hub-mini mt-5">
-              <p className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">{t("Optional extras")}</p>
-              <div className="learn-hub-mini-grid mt-2">
-                <button type="button" onClick={() => jumpToResourceHub("lessons")}>{t("Extra lessons")}</button>
-                <button type="button" onClick={() => jumpToResourceHub("videos")}>{t("Extra videos")}</button>
-                <button type="button" onClick={() => jumpToResourceHub("worksheets")}>{t("Worksheets")}</button>
-                <button type="button" onClick={() => jumpToResourceHub("practice")}>{t("Extra practice")}</button>
-                <button type="button" onClick={() => jumpToResourceHub("quizzes")}>{t("Quizzes")}</button>
-              </div>
-            </div>
           </Card>
         </div>
 
         <div className="grid gap-6">
-          <Card className="learn-hub-shell" glow={false} ref={lessonCardRef}>
+          <Card className="hidden learn-hub-shell" glow={false} ref={lessonCardRef}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("Lesson Workspace")}</h3>
@@ -1421,9 +1404,6 @@ function LearnPageClient() {
             </div>
           </Card>
 
-          <RecommendationPanel recommendations={recommendations} title={t("Next Best Actions")} />
-          <CommunitySpotlight studyGroupId={activeTopic?.studyGroupId} discussionLabel={activeTopic?.communityThread} />
-          {progress.globalTutorialCompleted && <GuidedOnboarding progress={progress} />}
         </div>
       </main>
     </PageWrapper>

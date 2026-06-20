@@ -22,7 +22,6 @@ import {
   TrendingUp,
   Accessibility,
   HandHelping,
-  Award,
   GraduationCap,
   Globe,
   X,
@@ -214,21 +213,6 @@ export default function AboutPage() {
                   fill
                   className="object-cover rounded-3xl"
                 />
-              </div>
-              {/* Floating badge — hidden on mobile to avoid overflow collision */}
-              <div
-                className="hidden sm:block absolute -bottom-6 -right-6 bg-white dark:bg-slate-950 rounded-2xl shadow-xl p-4 border border-slate-200 dark:border-slate-700 animate-float"
-                style={{ boxShadow: '0 10px 40px rgba(var(--theme-primary-rgb), 0.15)' }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 flex items-center justify-center" style={{ color: "var(--theme-primary)" }}>
-                    <Award className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900 dark:text-white">98% {t("Success Rate")}</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">{t("Students improving grades")}</p>
-                  </div>
-                </div>
               </div>
             </div>
             <div>

@@ -232,14 +232,14 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 pb-24 md:pb-32">
         {/* Stats Grid */}
         <FadeIn delay={0.05}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-4 sm:-mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-4 sm:-mt-8" data-tutorial-target="dashboard-overview">
           <StatCard
             icon={Clock}
             label={t("Hours Studied")}
             value="24.5"
             iconBg="bg-violet-100 dark:bg-violet-900/30"
             iconColor="text-violet-500"
-            subtext={t("12% this week")}
+            subtext={t("This week")}
             subtextColor="text-green-600"
           />
           <StatCard

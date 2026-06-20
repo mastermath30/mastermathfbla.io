@@ -856,7 +856,7 @@ export default function SchedulePage() {
   return (
     <PageWrapper className="min-h-screen bg-[#f7f4ed] dark:bg-slate-950">
       {/* Hero Header */}
-      <header className="relative overflow-hidden bg-[#f7f4ed] dark:bg-slate-950">
+      <header className="relative z-10 bg-[#f7f4ed] dark:bg-slate-950">
         {/* Glowing orbs */}
         <GlowingOrbs variant="section" />
         {/* Background */}
