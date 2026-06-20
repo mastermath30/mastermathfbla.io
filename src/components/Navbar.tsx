@@ -235,11 +235,11 @@ export function Navbar() {
               <div className="px-5 pb-4 pt-2 border-t border-slate-200 dark:border-slate-700">
                 <motion.button
                   onClick={() => handleUtilityClick("open-ai-tutor")}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl text-white touch-manipulation active:scale-[0.98] transition-transform" style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-dark))" }}
+                  className="w-full flex items-center gap-3 p-4 rounded-2xl text-white touch-manipulation active:scale-[0.98] transition-transform"
+                  style={{ background: "linear-gradient(90deg, var(--theme-primary), var(--theme-primary-dark))", WebkitTapHighlightColor: "transparent" }}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.22 }}
-                  style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
                     <Brain className="w-5 h-5" />
