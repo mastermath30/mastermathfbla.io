@@ -214,7 +214,7 @@ export default function SupportPage() {
               {t("Our support team is ready to help you with any questions.")}
             </p>
             <a href="#contact">
-              <Button variant="outline" className="w-full border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white">
+              <Button variant="outline" className="w-full border-white/40 bg-transparent text-slate-900 hover:bg-white/10 hover:text-slate-900">
                 {t("Contact Support")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
