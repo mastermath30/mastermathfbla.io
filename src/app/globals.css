@@ -1515,7 +1515,8 @@ header p {
 }
 
 .high-contrast button,
-.high-contrast [role="button"] {
+.high-contrast [role="button"],
+.high-contrast .hc-bordered {
   border-color: currentColor;
 }
 
