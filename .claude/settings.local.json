@@ -14,7 +14,8 @@
       "Bash(echo \"Dev server started \\(PID $!\\)\")",
       "Bash(git *)",
       "Bash(npx vercel *)",
-      "Bash(grep -E \"package.json$\")"
+      "Bash(grep -E \"package.json$\")",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

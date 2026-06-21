@@ -630,7 +630,7 @@ export function AIMathTutor() {
                             <button
                               key={conv.id}
                               onClick={() => loadConversation(conv)}
-                              className="w-full rounded-xl border border-transparent bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07]"
+                              className="w-full rounded-xl border border-transparent bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07] [.high-contrast_&]:border-white/20"
                             >
                               <p className="truncate text-sm font-medium text-slate-100">{conv.title}</p>
                               <p className="truncate text-xs text-slate-300">{conv.preview}</p>
@@ -668,7 +668,7 @@ export function AIMathTutor() {
                           <button
                             key={qp.label}
                             onClick={() => handleQuickPrompt(qp.prompt)}
-                            className="flex items-center gap-2 rounded-xl border border-transparent bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07]"
+                            className="flex items-center gap-2 rounded-xl border border-transparent bg-white/[0.04] p-3 text-left transition-colors hover:bg-white/[0.07] [.high-contrast_&]:border-white/20"
                           >
                             <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ border: "1px solid rgba(var(--theme-primary-rgb),0.15)", background: "rgba(var(--theme-primary-rgb),0.12)", color: "var(--theme-primary-light)" }}>
                               <qp.icon className="w-4 h-4" />
@@ -705,7 +705,7 @@ export function AIMathTutor() {
                         {MATH_TOPICS.map((topic) => (
                           <div
                             key={topic.label}
-                            className="hc-bordered rounded-xl border border-transparent bg-white/[0.04] p-3"
+                            className="rounded-xl border border-transparent bg-white/[0.04] p-3 [.high-contrast_&]:border-white/20"
                           >
                             <div className="flex items-center gap-2 mb-2">
                               <span className="text-lg">{topic.icon}</span>
