@@ -707,9 +707,9 @@ export function AIMathTutor() {
                             key={topic.label}
                             className="rounded-xl border border-transparent bg-white/[0.04] p-3 [.high-contrast_&]:border-white/20"
                           >
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">{topic.icon}</span>
-                              <span className="text-sm font-medium text-slate-100">{t(topic.label)}</span>
+                            <div className="flex items-start gap-2 mb-2">
+                              <span className="text-lg shrink-0">{topic.icon}</span>
+                              <span className="text-sm font-medium text-slate-100 min-w-0 break-words">{t(topic.label)}</span>
                             </div>
                             <div className="space-y-1">
                               {topic.examples.map((ex) => (
