@@ -10,6 +10,8 @@ interface ConfettiPiece {
   delay: number;
   rotation: number;
   scale: number;
+  drift: number;
+  duration: number;
 }
 
 const colors = [
@@ -46,6 +48,8 @@ export function Confetti() {
           delay: Math.random() * 0.5,
           rotation: Math.random() * 360,
           scale: 0.5 + Math.random() * 0.5,
+          drift: (Math.random() - 0.5) * 20,
+          duration: 3 + Math.random() * 2,
         });
       }
       setPieces(newPieces);
@@ -77,11 +81,11 @@ export function Confetti() {
               animate={{
                 y: "110vh",
                 rotate: piece.rotation + 720,
-                x: `${piece.x + (Math.random() - 0.5) * 20}vw`,
+                x: `${piece.x + piece.drift}vw`,
               }}
               exit={{ opacity: 0 }}
               transition={{
-                duration: 3 + Math.random() * 2,
+                duration: piece.duration,
                 delay: piece.delay,
                 ease: "linear",
               }}
