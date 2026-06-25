@@ -311,7 +311,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         onClick={onClose}
-        className="fixed top-4 right-4 z-[200] p-3 rounded-full bg-red-500/90 hover:bg-red-600 text-white shadow-lg transition-all hover:scale-105"
+        className="fixed top-4 right-4 z-[200] flex h-11 w-11 items-center justify-center rounded-full bg-rose-500/95 text-white shadow-lg ring-1 ring-white/25 backdrop-blur-md transition-all hover:bg-rose-600 hover:scale-105"
         aria-label={t("Exit Focus Mode (Esc)")}
         title={t("Exit Focus Mode (Esc)")}
       >
@@ -324,7 +324,7 @@ function ReadingModeModal({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
         onClick={() => setShowControlPanel(!showControlPanel)}
-        className="fixed top-4 left-4 z-[200] p-3 rounded-full bg-slate-800/90 hover:bg-slate-700 text-white shadow-lg transition-all hover:scale-105"
+        className="fixed top-4 left-4 z-[200] flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/85 text-white shadow-lg ring-1 ring-white/15 backdrop-blur-md transition-all hover:bg-slate-800 hover:scale-105"
         title={showControlPanel ? t("Hide Controls") : t("Show Controls")}
       >
         <Focus className="w-5 h-5" />

@@ -38,14 +38,14 @@ html {
   --surface-subtle: #f8fafc;
   --text-strong: #0f172a;
   --text-default: #334155;
-  --text-muted: #475569;
+  --text-muted: #3f4d61;
   --progress-track: #e2e8f0;
   --primary: #7c3aed;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #334155;
   --muted: #f8fafc;
-  --muted-foreground: #64748b;
+  --muted-foreground: #475569;
   --accent: color-mix(in srgb, var(--theme-primary) 12%, white);
   --accent-foreground: var(--theme-primary-dark);
   --accent-soft: color-mix(in srgb, var(--theme-primary) 8%, white);
@@ -706,7 +706,14 @@ html {
    and controls cannot inherit washed-out colors from broad utility overrides. */
 :not(.dark) .text-slate-500,
 :not(.dark) .text-slate-400,
-:not(.dark) .text-slate-300 {
+:not(.dark) .text-slate-300,
+:not(.dark) .text-gray-500,
+:not(.dark) .text-gray-400,
+:not(.dark) .text-gray-300,
+:not(.dark) .text-zinc-500,
+:not(.dark) .text-zinc-400,
+:not(.dark) .text-zinc-300,
+:not(.dark) .text-neutral-400 {
   color: var(--text-muted);
 }
 
@@ -1319,14 +1326,14 @@ body {
 
 /* Light mode placeholder text - ensure visible */
 :not(.dark) ::placeholder {
-  color: #64748b !important;
+  color: #5b6878 !important;
   opacity: 1;
 }
 
 /* Light mode - Fix navigation text colors */
 :not(.dark) .text-neutral-500,
 :not(.dark) .text-neutral-300 {
-  color: #475569 !important;
+  color: var(--text-muted) !important;
 }
 
 /* Light mode - Fix card text */
@@ -1337,7 +1344,7 @@ body {
 
 :not(.dark) [class*="CardDescription"],
 :not(.dark) .card-description {
-  color: #475569 !important;
+  color: var(--text-muted) !important;
 }
 
 /* Light mode - Ensure links are visible */
