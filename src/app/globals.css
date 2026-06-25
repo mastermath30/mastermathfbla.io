@@ -3346,28 +3346,30 @@ button, [role="button"], .interactive {
     scroll-snap-align: start;
   }
 
-  /* DLP map */
+  /* DLP map — on phones the whole path fits the viewport width and scrolls
+     vertically with the page (Duolingo-style). This removes the awkward
+     two-axis scrolling (horizontal pan + inner vertical scroll) that made it
+     hard to move between path nodes on small screens. */
   .dlp-map {
-    max-height: 72vh;
-    padding: 4px 12px 18px 6px;
-    min-width: 480px;
+    max-height: none;
+    overflow: visible;
+    padding: 4px 2px 18px;
+    min-width: 0;
   }
 
   .dlp-map-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-inline: 0 12px;
-    margin-inline: 0 -12px;
-    overscroll-behavior-x: contain;
+    overflow: visible;
+    padding-inline: 0;
+    margin-inline: 0;
+    overscroll-behavior-x: auto;
     scrollbar-gutter: auto;
-    scroll-snap-type: x proximity;
-    touch-action: pan-x pan-y;
-    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: none;
+    touch-action: auto;
   }
 
   .dlp-row {
     min-height: 116px;
-    min-width: 480px;
+    min-width: 0;
   }
 
   .dlp-connector {
@@ -3375,12 +3377,12 @@ button, [role="button"], .interactive {
     height: 116px;
   }
 
-  .dlp-node-wrap { min-width: 130px; }
+  .dlp-node-wrap { min-width: 0; }
 
   /* Node meta: allow 2-line title on small screens so long topic names aren't cryptic */
   .dlp-node-title {
     -webkit-line-clamp: 2;
-    max-width: 120px;
+    max-width: 104px;
   }
 }
 
