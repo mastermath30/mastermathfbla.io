@@ -1,16 +1,16 @@
 export const personImages = {
-  sarahJohnson: "/images/people/sarah-johnson.svg",
-  priyaPatel: "/images/people/priya-patel.svg",
-  michaelChen: "/images/people/michael-chen.svg",
-  emmaRodriguez: "/images/people/emma-rodriguez.svg",
-  alexThompson: "/images/people/alex-thompson.svg",
-  jessicaWu: "/images/people/jessica-wu.svg",
-  davidKim: "/images/people/david-kim.svg",
-  mariaSantos: "/images/people/maria-santos.svg",
-  robertFoster: "/images/people/robert-foster.svg",
-  lisaZhang: "/images/people/lisa-zhang.svg",
-  jamesWilson: "/images/people/james-wilson.svg",
-  rachelGreen: "/images/people/rachel-green.svg",
+  sarahJohnson: "/images/people/sarah-johnson.jpg",
+  priyaPatel: "/images/people/priya-patel.jpg",
+  michaelChen: "/images/people/michael-chen.jpg",
+  emmaRodriguez: "/images/people/emma-rodriguez.jpg",
+  alexThompson: "/images/people/alex-thompson.jpg",
+  jessicaWu: "/images/people/jessica-wu.jpg",
+  davidKim: "/images/people/david-kim.jpg",
+  mariaSantos: "/images/people/maria-santos.jpg",
+  robertFoster: "/images/people/robert-foster.jpg",
+  lisaZhang: "/images/people/lisa-zhang.jpg",
+  jamesWilson: "/images/people/james-wilson.jpg",
+  rachelGreen: "/images/people/rachel-green.jpg",
 } as const;
 
 export type TutorProfile = {

@@ -9,11 +9,6 @@ const nextConfig: NextConfig = {
     root: projectRoot,
   },
   images: {
-    // Locally generated tutor avatars are SVG. They are static, first-party
-    // assets, so allow next/image to serve them (sandboxed CSP below).
-    dangerouslyAllowSVG: true,
-    contentDispositionType: "attachment",
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
         protocol: 'https',
