@@ -7,8 +7,8 @@ import { useLanguage, LanguageCode, useTranslations } from "./LanguageProvider";
 import { languages } from "@/lib/i18n";
 
 function getStoredColorTheme() {
-  if (typeof window === "undefined") return "indigo";
-  return localStorage.getItem("mm_color_theme") || "indigo";
+  if (typeof window === "undefined") return "violet";
+  return localStorage.getItem("mm_color_theme") || "violet";
 }
 
 function getStoredDarkMode() {
@@ -32,8 +32,8 @@ export function ThemeSelector({
   const { language, setLanguage } = useLanguage();
   
   const COLOR_THEMES = [
-    { name: t("Indigo"), value: "indigo", color: "#4f46e5" },
     { name: t("Purple"), value: "violet", color: "#7c3aed" },
+    { name: t("Indigo"), value: "indigo", color: "#4f46e5" },
     { name: t("Teal"), value: "teal", color: "#0d9488" },
     { name: t("Green"), value: "green", color: "#16a34a" },
     { name: t("Orange"), value: "orange", color: "#ea580c" },

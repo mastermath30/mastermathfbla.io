@@ -1185,14 +1185,6 @@ function LearnPageClient() {
               </div>
             </div>
 
-            <div className="learn-hub-counts mt-4">
-              <span>{t("Extra lessons")}: {resourceCounts.lessons}</span>
-              <span>{t("Extra videos")}: {resourceCounts.videos}</span>
-              <span>{t("Worksheets")}: {resourceCounts.worksheets}</span>
-              <span>{t("Extra practice")}: {resourceCounts.practice}</span>
-              <span>{t("Quizzes")}: {resourceCounts.quizzes}</span>
-            </div>
-
             <div className="learn-hub-tabs mt-4" role="tablist" aria-label={t("Resource categories")}>
               {resourceHubTabs.map((tab) => (
                 <button
@@ -1203,7 +1195,7 @@ function LearnPageClient() {
                   onClick={() => jumpToResourceHub(tab.id)}
                   className={`learn-hub-tab ${resourceHubTab === tab.id ? "learn-hub-tab-active" : ""}`}
                 >
-                  {t(tab.label)}
+                  {t(tab.label)}: <span className={`tabular-nums ${resourceHubTab === tab.id ? "opacity-90" : "opacity-50"}`}>{resourceCounts[tab.id]}</span>
                 </button>
               ))}
             </div>

@@ -15,7 +15,8 @@
       "Bash(git *)",
       "Bash(npx vercel *)",
       "Bash(grep -E \"package.json$\")",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(xargs ls -la)"
     ]
   }
 }
