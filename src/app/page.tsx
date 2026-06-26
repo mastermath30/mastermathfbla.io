@@ -926,7 +926,7 @@ export default function Home() {
               <FadeInStaggerItem key={session.title}>
                 <Card className="flex h-full flex-col overflow-hidden rounded-3xl border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" padding="none">
                   <div className="relative h-60 overflow-hidden">
-                    <Image src={session.image} alt={session.tutor} fill className="object-cover object-[center_18%] transition duration-500 hover:scale-105" />
+                    <Image src={session.image} alt={session.tutor} fill className="object-cover object-[center_32%] transition duration-500 hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
                     <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/95 px-3 py-1 text-xs font-semibold text-white shadow-sm">
                       <CheckCircle2 className="h-3.5 w-3.5" />
@@ -1067,7 +1067,7 @@ export default function Home() {
               <FadeInStaggerItem key={tutor.name}>
                 <Card className="flex h-full flex-col overflow-hidden rounded-3xl border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" padding="none">
                   <div className="relative h-60 overflow-hidden">
-                    <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-[center_18%] transition duration-500 hover:scale-105" />
+                    <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-[center_32%] transition duration-500 hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
                     {tutor.available && (
                       <div className="absolute right-4 top-4 rounded-full bg-emerald-500/95 px-3 py-1 text-xs font-semibold text-white shadow-sm">
@@ -1191,7 +1191,7 @@ export default function Home() {
                       <p className="text-xs text-slate-500 dark:text-white mb-2">{session.time}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Image src={session.image} alt={session.tutor} width={24} height={24} className="h-6 w-6 rounded-full object-cover object-[center_20%]" />
+                          <Image src={session.image} alt={session.tutor} width={24} height={24} className="h-6 w-6 rounded-full object-cover object-[center_32%]" />
                           <span className="text-xs text-slate-600 dark:text-slate-300">{session.tutor}</span>
                         </div>
                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -1236,7 +1236,7 @@ export default function Home() {
                         src={tutor.image}
                         alt={tutor.name}
                         fill
-                        className="object-cover object-[center_20%] group-hover/tutor:scale-105 transition-transform duration-500"
+                        className="object-cover object-[center_32%] group-hover/tutor:scale-105 transition-transform duration-500"
                       />
                       <div 
                         className="absolute inset-0"
@@ -1539,7 +1539,7 @@ export default function Home() {
                         src={tutor.image}
                         alt={tutor.name}
                         fill
-                        className="object-cover object-[center_20%] group-hover/tutor:scale-105 transition-transform duration-500"
+                        className="object-cover object-[center_32%] group-hover/tutor:scale-105 transition-transform duration-500"
                       />
                       <div 
                         className="absolute inset-0"
