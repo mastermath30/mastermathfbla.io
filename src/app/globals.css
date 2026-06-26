@@ -73,7 +73,7 @@ html {
   --secondary: #0f172a;
   --secondary-foreground: #f1f5f9;
   --muted: #0f172a;
-  --muted-foreground: #94a3b8;
+  --muted-foreground: #f8fafc;
   --accent: color-mix(in srgb, var(--theme-primary) 18%, #0f172a);
   --accent-foreground: var(--theme-primary-light);
   --accent-soft: color-mix(in srgb, var(--theme-primary) 12%, #0f172a);
@@ -83,8 +83,8 @@ html {
   --border: #1e293b;
   --surface-subtle: #0f172a;
   --text-strong: #f8fafc;
-  --text-default: #e2e8f0;
-  --text-muted: #94a3b8;
+  --text-default: #f8fafc;
+  --text-muted: #f8fafc;
   --progress-track: #0f172a;
 }
 
@@ -1126,24 +1126,35 @@ button[class*="bg-blue-700"]:hover {
   background-color: rgba(30, 41, 59, 0.9) !important;
 }
 
-.dark .text-slate-900 {
+/* Dark mode: render gray / muted text as white for stronger contrast.
+   Attribute selectors catch every form of the utility — base
+   (text-slate-400), dark variant (dark:text-slate-400), and responsive
+   /state variants (md:text-slate-400, hover:text-slate-400) — so gray
+   text reads as white regardless of how it was written. Semantic colors
+   (green/blue/violet/etc.) are intentionally untouched. */
+.dark [class*="text-slate-300"],
+.dark [class*="text-slate-400"],
+.dark [class*="text-slate-500"],
+.dark [class*="text-slate-600"],
+.dark [class*="text-slate-700"],
+.dark [class*="text-slate-800"],
+.dark [class*="text-slate-900"],
+.dark [class*="text-gray-300"],
+.dark [class*="text-gray-400"],
+.dark [class*="text-gray-500"],
+.dark [class*="text-gray-600"],
+.dark [class*="text-gray-700"],
+.dark [class*="text-zinc-300"],
+.dark [class*="text-zinc-400"],
+.dark [class*="text-zinc-500"],
+.dark [class*="text-zinc-600"],
+.dark [class*="text-zinc-700"],
+.dark [class*="text-neutral-300"],
+.dark [class*="text-neutral-400"],
+.dark [class*="text-neutral-500"],
+.dark [class*="text-neutral-600"],
+.dark [class*="text-neutral-700"] {
   color: #f8fafc !important;
-}
-
-.dark .text-slate-800 {
-  color: #e2e8f0 !important;
-}
-
-.dark .text-slate-700 {
-  color: #cbd5e1 !important;
-}
-
-.dark .text-slate-600 {
-  color: #94a3b8 !important;
-}
-
-.dark .text-slate-500 {
-  color: #94a3b8 !important;
 }
 
 /* Ensure text inside dark backgrounds in light mode is white */
