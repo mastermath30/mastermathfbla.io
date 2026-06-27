@@ -161,10 +161,10 @@ export function PageHero({
                     {index === 0 ? <CheckCircle2 className="h-5 w-5" /> : index + 1}
                   </div>
                   <div className="min-w-0 flex-1 overflow-hidden">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-300">{item.label}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-white">{item.label}</p>
                     <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{item.title}</p>
                   </div>
-                  <span className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline dark:bg-slate-800 dark:text-slate-300">{item.meta}</span>
+                  <span className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline dark:bg-slate-800 dark:text-white">{item.meta}</span>
                 </div>
               ))}
             </div>

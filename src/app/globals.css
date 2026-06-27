@@ -1382,7 +1382,7 @@ body {
 
 /* Dark mode placeholder text */
 .dark ::placeholder {
-  color: #64748b !important;
+  color: #ffffff !important;
   opacity: 1;
 }
 
